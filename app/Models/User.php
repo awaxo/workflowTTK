@@ -13,6 +13,11 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     * Specify custom table name
+     */
+    protected $table = 'wf_user';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>

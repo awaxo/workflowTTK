@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c491b8531eec05ba41a11d9276a5749",
+    "content-hash": "db02b919a03885fc35f62f59ed7445d0",
     "packages": [
         {
             "name": "brick/math",
@@ -2392,6 +2392,91 @@
                 }
             ],
             "time": "2023-02-08T01:06:31+00:00"
+        },
+        {
+            "name": "nwidart/laravel-modules",
+            "version": "10.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nWidart/laravel-modules.git",
+                "reference": "a6f2c8b53ae7945ef41d296735e963cee885ebde"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nWidart/laravel-modules/zipball/a6f2c8b53ae7945ef41d296735e963cee885ebde",
+                "reference": "a6f2c8b53ae7945ef41d296735e963cee885ebde",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.6",
+                "laravel/framework": "^10.41",
+                "mockery/mockery": "^1.5",
+                "orchestra/testbench": "^8.0",
+                "phpstan/phpstan": "^1.4",
+                "phpunit/phpunit": "^10.0",
+                "spatie/phpunit-snapshot-assertions": "^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Nwidart\\Modules\\LaravelModulesServiceProvider"
+                    ],
+                    "aliases": {
+                        "Module": "Nwidart\\Modules\\Facades\\Module"
+                    }
+                },
+                "branch-alias": {
+                    "dev-master": "10.0-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Nwidart\\Modules\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Widart",
+                    "email": "n.widart@gmail.com",
+                    "homepage": "https://nicolaswidart.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel Module management",
+            "keywords": [
+                "laravel",
+                "module",
+                "modules",
+                "nwidart",
+                "rad"
+            ],
+            "support": {
+                "issues": "https://github.com/nWidart/laravel-modules/issues",
+                "source": "https://github.com/nWidart/laravel-modules/tree/10.0.6"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/dcblogdev",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nwidart",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-01-28T10:04:15+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -5415,6 +5500,94 @@
             "time": "2024-01-23T14:53:30+00:00"
         },
         {
+            "name": "symfony/workflow",
+            "version": "v6.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/workflow.git",
+                "reference": "3cd13dc5c2c44b94e0fbe8c691c8e2635ffe3c56"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/workflow/zipball/3cd13dc5c2c44b94e0fbe8c691c8e2635ffe3c56",
+                "reference": "3cd13dc5c2c44b94e0fbe8c691c8e2635ffe3c56",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "symfony/event-dispatcher": "<5.4"
+            },
+            "require-dev": {
+                "psr/log": "^1|^2|^3",
+                "symfony/dependency-injection": "^5.4|^6.0|^7.0",
+                "symfony/error-handler": "^6.4|^7.0",
+                "symfony/event-dispatcher": "^5.4|^6.0|^7.0",
+                "symfony/expression-language": "^5.4|^6.0|^7.0",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/security-core": "^5.4|^6.0|^7.0",
+                "symfony/stopwatch": "^5.4|^6.0|^7.0",
+                "symfony/validator": "^5.4|^6.0|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Workflow\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Grégoire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides tools for managing a workflow or finite state machine",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "petrinet",
+                "place",
+                "state",
+                "statemachine",
+                "transition",
+                "workflow"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/workflow/tree/v6.4.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-01-23T14:51:35+00:00"
+        },
+        {
             "name": "tijsverkoyen/css-to-inline-styles",
             "version": "v2.2.7",
             "source": {
@@ -5682,6 +5855,80 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "zerodahero/laravel-workflow",
+            "version": "v4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zerodahero/laravel-workflow.git",
+                "reference": "65085070e9dcd772242c0a3009992443ba9025ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zerodahero/laravel-workflow/zipball/65085070e9dcd772242c0a3009992443ba9025ee",
+                "reference": "65085070e9dcd772242c0a3009992443ba9025ee",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^8.0|^9.0|^10.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0",
+                "illuminate/support": "^8.0|^9.0|^10.0",
+                "php": "^7.4|^8.0|^8.1|^8.2",
+                "symfony/event-dispatcher-contracts": "^2.4|^3.0",
+                "symfony/process": "^6.0",
+                "symfony/workflow": "^6.0"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.13|^1.9.1",
+                "mockery/mockery": "^1.2",
+                "orchestra/testbench": "^6.0|^7.0|^8.0",
+                "phpunit/phpunit": "^9.0",
+                "symfony/contracts": "^2.3",
+                "symfony/var-dumper": "^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "ZeroDaHero\\LaravelWorkflow\\WorkflowServiceProvider"
+                    ],
+                    "aliases": {
+                        "Workflow": "ZeroDaHero\\LaravelWorkflow\\Facades\\WorkflowFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ZeroDaHero\\LaravelWorkflow\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Integerate Symfony Workflow component into Laravel.",
+            "keywords": [
+                "laravel",
+                "laravel7",
+                "laravel8",
+                "symfony",
+                "workflow"
+            ],
+            "support": {
+                "issues": "https://github.com/zerodahero/laravel-workflow/issues",
+                "source": "https://github.com/zerodahero/laravel-workflow/tree/v4.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/zerodahero",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-02-16T13:51:01+00:00"
         }
     ],
     "packages-dev": [

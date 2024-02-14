@@ -6,30 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('wf_user', function (Blueprint $table) {
+        Schema::create('wf_role_group', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('middle_name')->nullable();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('group_id');
             $table->tinyInteger('deleted')->unsigned()->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
-
-            // Adjust foreign keys to reference 'id' of the same table
+    
+            // Foreign keys
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
+            $table->foreign('role_id')->references('id')->on('wf_role');
+            $table->foreign('group_id')->references('id')->on('wf_group');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('wf_user');
+        Schema::dropIfExists('wf_role_group');
     }
 };

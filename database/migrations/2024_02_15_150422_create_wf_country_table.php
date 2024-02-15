@@ -3,26 +3,33 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
-return new class extends Migration {
-    public function up() {
-        Schema::create('wf_position', function (Blueprint $table) {
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('wf_country', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('type', 100);
+            $table->string('name', 255);
             $table->tinyInteger('deleted')->unsigned()->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            // Adjust foreign keys if necessary
+            // Foreign keys
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });
     }
 
-    public function down() {
-        Schema::dropIfExists('wf_position');
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('wf_country');
     }
 };

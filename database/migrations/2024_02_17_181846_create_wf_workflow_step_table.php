@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wf_workflow_type', function (Blueprint $table) {
+        Schema::create('wf_workflow_step', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description', 2000);
+            $table->unsignedBigInteger('workflow_step_type_id');
+            $table->unsignedBigInteger('workflow_id');
+            $table->unsignedInteger('step_deadline')->default(0);
             $table->string('meta_key')->nullable();
             $table->text('meta_value')->nullable();
             $table->tinyInteger('deleted')->unsigned()->default(0);
@@ -22,6 +23,8 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
+            $table->foreign('workflow_step_type_id')->references('id')->on('wf_workflow_step_type');
+            $table->foreign('workflow_id')->references('id')->on('wf_workflow');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });
@@ -32,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wf_workflow_type');
+        Schema::dropIfExists('wf_workflow_step');
     }
 };

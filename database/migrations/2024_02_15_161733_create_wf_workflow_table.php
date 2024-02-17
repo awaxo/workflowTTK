@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('wf_workflow', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('workflow_type_id');
-            $table->string('name');
             $table->unsignedInteger('workflow_deadline')->nullable();
             $table->string('status');
+            $table->string('meta_key')->nullable();
+            $table->text('meta_value')->nullable();
             $table->tinyInteger('deleted')->unsigned()->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');

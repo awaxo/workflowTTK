@@ -29,7 +29,6 @@ class User extends Authenticatable
         'email',
         'email_verified_at',
         'password',
-        'deleted',
         'created_by',
         'updated_by'
     ];
@@ -52,6 +51,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'deleted' => 'boolean',
+    ];
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'deleted' => 0,
     ];
 
     /**

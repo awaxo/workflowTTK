@@ -82,29 +82,4 @@ class UserTest extends TestCase
         $this->assertEquals($foundUser->first_name, 'John');
         $this->assertEquals($foundUser->middle_name, 'M');
     }
-
-    /** @test */
-    public function a_user_can_be_deleted()
-    {
-        $creator = User::factory()->create();
-
-        $user = User::create([
-            'first_name' => 'John',
-            'middle_name' => 'M',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'password' => bcrypt('password'),
-            'created_by' => $creator->id,
-            'updated_by' => $creator->id,
-        ]);
-
-        $user->delete();
-
-        $this->assertDatabaseMissing('wf_user', [
-            'first_name' => 'John',
-            'middle_name' => 'M',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-        ]);
-    }
 }

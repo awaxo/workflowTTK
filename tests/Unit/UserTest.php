@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\User;
+use App\Models\Workgroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,51 +14,30 @@ class UserTest extends TestCase
     /** @test */
     public function a_user_can_be_created()
     {
-        $creator = User::factory()->create();
-
-        User::create([
-            'first_name' => 'John',
-            'middle_name' => 'M',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'password' => bcrypt('password'),
-            'created_by' => $creator->id,
-            'updated_by' => $creator->id,
-        ]);
+        $user = User::factory()->create();
 
         $this->assertDatabaseHas('wf_user', [
-            'first_name' => 'John',
-            'middle_name' => 'M',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'created_by' => $creator->id,
-            'updated_by' => $creator->id,
+            'first_name' => $user->first_name,
+            'middle_name' => $user->middle_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'workgroup_id' => $user->workgroup_id,
+            'created_by' => null,
+            'updated_by' => null,
         ]);
     }
 
     /** @test */
     public function a_user_can_be_updated()
     {
-        $creator = User::factory()->create();
         $updater = User::factory()->create();
 
-        $user = User::create([
-            'first_name' => 'John',
-            'middle_name' => 'M',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'password' => bcrypt('password'),
-            'created_by' => $creator->id,
-            'updated_by' => $creator->id,
-        ]);
+        $user = User::factory()->create();
 
         $user->update(['first_name' => 'Jane', 'updated_by' => $updater->id]);
 
         $this->assertDatabaseHas('wf_user', [
             'first_name' => 'Jane',
-            'middle_name' => 'M',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
             'updated_by' => $updater->id,
         ]);
     }
@@ -65,21 +45,11 @@ class UserTest extends TestCase
     /** @test */
     public function a_user_can_be_read()
     {
-        $creator = User::factory()->create();
-
-        $user = User::create([
-            'first_name' => 'John',
-            'middle_name' => 'M',
-            'last_name' => 'Doe',
-            'email' => 'john@example.com',
-            'password' => bcrypt('password'),
-            'created_by' => $creator->id,
-            'updated_by' => $creator->id,
-        ]);
+        $user = User::factory()->create();
 
         $foundUser = User::find($user->id);
 
-        $this->assertEquals($foundUser->first_name, 'John');
-        $this->assertEquals($foundUser->middle_name, 'M');
+        $this->assertEquals($foundUser->first_name, $user->first_name);
+        $this->assertEquals($foundUser->middle_name, $user->middle_name);
     }
 }

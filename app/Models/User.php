@@ -27,6 +27,7 @@ class User extends Authenticatable
         'last_name',
         'middle_name',
         'email',
+        'workgroup_id',
         'email_verified_at',
         'password',
         'created_by',
@@ -69,6 +70,14 @@ class User extends Authenticatable
      * @var bool
      */
     public $timestamps = true;
+
+    /**
+     * Get the workgroup associated with the user.
+     */
+    public function workgroup()
+    {
+        return $this->belongsTo(Workgroup::class);
+    }
 
     /**
      * Get the user who created this user.

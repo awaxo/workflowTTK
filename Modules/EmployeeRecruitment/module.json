@@ -1,0 +1,11 @@
+{
+    "name": "EmployeeRecruitment",
+    "alias": "employeerecruitment",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\EmployeeRecruitment\\App\\Providers\\EmployeeRecruitmentServiceProvider"
+    ],
+    "files": []
+}

@@ -1,34 +1,35 @@
 <?php
 
-namespace App\Models;
+namespace Modules\EmployeeRecruitment\App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Position;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\EmployeeRecruitment\Database\Factories\RecruitUserPositionFactory;
 
-class UserGroup extends Model
+class RecruitUserPosition extends Model
 {
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return RecruitUserPositionFactory::new();
+    }
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'wf_user_group';
+    protected $table = 'recruit_user_position';
 
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = ['user_id', 'group_id'];
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    protected $primaryKey = ['user_id', 'position_id'];
 
     /**
      * The attributes that are mass assignable.
@@ -37,10 +38,9 @@ class UserGroup extends Model
      */
     protected $fillable = [
         'user_id',
-        'group_id',
-        'is_lead',
+        'position_id',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     /**
@@ -49,7 +49,6 @@ class UserGroup extends Model
      * @var array
      */
     protected $casts = [
-        'is_lead' => 'boolean',
         'deleted' => 'boolean',
     ];
 
@@ -63,7 +62,14 @@ class UserGroup extends Model
     ];
 
     /**
-     * Get the user associated with the user group.
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * Get the user associated with the user position.
      */
     public function user()
     {
@@ -71,11 +77,11 @@ class UserGroup extends Model
     }
 
     /**
-     * Get the group associated with the user group.
+     * Get the position associated with the user position.
      */
-    public function group()
+    public function position()
     {
-        return $this->belongsTo(Group::class, 'group_id');
+        return $this->belongsTo(Position::class, 'position_id');
     }
 
     /**

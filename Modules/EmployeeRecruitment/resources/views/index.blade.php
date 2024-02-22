@@ -1,0 +1,7 @@
+@extends('employeerecruitment::layouts.master')
+
+@section('content')
+    <h1>Hello World</h1>
+
+    <p>Module: {!! config('employeerecruitment.name') !!}</p>
+@endsection

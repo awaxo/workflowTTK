@@ -6,18 +6,18 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitWorkflowStepRightFactory;
+use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowStepRightFactory;
 
-class RecruitWorkflowStepRights extends Model
+class RecruitmentWorkflowStepRights extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitWorkflowStepRightFactory::new();
+        return RecruitmentWorkflowStepRightFactory::new();
     }
 
-    protected $table = 'recruit_workflow_step_rights';
+    protected $table = 'recruitment_workflow_step_rights';
 
     protected $fillable = [
         'workflow_step_id',

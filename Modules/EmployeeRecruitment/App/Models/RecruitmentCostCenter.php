@@ -6,18 +6,18 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitCostCenterFactory;
+use Modules\EmployeeRecruitment\Database\Factories\RecruitmentCostCenterFactory;
 
-class RecruitCostCenter extends Model
+class RecruitmentCostCenter extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitCostCenterFactory::new();
+        return RecruitmentCostCenterFactory::new();
     }
 
-    protected $table = 'recruit_cost_center';
+    protected $table = 'recruitment_cost_center';
 
     protected $fillable = [
         'cost_center_code',

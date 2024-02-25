@@ -6,15 +6,15 @@ use App\Models\User;
 use App\Models\Position;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitUserPositionFactory;
+use Modules\EmployeeRecruitment\Database\Factories\RecruitmentUserPositionFactory;
 
-class RecruitUserPosition extends Model
+class RecruitmentUserPosition extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitUserPositionFactory::new();
+        return RecruitmentUserPositionFactory::new();
     }
 
     /**
@@ -22,7 +22,7 @@ class RecruitUserPosition extends Model
      *
      * @var string
      */
-    protected $table = 'recruit_user_position';
+    protected $table = 'recruitment_user_position';
 
     /**
      * The primary key associated with the table.

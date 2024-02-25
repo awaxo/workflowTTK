@@ -9,22 +9,25 @@ use App\Models\Workgroup;
 use App\Models\Workflow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\App\Models\RecruitCostCenter;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitWorkflowFactory;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
+use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
+use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
-class RecruitWorkflow extends Model
+class RecruitmentWorkflow extends Model
 {
     use HasFactory;
+    use WorkflowTrait;
 
     protected static function newFactory()
     {
-        return RecruitWorkflowFactory::new();
+        return RecruitmentWorkflowFactory::new();
     }
 
-    protected $table = 'recruit_workflow';
+    protected $table = 'recruitment_workflow';
 
     protected $fillable = [
         'workflow_id',
+        'state',
         'job_ad_exists',
         'applicants_female_count',
         'applicants_male_count',
@@ -97,6 +100,7 @@ class RecruitWorkflow extends Model
     ];
 
     protected $attributes = [
+        'state' => 'new_request',
         'job_ad_exists' => 1,
         'work_with_radioactive_isotopes' => 0,
         'work_with_carcinogenic_materials' => 0,
@@ -129,37 +133,37 @@ class RecruitWorkflow extends Model
 
     public function base_salary_cc1()
     {
-        return $this->belongsTo(RecruitCostCenter::class, 'base_salary_cost_center_1');
+        return $this->belongsTo(RecruitmentCostCenter::class, 'base_salary_cost_center_1');
     }
 
     public function base_salary_cc2()
     {
-        return $this->belongsTo(RecruitCostCenter::class, 'base_salary_cost_center_2');
+        return $this->belongsTo(RecruitmentCostCenter::class, 'base_salary_cost_center_2');
     }
 
     public function base_salary_cc3()
     {
-        return $this->belongsTo(RecruitCostCenter::class, 'base_salary_cost_center_3');
+        return $this->belongsTo(RecruitmentCostCenter::class, 'base_salary_cost_center_3');
     }
 
     public function health_allowance_cc()
     {
-        return $this->belongsTo(RecruitCostCenter::class, 'health_allowance_cost_center_4');
+        return $this->belongsTo(RecruitmentCostCenter::class, 'health_allowance_cost_center_4');
     }
 
     public function management_allowance_cc()
     {
-        return $this->belongsTo(RecruitCostCenter::class, 'management_allowance_cost_center_5');
+        return $this->belongsTo(RecruitmentCostCenter::class, 'management_allowance_cost_center_5');
     }
 
     public function extra_pay_1_cc()
     {
-        return $this->belongsTo(RecruitCostCenter::class, 'extra_pay_1_cost_center_6');
+        return $this->belongsTo(RecruitmentCostCenter::class, 'extra_pay_1_cost_center_6');
     }
 
     public function extra_pay_2_cc()
     {
-        return $this->belongsTo(RecruitCostCenter::class, 'extra_pay_2_cost_center_7');
+        return $this->belongsTo(RecruitmentCostCenter::class, 'extra_pay_2_cost_center_7');
     }
 
     public function createdBy()

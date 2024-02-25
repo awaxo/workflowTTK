@@ -9,10 +9,10 @@ use App\Models\Workflow;
 use App\Models\Country;
 use App\Models\Workgroup;
 use App\Models\Position;
-use Modules\EmployeeRecruitment\App\Models\RecruitCostCenter;
-use Modules\EmployeeRecruitment\App\Models\RecruitWorkflow;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-class RecruitWorkflowTest extends TestCase
+class RecruitmentWorkflowTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,11 +24,11 @@ class RecruitWorkflowTest extends TestCase
         $workgroup1 = Workgroup::factory()->create();
         $workgroup2 = Workgroup::factory()->create();
         $position = Position::factory()->create();
-        $costCenter1 = RecruitCostCenter::factory()->create();
+        $costCenter1 = RecruitmentCostCenter::factory()->create();
         $createdBy = User::factory()->create();
         $updatedBy = User::factory()->create();
 
-        $recruitWorkflow = RecruitWorkflow::factory()->create([
+        $recruitWorkflow = RecruitmentWorkflow::factory()->create([
             'workflow_id' => $workflow->id,
             'job_ad_exists' => true,
             'applicants_female_count' => 5,
@@ -61,8 +61,9 @@ class RecruitWorkflowTest extends TestCase
             'updated_by' => $updatedBy->id,
         ]);
 
-        $this->assertDatabaseHas('recruit_workflow', [
+        $this->assertDatabaseHas('recruitment_workflow', [
             'workflow_id' => $workflow->id,
+            'state' => 'new_request',
             'job_ad_exists' => true,
             'applicants_female_count' => 5,
             'applicants_male_count' => 10,
@@ -86,9 +87,10 @@ class RecruitWorkflowTest extends TestCase
     /** @test */
     public function a_recruit_workflow_can_be_updated()
     {
-        $recruitWorkflow = RecruitWorkflow::factory()->create();
+        $recruitWorkflow = RecruitmentWorkflow::factory()->create();
 
         $newData = [
+            'state' => 'it_head_approval',
             'job_ad_exists' => false,
             'applicants_female_count' => 2,
             'employment_type' => 'Temporary',
@@ -99,6 +101,6 @@ class RecruitWorkflowTest extends TestCase
 
         $recruitWorkflow->update($newData);
 
-        $this->assertDatabaseHas('recruit_workflow', $newData + ['id' => $recruitWorkflow->id]);
+        $this->assertDatabaseHas('recruitment_workflow', $newData + ['id' => $recruitWorkflow->id]);
     }
 }

@@ -4,17 +4,17 @@ namespace Modules\EmployeeRecruitment\Database\Factories;
 
 use App\Models\User;
 use App\Models\Workgroup;
-use Modules\EmployeeRecruitment\App\Models\RecruitCostCenter;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RecruitCostCenterFactory extends Factory
+class RecruitmentCostCenterFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = RecruitCostCenter::class;
+    protected $model = RecruitmentCostCenter::class;
 
     /**
      * Define the model's default state.

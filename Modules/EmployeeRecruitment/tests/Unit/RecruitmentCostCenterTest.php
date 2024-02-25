@@ -4,18 +4,18 @@ namespace Modules\EmployeeRecruitment\tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\EmployeeRecruitment\App\Models\RecruitCostCenter;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
 
-class RecruitCostCenterTest extends TestCase
+class RecruitmentCostCenterTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
     public function a_recruit_cost_center_can_be_created()
     {
-        $recruitCostCenter = RecruitCostCenter::factory()->create();
+        $recruitCostCenter = RecruitmentCostCenter::factory()->create();
 
-        $this->assertDatabaseHas('recruit_cost_center', [
+        $this->assertDatabaseHas('recruitment_cost_center', [
             'cost_center_code' => $recruitCostCenter->cost_center_code,
             'name' => $recruitCostCenter->name,
             'minimal_order_limit' => $recruitCostCenter->minimal_order_limit,
@@ -33,13 +33,13 @@ class RecruitCostCenterTest extends TestCase
     /** @test */
     public function a_recruit_cost_center_can_be_updated()
     {
-        $recruitCostCenter = RecruitCostCenter::factory()->create([
+        $recruitCostCenter = RecruitmentCostCenter::factory()->create([
             'name' => 'Original Name',
         ]);
 
         $recruitCostCenter->update(['name' => 'Updated Name']);
 
-        $this->assertDatabaseHas('recruit_cost_center', [
+        $this->assertDatabaseHas('recruitment_cost_center', [
             'id' => $recruitCostCenter->id,
             'name' => 'Updated Name',
         ]);
@@ -48,7 +48,7 @@ class RecruitCostCenterTest extends TestCase
     /** @test */
     public function recruit_cost_center_relationships_are_accessible()
     {
-        $recruitCostCenter = RecruitCostCenter::factory()->create();
+        $recruitCostCenter = RecruitmentCostCenter::factory()->create();
 
         $this->assertNotNull($recruitCostCenter->workgroup);
         $this->assertNotNull($recruitCostCenter->leadUser);

@@ -2,19 +2,20 @@
 
 namespace Modules\EmployeeRecruitment\Database\Factories;
 
-use App\Models\User;
+use App\Models\Role;
 use App\Models\Position;
-use Modules\EmployeeRecruitment\App\Models\RecruitUserPosition;
+use App\Models\User;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentRolePosition;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RecruitUserPositionFactory extends Factory
+class RecruitmentRolePositionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = RecruitUserPosition::class;
+    protected $model = RecruitmentRolePosition::class;
 
     /**
      * Define the model's default state.
@@ -24,7 +25,7 @@ class RecruitUserPositionFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::factory(),
+            'role_id' => Role::factory(),
             'position_id' => Position::factory(),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),

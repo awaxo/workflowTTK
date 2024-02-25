@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recruit_role_position', function (Blueprint $table) {
+        Schema::create('recruitment_role_position', function (Blueprint $table) {
             $table->unsignedBigInteger('role_id');
             $table->unsignedBigInteger('position_id');
             $table->unsignedTinyInteger('deleted')->default(0);
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recruit_role_position');
+        Schema::dropIfExists('recruitment_role_position');
     }
 };

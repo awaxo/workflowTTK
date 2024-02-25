@@ -4,18 +4,18 @@ namespace Modules\EmployeeRecruitment\tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\EmployeeRecruitment\App\Models\RecruitWorkflowStepRights;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflowStepRights;
 
-class RecruitWorkflowStepRightsTest extends TestCase
+class RecruitmentWorkflowStepRightsTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
     public function a_recruit_workflow_step_right_can_be_created()
     {
-        $recruitWorkflowStepRight = RecruitWorkflowStepRights::factory()->create();
+        $recruitWorkflowStepRight = RecruitmentWorkflowStepRights::factory()->create();
 
-        $this->assertDatabaseHas('recruit_workflow_step_rights', [
+        $this->assertDatabaseHas('recruitment_workflow_step_rights', [
             'workflow_step_id' => $recruitWorkflowStepRight->workflow_step_id,
             'role_id' => $recruitWorkflowStepRight->role_id,
             'custom_approval_rules' => $recruitWorkflowStepRight->custom_approval_rules,
@@ -27,14 +27,14 @@ class RecruitWorkflowStepRightsTest extends TestCase
     /** @test */
     public function a_recruit_workflow_step_right_can_be_updated()
     {
-        $recruitWorkflowStepRight = RecruitWorkflowStepRights::factory()->create([
+        $recruitWorkflowStepRight = RecruitmentWorkflowStepRights::factory()->create([
             'custom_approval_rules' => 'Original approval rules',
         ]);
 
         $updatedRules = 'Updated approval rules';
         $recruitWorkflowStepRight->update(['custom_approval_rules' => $updatedRules]);
 
-        $this->assertDatabaseHas('recruit_workflow_step_rights', [
+        $this->assertDatabaseHas('recruitment_workflow_step_rights', [
             'id' => $recruitWorkflowStepRight->id,
             'custom_approval_rules' => $updatedRules,
         ]);
@@ -43,7 +43,7 @@ class RecruitWorkflowStepRightsTest extends TestCase
     /** @test */
     public function recruit_workflow_step_right_relationships_are_accessible()
     {
-        $recruitWorkflowStepRight = RecruitWorkflowStepRights::factory()->create();
+        $recruitWorkflowStepRight = RecruitmentWorkflowStepRights::factory()->create();
 
         $this->assertNotNull($recruitWorkflowStepRight->role);
         $this->assertNotNull($recruitWorkflowStepRight->createdBy);

@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recruit_workflow', function (Blueprint $table) {
+        Schema::create('recruitment_workflow', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('workflow_id');
+            $table->string('state')->default('new_request');
             $table->unsignedTinyInteger('job_ad_exists')->default(1);
             $table->unsignedInteger('applicants_female_count');
             $table->unsignedInteger('applicants_male_count');
@@ -81,13 +82,13 @@ return new class extends Migration
             $table->foreign('workgroup_id_1')->references('id')->on('wf_workgroup');
             $table->foreign('workgroup_id_2')->references('id')->on('wf_workgroup');
             $table->foreign('position_id')->references('id')->on('wf_position');
-            $table->foreign('base_salary_cost_center_1')->references('id')->on('recruit_cost_center');
-            $table->foreign('base_salary_cost_center_2')->references('id')->on('recruit_cost_center');
-            $table->foreign('base_salary_cost_center_3')->references('id')->on('recruit_cost_center');
-            $table->foreign('health_allowance_cost_center_4')->references('id')->on('recruit_cost_center');
-            $table->foreign('management_allowance_cost_center_5')->references('id')->on('recruit_cost_center');
-            $table->foreign('extra_pay_1_cost_center_6')->references('id')->on('recruit_cost_center');
-            $table->foreign('extra_pay_2_cost_center_7')->references('id')->on('recruit_cost_center');
+            $table->foreign('base_salary_cost_center_1')->references('id')->on('recruitment_cost_center');
+            $table->foreign('base_salary_cost_center_2')->references('id')->on('recruitment_cost_center');
+            $table->foreign('base_salary_cost_center_3')->references('id')->on('recruitment_cost_center');
+            $table->foreign('health_allowance_cost_center_4')->references('id')->on('recruitment_cost_center');
+            $table->foreign('management_allowance_cost_center_5')->references('id')->on('recruitment_cost_center');
+            $table->foreign('extra_pay_1_cost_center_6')->references('id')->on('recruitment_cost_center');
+            $table->foreign('extra_pay_2_cost_center_7')->references('id')->on('recruitment_cost_center');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });
@@ -98,6 +99,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recruit_workflow');
+        Schema::dropIfExists('recruitment_workflow');
     }
 };

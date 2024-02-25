@@ -4,17 +4,17 @@ namespace Modules\EmployeeRecruitment\Database\Factories;
 
 use App\Models\Role;
 use App\Models\User;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenterType;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\EmployeeRecruitment\App\Models\RecruitWorkflowStepRights;
 
-class RecruitWorkflowStepRightFactory extends Factory
+class RecruitmentCostCenterTypeFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = RecruitWorkflowStepRights::class;
+    protected $model = RecruitmentCostCenterType::class;
 
     /**
      * Define the model's default state.
@@ -24,9 +24,10 @@ class RecruitWorkflowStepRightFactory extends Factory
     public function definition()
     {
         return [
-            'workflow_step_id' => 1,
-            'role_id' => Role::factory(),
-            'custom_approval_rules' => $this->faker->text(500),
+            'name' => $this->faker->unique()->word,
+            'tender' => $this->faker->boolean,
+            'financial_approver_role_id' => Role::factory(),
+            'clause_template' => $this->faker->paragraph,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

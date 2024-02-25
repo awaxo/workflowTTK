@@ -4,46 +4,48 @@ namespace Modules\EmployeeRecruitment\App\Models;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Position;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitCostCenterTypeFactory;
+use Modules\EmployeeRecruitment\Database\Factories\RecruitmentRolePositionFactory;
 
-class RecruitCostCenterType extends Model
+class RecruitmentRolePosition extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitCostCenterTypeFactory::new();
+        return RecruitmentRolePositionFactory::new();
     }
 
-    protected $table = 'recruit_cost_center_type';
-    protected $primaryKey = 'name';
-    protected $keyType = 'string';
+    protected $table = 'recruitment_role_position';
+    protected $primaryKey = ['role_id', 'position_id'];
 
     protected $fillable = [
-        'name',
-        'tender',
-        'financial_approver_role_id',
-        'clause_template',
+        'role_id',
+        'position_id',
         'created_by',
         'updated_by',
+    ];
+
+    protected $casts = [
+        'deleted' => 'boolean',
     ];
 
     protected $attributes = [
         'deleted' => 0,
     ];
 
-    protected $casts = [
-        'tender' => 'boolean',
-        'deleted' => 'boolean',
-    ];
-
     public $incrementing = false;
 
-    public function financialApproverRole()
+    public function role()
     {
-        return $this->belongsTo(Role::class, 'financial_approver_role_id');
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
     }
 
     public function createdBy()

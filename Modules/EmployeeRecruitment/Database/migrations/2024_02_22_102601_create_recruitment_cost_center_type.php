@@ -11,19 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wf_workflow_step_type', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('workflow_type_id');
-            $table->string('name');
-            $table->unsignedInteger('step_deadline')->default(0);
-            $table->string('meta_key')->nullable();
-            $table->text('meta_value')->nullable();
-            $table->tinyInteger('deleted')->unsigned()->default(0);
+        Schema::create('recruitment_cost_center_type', function (Blueprint $table) {
+            $table->string('name')->primary();
+            $table->boolean('tender');
+            $table->unsignedBigInteger('financial_approver_role_id');
+            $table->text('clause_template');
+            $table->unsignedTinyInteger('deleted')->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            $table->foreign('workflow_type_id')->references('id')->on('wf_workflow_type');
+            $table->foreign('financial_approver_role_id')->references('id')->on('wf_role');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wf_workflow_step_type');
+        Schema::dropIfExists('recruitment_cost_center_type');
     }
 };

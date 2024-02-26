@@ -4,6 +4,7 @@ namespace Modules\EmployeeRecruitment\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Config;
 
 class EmployeeRecruitmentServiceProvider extends ServiceProvider
 {
@@ -74,7 +75,12 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
     {
         $this->publishes([module_path($this->moduleName, 'config/config.php') => config_path($this->moduleNameLower.'.php')], 'config');
         $this->mergeConfigFrom(module_path($this->moduleName, 'config/config.php'), $this->moduleNameLower);
-        $this->mergeConfigFrom(module_path($this->moduleName, 'config/workflow.php'), 'employee_recruitment_workflow');
+        
+        $path = module_path($this->moduleName, 'config/workflow.php');
+        $workflowConfig = require $path;
+        foreach ($workflowConfig as $workflowName => $configuration) {
+            Config::set("workflow.$workflowName", $configuration);
+        }
     }
 
     /**

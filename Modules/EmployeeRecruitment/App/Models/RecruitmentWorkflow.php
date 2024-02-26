@@ -8,9 +8,12 @@ use App\Models\Position;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
+use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
 class RecruitmentWorkflow extends AbstractWorkflow
 {
+    use WorkflowTrait;
+
     protected static function newFactory()
     {
         return RecruitmentWorkflowFactory::new();
@@ -95,9 +98,9 @@ class RecruitmentWorkflow extends AbstractWorkflow
 
         $this->attributes = array_merge($this->attributes, [
             'state' => 'new_request',
-            'job_ad_exists' => 1,
-            'work_with_radioactive_isotopes' => 0,
-            'work_with_carcinogenic_materials' => 0,
+            'job_ad_exists' => true,
+            'work_with_radioactive_isotopes' => false,
+            'work_with_carcinogenic_materials' => false,
         ]);
     }
 

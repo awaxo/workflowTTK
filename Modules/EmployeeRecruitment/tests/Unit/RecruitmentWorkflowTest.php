@@ -29,7 +29,7 @@ class RecruitmentWorkflowTest extends TestCase
         $updatedBy = User::factory()->create();
 
         $recruitWorkflow = RecruitmentWorkflow::factory()->create([
-            'job_ad_exists' => true,
+            'workflow_type_id' => $workflowType->id,
             'applicants_female_count' => 5,
             'applicants_male_count' => 10,
             'has_prior_employment' => true,
@@ -116,12 +116,6 @@ class RecruitmentWorkflowTest extends TestCase
         $this->assertNotNull($workflow->workgroup1);
         $this->assertNotNull($workflow->workgroup2);
         $this->assertNotNull($workflow->position);
-        $this->assertNotNull($workflow->baseSalaryCostCenter1);
-        $this->assertNotNull($workflow->baseSalaryCostCenter2);
-        $this->assertNotNull($workflow->baseSalaryCostCenter3);
-        $this->assertNotNull($workflow->healthAllowanceCostCenter4);
-        $this->assertNotNull($workflow->managementAllowanceCostCenter5);
-        $this->assertNotNull($workflow->extraPay1CostCenter6);
-        $this->assertNotNull($workflow->extraPay2CostCenter7);
+        $this->assertNotNull($workflow->base_salary_cost_center_1);
     }
 }

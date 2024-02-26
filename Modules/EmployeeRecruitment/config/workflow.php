@@ -3,10 +3,14 @@
 return [
     'recruitment_process' => [
         'type' => 'workflow',
+        'marking_store' => [
+            'type' => 'single_state',
+            'property' => 'state',
+        ],
         'metadata' => [
             'title' => 'Recruitment Process',
         ],
-        'supports' => ['Modules\EmployeeRecruitment\App\Models\RecruitWorkflow'],
+        'supports' => ['Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow'],
         'places' => [
             'new_request',
             'it_head_approval',

@@ -27,6 +27,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
+            "Database\\Migrations\\Traits\\": "database/migrations/traits/",
             "Modules\\": "Modules/"
         }
     },

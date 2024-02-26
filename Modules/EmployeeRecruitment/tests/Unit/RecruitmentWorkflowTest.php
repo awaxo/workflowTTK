@@ -5,10 +5,10 @@ namespace Modules\EmployeeRecruitment\tests\Unit;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
-use App\Models\Workflow;
 use App\Models\Country;
 use App\Models\Workgroup;
 use App\Models\Position;
+use App\Models\WorkflowType;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
@@ -19,7 +19,7 @@ class RecruitmentWorkflowTest extends TestCase
     /** @test */
     public function a_recruit_workflow_can_be_created_with_all_fields()
     {
-        $workflow = Workflow::factory()->create();
+        $workflowType = WorkflowType::factory()->create();
         $citizenship = Country::factory()->create();
         $workgroup1 = Workgroup::factory()->create();
         $workgroup2 = Workgroup::factory()->create();
@@ -29,7 +29,6 @@ class RecruitmentWorkflowTest extends TestCase
         $updatedBy = User::factory()->create();
 
         $recruitWorkflow = RecruitmentWorkflow::factory()->create([
-            'workflow_id' => $workflow->id,
             'job_ad_exists' => true,
             'applicants_female_count' => 5,
             'applicants_male_count' => 10,
@@ -62,7 +61,8 @@ class RecruitmentWorkflowTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('recruitment_workflow', [
-            'workflow_id' => $workflow->id,
+            'workflow_type_id' => $workflowType->id,
+            'workflow_deadline' => 24,
             'state' => 'new_request',
             'job_ad_exists' => true,
             'applicants_female_count' => 5,
@@ -102,5 +102,26 @@ class RecruitmentWorkflowTest extends TestCase
         $recruitWorkflow->update($newData);
 
         $this->assertDatabaseHas('recruitment_workflow', $newData + ['id' => $recruitWorkflow->id]);
+    }
+
+    /** @test */
+    public function workflow_relationships_are_accessible()
+    {
+        $workflow = RecruitmentWorkflow::factory()->create();
+
+        $this->assertNotNull($workflow->workflowType);
+        $this->assertNotNull($workflow->createdBy);
+        $this->assertNotNull($workflow->updatedBy);
+        $this->assertNotNull($workflow->citizenship);
+        $this->assertNotNull($workflow->workgroup1);
+        $this->assertNotNull($workflow->workgroup2);
+        $this->assertNotNull($workflow->position);
+        $this->assertNotNull($workflow->baseSalaryCostCenter1);
+        $this->assertNotNull($workflow->baseSalaryCostCenter2);
+        $this->assertNotNull($workflow->baseSalaryCostCenter3);
+        $this->assertNotNull($workflow->healthAllowanceCostCenter4);
+        $this->assertNotNull($workflow->managementAllowanceCostCenter5);
+        $this->assertNotNull($workflow->extraPay1CostCenter6);
+        $this->assertNotNull($workflow->extraPay2CostCenter7);
     }
 }

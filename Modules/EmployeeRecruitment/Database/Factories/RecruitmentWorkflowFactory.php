@@ -2,16 +2,14 @@
 
 namespace Modules\EmployeeRecruitment\Database\Factories;
 
-use App\Models\User;
 use App\Models\Country;
 use App\Models\Workgroup;
 use App\Models\Position;
-use App\Models\Workflow;
+use Database\Factories\AbstractWorkflowFactory;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RecruitmentWorkflowFactory extends Factory
+class RecruitmentWorkflowFactory extends AbstractWorkflowFactory
 {
     /**
      * The name of the factory's corresponding model.
@@ -27,8 +25,7 @@ class RecruitmentWorkflowFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'workflow_id' => Workflow::factory(),
+        return array_merge(parent::definition(), [
             'applicants_female_count' => $this->faker->numberBetween(0, 100),
             'applicants_male_count' => $this->faker->numberBetween(0, 100),
             'has_prior_employment' => $this->faker->boolean,
@@ -84,8 +81,6 @@ class RecruitmentWorkflowFactory extends Factory
             'certificates' => $this->faker->word,
             'requires_commute_support' => $this->faker->numberBetween(0, 1),
             'commute_support_form' => $this->faker->word,
-            'created_by' => User::factory(),
-            'updated_by' => User::factory(),
-        ];
+        ]);
     }
 }

@@ -1,20 +1,21 @@
 <?php
 
+use Database\Migrations\Traits\GenericWorkflow;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    use GenericWorkflow;
+
     public function up(): void
     {
         Schema::create('recruitment_workflow', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('workflow_id');
-            $table->string('state')->default('new_request');
+            // Add the generic fields
+            $this->addGenericFields($table);
+
+            // Add the specific fields
             $table->unsignedTinyInteger('job_ad_exists')->default(1);
             $table->unsignedInteger('applicants_female_count');
             $table->unsignedInteger('applicants_male_count');
@@ -73,11 +74,7 @@ return new class extends Migration
             $table->string('certificates');
             $table->unsignedTinyInteger('requires_commute_support')->nullable();
             $table->string('commute_support_form')->nullable();
-            $table->timestamps();
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
 
-            $table->foreign('workflow_id')->references('id')->on('wf_workflow');
             $table->foreign('citizenship_id')->references('id')->on('wf_country');
             $table->foreign('workgroup_id_1')->references('id')->on('wf_workgroup');
             $table->foreign('workgroup_id_2')->references('id')->on('wf_workgroup');
@@ -89,8 +86,6 @@ return new class extends Migration
             $table->foreign('management_allowance_cost_center_5')->references('id')->on('recruitment_cost_center');
             $table->foreign('extra_pay_1_cost_center_6')->references('id')->on('recruitment_cost_center');
             $table->foreign('extra_pay_2_cost_center_7')->references('id')->on('recruitment_cost_center');
-            $table->foreign('created_by')->references('id')->on('wf_user');
-            $table->foreign('updated_by')->references('id')->on('wf_user');
         });
     }
 

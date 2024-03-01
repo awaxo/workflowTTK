@@ -1,9 +1,9 @@
 <?php
   // Variables
   return [
-    "creatorName" => "ThemeSelection",
-    "creatorUrl" => "https://themeselection.com",
-    "templateName" => "Sneat",
+    "creatorName" => "HUN-REN TTK",
+    "creatorUrl" => "https://www.ttk.hun-ren.hu/",
+    "templateName" => "Workflow",
     "templateSuffix" => "Bootstrap 5 HTML Admin Template - Pro",
     "templateVersion" => "2.2.0",
     "templateFree" => false,

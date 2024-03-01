@@ -1,37 +1,48 @@
 {
-  "menu": [
+    "menu": [
     {
-      "url": "/",
-      "name": "Home",
-      "icon": "menu-icon tf-icons bx bx-home-circle",
-      "slug": "pages-home"
+        "url": "/",
+        "name": "Home",
+        "icon": "menu-icon tf-icons bx bx-home-circle",
+        "slug": "pages-home"
     },
     {
-      "url": "/page-2",
-      "icon": "menu-icon tf-icons bx bx-file",
-      "name": "Page 2",
-      "slug": "pages-page-2"
+        "url": "/folyamatok",
+        "icon": "menu-icon tf-icons bx bx-directions",
+        "name": "Folyamatok",
+        "slug": "pages-new-process"
     },
     {
-      "url": "/pages/misc-error",
-      "name": "Error",
-      "icon": "menu-icon tf-icons bx bx-error",
-      "slug": "pages-misc-error",
-      "target": "_blank"
+        "url": "/pages/misc-error",
+        "name": "Felhasználók",
+        "icon": "menu-icon tf-icons bx bx-user",
+        "slug": "pages-misc-error",
+        "target": "_blank"
     },
     {
-      "url": "/auth/login-basic",
-      "name": "Login",
-      "icon": "menu-icon tf-icons bx bx-log-in",
-      "slug": "auth-login-basic",
-      "target": "_blank"
+        "url": "/auth/login-basic",
+        "name": "Csoportok és jogok",
+        "icon": "menu-icon tf-icons bx bx-group",
+        "slug": "authorizations",
+        "submenu": [
+            {
+                "url": "/",
+                "name": "Csoportok",
+                "slug": "authorizations-groups"
+            },
+            {
+                "url": "/dashboard/crm",
+                "name": "Jogosultságok",
+                "slug": "authorizations-permissions"
+            }
+        ]
     },
     {
-      "url": "/auth/register-basic",
-      "name": "Register",
-      "icon": "menu-icon tf-icons bx bx-user",
-      "slug": "auth-register-basic",
-      "target": "_blank"
+        "url": "/auth/register-basic",
+        "name": "Beállítások",
+        "icon": "menu-icon tf-icons bx bx-cog",
+        "slug": "auth-register-basic",
+        "target": "_blank"
     }
-  ]
+    ]
 }

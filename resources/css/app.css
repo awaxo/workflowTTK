@@ -1,0 +1,5 @@
+/* Custom styles */
+
+.light-style .bs-stepper.vertical .bs-stepper-header {
+    border-right: 1px solid #d9dee3;
+}

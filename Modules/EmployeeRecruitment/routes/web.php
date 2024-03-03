@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\EmployeeRecruitment\App\Http\Controllers\EmployeeRecruitmentController;
+use Modules\EmployeeRecruitment\App\Http\Controllers\pages\EmployeeRecruitmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +14,4 @@ use Modules\EmployeeRecruitment\App\Http\Controllers\EmployeeRecruitmentControll
 |
 */
 
-Route::group([], function () {
-    Route::resource('employeerecruitment', EmployeeRecruitmentController::class)->names('employeerecruitment');
-});
+Route::get('/uj-felveteli-kerelem', [EmployeeRecruitmentController::class, 'index'])->name('pages-new-process');

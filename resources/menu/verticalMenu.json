@@ -7,10 +7,10 @@
         "slug": "pages-home"
     },
     {
-        "url": "/folyamatok",
+        "url": "/uj-felveteli-kerelem",
         "icon": "menu-icon tf-icons bx bx-directions",
         "name": "Folyamatok",
-        "slug": "pages-new-process"
+        "slug": "pages-new-employee-recruitment"
     },
     {
         "url": "/pages/misc-error",

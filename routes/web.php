@@ -21,7 +21,6 @@ use App\Http\Controllers\pages\Process;
 
 // Main Page Route
 Route::get('/', [HomePage::class, 'index'])->name('pages-home');
-Route::get('/folyamatok', [Process::class, 'index'])->name('pages-new-process');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);

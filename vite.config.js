@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import html from '@rollup/plugin-html';
 import { glob } from 'glob';
+import collectModuleAssetsPaths from './vite-module-loader.js';
 
 /**
  * Get Files from a directory
@@ -51,25 +52,34 @@ function libsWindowAssignment() {
   };
 }
 
-export default defineConfig({
-  plugins: [
-    laravel({
-      input: [
-        'resources/css/app.css',
-        'resources/assets/css/demo.css',
-        'resources/js/app.js',
-        ...pageJsFiles,
-        ...vendorJsFiles,
-        ...LibsJsFiles,
-        'resources/js/laravel-user-management.js', // Processing Laravel User Management CRUD JS File
-        ...CoreScssFiles,
-        ...LibsScssFiles,
-        ...LibsCssFiles,
-        ...FontsScssFiles
-      ],
-      refresh: true
-    }),
-    html(),
-    libsWindowAssignment()
-  ]
-});
+async function getConfig() {
+  const paths = [
+    'resources/css/app.css',
+    'resources/assets/css/demo.css',
+    'resources/js/app.js',
+    ...pageJsFiles,
+    ...vendorJsFiles,
+    ...LibsJsFiles,
+    'resources/js/laravel-user-management.js',
+    ...CoreScssFiles,
+    ...LibsScssFiles,
+    ...LibsCssFiles,
+    ...FontsScssFiles
+  ];
+
+  // Collect paths from enabled modules
+  const modulePaths = await collectModuleAssetsPaths(paths, './modules');
+
+  return defineConfig({
+    plugins: [
+      laravel({
+        input: modulePaths,
+        refresh: true
+      }),
+      html(),
+      libsWindowAssignment()
+    ]
+  });
+};
+
+export default getConfig();

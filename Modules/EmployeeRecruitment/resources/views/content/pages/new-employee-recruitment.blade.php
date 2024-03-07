@@ -16,6 +16,8 @@
   'resources/assets/vendor/libs/@form-validation/form-validation.scss',
   'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.scss',
   'resources/assets/vendor/libs/jquery-timepicker/jquery-timepicker.scss',
+  'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.scss',
+  'resources/assets/vendor/libs/dropzone/dropzone.scss',
   'resources/css/app.css'
 ])
 @endsection
@@ -31,6 +33,8 @@
   'resources/assets/vendor/libs/@form-validation/auto-focus.js',
   'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js',
   'resources/assets/vendor/libs/jquery-timepicker/jquery-timepicker.js',
+  'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
+  'resources/assets/vendor/libs/dropzone/dropzone.js'
 ])
 @endsection
 
@@ -86,7 +90,7 @@
                     <button type="button" class="step-trigger">
                         <span class="bs-stepper-circle">4</span>
                         <span class="bs-stepper-label mt-1">
-                        <span class="bs-stepper-title">Eszközök</span>
+                        <span class="bs-stepper-title">Eszközök, hozzáférések</span>
                         <span class="bs-stepper-subtitle">Eszközök, hozzáférések megadása</span>
                         </span>
                     </button>
@@ -112,16 +116,16 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
-                                <label class="form-label" for="last-name">Vezetéknév</label>
-                                <input type="text" id="last-name" class="form-control" placeholder="Teszt" />
+                                <label class="form-label" for="last_name">Vezetéknév</label>
+                                <input type="text" id="last_name" class="form-control" placeholder="Teszt" />
                             </div>
                             <div class="col-sm-4">
-                                <label class="form-label" for="first-name">Keresztnév</label>
-                                <input type="email" id="first-name" class="form-control" placeholder="János" />
+                                <label class="form-label" for="first_name">Keresztnév</label>
+                                <input type="email" id="first_name" class="form-control" placeholder="János" />
                             </div>
                             <div class="col-sm-4">
-                                <label class="form-label" for="middle-name">Utónév</label>
-                                <input type="email" id="middle-name" class="form-control" />
+                                <label class="form-label" for="middle_name">Utónév</label>
+                                <input type="email" id="middle_name" class="form-control" />
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-check form-switch">
@@ -423,10 +427,86 @@
                     <!-- Data section 4 -->
                     <div id="data-section-4" class="content">
                         <div class="content-header mb-3">
-                            <h5 class="mb-0">Eszközök</h5>
+                            <h5 class="mb-0">Eszközök és hozzáférések</h5>
                             <small>Add meg a használandó eszközökat, anyagokat, hozzáféréseket</small>
                         </div>
                         <div class="row g-3">
+                            <div class="col-sm-4">
+                                <label class="form-label" for="email">Javasolt email cím</label>
+                                <input type="text" id="email" class="form-control" placeholder="Email" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="form-label" for="phone_extension">Telefon mellék</label>
+                                <input type="email" id="phone_extension" class="form-control" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="form-label" for="license_plate">Rendszám</label>
+                                <input type="email" id="license_plate" class="form-control" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="employee_room" class="form-label">Dolgozószoba</label>
+                                <select class="form-select" id="employee_room">
+                                    <option selected>Válassz dolgozószobát</option>
+                                    <option value="1">Szoba 1</option>
+                                    <option value="2">Szoba 2</option>
+                                    <option value="3">Szoba 3</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="entry_permissions" class="form-label">Belépési jogosultságok</label>
+                                <select class="selectpicker w-100" id="entry_permissions" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <optgroup label="Általános belépési engedélyek">
+                                        <option value="1">Autó behajtás</option>
+                                        <option value="2">Kerékpár behajtás</option>
+                                    </optgroup>
+                                    <optgroup label="Intézményi belépési engedélyek">
+                                        <option value="3">Helység 1</option>
+                                        <option value="4">Szoba 2</option>
+                                        <option value="4">Raktár 1</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="external_access_rights" class="form-label">Hozzáférési jogosultságok</label>
+                                <select class="selectpicker w-100" id="external_access_rights" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <option value="1">Hozzáférés 1</option>
+                                    <option value="2">Hozzáférés 2</option>
+                                    <option value="3">Hozzáférés 3</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="required_tools" class="form-label">Munkavégzéshez szükséges eszközök</label>
+                                <select class="selectpicker w-100" id="required_tools" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <option value="1">Eszköz 1</option>
+                                    <option value="2">Eszköz 2</option>
+                                    <option value="3">Eszköz 3</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="available_tools" class="form-label">Munkavégzéshez rendelkezésre álló eszközök</label>
+                                <select class="selectpicker w-100" id="available_tools" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <option value="1">Eszköz 1</option>
+                                    <option value="2">Eszköz 2</option>
+                                    <option value="3">Eszköz 3</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4 dynamic-tools-container">
+                                <!-- Dynamic tools will be added here -->
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="work_with_radioactive_isotopes">
+                                    <label class="form-check-label" for="work_with_radioactive_isotopes">Sugárzó izotóppal fog dolgozni</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="work_with_carcinogenic_materials">
+                                    <label class="form-check-label" for="work_with_carcinogenic_materials">Rákkeltő anyaggal fog dolgozni</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-8 planned-carcinogenic-materials">
+                                <label for="planned_carcinogenic_materials_use" class="form-label">Használni tervezett rákkeltő anyagok felsorolása</label>
+                                <textarea class="form-control" id="planned_carcinogenic_materials_use" rows="3"></textarea>                              
+                            </div>
                             
                             <div class="col-12 d-flex justify-content-between">
                                 <button class="btn btn-primary btn-prev">
@@ -447,6 +527,44 @@
                             <small>Töltsd fel a szükséges dokumentumokat</small>
                         </div>
                         <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label for="personal_data_sheet" class="form-label">Személyi adatlap</label>
+                                <div class="dropzone needsclick" id="personal_data_sheet">
+                                    <div class="dz-message needsclick">
+                                      Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="student_status_verification" class="form-label">Hallgatói jogviszony igazolás</label>
+                                <div class="dropzone needsclick" id="student_status_verification">
+                                    <div class="dz-message needsclick">
+                                      Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="certificates" class="form-label">Bizonyítványok</label>
+                                <div class="dropzone needsclick" id="certificates">
+                                    <div class="dz-message needsclick">
+                                      Húzd ide a fájlokat, vagy kattints a feltöltéshez.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="requires_commute_support">
+                                    <label class="form-check-label" for="requires_commute_support">Munkába járási támogatást igényel</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 commute-support-form">
+                                <label for="commute_support_form" class="form-label">Munkába járási adatlap</label>
+                                <div class="dropzone needsclick" id="commute_support_form">
+                                    <div class="dz-message needsclick">
+                                      Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                    </div>
+                                </div>
+                            </div>
                         
                             <div class="col-12 d-flex justify-content-between">
                                 <button class="btn btn-primary btn-prev">

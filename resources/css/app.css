@@ -7,3 +7,7 @@
 .template-customizer-open-btn, .dropdown-style-switcher {
     display: none !important;
 }*/
+
+.light-style .bootstrap-select .filter-option-inner-inner {
+    color: #697a8d;
+}

@@ -1,5 +1,37 @@
 import moment from 'moment';
 
+const previewTemplate = `
+    <div class="dz-preview dz-file-preview">
+        <div class="dz-details">
+        <div class="dz-thumbnail">
+            <img data-dz-thumbnail>
+            <span class="dz-nopreview">Nincs előnézet</span>
+            <div class="dz-success-mark"></div>
+            <div class="dz-error-mark"></div>
+            <div class="dz-error-message"><span data-dz-errormessage></span></div>
+            <div class="progress">
+            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-dz-uploadprogress></div>
+            </div>
+        </div>
+        <div class="dz-filename" data-dz-name></div>
+        <div class="dz-size" data-dz-size></div>
+        </div>
+    </div>`;
+
+const genericDropzoneOptions = {
+    previewTemplate: previewTemplate,
+    parallelUploads: 1,
+    addRemoveLinks: true,
+    url: "/file/upload",
+
+    dictRemoveFile: 'Törlés',
+    dictFileTooBig: 'A fájl mérete túl nagy ({{filesize}}MiB). Maximum: {{maxFilesize}}MiB.',
+    dictMaxFilesExceeded: 'Maximum {{maxFiles}} fájl tölthető fel.',
+    dictInvalidFileType: 'Nem tölthető fel ilyen típusú fájl.',
+    dictResponseError: 'Szerver hiba történt. Kérjük próbálja újra később.',
+    dictCancelUpload: 'Mégse'
+};
+
 $(function () {
     $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date").datepicker({
         format: "yyyy.mm.dd",
@@ -17,6 +49,7 @@ $(function () {
     calculateDuration("#work_start_thursday", "#work_end_thursday", "#thursday_duration");
     calculateDuration("#work_start_friday", "#work_end_friday", "#friday_duration");
 
+    // Function to set working hours and calculate duration
     function setWorkingHours(startId, endId, durationId) {
         $(`${startId}`).timepicker({
             minTime: '08:00',
@@ -39,6 +72,7 @@ $(function () {
         });
     }
 
+    // Function to calculate duration based on start and end times
     function calculateDuration(startId, endId, durationId) {
         let start = moment($(startId).val(), 'HH:mm');
         let end = moment($(endId).val(), 'HH:mm');
@@ -49,4 +83,70 @@ $(function () {
 
         $(durationId).val(`${hours}:${paddedMinutes}`);
     }
+
+    // add or remove inventory_numbers_of_available_tools based on selected available_tools
+    $('#available_tools').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        // Get the selected option value and text
+        var selectedOptionValue = $(this).find('option').eq(clickedIndex).val();
+        var selectedOptionText = $(this).find('option').eq(clickedIndex).text();
+
+        // ID for the dynamic input corresponding to this option
+        var inputId = 'inventory_numbers_of_available_tools_' + selectedOptionValue;
+
+        if (isSelected) {
+            // If option is selected, add an input field
+            var inputHtml = '<div class="form-group" id="group_' + inputId + '">' +
+                                '<label class="form-label" for="' + inputId + '">' + selectedOptionText + ' leltári száma</label>' +
+                                '<input type="text" id="' + inputId + '" class="form-control" placeholder="Leltári szám" />' +
+                            '</div>';
+            $('.dynamic-tools-container').append(inputHtml);
+        } else {
+            // If option is deselected, remove the corresponding input field
+            $('#group_' + inputId).remove();
+        }
+    });
+
+    // Initially hide the carcinogenic materials use textarea
+    $('.planned-carcinogenic-materials').hide();
+
+    $('#work_with_carcinogenic_materials').on('change', function() {
+        if($(this).is(':checked')) {
+            $('.planned-carcinogenic-materials').show();
+        } else {
+            $('.planned-carcinogenic-materials').hide();
+        }
+    });
+
+    // file uploads
+    new Dropzone('#personal_data_sheet', {
+        ...genericDropzoneOptions,
+        maxFilesize: 20,
+        maxFiles: 1,
+        acceptedFiles: 'application/pdf',
+    });
+
+    new Dropzone('#student_status_verification', {
+        ...genericDropzoneOptions,
+        maxFilesize: 20,
+        maxFiles: 1,
+        acceptedFiles: 'application/pdf',
+    });
+
+    new Dropzone('#certificates', {
+        ...genericDropzoneOptions,
+        maxFilesize: 20,
+        maxFiles: 1,
+        acceptedFiles: 'application/pdf',
+    });
+
+    // Initially hide the commute support file upload
+    $('.commute-support-form').hide();
+
+    $('#requires_commute_support').on('change', function() {
+        if($(this).is(':checked')) {
+            $('.commute-support-form').show();
+        } else {
+            $('.commute-support-form').hide();
+        }
+    });
 });

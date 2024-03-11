@@ -16,9 +16,7 @@ class UserTest extends TestCase
         $user = User::factory()->create();
 
         $this->assertDatabaseHas('wf_user', [
-            'first_name' => $user->first_name,
-            'middle_name' => $user->middle_name,
-            'last_name' => $user->last_name,
+            'name' => $user->name,
             'email' => $user->email,
             'workgroup_id' => $user->workgroup_id,
             'created_by' => null,
@@ -33,10 +31,10 @@ class UserTest extends TestCase
 
         $user = User::factory()->create();
 
-        $user->update(['first_name' => 'Jane', 'updated_by' => $updater->id]);
+        $user->update(['name' => 'Jane Doe', 'updated_by' => $updater->id]);
 
         $this->assertDatabaseHas('wf_user', [
-            'first_name' => 'Jane',
+            'name' => 'Jane Doe',
             'updated_by' => $updater->id,
         ]);
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('wf_workgroup', function (Blueprint $table) {
             $table->id();
-            $table->string('workgroup_number', 100)->unique();
+            $table->string('workgroup_number', 5)->unique();
             $table->string('name', 255);
             $table->unsignedBigInteger('leader');
             $table->unsignedBigInteger('labor_administrator');

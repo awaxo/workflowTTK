@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('wf_user', function (Blueprint $table) {
-            $table->unsignedBigInteger('workgroup_id')->after('email')->nullable();
-            $table->foreign('workgroup_id')->references('id')->on('wf_workgroup');
+            $table->string('workgroup_number', 5)->after('email');
+            $table->foreign('workgroup_number')->references('workgroup_number')->on('wf_workgroup');
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('wf_user', function (Blueprint $table) {
-            $table->dropForeign(['workgroup_id']);
-            $table->dropColumn('workgroup_id');
+            $table->dropForeign(['workgroup_number']);
+            $table->dropColumn('workgroup_number');
         });
     }
 };

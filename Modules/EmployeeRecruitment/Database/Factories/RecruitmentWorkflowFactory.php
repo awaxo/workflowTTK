@@ -26,6 +26,7 @@ class RecruitmentWorkflowFactory extends AbstractWorkflowFactory
     public function definition()
     {
         return array_merge(parent::definition(), [
+            'state' => $this->faker->randomElement(['new_request', 'it_head_approval', 'supervisor_approval', 'completed']),
             'applicants_female_count' => $this->faker->numberBetween(0, 100),
             'applicants_male_count' => $this->faker->numberBetween(0, 100),
             'has_prior_employment' => $this->faker->boolean,

@@ -1,12 +1,12 @@
 /* Custom styles */
 
-/*.light-style .bs-stepper.vertical .bs-stepper-header {
+.light-style .bs-stepper.vertical .bs-stepper-header {
     border-right: 1px solid #d9dee3;
 }
 
 .template-customizer-open-btn, .dropdown-style-switcher {
     display: none !important;
-}*/
+}
 
 .light-style .bootstrap-select .filter-option-inner-inner {
     color: #697a8d;

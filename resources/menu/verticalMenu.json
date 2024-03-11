@@ -13,11 +13,10 @@
         "slug": "pages-new-employee-recruitment"
     },
     {
-        "url": "/pages/misc-error",
+        "url": "/felhasznalok",
         "name": "Felhasználók",
         "icon": "menu-icon tf-icons bx bx-user",
-        "slug": "pages-misc-error",
-        "target": "_blank"
+        "slug": "pages-user-list"
     },
     {
         "url": "/auth/login-basic",

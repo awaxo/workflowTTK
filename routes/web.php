@@ -7,6 +7,7 @@ use App\Http\Controllers\pages\MiscError;
 use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\authentications\RegisterBasic;
 use App\Http\Controllers\pages\Process;
+use App\Http\Controllers\pages\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 
 // pages
 Route::get('/pages/misc-error', [MiscError::class, 'index'])->name('pages-misc-error');
+Route::get('/felhasznalok', [UserController::class, 'index'])->name('pages-list-users');
 
 // authentication
 Route::get('/auth/login-basic', [LoginBasic::class, 'index'])->name('auth-login-basic');

@@ -23,10 +23,18 @@ class LaborAdministrator extends Model
      */
     protected $fillable = [
         'group_level',
-        'name',
+        'user_id',
         'created_by',
         'updated_by'
     ];
+
+    /**
+     * Get the user who is the labor administrator.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     /**
      * Get the user who created the labor administrator.

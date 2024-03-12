@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('wf_labor_administrator', function (Blueprint $table) {
             $table->id();
             $table->tinyInteger('group_level');
-            $table->string('name');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
+            $table->foreign('user_id')->references('id')->on('wf_user');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });

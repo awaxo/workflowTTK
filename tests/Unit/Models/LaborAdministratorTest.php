@@ -19,7 +19,7 @@ class LaborAdministratorTest extends TestCase
         $this->assertDatabaseHas('wf_labor_administrator', [
             'id' => $laborAdministrator->id,
             'group_level' => $laborAdministrator->group_level,
-            'name' => $laborAdministrator->name,
+            'user_id' => $laborAdministrator->user_id,
             'created_by' => $laborAdministrator->created_by,
             'updated_by' => $laborAdministrator->updated_by
         ]);
@@ -29,11 +29,11 @@ class LaborAdministratorTest extends TestCase
     public function a_labor_administrator_can_be_updated()
     {
         $laborAdministrator = LaborAdministrator::factory()->create();
-        $newName = 'Updated Name';
+        $newGroupLevel = '0';
 
-        $laborAdministrator->update(['name' => $newName]);
+        $laborAdministrator->update(['group_level' => $newGroupLevel]);
 
-        $this->assertEquals($newName, $laborAdministrator->fresh()->name);
+        $this->assertEquals($newGroupLevel, $laborAdministrator->fresh()->group_level);
     }
 
     /** @test */

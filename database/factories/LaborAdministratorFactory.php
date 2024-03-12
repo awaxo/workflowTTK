@@ -24,7 +24,7 @@ class LaborAdministratorFactory extends Factory
     {
         return [
             'group_level' => $this->faker->numberBetween(1, 5),
-            'name' => $this->faker->name,
+            'user_id' => User::factory(),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

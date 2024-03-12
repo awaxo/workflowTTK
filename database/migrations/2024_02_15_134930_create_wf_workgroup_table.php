@@ -24,7 +24,6 @@ return new class extends Migration
 
             // Foreign keys
             $table->foreign('leader')->references('id')->on('wf_user');
-            $table->foreign('labor_administrator')->references('id')->on('wf_user');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });

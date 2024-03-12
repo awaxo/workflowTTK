@@ -3,18 +3,17 @@
 namespace Database\Factories;
 
 use App\Models\LaborAdministrator;
-use App\Models\Workgroup;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class WorkgroupFactory extends Factory
+class LaborAdministratorFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Workgroup::class;
+    protected $model = LaborAdministrator::class;
 
     /**
      * Define the model's default state.
@@ -24,11 +23,8 @@ class WorkgroupFactory extends Factory
     public function definition()
     {
         return [
-            'workgroup_number' => $this->faker->unique()->randomNumber(3),
-            'name' => $this->faker->company,
-            'leader' => User::factory(),
-            'labor_administrator' => LaborAdministrator::factory(),
-            'deleted' => $this->faker->boolean,
+            'group_level' => $this->faker->numberBetween(1, 5),
+            'name' => $this->faker->name,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

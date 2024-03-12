@@ -61,7 +61,7 @@ class Workgroup extends Model
      */
     public function laborAdministrator()
     {
-        return $this->belongsTo(User::class, 'labor_administrator');
+        return $this->belongsTo(LaborAdministrator::class, 'labor_administrator');
     }
 
     /**

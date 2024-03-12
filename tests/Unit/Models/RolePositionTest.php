@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\EmployeeRecruitment\tests\Unit;
+namespace Tests\Unit\Models;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;

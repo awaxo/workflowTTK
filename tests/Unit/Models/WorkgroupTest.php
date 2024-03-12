@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Models;
 
+use App\Models\LaborAdministrator;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +23,7 @@ class WorkgroupTest extends TestCase
 
         // Create users for each role
         $this->leader = User::factory()->create();
-        $this->laborAdministrator = User::factory()->create();
+        $this->laborAdministrator = LaborAdministrator::factory()->create();
         $this->createdBy = User::factory()->create();
         $this->updatedBy = User::factory()->create();
     }

@@ -1,20 +1,20 @@
 <?php
 
-namespace Modules\EmployeeRecruitment\App\Models;
+namespace App\Models;
 
 use App\Models\User;
 use App\Models\Position;
+use Database\Factories\UserPositionFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitmentUserPositionFactory;
 
-class RecruitmentUserPosition extends Model
+class UserPosition extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitmentUserPositionFactory::new();
+        return UserPositionFactory::new();
     }
 
     /**
@@ -22,7 +22,7 @@ class RecruitmentUserPosition extends Model
      *
      * @var string
      */
-    protected $table = 'recruitment_user_position';
+    protected $table = 'wf_user_position';
 
     /**
      * The primary key associated with the table.

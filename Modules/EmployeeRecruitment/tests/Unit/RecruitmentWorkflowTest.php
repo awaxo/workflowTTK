@@ -9,7 +9,7 @@ use App\Models\Country;
 use App\Models\Workgroup;
 use App\Models\Position;
 use App\Models\WorkflowType;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
+use App\Models\CostCenter;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
 class RecruitmentWorkflowTest extends TestCase
@@ -24,7 +24,7 @@ class RecruitmentWorkflowTest extends TestCase
         $workgroup1 = Workgroup::factory()->create();
         $workgroup2 = Workgroup::factory()->create();
         $position = Position::factory()->create();
-        $costCenter1 = RecruitmentCostCenter::factory()->create();
+        $costCenter1 = CostCenter::factory()->create();
         $createdBy = User::factory()->create();
         $updatedBy = User::factory()->create();
 

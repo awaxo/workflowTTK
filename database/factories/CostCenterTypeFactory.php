@@ -1,21 +1,20 @@
 <?php
 
-namespace Modules\EmployeeRecruitment\Database\Factories;
+namespace Database\Factories;
 
 use App\Models\Role;
-use App\Models\Position;
 use App\Models\User;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentRolePosition;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\CostCenterType;
 
-class RecruitmentRolePositionFactory extends Factory
+class CostCenterTypeFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = RecruitmentRolePosition::class;
+    protected $model = CostCenterType::class;
 
     /**
      * Define the model's default state.
@@ -25,8 +24,10 @@ class RecruitmentRolePositionFactory extends Factory
     public function definition()
     {
         return [
-            'role_id' => Role::factory(),
-            'position_id' => Position::factory(),
+            'name' => $this->faker->unique()->word,
+            'tender' => $this->faker->boolean,
+            'financial_approver_role_id' => Role::factory(),
+            'clause_template' => $this->faker->paragraph,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

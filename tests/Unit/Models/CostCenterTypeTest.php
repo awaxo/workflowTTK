@@ -2,20 +2,20 @@
 
 namespace Modules\EmployeeRecruitment\tests\Unit;
 
+use App\Models\CostCenterType;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenterType;
 
-class RecruitmentCostCenterTypeTest extends TestCase
+class CostCenterTypeTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
     public function a_recruit_cost_center_type_can_be_created()
     {
-        $recruitCostCenterType = RecruitmentCostCenterType::factory()->create();
+        $recruitCostCenterType = CostCenterType::factory()->create();
 
-        $this->assertDatabaseHas('recruitment_cost_center_type', [
+        $this->assertDatabaseHas('wf_cost_center_type', [
             'name' => $recruitCostCenterType->name,
             'tender' => $recruitCostCenterType->tender,
             'financial_approver_role_id' => $recruitCostCenterType->financial_approver_role_id,
@@ -29,14 +29,14 @@ class RecruitmentCostCenterTypeTest extends TestCase
     /** @test */
     public function a_recruit_cost_center_type_can_be_updated()
     {
-        $recruitCostCenterType = RecruitmentCostCenterType::factory()->create([
+        $recruitCostCenterType = CostCenterType::factory()->create([
             'name' => 'Original Type',
         ]);
 
         $updatedName = 'Updated Type';
         $recruitCostCenterType->update(['name' => $updatedName]);
 
-        $this->assertDatabaseHas('recruitment_cost_center_type', [
+        $this->assertDatabaseHas('wf_cost_center_type', [
             'name' => $updatedName,
         ]);
     }
@@ -44,7 +44,7 @@ class RecruitmentCostCenterTypeTest extends TestCase
     /** @test */
     public function recruit_cost_center_type_relationships_are_accessible()
     {
-        $recruitCostCenterType = RecruitmentCostCenterType::factory()->create();
+        $recruitCostCenterType = CostCenterType::factory()->create();
 
         $this->assertNotNull($recruitCostCenterType->financialApproverRole);
         $this->assertNotNull($recruitCostCenterType->createdBy);

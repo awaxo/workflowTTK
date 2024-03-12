@@ -1,24 +1,24 @@
 <?php
 
-namespace Modules\EmployeeRecruitment\App\Models;
+namespace App\Models;
 
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Position;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitmentRolePositionFactory;
+use Database\Factories\RolePositionFactory;
 
-class RecruitmentRolePosition extends Model
+class RolePosition extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitmentRolePositionFactory::new();
+        return RolePositionFactory::new();
     }
 
-    protected $table = 'recruitment_role_position';
+    protected $table = 'wf_role_position';
     protected $primaryKey = ['role_id', 'position_id'];
 
     protected $fillable = [

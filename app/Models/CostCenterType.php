@@ -1,23 +1,23 @@
 <?php
 
-namespace Modules\EmployeeRecruitment\App\Models;
+namespace App\Models;
 
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitmentCostCenterTypeFactory;
+use Database\Factories\CostCenterTypeFactory;
 
-class RecruitmentCostCenterType extends Model
+class CostCenterType extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitmentCostCenterTypeFactory::new();
+        return CostCenterTypeFactory::new();
     }
 
-    protected $table = 'recruitment_cost_center_type';
+    protected $table = 'wf_cost_center_type';
     protected $primaryKey = 'name';
     protected $keyType = 'string';
 

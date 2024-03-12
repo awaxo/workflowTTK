@@ -5,9 +5,9 @@ namespace Modules\EmployeeRecruitment\Database\Factories;
 use App\Models\Country;
 use App\Models\Workgroup;
 use App\Models\Position;
+use App\Models\CostCenter;
 use Database\Factories\AbstractWorkflowFactory;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
 
 class RecruitmentWorkflowFactory extends AbstractWorkflowFactory
 {
@@ -40,21 +40,21 @@ class RecruitmentWorkflowFactory extends AbstractWorkflowFactory
             'task' => $this->faker->text(1000),
             'employment_start_date' => $this->faker->date(),
             'employment_end_date' => $this->faker->date(),
-            'base_salary_cost_center_1' => RecruitmentCostCenter::factory(),
+            'base_salary_cost_center_1' => CostCenter::factory(),
             'base_salary_monthly_gross_1' => $this->faker->randomFloat(2, 0, 10000),
-            'base_salary_cost_center_2' => RecruitmentCostCenter::factory(),
+            'base_salary_cost_center_2' => CostCenter::factory(),
             'base_salary_monthly_gross_2' => $this->faker->randomFloat(2, 0, 10000),
-            'base_salary_cost_center_3' => RecruitmentCostCenter::factory(),
+            'base_salary_cost_center_3' => CostCenter::factory(),
             'base_salary_monthly_gross_3' => $this->faker->randomFloat(2, 0, 10000),
-            'health_allowance_cost_center_4' => RecruitmentCostCenter::factory(),
+            'health_allowance_cost_center_4' => CostCenter::factory(),
             'health_allowance_monthly_gross_4' => $this->faker->randomFloat(2, 0, 10000),
-            'management_allowance_cost_center_5' => RecruitmentCostCenter::factory(),
+            'management_allowance_cost_center_5' => CostCenter::factory(),
             'management_allowance_monthly_gross_5' => $this->faker->randomFloat(2, 0, 10000),
             'management_allowance_end_date' => $this->faker->date(),
-            'extra_pay_1_cost_center_6' => RecruitmentCostCenter::factory(),
+            'extra_pay_1_cost_center_6' => CostCenter::factory(),
             'extra_pay_1_monthly_gross_6' => $this->faker->randomFloat(2, 0, 10000),
             'extra_pay_1_end_date' => $this->faker->date(),
-            'extra_pay_2_cost_center_7' => RecruitmentCostCenter::factory(),
+            'extra_pay_2_cost_center_7' => CostCenter::factory(),
             'extra_pay_2_monthly_gross_7' => $this->faker->randomFloat(2, 0, 10000),
             'extra_pay_2_end_date' => $this->faker->date(),
             'weekly_working_hours' => $this->faker->numberBetween(1, 40),

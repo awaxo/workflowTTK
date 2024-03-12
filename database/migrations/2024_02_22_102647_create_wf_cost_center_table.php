@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recruitment_cost_center', function (Blueprint $table) {
+        Schema::create('wf_cost_center', function (Blueprint $table) {
             $table->id();
             $table->string('cost_center_code', 50);
             $table->unsignedBigInteger('workgroup_id');
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recruitment_cost_center');
+        Schema::dropIfExists('wf_cost_center');
     }
 };

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('wf_user', function (Blueprint $table) {
-            $table->string('workgroup_number', 5)->after('email');
+            $table->string('workgroup_number', 5)->after('email')->nullable();
             $table->foreign('workgroup_number')->references('workgroup_number')->on('wf_workgroup');
         });
     }

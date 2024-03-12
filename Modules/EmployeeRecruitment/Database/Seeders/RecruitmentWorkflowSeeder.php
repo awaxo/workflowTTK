@@ -12,6 +12,6 @@ class RecruitmentWorkflowSeeder extends Seeder
      */
     public function run(): void
     {
-        //RecruitmentWorkflow::factory()->count(10)->create();
+               
     }
 }

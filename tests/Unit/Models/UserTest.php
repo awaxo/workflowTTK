@@ -18,7 +18,6 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('wf_user', [
             'name' => $user->name,
             'email' => $user->email,
-            'workgroup_id' => $user->workgroup_id,
             'created_by' => null,
             'updated_by' => null,
         ]);

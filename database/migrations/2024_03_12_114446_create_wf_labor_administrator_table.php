@@ -11,22 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recruitment_user_position', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('position_id');
-            $table->unsignedTinyInteger('deleted')->default(0);
+        Schema::create('wf_labor_administrator', function (Blueprint $table) {
+            $table->id();
+            $table->tinyInteger('group_level');
+            $table->string('name');
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            // Foreign keys
-            $table->foreign('user_id')->references('id')->on('wf_user');
-            $table->foreign('position_id')->references('id')->on('wf_position');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
-
-            // Primary key
-            $table->primary(['user_id', 'position_id']);
         });
     }
 
@@ -35,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recruitment_user_position');
+        Schema::dropIfExists('wf_labor_administrator');
     }
 };

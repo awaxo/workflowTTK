@@ -1,20 +1,20 @@
 <?php
 
-namespace Modules\EmployeeRecruitment\Database\Factories;
+namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Position;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentUserPosition;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\UserPosition;
 
-class RecruitmentUserPositionFactory extends Factory
+class UserPositionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = RecruitmentUserPosition::class;
+    protected $model = UserPosition::class;
 
     /**
      * Define the model's default state.

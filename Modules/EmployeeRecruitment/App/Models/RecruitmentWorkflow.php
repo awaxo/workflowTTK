@@ -6,7 +6,7 @@ use App\Models\AbstractWorkflow;
 use App\Models\Country;
 use App\Models\Position;
 use App\Models\Workgroup;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentCostCenter;
+use App\Models\CostCenter;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
@@ -126,36 +126,36 @@ class RecruitmentWorkflow extends AbstractWorkflow
 
     public function base_salary_cc1()
     {
-        return $this->belongsTo(RecruitmentCostCenter::class, 'base_salary_cost_center_1');
+        return $this->belongsTo(CostCenter::class, 'base_salary_cost_center_1');
     }
 
     public function base_salary_cc2()
     {
-        return $this->belongsTo(RecruitmentCostCenter::class, 'base_salary_cost_center_2');
+        return $this->belongsTo(CostCenter::class, 'base_salary_cost_center_2');
     }
 
     public function base_salary_cc3()
     {
-        return $this->belongsTo(RecruitmentCostCenter::class, 'base_salary_cost_center_3');
+        return $this->belongsTo(CostCenter::class, 'base_salary_cost_center_3');
     }
 
     public function health_allowance_cc()
     {
-        return $this->belongsTo(RecruitmentCostCenter::class, 'health_allowance_cost_center_4');
+        return $this->belongsTo(CostCenter::class, 'health_allowance_cost_center_4');
     }
 
     public function management_allowance_cc()
     {
-        return $this->belongsTo(RecruitmentCostCenter::class, 'management_allowance_cost_center_5');
+        return $this->belongsTo(CostCenter::class, 'management_allowance_cost_center_5');
     }
 
     public function extra_pay_1_cc()
     {
-        return $this->belongsTo(RecruitmentCostCenter::class, 'extra_pay_1_cost_center_6');
+        return $this->belongsTo(CostCenter::class, 'extra_pay_1_cost_center_6');
     }
 
     public function extra_pay_2_cc()
     {
-        return $this->belongsTo(RecruitmentCostCenter::class, 'extra_pay_2_cost_center_7');
+        return $this->belongsTo(CostCenter::class, 'extra_pay_2_cost_center_7');
     }
 }

@@ -79,13 +79,13 @@ return new class extends Migration
             $table->foreign('workgroup_id_1')->references('id')->on('wf_workgroup');
             $table->foreign('workgroup_id_2')->references('id')->on('wf_workgroup');
             $table->foreign('position_id')->references('id')->on('wf_position');
-            $table->foreign('base_salary_cost_center_1')->references('id')->on('recruitment_cost_center');
-            $table->foreign('base_salary_cost_center_2')->references('id')->on('recruitment_cost_center');
-            $table->foreign('base_salary_cost_center_3')->references('id')->on('recruitment_cost_center');
-            $table->foreign('health_allowance_cost_center_4')->references('id')->on('recruitment_cost_center');
-            $table->foreign('management_allowance_cost_center_5')->references('id')->on('recruitment_cost_center');
-            $table->foreign('extra_pay_1_cost_center_6')->references('id')->on('recruitment_cost_center');
-            $table->foreign('extra_pay_2_cost_center_7')->references('id')->on('recruitment_cost_center');
+            $table->foreign('base_salary_cost_center_1')->references('id')->on('wf_cost_center');
+            $table->foreign('base_salary_cost_center_2')->references('id')->on('wf_cost_center');
+            $table->foreign('base_salary_cost_center_3')->references('id')->on('wf_cost_center');
+            $table->foreign('health_allowance_cost_center_4')->references('id')->on('wf_cost_center');
+            $table->foreign('management_allowance_cost_center_5')->references('id')->on('wf_cost_center');
+            $table->foreign('extra_pay_1_cost_center_6')->references('id')->on('wf_cost_center');
+            $table->foreign('extra_pay_2_cost_center_7')->references('id')->on('wf_cost_center');
         });
     }
 

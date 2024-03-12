@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recruitment_cost_center_type', function (Blueprint $table) {
+        Schema::create('wf_cost_center_type', function (Blueprint $table) {
             $table->string('name')->primary();
             $table->boolean('tender');
             $table->unsignedBigInteger('financial_approver_role_id');
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recruitment_cost_center_type');
+        Schema::dropIfExists('wf_cost_center_type');
     }
 };

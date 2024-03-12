@@ -1,23 +1,23 @@
 <?php
 
-namespace Modules\EmployeeRecruitment\App\Models;
+namespace App\Models;
 
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitmentCostCenterFactory;
+use Database\Factories\CostCenterFactory;
 
-class RecruitmentCostCenter extends Model
+class CostCenter extends Model
 {
     use HasFactory;
 
     protected static function newFactory()
     {
-        return RecruitmentCostCenterFactory::new();
+        return CostCenterFactory::new();
     }
 
-    protected $table = 'recruitment_cost_center';
+    protected $table = 'wf_cost_center';
 
     protected $fillable = [
         'cost_center_code',

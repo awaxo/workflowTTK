@@ -33,7 +33,7 @@ const genericDropzoneOptions = {
 };
 
 $(function () {
-    $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date").datepicker({
+    $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date, #employment_start_date, #employment_end_date").datepicker({
         format: "yyyy.mm.dd",
     });
 
@@ -52,20 +52,20 @@ $(function () {
     // Function to set working hours and calculate duration
     function setWorkingHours(startId, endId, durationId) {
         $(`${startId}`).timepicker({
-            minTime: '08:00',
-            maxTime: '12:00',
+            minTime: '07:00',
+            maxTime: '17:30',
             listWidth: 1,
             show2400: true,
             timeFormat: 'H:i'
         }).val('08:00');
 
         $(`${endId}`).timepicker({
-            minTime: '13:00',
+            minTime: '07:30',
             maxTime: '18:00',
             listWidth: 1,
             show2400: true,
             timeFormat: 'H:i'
-        }).val('16:30');
+        }).val('16:00');
 
         $(`${startId}, ${endId}`).on('change', function () {
             calculateDuration(startId, endId, durationId);
@@ -110,7 +110,7 @@ $(function () {
     $('.planned-carcinogenic-materials').hide();
 
     $('#work_with_carcinogenic_materials').on('change', function() {
-        if($(this).is(':checked')) {
+        if($(this).val() === '1') {
             $('.planned-carcinogenic-materials').show();
         } else {
             $('.planned-carcinogenic-materials').hide();

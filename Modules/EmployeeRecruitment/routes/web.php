@@ -14,4 +14,4 @@ use Modules\EmployeeRecruitment\App\Http\Controllers\pages\EmployeeRecruitmentCo
 |
 */
 
-Route::get('/uj-felveteli-kerelem', [EmployeeRecruitmentController::class, 'index'])->name('pages-new-process');
+Route::get('/uj-felveteli-kerelem', [EmployeeRecruitmentController::class, 'index'])->middleware(['auth'])->name('pages-new-process');

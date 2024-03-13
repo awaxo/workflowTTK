@@ -70,8 +70,8 @@
                     <button type="button" class="step-trigger">
                         <span class="bs-stepper-circle">2</span>
                         <span class="bs-stepper-label mt-1">
-                        <span class="bs-stepper-title">Bérelemek</span>
-                        <span class="bs-stepper-subtitle">Bérelemek megadása</span>
+                        <span class="bs-stepper-title">Jogviszony</span>
+                        <span class="bs-stepper-subtitle">Jogviszony megadása</span>
                         </span>
                     </button>
                 </div>
@@ -80,8 +80,8 @@
                     <button type="button" class="step-trigger">
                         <span class="bs-stepper-circle">3</span>
                         <span class="bs-stepper-label mt-1">
-                        <span class="bs-stepper-title">Munkaidő</span>
-                        <span class="bs-stepper-subtitle">Munkaidő megadása</span>
+                        <span class="bs-stepper-title">Bérelemek</span>
+                        <span class="bs-stepper-subtitle">Bérelemek megadása</span>
                         </span>
                     </button>
                 </div>
@@ -90,8 +90,8 @@
                     <button type="button" class="step-trigger">
                         <span class="bs-stepper-circle">4</span>
                         <span class="bs-stepper-label mt-1">
-                        <span class="bs-stepper-title">Eszközök, hozzáférések</span>
-                        <span class="bs-stepper-subtitle">Eszközök, hozzáférések megadása</span>
+                        <span class="bs-stepper-title">Munkaidő</span>
+                        <span class="bs-stepper-subtitle">Munkaidő megadása</span>
                         </span>
                     </button>
                 </div>
@@ -99,6 +99,16 @@
                 <div class="step" data-target="#data-section-5">
                     <button type="button" class="step-trigger">
                         <span class="bs-stepper-circle">5</span>
+                        <span class="bs-stepper-label mt-1">
+                        <span class="bs-stepper-title">Egyéb adatok</span>
+                        <span class="bs-stepper-subtitle">Egyéb adatok megadása</span>
+                        </span>
+                    </button>
+                </div>
+                <div class="line"></div>
+                <div class="step" data-target="#data-section-6">
+                    <button type="button" class="step-trigger">
+                        <span class="bs-stepper-circle">6</span>
                         <span class="bs-stepper-label mt-1">
                         <span class="bs-stepper-title">Dokumentumok</span>
                         <span class="bs-stepper-subtitle">Dokumentumok feltöltése</span>
@@ -116,29 +126,21 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
-                                <label class="form-label" for="last_name">Vezetéknév</label>
-                                <input type="text" id="last_name" class="form-control" placeholder="Teszt" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label class="form-label" for="first_name">Keresztnév</label>
-                                <input type="email" id="first_name" class="form-control" placeholder="János" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label class="form-label" for="middle_name">Utónév</label>
-                                <input type="email" id="middle_name" class="form-control" />
+                                <label class="form-label" for="last_name">Név</label>
+                                <input type="text" id="name" class="form-control" />
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch" id="job_ad_exists">
-                                    <label class="form-check-label" for="job_ad_exists">Felvétel álláshirdetéssel történt</label>
+                                    <label class="form-check-label" for="job_ad_exists">Felvétel álláshirdetéssel történt?</label>
                                 </div>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch" id="has_prior_employment">
-                                    <label class="form-check-label" for="has_prior_employment">Volt munkajogviszonya a Kutatóközponttal</label>
+                                    <label class="form-check-label" for="has_prior_employment">Volt már munkajogviszonya a Kutatóközponttal?</label>
                                 </div>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch" id="has_current_volunteer_contract">
-                                    <label class="form-check-label" for="has_current_volunteer_contract">Van önkéntes szerződéses jogviszonya a Kutatóközponttal</label>
+                                    <label class="form-check-label" for="has_current_volunteer_contract">Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal?</label>
                                 </div>
                             </div>
                             <div class="col-sm-4">
@@ -187,6 +189,67 @@
                     </div>
                     <!-- Data section 2 -->
                     <div id="data-section-2" class="content">
+                        <div class="content-header mb-3">
+                            <h5 class="mb-0">Jogviszony</h5>
+                            <small>Add meg az jogviszony adatokat</small>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-4">
+                                <label for="position_type" class="form-label">Munkakör típusa</label>
+                                <select class="form-select" id="position_type">
+                                    <option value="1" selected>Kutatói</option>
+                                    <option value="2">Nem kutatói</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="position_id" class="form-label">Munkakör</label>
+                                <select class="form-select" id="position_id">
+                                    <option value="1" selected>Munkakör 1</option>
+                                    <option value="2">Munkakör 2</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="personal_data_sheet" class="form-label">Munkaköri leírás</label>
+                                <div class="dropzone needsclick" id="personal_data_sheet">
+                                    <div class="dz-message needsclick">
+                                      Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="employment_type" class="form-label">Jogviszony típusa</label>
+                                <select class="form-select" id="employment_type">
+                                    <option value="1" selected>Határozott</option>
+                                    <option value="2">Határozatlan</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-8">
+                                <label for="task" class="form-label">Feladat</label>
+                                <textarea class="form-control" id="task" rows="3"></textarea>                              
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="employment_start_date" class="form-label">Jogviszony kezdete</label>
+                                <input type="text" id="employment_start_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="employment_end_date" class="form-label">Jogviszony vége</label>
+                                <input type="text" id="employment_end_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" />
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-between">
+                                <button class="btn btn-primary btn-prev">
+                                    <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                    <span class="align-middle d-sm-inline-block d-none">Vissza</span>
+                                </button>
+                                <button class="btn btn-primary btn-next">
+                                    <span class="align-middle d-sm-inline-block d-none me-sm-1">Tovább</span>
+                                    <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Data section 3 -->
+                    <div id="data-section-3" class="content">
                         <div class="content-header mb-3">
                             <h5 class="mb-0">Bérelemek</h5>
                             <small>Add meg a bérelemeket</small>
@@ -283,7 +346,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <label for="extra_pay_1_monthly_gross_6" class="form-label">Havi bruttó bér 5</label>
+                                <label for="extra_pay_1_monthly_gross_6" class="form-label">Havi bruttó bér 6</label>
                                 <input class="form-control" type="number" value="" id="extra_pay_1_monthly_gross_6" />
                             </div>
                             <div class="col-sm-4">
@@ -295,7 +358,7 @@
 
                             <p class="mb-0 mt-0"><strong>Bérpótlék 2</strong></p>
                             <div class="col-sm-4">
-                                <label for="extra_pay_2_cost_center_7" class="form-label">Költséghely 6</label>
+                                <label for="extra_pay_2_cost_center_7" class="form-label">Költséghely 7</label>
                                 <select class="form-select" id="extra_pay_2_cost_center_7">
                                     <option selected>Válassz költséghelyet</option>
                                     <option value="1">Első költséghely</option>
@@ -304,7 +367,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <label for="extra_pay_2_monthly_gross_7" class="form-label">Havi bruttó bér 5</label>
+                                <label for="extra_pay_2_monthly_gross_7" class="form-label">Havi bruttó bér 7</label>
                                 <input class="form-control" type="number" value="" id="extra_pay_2_monthly_gross_7" />
                             </div>
                             <div class="col-sm-4">
@@ -324,8 +387,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Data section 3 -->
-                    <div id="data-section-3" class="content">
+                    <!-- Data section 4 -->
+                    <div id="data-section-4" class="content">
                         <div class="content-header mb-3">
                             <h5 class="mb-0">Munkaidő</h5>
                             <small>Add meg a munkaidő adatokat</small>
@@ -424,11 +487,11 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Data section 4 -->
-                    <div id="data-section-4" class="content">
+                    <!-- Data section 5 -->
+                    <div id="data-section-5" class="content">
                         <div class="content-header mb-3">
-                            <h5 class="mb-0">Eszközök és hozzáférések</h5>
-                            <small>Add meg a használandó eszközökat, anyagokat, hozzáféréseket</small>
+                            <h5 class="mb-0">Egyéb adatok</h5>
+                            <small>Add meg a jogosultságokat, használandó eszközöket</small>
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
@@ -436,8 +499,18 @@
                                 <input type="text" id="email" class="form-control" placeholder="Email" />
                             </div>
                             <div class="col-sm-4">
-                                <label class="form-label" for="phone_extension">Telefon mellék</label>
-                                <input type="email" id="phone_extension" class="form-control" />
+                                <label for="entry_permissions" class="form-label">Belépési jogosultságok</label>
+                                <select class="selectpicker w-100" id="entry_permissions" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <optgroup label="Általános belépési engedélyek">
+                                        <option value="1">Autó behajtás</option>
+                                        <option value="2">Kerékpár behajtás</option>
+                                    </optgroup>
+                                    <optgroup label="Intézményi belépési engedélyek">
+                                        <option value="3">Helység 1</option>
+                                        <option value="4">Szoba 2</option>
+                                        <option value="4">Raktár 1</option>
+                                    </optgroup>
+                                </select>
                             </div>
                             <div class="col-sm-4">
                                 <label class="form-label" for="license_plate">Rendszám</label>
@@ -453,18 +526,8 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <label for="entry_permissions" class="form-label">Belépési jogosultságok</label>
-                                <select class="selectpicker w-100" id="entry_permissions" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
-                                    <optgroup label="Általános belépési engedélyek">
-                                        <option value="1">Autó behajtás</option>
-                                        <option value="2">Kerékpár behajtás</option>
-                                    </optgroup>
-                                    <optgroup label="Intézményi belépési engedélyek">
-                                        <option value="3">Helység 1</option>
-                                        <option value="4">Szoba 2</option>
-                                        <option value="4">Raktár 1</option>
-                                    </optgroup>
-                                </select>
+                                <label class="form-label" for="phone_extension">Telefon mellék</label>
+                                <input type="email" id="phone_extension" class="form-control" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="external_access_rights" class="form-label">Hozzáférési jogosultságok</label>
@@ -494,14 +557,20 @@
                                 <!-- Dynamic tools will be added here -->
                             </div>
                             <div class="col-sm-4">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="work_with_radioactive_isotopes">
-                                    <label class="form-check-label" for="work_with_radioactive_isotopes">Sugárzó izotóppal fog dolgozni</label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="work_with_carcinogenic_materials">
-                                    <label class="form-check-label" for="work_with_carcinogenic_materials">Rákkeltő anyaggal fog dolgozni</label>
-                                </div>
+                                <label for="work_with_radioactive_isotopes" class="form-label">Sugárzó izotóppal fog dolgozni</label>
+                                <select class="selectpicker w-100" id="work_with_radioactive_isotopes" placeholder="&nbsp;" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <option value="" selected disabled></option>
+                                    <option value="1">Igen</option>
+                                    <option value="0">Nem</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="work_with_carcinogenic_materials" class="form-label">Rákkeltő anyaggal fog dolgozni</label>
+                                <select class="selectpicker w-100" id="work_with_carcinogenic_materials" placeholder="&nbsp;" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <option value="" selected disabled></option>
+                                    <option value="1">Igen</option>
+                                    <option value="0">Nem</option>
+                                </select>
                             </div>
                             <div class="col-sm-8 planned-carcinogenic-materials">
                                 <label for="planned_carcinogenic_materials_use" class="form-label">Használni tervezett rákkeltő anyagok felsorolása</label>
@@ -520,8 +589,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Data section 5 -->
-                    <div id="data-section-5" class="content">
+                    <!-- Data section 6 -->
+                    <div id="data-section-6" class="content">
                         <div class="content-header mb-3">
                             <h5 class="mb-0">Dokumentumok</h5>
                             <small>Töltsd fel a szükséges dokumentumokat</small>

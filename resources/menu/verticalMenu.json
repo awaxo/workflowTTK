@@ -1,8 +1,8 @@
 {
     "menu": [
     {
-        "url": "/",
-        "name": "Home",
+        "url": "/dashboard",
+        "name": "Dashboard",
         "icon": "menu-icon tf-icons bx bx-home-circle",
         "slug": "pages-home"
     },

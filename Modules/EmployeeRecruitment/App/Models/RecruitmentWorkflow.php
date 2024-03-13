@@ -3,7 +3,6 @@
 namespace Modules\EmployeeRecruitment\App\Models;
 
 use App\Models\AbstractWorkflow;
-use App\Models\Country;
 use App\Models\Position;
 use App\Models\Workgroup;
 use App\Models\CostCenter;
@@ -32,7 +31,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'applicants_male_count',
             'has_prior_employment',
             'has_current_volunteer_contract',
-            'citizenship_id',
+            'citizenship',
             'workgroup_id_1',
             'workgroup_id_2',
             'position_id',
@@ -102,11 +101,6 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'work_with_radioactive_isotopes' => false,
             'work_with_carcinogenic_materials' => false,
         ]);
-    }
-
-    public function citizenship()
-    {
-        return $this->belongsTo(Country::class, 'citizenship_id');
     }
 
     public function workgroup1()

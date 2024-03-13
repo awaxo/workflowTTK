@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('applicants_male_count');
             $table->unsignedTinyInteger('has_prior_employment');
             $table->unsignedTinyInteger('has_current_volunteer_contract');
-            $table->unsignedBigInteger('citizenship_id');
+            $table->string('citizenship');
             $table->unsignedBigInteger('workgroup_id_1');
             $table->unsignedBigInteger('workgroup_id_2')->nullable();
             $table->unsignedBigInteger('position_id');
@@ -75,7 +75,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('requires_commute_support')->nullable();
             $table->string('commute_support_form')->nullable();
 
-            $table->foreign('citizenship_id')->references('id')->on('wf_country');
             $table->foreign('workgroup_id_1')->references('id')->on('wf_workgroup');
             $table->foreign('workgroup_id_2')->references('id')->on('wf_workgroup');
             $table->foreign('position_id')->references('id')->on('wf_position');

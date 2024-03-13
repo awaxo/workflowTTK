@@ -152,8 +152,8 @@
                                 <input class="form-control" type="number" value="18" id="applicants_male_count" />
                             </div>
                             <div class="col-sm-4">
-                                <label for="citizenship_id" class="form-label">Állampolgárság</label>
-                                <select class="form-select" id="citizenship_id">
+                                <label for="citizenship" class="form-label">Állampolgárság</label>
+                                <select class="form-select" id="citizenship">
                                     <option value="1" selected>Magyar</option>
                                     <option value="2">EGT tagállambeli</option>
                                     <option value="3">Harmadik országbeli</option>

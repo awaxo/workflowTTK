@@ -31,7 +31,7 @@ class RecruitmentWorkflowFactory extends AbstractWorkflowFactory
             'applicants_male_count' => $this->faker->numberBetween(0, 100),
             'has_prior_employment' => $this->faker->boolean,
             'has_current_volunteer_contract' => $this->faker->boolean,
-            'citizenship_id' => Country::factory(),
+            'citizenship' => $this->faker->text(200),
             'workgroup_id_1' => Workgroup::factory(),
             'workgroup_id_2' => Workgroup::factory(),
             'position_id' => Position::factory(),

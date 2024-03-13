@@ -20,7 +20,6 @@ class RecruitmentWorkflowTest extends TestCase
     public function a_recruit_workflow_can_be_created_with_all_fields()
     {
         $workflowType = WorkflowType::factory()->create();
-        $citizenship = Country::factory()->create();
         $workgroup1 = Workgroup::factory()->create();
         $workgroup2 = Workgroup::factory()->create();
         $position = Position::factory()->create();
@@ -34,7 +33,7 @@ class RecruitmentWorkflowTest extends TestCase
             'applicants_male_count' => 10,
             'has_prior_employment' => true,
             'has_current_volunteer_contract' => false,
-            'citizenship_id' => $citizenship->id,
+            'citizenship' => 'Citizenship',
             'workgroup_id_1' => $workgroup1->id,
             'workgroup_id_2' => $workgroup2->id,
             'position_id' => $position->id,
@@ -68,7 +67,7 @@ class RecruitmentWorkflowTest extends TestCase
             'applicants_female_count' => 5,
             'applicants_male_count' => 10,
             'has_prior_employment' => true,
-            'citizenship_id' => $citizenship->id,
+            'citizenship' => 'Citizenship',
             'workgroup_id_1' => $workgroup1->id,
             'position_id' => $position->id,
             'job_description' => 'A detailed job description',

@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\CostCenter;
+use App\Models\CostCenterType;
 use App\Models\User;
-use App\Models\Workgroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CostCenterFactory extends Factory
@@ -24,9 +24,9 @@ class CostCenterFactory extends Factory
     public function definition()
     {
         return [
-            'cost_center_code' => $this->faker->unique()->word,
+            'cost_center_code' => $this->faker->word,
             'name' => $this->faker->company,
-            'type' => $this->faker->word,
+            'type_id' => CostCenterType::factory(),
             'lead_user_id' => User::factory(),
             'project_coordinator_user_id' => User::factory(),
             'due_date' => $this->faker->date(),

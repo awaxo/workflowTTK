@@ -21,7 +21,7 @@ class CostCenter extends Model
     protected $fillable = [
         'cost_center_code',
         'name',
-        'type',
+        'type_id',
         'lead_user_id',
         'project_coordinator_user_id',
         'due_date',
@@ -38,6 +38,11 @@ class CostCenter extends Model
     protected $attributes = [
         'deleted' => 0,
     ];
+
+    public function type()
+    {
+        return $this->belongsTo(CostCenterType::class, 'type_id');
+    }
 
     public function leadUser()
     {

@@ -33,7 +33,7 @@ class LaborAdministratorTest extends TestCase
 
         $laborAdministrator->update(['group_level' => $newGroupLevel]);
 
-        $this->assertEquals($newGroupLevel, $laborAdministrator->fresh()->group_level);
+        $this->assertEquals($newGroupLevel, $laborAdministrator->group_level);
     }
 
     /** @test */

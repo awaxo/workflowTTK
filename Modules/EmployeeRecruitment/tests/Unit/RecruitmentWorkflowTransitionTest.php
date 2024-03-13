@@ -4,6 +4,7 @@ namespace Modules\EmployeeRecruitment\tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
 class RecruitmentWorkflowTransitionTest extends TestCase

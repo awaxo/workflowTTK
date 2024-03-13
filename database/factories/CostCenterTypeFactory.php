@@ -24,7 +24,7 @@ class CostCenterTypeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->word,
+            'name' => $this->faker->word,
             'tender' => $this->faker->boolean,
             'financial_approver_role_id' => Role::factory(),
             'clause_template' => $this->faker->paragraph,

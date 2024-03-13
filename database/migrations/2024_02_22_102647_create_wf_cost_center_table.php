@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('cost_center_code', 50);
             $table->string('name');
-            $table->string('type', 100);
+            $table->unsignedBigInteger('type_id');
             $table->unsignedBigInteger('lead_user_id');
             $table->unsignedBigInteger('project_coordinator_user_id');
             $table->date('due_date');
@@ -25,10 +25,11 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            $table->foreign('created_by')->references('id')->on('wf_user');
-            $table->foreign('updated_by')->references('id')->on('wf_user');
+            $table->foreign('type_id')->references('id')->on('wf_cost_center_type');
             $table->foreign('lead_user_id')->references('id')->on('wf_user');
             $table->foreign('project_coordinator_user_id')->references('id')->on('wf_user');
+            $table->foreign('created_by')->references('id')->on('wf_user');
+            $table->foreign('updated_by')->references('id')->on('wf_user');
         });
     }
 

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wf_cost_center_type', function (Blueprint $table) {
-            $table->string('name')->primary();
+            $table->id();
+            $table->string('name');
             $table->boolean('tender');
             $table->unsignedBigInteger('financial_approver_role_id');
             $table->text('clause_template');

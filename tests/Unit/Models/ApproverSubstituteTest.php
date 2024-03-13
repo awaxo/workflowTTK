@@ -14,14 +14,14 @@ class ApproverSubstituteTest extends TestCase
     public function an_approver_substitute_can_be_created()
     {
         $approverSubstitute = ApproverSubstitute::factory()->create([
-            'start_date' => '2020-01-01',
-            'end_date' => '2020-12-31',
+            'start_date' => '2020-01-01 00:00:00',
+            'end_date' => '2020-12-31 00:00:00',
         ]);
 
         $this->assertDatabaseHas('wf_approver_substitute', [
             'id' => $approverSubstitute->id,
-            'start_date' => '2020-01-01',
-            'end_date' => '2020-12-31',
+            'start_date' => '2020-01-01 00:00:00',
+            'end_date' => '2020-12-31 00:00:00',
         ]);
     }
 
@@ -29,19 +29,19 @@ class ApproverSubstituteTest extends TestCase
     public function an_approver_substitute_can_be_updated()
     {
         $approverSubstitute = ApproverSubstitute::factory()->create([
-            'start_date' => '2020-01-01',
-            'end_date' => '2020-12-31',
+            'start_date' => '2020-01-01 00:00:00',
+            'end_date' => '2020-12-31 00:00:00',
         ]);
 
         $approverSubstitute->update([
-            'start_date' => '2021-01-01',
-            'end_date' => '2021-12-31',
+            'start_date' => '2021-01-01 00:00:00',
+            'end_date' => '2021-12-31 00:00:00',
         ]);
 
         $this->assertDatabaseHas('wf_approver_substitute', [
             'id' => $approverSubstitute->id,
-            'start_date' => '2021-01-01',
-            'end_date' => '2021-12-31',
+            'start_date' => '2021-01-01 00:00:00',
+            'end_date' => '2021-12-31 00:00:00',
         ]);
     }
 

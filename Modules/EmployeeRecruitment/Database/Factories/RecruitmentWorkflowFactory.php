@@ -2,7 +2,6 @@
 
 namespace Modules\EmployeeRecruitment\Database\Factories;
 
-use App\Models\Country;
 use App\Models\Workgroup;
 use App\Models\Position;
 use App\Models\CostCenter;
@@ -68,7 +67,7 @@ class RecruitmentWorkflowFactory extends AbstractWorkflowFactory
             'work_end_thursday' => $this->faker->time(),
             'work_start_friday' => $this->faker->time(),
             'work_end_friday' => $this->faker->time(),
-            'email' => $this->faker->unique()->safeEmail,
+            'email' => $this->faker->safeEmail,
             'entry_permissions' => $this->faker->text(),
             'license_plate' => $this->faker->bothify('??###'),
             'employee_room' => $this->faker->bothify('Room ##'),

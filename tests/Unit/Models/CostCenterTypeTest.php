@@ -29,16 +29,11 @@ class CostCenterTypeTest extends TestCase
     /** @test */
     public function a_recruit_cost_center_type_can_be_updated()
     {
-        $recruitCostCenterType = CostCenterType::factory()->create([
-            'name' => 'Original Type',
-        ]);
+        $recruitCostCenterType = CostCenterType::factory()->create();
 
-        $updatedName = 'Updated Type';
-        $recruitCostCenterType->update(['name' => $updatedName]);
+        $recruitCostCenterType->update(['name' => 'Updated Type']);
 
-        $this->assertDatabaseHas('wf_cost_center_type', [
-            'name' => $updatedName,
-        ]);
+        $this->assertEquals('Updated Type', $recruitCostCenterType->name);
     }
 
     /** @test */

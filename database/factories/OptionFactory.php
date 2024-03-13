@@ -22,7 +22,7 @@ class OptionFactory extends Factory
     public function definition()
     {
         return [
-            'option_name' => $this->faker->unique()->word,
+            'option_name' => $this->faker->word,
             'option_value' => $this->faker->sentence,
         ];
     }

@@ -18,8 +18,6 @@ class CostCenterType extends Model
     }
 
     protected $table = 'wf_cost_center_type';
-    protected $primaryKey = 'name';
-    protected $keyType = 'string';
 
     protected $fillable = [
         'name',
@@ -38,8 +36,6 @@ class CostCenterType extends Model
         'tender' => 'boolean',
         'deleted' => 'boolean',
     ];
-
-    public $incrementing = false;
 
     public function financialApproverRole()
     {

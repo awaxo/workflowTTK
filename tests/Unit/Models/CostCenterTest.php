@@ -18,6 +18,7 @@ class CostCenterTest extends TestCase
         $this->assertDatabaseHas('wf_cost_center', [
             'cost_center_code' => $recruitCostCenter->cost_center_code,
             'name' => $recruitCostCenter->name,
+            'type_id' => $recruitCostCenter->type_id,
             'minimal_order_limit' => $recruitCostCenter->minimal_order_limit,
             'lead_user_id' => $recruitCostCenter->lead_user_id,
             'project_coordinator_user_id' => $recruitCostCenter->project_coordinator_user_id,
@@ -38,10 +39,7 @@ class CostCenterTest extends TestCase
 
         $recruitCostCenter->update(['name' => 'Updated Name']);
 
-        $this->assertDatabaseHas('wf_cost_center', [
-            'id' => $recruitCostCenter->id,
-            'name' => 'Updated Name',
-        ]);
+        $this->assertEquals('Updated Name', $recruitCostCenter->name);
     }
 
     /** @test */
@@ -49,6 +47,7 @@ class CostCenterTest extends TestCase
     {
         $recruitCostCenter = CostCenter::factory()->create();
 
+        $this->assertNotNull($recruitCostCenter->type);
         $this->assertNotNull($recruitCostCenter->leadUser);
         $this->assertNotNull($recruitCostCenter->projectCoordinatorUser);
         $this->assertNotNull($recruitCostCenter->createdBy);

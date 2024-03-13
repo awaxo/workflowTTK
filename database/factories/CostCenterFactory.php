@@ -25,7 +25,6 @@ class CostCenterFactory extends Factory
     {
         return [
             'cost_center_code' => $this->faker->unique()->word,
-            'workgroup_id' => Workgroup::factory(),
             'name' => $this->faker->company,
             'type' => $this->faker->word,
             'lead_user_id' => User::factory(),

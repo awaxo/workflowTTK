@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\Workgroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Database\Factories\CostCenterFactory;
@@ -21,7 +20,6 @@ class CostCenter extends Model
 
     protected $fillable = [
         'cost_center_code',
-        'workgroup_id',
         'name',
         'type',
         'lead_user_id',
@@ -40,11 +38,6 @@ class CostCenter extends Model
     protected $attributes = [
         'deleted' => 0,
     ];
-
-    public function workgroup()
-    {
-        return $this->belongsTo(Workgroup::class, 'workgroup_id');
-    }
 
     public function leadUser()
     {

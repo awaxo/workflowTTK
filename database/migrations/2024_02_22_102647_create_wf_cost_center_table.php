@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('wf_cost_center', function (Blueprint $table) {
             $table->id();
             $table->string('cost_center_code', 50);
-            $table->unsignedBigInteger('workgroup_id');
             $table->string('name');
             $table->string('type', 100);
             $table->unsignedBigInteger('lead_user_id');
@@ -28,7 +27,6 @@ return new class extends Migration
 
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
-            $table->foreign('workgroup_id')->references('id')->on('wf_workgroup');
             $table->foreign('lead_user_id')->references('id')->on('wf_user');
             $table->foreign('project_coordinator_user_id')->references('id')->on('wf_user');
         });

@@ -19,7 +19,6 @@ class CostCenterTest extends TestCase
             'cost_center_code' => $recruitCostCenter->cost_center_code,
             'name' => $recruitCostCenter->name,
             'minimal_order_limit' => $recruitCostCenter->minimal_order_limit,
-            'workgroup_id' => $recruitCostCenter->workgroup_id,
             'lead_user_id' => $recruitCostCenter->lead_user_id,
             'project_coordinator_user_id' => $recruitCostCenter->project_coordinator_user_id,
             'due_date' => $recruitCostCenter->due_date,
@@ -50,7 +49,6 @@ class CostCenterTest extends TestCase
     {
         $recruitCostCenter = CostCenter::factory()->create();
 
-        $this->assertNotNull($recruitCostCenter->workgroup);
         $this->assertNotNull($recruitCostCenter->leadUser);
         $this->assertNotNull($recruitCostCenter->projectCoordinatorUser);
         $this->assertNotNull($recruitCostCenter->createdBy);

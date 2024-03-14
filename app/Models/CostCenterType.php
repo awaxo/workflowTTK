@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
-use App\Models\Role;
+use App\Models\WfRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Database\Factories\CostCenterTypeFactory;
@@ -39,7 +39,7 @@ class CostCenterType extends Model
 
     public function financialApproverRole()
     {
-        return $this->belongsTo(Role::class, 'financial_approver_role_id');
+        return $this->belongsTo(WfRole::class, 'financial_approver_role_id');
     }
 
     public function createdBy()

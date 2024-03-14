@@ -3,7 +3,7 @@
 namespace Modules\EmployeeRecruitment\App\Models;
 
 use App\Models\User;
-use App\Models\Role;
+use App\Models\WfRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowStepRightFactory;
@@ -34,7 +34,7 @@ class RecruitmentWorkflowStepRights extends Model
 
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(WfRole::class, 'role_id');
     }
 
     public function createdBy()

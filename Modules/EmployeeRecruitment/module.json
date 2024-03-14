@@ -7,5 +7,10 @@
     "providers": [
         "Modules\\EmployeeRecruitment\\App\\Providers\\EmployeeRecruitmentServiceProvider"
     ],
-    "files": []
+    "files": [],
+    "migration": {
+        "seeds": [
+            "Modules\\EmployeeRecruitment\\Database\\Seeders\\EmployeeRecruitmentPermissionSeeder"
+        ]
+    }
 }

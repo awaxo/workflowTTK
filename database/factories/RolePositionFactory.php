@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Role;
+use App\Models\WfRole;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +25,7 @@ class RolePositionFactory extends Factory
     public function definition()
     {
         return [
-            'role_id' => Role::factory(),
+            'role_id' => WfRole::factory(),
             'position_id' => Position::factory(),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),

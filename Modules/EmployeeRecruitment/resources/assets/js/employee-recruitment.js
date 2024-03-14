@@ -149,4 +149,21 @@ $(function () {
             $('.commute-support-form').hide();
         }
     });
+
+    // Initialize popover on a target element
+    citizenshipPopover();
 });
+
+function citizenshipPopover() {
+    $('#citizenship').on('change', function () {
+        if ($(this).val() === '2') {
+            $(this).popover({
+                content: 'EGT tagjai az Európai Unió tagállamai mellett: Izland, Norvégia és Liechtenstein',
+                placement: 'bottom',
+                trigger: 'focus'
+            }).popover('show');
+        } else {
+            $(this).popover('dispose');
+        }
+    });
+}

@@ -129,7 +129,7 @@
                                 <label class="form-label" for="last_name">Név</label>
                                 <input type="text" id="name" class="form-control" />
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-8">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch" id="job_ad_exists">
                                     <label class="form-check-label" for="job_ad_exists">Felvétel álláshirdetéssel történt?</label>

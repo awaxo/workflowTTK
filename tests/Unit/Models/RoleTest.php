@@ -2,18 +2,18 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Role;
+use App\Models\WfRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class RoleTest extends TestCase
+class WfRoleTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
     public function a_role_can_be_created()
     {
-        Role::create([
+        WfRole::create([
             'name' => 'Admin',
             'description' => 'Administrator role',
         ]);
@@ -27,7 +27,7 @@ class RoleTest extends TestCase
     /** @test */
     public function a_role_can_be_updated()
     {
-        $role = Role::create([
+        $role = WfRole::create([
             'name' => 'Admin',
             'description' => 'Administrator role',
         ]);
@@ -43,12 +43,12 @@ class RoleTest extends TestCase
     /** @test */
     public function a_role_can_be_read()
     {
-        $role = Role::create([
+        $role = WfRole::create([
             'name' => 'Admin',
             'description' => 'Administrator role',
         ]);
 
-        $foundRole = Role::find($role->id);
+        $foundRole = WfRole::find($role->id);
 
         $this->assertEquals($foundRole->name, 'Admin');
     }
@@ -56,7 +56,7 @@ class RoleTest extends TestCase
     /** @test */
     public function a_role_can_be_deleted()
     {
-        $role = Role::create([
+        $role = WfRole::create([
             'name' => 'Admin',
             'description' => 'Administrator role',
         ]);

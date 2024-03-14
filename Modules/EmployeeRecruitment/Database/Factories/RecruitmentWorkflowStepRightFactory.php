@@ -2,7 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\Database\Factories;
 
-use App\Models\Role;
+use App\Models\WfRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflowStepRights;
@@ -25,7 +25,7 @@ class RecruitmentWorkflowStepRightFactory extends Factory
     {
         return [
             'workflow_step_id' => 1,
-            'role_id' => Role::factory(),
+            'role_id' => WfRole::factory(),
             'custom_approval_rules' => $this->faker->text(500),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),

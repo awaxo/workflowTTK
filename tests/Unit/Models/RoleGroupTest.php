@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Role;
+use App\Models\WfRole;
 use App\Models\RoleGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -29,7 +29,7 @@ class RoleGroupTest extends TestCase
     public function a_role_group_can_be_updated()
     {
         $roleGroup = RoleGroup::factory()->create();
-        $newRole = Role::factory()->create();
+        $newRole = WfRole::factory()->create();
 
         $roleGroup->update(['role_id' => $newRole->id]);
 

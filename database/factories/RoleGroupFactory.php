@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\RoleGroup;
 use App\Models\User;
-use App\Models\Role;
+use App\Models\WfRole;
 use App\Models\Group;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,7 +25,7 @@ class RoleGroupFactory extends Factory
     public function definition()
     {
         return [
-            'role_id' => Role::factory(),
+            'role_id' => WfRole::factory(),
             'group_id' => Group::factory(),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),

@@ -51,7 +51,7 @@ class RoleGroup extends Model
      */
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(WfRole::class, 'role_id');
     }
 
     /**

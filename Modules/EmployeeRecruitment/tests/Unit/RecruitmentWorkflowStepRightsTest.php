@@ -17,7 +17,6 @@ class RecruitmentWorkflowStepRightsTest extends TestCase
 
         $this->assertDatabaseHas('recruitment_workflow_step_rights', [
             'workflow_step_id' => $recruitWorkflowStepRight->workflow_step_id,
-            'role_id' => $recruitWorkflowStepRight->role_id,
             'custom_approval_rules' => $recruitWorkflowStepRight->custom_approval_rules,
             'created_by' => $recruitWorkflowStepRight->created_by,
             'updated_by' => $recruitWorkflowStepRight->updated_by,
@@ -45,7 +44,6 @@ class RecruitmentWorkflowStepRightsTest extends TestCase
     {
         $recruitWorkflowStepRight = RecruitmentWorkflowStepRights::factory()->create();
 
-        $this->assertNotNull($recruitWorkflowStepRight->role);
         $this->assertNotNull($recruitWorkflowStepRight->createdBy);
         $this->assertNotNull($recruitWorkflowStepRight->updatedBy);
     }

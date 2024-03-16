@@ -2,20 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\WfRole;
-use App\Models\Position;
+use App\Models\Institute;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\RolePosition;
 
-class RolePositionFactory extends Factory
+class InstituteFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = RolePosition::class;
+    protected $model = Institute::class;
 
     /**
      * Define the model's default state.
@@ -25,8 +23,9 @@ class RolePositionFactory extends Factory
     public function definition()
     {
         return [
-            'role_id' => WfRole::factory(),
-            'position_id' => Position::factory(),
+            'group_level' => $this->faker->numberBetween(1, 5),
+            'name' => $this->faker->name,
+            'labor_administrator' => User::factory(),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

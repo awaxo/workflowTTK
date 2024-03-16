@@ -11,20 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wf_role_group', function (Blueprint $table) {
+        Schema::create('wf_institute', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('role_id');
-            $table->unsignedBigInteger('group_id');
+            $table->tinyInteger('group_level');
+            $table->string('name');
+            $table->unsignedBigInteger('labor_administrator');
             $table->tinyInteger('deleted')->unsigned()->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
-    
-            // Foreign keys
+
+            $table->foreign('labor_administrator')->references('id')->on('wf_user');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
-            $table->foreign('role_id')->references('id')->on('wf_role');
-            $table->foreign('group_id')->references('id')->on('wf_group');
         });
     }
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wf_role_group');
+        Schema::dropIfExists('wf_institute');
     }
 };

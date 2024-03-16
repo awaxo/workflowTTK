@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\WfRole;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RoleFactory extends Factory
@@ -12,7 +12,7 @@ class RoleFactory extends Factory
      *
      * @var string
      */
-    protected $model = WfRole::class;
+    protected $model = Role::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +22,8 @@ class RoleFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->jobTitle,
-            'description' => $this->faker->sentence
+            'name' => $this->faker->unique()->jobTitle,
+            'guard_name' => 'web',
         ];
     }
 }

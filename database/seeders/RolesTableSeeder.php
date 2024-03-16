@@ -10,8 +10,15 @@ class RolesTableSeeder extends Seeder
     public function run()
     {
         $roles = [
-            'institute1_secretary',
-            'institute2_secretary',
+            'adminisztrator',
+            'penzugyi_osztalyvezeto',
+            'projektkoordinacios_osztalyvezeto',
+            'gazdasagi_igazgatosag_titkarsagvezeto',
+            'foigazgatosag_titkarsagvezeto',
+            'informatikai_osztalyvezeto',
+            'humanpolitikai_osztalyvezeto',
+            'gazdasagi_igazgato',
+            'foigazgato',
         ];
 
         foreach ($roles as $role) {

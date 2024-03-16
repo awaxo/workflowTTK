@@ -15,14 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('tender');
-            $table->unsignedBigInteger('financial_approver_role_id');
             $table->text('clause_template');
             $table->unsignedTinyInteger('deleted')->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            $table->foreign('financial_approver_role_id')->references('id')->on('wf_role');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });

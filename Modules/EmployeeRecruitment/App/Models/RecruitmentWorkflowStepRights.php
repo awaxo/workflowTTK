@@ -3,7 +3,6 @@
 namespace Modules\EmployeeRecruitment\App\Models;
 
 use App\Models\User;
-use App\Models\WfRole;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowStepRightFactory;
@@ -21,21 +20,10 @@ class RecruitmentWorkflowStepRights extends Model
 
     protected $fillable = [
         'workflow_step_id',
-        'role_id',
         'custom_approval_rules',
         'created_by',
         'updated_by',
     ];
-
-    /*public function workflowStep()
-    {
-        return $this->belongsTo(WorkflowStep::class, 'workflow_step_id');
-    }*/
-
-    public function role()
-    {
-        return $this->belongsTo(WfRole::class, 'role_id');
-    }
 
     public function createdBy()
     {

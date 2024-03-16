@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use EmployeeRecruitmentPermissionSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

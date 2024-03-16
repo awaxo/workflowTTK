@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\LaborAdministrator;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +22,6 @@ class WorkgroupTest extends TestCase
 
         // Create users for each role
         $this->leader = User::factory()->create();
-        $this->laborAdministrator = LaborAdministrator::factory()->create();
         $this->createdBy = User::factory()->create();
         $this->updatedBy = User::factory()->create();
     }
@@ -33,14 +31,12 @@ class WorkgroupTest extends TestCase
     {
         $workgroup = Workgroup::factory()->create([
             'leader' => $this->leader->id,
-            'labor_administrator' => $this->laborAdministrator->id,
             'created_by' => $this->createdBy->id,
             'updated_by' => $this->updatedBy->id,
         ]);
 
         $this->assertDatabaseHas('wf_workgroup', [
             'leader' => $this->leader->id,
-            'labor_administrator' => $this->laborAdministrator->id,
             'created_by' => $this->createdBy->id,
             'updated_by' => $this->updatedBy->id,
         ]);
@@ -70,7 +66,6 @@ class WorkgroupTest extends TestCase
         $workgroup = Workgroup::factory()->create();
 
         $this->assertNotNull($workgroup->leader);
-        $this->assertNotNull($workgroup->laborAdministrator);
         $this->assertNotNull($workgroup->createdBy);
         $this->assertNotNull($workgroup->updatedBy);
     }

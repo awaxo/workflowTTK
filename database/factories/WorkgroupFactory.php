@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\LaborAdministrator;
 use App\Models\Workgroup;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,7 +26,6 @@ class WorkgroupFactory extends Factory
             'workgroup_number' => $this->faker->unique()->randomNumber(3),
             'name' => $this->faker->company,
             'leader' => User::factory(),
-            'labor_administrator' => LaborAdministrator::factory(),
             'deleted' => $this->faker->boolean,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),

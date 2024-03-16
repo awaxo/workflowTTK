@@ -14,14 +14,11 @@ return new class extends Migration
         Schema::create('recruitment_workflow_step_rights', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('workflow_step_id');
-            $table->unsignedBigInteger('role_id');
             $table->text('custom_approval_rules')->nullable();
             $table->timestamps();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
-            //$table->foreign('workflow_step_id')->references('id')->on('wf_workflow_step');
-            $table->foreign('role_id')->references('id')->on('wf_role');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });

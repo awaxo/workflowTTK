@@ -18,7 +18,6 @@ class CostCenterTypeTest extends TestCase
         $this->assertDatabaseHas('wf_cost_center_type', [
             'name' => $recruitCostCenterType->name,
             'tender' => $recruitCostCenterType->tender,
-            'financial_approver_role_id' => $recruitCostCenterType->financial_approver_role_id,
             'clause_template' => $recruitCostCenterType->clause_template,
             'created_by' => $recruitCostCenterType->created_by,
             'updated_by' => $recruitCostCenterType->updated_by,
@@ -41,7 +40,6 @@ class CostCenterTypeTest extends TestCase
     {
         $recruitCostCenterType = CostCenterType::factory()->create();
 
-        $this->assertNotNull($recruitCostCenterType->financialApproverRole);
         $this->assertNotNull($recruitCostCenterType->createdBy);
         $this->assertNotNull($recruitCostCenterType->updatedBy);
     }

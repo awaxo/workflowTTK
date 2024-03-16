@@ -5,35 +5,34 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LaborAdministrator extends Model
+class Institute extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'wf_labor_administrator';
+    protected $table = 'wf_institute';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'group_level',
-        'user_id',
+        'name',
+        'labor_administrator',
         'created_by',
         'updated_by'
+    ];
+
+    protected $casts = [
+        'deleted' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'deleted' => 0,
     ];
 
     /**
      * Get the user who is the labor administrator.
      */
-    public function user()
+    public function laborAdministrator()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'labor_administrator');
     }
 
     /**

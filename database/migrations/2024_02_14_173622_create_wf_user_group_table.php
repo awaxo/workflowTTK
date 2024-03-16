@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
     
-            // Define foreign keys and primary key
             $table->foreign('user_id')->references('id')->on('wf_user')->onDelete('cascade');
             $table->foreign('group_id')->references('id')->on('wf_group')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('wf_user');

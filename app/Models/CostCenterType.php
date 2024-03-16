@@ -22,7 +22,6 @@ class CostCenterType extends Model
     protected $fillable = [
         'name',
         'tender',
-        'financial_approver_role_id',
         'clause_template',
         'created_by',
         'updated_by',
@@ -36,11 +35,6 @@ class CostCenterType extends Model
         'tender' => 'boolean',
         'deleted' => 'boolean',
     ];
-
-    public function financialApproverRole()
-    {
-        return $this->belongsTo(WfRole::class, 'financial_approver_role_id');
-    }
 
     public function createdBy()
     {

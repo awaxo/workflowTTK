@@ -2,9 +2,11 @@
 
 namespace Modules\EmployeeRecruitment\App\Providers;
 
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Modules\EmployeeRecruitment\Database\Seeders\EmployeeRecruitmentPermissionSeeder;
 
 class EmployeeRecruitmentServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
+        $this->registerSeeders();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/migrations'));
     }
 
@@ -97,6 +100,11 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
 
         $componentNamespace = str_replace('/', '\\', config('modules.namespace').'\\'.$this->moduleName.'\\'.config('modules.paths.generator.component-class.path'));
         Blade::componentNamespace($componentNamespace, $this->moduleNameLower);
+    }
+
+    public function registerSeeders(): void
+    {
+        DatabaseSeeder::addSeeder(EmployeeRecruitmentPermissionSeeder::class);
     }
 
     /**

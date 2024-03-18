@@ -2,18 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\Group;
 use App\Models\User;
+use App\Models\UserWorkgroup;
+use App\Models\Workgroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class GroupFactory extends Factory
+class UserWorkgroupFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Group::class;
+    protected $model = UserWorkgroup::class;
 
     /**
      * Define the model's default state.
@@ -23,7 +24,9 @@ class GroupFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
+            'user_id' => User::factory(),
+            'workgroup_id' => Workgroup::factory(),
+            'is_lead' => $this->faker->boolean,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

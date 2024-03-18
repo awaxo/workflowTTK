@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserGroup extends Model
+class UserWorkgroup extends Model
 {
     use HasFactory;
 
@@ -14,14 +14,14 @@ class UserGroup extends Model
      *
      * @var string
      */
-    protected $table = 'wf_user_group';
+    protected $table = 'wf_user_workgroup';
 
     /**
      * The primary key associated with the table.
      *
      * @var string
      */
-    protected $primaryKey = ['user_id', 'group_id'];
+    protected $primaryKey = ['user_id', 'workgroup_id'];
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -37,7 +37,7 @@ class UserGroup extends Model
      */
     protected $fillable = [
         'user_id',
-        'group_id',
+        'workgroup_id',
         'is_lead',
         'created_by',
         'updated_by'
@@ -75,7 +75,7 @@ class UserGroup extends Model
      */
     public function group()
     {
-        return $this->belongsTo(Group::class, 'group_id');
+        return $this->belongsTo(Workgroup::class, 'workgroup_id');
     }
 
     /**

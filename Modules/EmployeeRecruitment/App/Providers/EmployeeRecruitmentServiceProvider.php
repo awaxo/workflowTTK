@@ -3,15 +3,16 @@
 namespace Modules\EmployeeRecruitment\App\Providers;
 
 use Database\Seeders\DatabaseSeeder;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
-use Modules\EmployeeRecruitment\Database\Seeders\EmployeeRecruitmentPermissionSeeder;
+use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentPermissionSeeder;
+use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentRolePermissionSeeder;
 
 class EmployeeRecruitmentServiceProvider extends ServiceProvider
 {
     protected string $moduleName = 'EmployeeRecruitment';
-
     protected string $moduleNameLower = 'employeerecruitment';
 
     /**
@@ -104,7 +105,8 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
 
     public function registerSeeders(): void
     {
-        DatabaseSeeder::addSeeder(EmployeeRecruitmentPermissionSeeder::class);
+        DatabaseSeeder::addSeeder(RecruitmentPermissionSeeder::class);
+        DatabaseSeeder::addSeeder(RecruitmentRolePermissionSeeder::class);
     }
 
     /**

@@ -92,4 +92,46 @@ class User extends Authenticatable
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    /**
+     * Determine if the user has the given ability.
+     *
+     * @param  string|array  $ability
+     * @param  array|mixed  $arguments
+     * @return bool
+     */
+    public function can($ability, $arguments = [])
+    {
+        // First, check if the user has the ability directly.
+        if (parent::can($ability, $arguments)) {
+            return true;
+        }
+
+        // Next, check for the ability through substitutions.
+        return $this->hasPermissionThroughSubstitution($ability, $arguments);
+    }
+
+    /**
+     * Check if the user has the given permission through substitution.
+     *
+     * @param  string  $permission
+     * @param  array  $arguments
+     * @return bool
+     */
+    protected function hasPermissionThroughSubstitution($permission, $arguments = [])
+    {
+        // Check for active substitutions
+        $substitutes = RoleSubstitute::where('substitute_user_id', $this->id)
+                                       ->whereDate('start_date', '<=', now())
+                                       ->whereDate('end_date', '>=', now())
+                                       ->get();
+
+        foreach ($substitutes as $substitute) {
+            if ($substitute->role->hasPermissionTo($permission)) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
 }

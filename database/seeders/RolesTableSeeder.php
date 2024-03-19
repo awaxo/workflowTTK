@@ -19,6 +19,14 @@ class RolesTableSeeder extends Seeder
             'humanpolitikai_osztalyvezeto',
             'gazdasagi_igazgato',
             'foigazgato',
+            'titkar_szki',
+            'titkar_aki',
+            'titkar_ei',
+            'titkar_kpi',
+            'titkar_akk',
+            'titkar_szkk',
+            'titkar_gyfl',
+            'nyilvantartas_rogzito_penzugyi_osztaly'
         ];
 
         foreach ($roles as $role) {

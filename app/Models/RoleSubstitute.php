@@ -34,6 +34,11 @@ class RoleSubstitute extends Model
         return $this->belongsTo(User::class, 'substitute_user_id');
     }
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');

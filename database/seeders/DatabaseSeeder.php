@@ -28,7 +28,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        self::addSeeder(RolesTableSeeder::class);
+        // Run the generic seeders first
+        $this->call([
+            RolesTableSeeder::class,
+            UserRolesTableSeeder::class,
+        ]);
 
         foreach (self::$seeders as $seederClass) {
             $this->call($seederClass);

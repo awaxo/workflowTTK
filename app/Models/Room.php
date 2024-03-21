@@ -11,6 +11,8 @@ class Room extends Model
 
     protected $table = 'wf_room';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'workgroup_number',
         'room_number',

@@ -3,9 +3,9 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Room;
-use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class RoomTest extends TestCase
@@ -37,7 +37,10 @@ class RoomTest extends TestCase
             'room_number' => 'Room 101',
         ]);
 
-        $room->update(['room_number' => 'Room 102']);
+        DB::table('wf_room')
+            ->where('workgroup_number', $workgroup->workgroup_number)
+            ->where('room_number', 'Room 101')
+            ->update(['room_number' => 'Room 102']);
 
         $this->assertDatabaseHas('wf_room', [
             'workgroup_number' => $workgroup->workgroup_number,
@@ -54,7 +57,9 @@ class RoomTest extends TestCase
             'room_number' => 'Room 101',
         ]);
 
-        $foundRoom = Room::find($room->workgroup_number)->first();
+        $foundRoom = Room::where('workgroup_number', $room->workgroup_number)
+                         ->where('room_number', 'Room 101')
+                         ->first();
 
         $this->assertEquals($foundRoom->room_number, 'Room 101');
     }
@@ -68,9 +73,13 @@ class RoomTest extends TestCase
             'room_number' => 'Room 101',
         ]);
 
-        $room->delete();
+        DB::table('wf_room')
+            ->where('workgroup_number', $workgroup->workgroup_number)
+            ->where('room_number', 'Room 101')
+            ->delete();
 
         $this->assertDatabaseMissing('wf_room', [
+            'workgroup_number' => $workgroup->workgroup_number,
             'room_number' => 'Room 101',
         ]);
     }

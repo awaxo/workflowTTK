@@ -25,7 +25,6 @@ class InstituteFactory extends Factory
         return [
             'group_level' => $this->faker->numberBetween(1, 5),
             'name' => $this->faker->name,
-            'labor_administrator' => User::factory(),
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

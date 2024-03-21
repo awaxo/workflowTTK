@@ -2,12 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\language\LanguageController;
-use App\Http\Controllers\pages\HomePage;
 use App\Http\Controllers\pages\MiscError;
 use App\Http\Controllers\authentications\LoginBasic;
-use App\Http\Controllers\authentications\RegisterBasic;
-use App\Http\Controllers\pages\Dashboard;
-use App\Http\Controllers\pages\Process;
+use App\Http\Controllers\pages\DashboardController;
+use App\Http\Controllers\pages\InstituteController;
 use App\Http\Controllers\pages\UserController;
 
 /*
@@ -25,7 +23,10 @@ use App\Http\Controllers\pages\UserController;
 //Route::get('/', [HomePage::class, 'index'])->name('pages-home');
 
 // Dashboard
-Route::get('/dashboard', [Dashboard::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+
+// Institutes
+Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);

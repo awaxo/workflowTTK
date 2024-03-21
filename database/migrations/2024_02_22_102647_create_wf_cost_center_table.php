@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('project_coordinator_user_id');
             $table->date('due_date');
             $table->decimal('minimal_order_limit', 10, 2);
+            $table->unsignedTinyInteger('valid_employee_recruitment')->default(1);
             $table->unsignedTinyInteger('deleted')->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');

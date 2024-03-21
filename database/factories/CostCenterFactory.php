@@ -31,6 +31,7 @@ class CostCenterFactory extends Factory
             'project_coordinator_user_id' => User::factory(),
             'due_date' => $this->faker->date(),
             'minimal_order_limit' => $this->faker->randomFloat(2, 0, 10000),
+            'valid_employee_recruitment' => $this->faker->boolean,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

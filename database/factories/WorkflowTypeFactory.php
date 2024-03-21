@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\WorkflowType;
+use App\Models\Workgroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WorkflowTypeFactory extends Factory
@@ -25,6 +26,7 @@ class WorkflowTypeFactory extends Factory
         return [
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
+            'manager_workgroup_id' => Workgroup::factory(),
             'meta_key' => $this->faker->word,
             'meta_value' => $this->faker->word,
             'created_by' => User::factory(),

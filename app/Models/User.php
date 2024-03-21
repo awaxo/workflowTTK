@@ -25,7 +25,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'workgroup_number',
+        'workgroup_id',
         'email_verified_at',
         'password',
         'created_by',
@@ -74,7 +74,7 @@ class User extends Authenticatable
      */
     public function workgroup()
     {
-        return $this->belongsTo(Workgroup::class);
+        return $this->belongsTo(Workgroup::class, 'workgroup_id');
     }
 
     /**

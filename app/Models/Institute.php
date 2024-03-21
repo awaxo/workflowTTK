@@ -14,7 +14,6 @@ class Institute extends Model
     protected $fillable = [
         'group_level',
         'name',
-        'labor_administrator',
         'created_by',
         'updated_by'
     ];
@@ -26,14 +25,6 @@ class Institute extends Model
     protected $attributes = [
         'deleted' => 0,
     ];
-
-    /**
-     * Get the user who is the labor administrator.
-     */
-    public function laborAdministrator()
-    {
-        return $this->belongsTo(User::class, 'labor_administrator');
-    }
 
     /**
      * Get the user who created the labor administrator.

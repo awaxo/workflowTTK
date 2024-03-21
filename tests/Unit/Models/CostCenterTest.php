@@ -24,6 +24,7 @@ class CostCenterTest extends TestCase
             'project_coordinator_user_id' => $recruitCostCenter->project_coordinator_user_id,
             'due_date' => $recruitCostCenter->due_date,
             'minimal_order_limit' => $recruitCostCenter->minimal_order_limit,
+            'valid_employee_recruitment' => $recruitCostCenter->valid_employee_recruitment,
             'deleted' => false,
             'created_by' => $recruitCostCenter->created_by,
             'updated_by' => $recruitCostCenter->updated_by,

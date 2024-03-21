@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('wf_workflow_type', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description', 2000);
+            $table->string('description', 2000)->nullable();
+            // every workflow type belongs to a workgroup, whose leader can cancel it anytime
+            $table->unsignedBigInteger('manager_workgroup_id');
             $table->string('meta_key')->nullable();
             $table->text('meta_value')->nullable();
             $table->tinyInteger('deleted')->unsigned()->default(0);
@@ -22,6 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
 
+            $table->foreign('manager_workgroup_id')->references('id')->on('wf_workgroup');
             $table->foreign('created_by')->references('id')->on('wf_user');
             $table->foreign('updated_by')->references('id')->on('wf_user');
         });

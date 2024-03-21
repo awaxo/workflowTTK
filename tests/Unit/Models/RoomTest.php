@@ -18,12 +18,12 @@ class RoomTest extends TestCase
         $workgroup = Workgroup::factory()->create();
 
         $room = Room::factory()->create([
-            'workgroup_id' => $workgroup->id,
+            'workgroup_number' => $workgroup->workgroup_number,
             'room_number' => 'Room 101'
         ]);
 
         $this->assertDatabaseHas('wf_room', [
-            'workgroup_id' => $workgroup->id,
+            'workgroup_number' => $workgroup->workgroup_number,
             'room_number' => 'Room 101'
         ]);
     }
@@ -33,14 +33,14 @@ class RoomTest extends TestCase
     {
         $workgroup = Workgroup::factory()->create();
         $room = Room::factory()->create([
-            'workgroup_id' => $workgroup->id,
+            'workgroup_number' => $workgroup->workgroup_number,
             'room_number' => 'Room 101',
         ]);
 
         $room->update(['room_number' => 'Room 102']);
 
         $this->assertDatabaseHas('wf_room', [
-            'workgroup_id' => $workgroup->id,
+            'workgroup_number' => $workgroup->workgroup_number,
             'room_number' => 'Room 102',
         ]);
     }
@@ -50,11 +50,11 @@ class RoomTest extends TestCase
     {
         $workgroup = Workgroup::factory()->create();
         $room = Room::factory()->create([
-            'workgroup_id' => $workgroup->id,
+            'workgroup_number' => $workgroup->workgroup_number,
             'room_number' => 'Room 101',
         ]);
 
-        $foundRoom = Room::find($room->id);
+        $foundRoom = Room::find($room->workgroup_number)->first();
 
         $this->assertEquals($foundRoom->room_number, 'Room 101');
     }
@@ -64,7 +64,7 @@ class RoomTest extends TestCase
     {
         $workgroup = Workgroup::factory()->create();
         $room = Room::factory()->create([
-            'workgroup_id' => $workgroup->id,
+            'workgroup_number' => $workgroup->workgroup_number,
             'room_number' => 'Room 101',
         ]);
 

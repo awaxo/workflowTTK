@@ -24,6 +24,7 @@ class WorkflowType extends Model
     protected $fillable = [
         'name',
         'description',
+        'manager_workgroup_id',
         'meta_key',
         'meta_value',
         'created_by',
@@ -47,6 +48,14 @@ class WorkflowType extends Model
     protected $attributes = [
         'deleted' => 0,
     ];
+
+    /**
+     * Get the workgroup that the workflow type belongs to.
+     */
+    public function workgroup()
+    {
+        return $this->belongsTo(Workgroup::class, 'manager_workgroup_id');
+    }
 
     /**
      * Get the user who created the workflow type.

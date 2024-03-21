@@ -12,24 +12,7 @@ class Room extends Model
     protected $table = 'wf_room';
 
     protected $fillable = [
-        'workgroup_id',
+        'workgroup_number',
         'room_number',
-        'created_by',
-        'updated_by',
     ];
-
-    public function workgroup()
-    {
-        return $this->belongsTo(Workgroup::class, 'workgroup_id');
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
 }

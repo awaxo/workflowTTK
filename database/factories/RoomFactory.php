@@ -3,8 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Room;
-use App\Models\Workgroup;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RoomFactory extends Factory
@@ -24,10 +22,8 @@ class RoomFactory extends Factory
     public function definition()
     {
         return [
-            'workgroup_id' => Workgroup::factory(),
+            'workgroup_number' => $this->faker->numerify('###'),
             'room_number' => $this->faker->numerify('Room ###'),
-            'created_by' => User::factory(),
-            'updated_by' => User::factory(),
         ];
     }
 }

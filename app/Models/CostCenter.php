@@ -26,17 +26,20 @@ class CostCenter extends Model
         'project_coordinator_user_id',
         'due_date',
         'minimal_order_limit',
+        'valid_employee_recruitment',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
         'minimal_order_limit' => 'decimal:2',
+        'valid_employee_recruitment' => 'boolean',
         'deleted' => 'boolean',
     ];
 
     protected $attributes = [
         'deleted' => 0,
+        'valid_employee_recruitment' => 1,
     ];
 
     public function type()

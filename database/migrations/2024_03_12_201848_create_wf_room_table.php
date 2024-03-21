@@ -12,16 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wf_room', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('workgroup_id');
+            $table->string('workgroup_number', 5);
             $table->string('room_number', 50);
-            $table->timestamps();
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
-
-            $table->foreign('workgroup_id')->references('id')->on('wf_workgroup');
-            $table->foreign('created_by')->references('id')->on('wf_user');
-            $table->foreign('updated_by')->references('id')->on('wf_user');
         });
     }
 

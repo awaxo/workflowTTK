@@ -7,6 +7,12 @@
         "slug": "pages-home"
     },
     {
+        "url": "/intezetek",
+        "name": "Intézetek",
+        "icon": "menu-icon tf-icons bx bx-buildings",
+        "slug": "pages-institutes"
+    },
+    {
         "url": "/uj-felveteli-kerelem",
         "icon": "menu-icon tf-icons bx bx-directions",
         "name": "Folyamatok",

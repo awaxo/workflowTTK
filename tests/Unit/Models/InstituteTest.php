@@ -20,7 +20,6 @@ class InstituteTest extends TestCase
             'id' => $institution->id,
             'group_level' => $institution->group_level,
             'name' => $institution->name,
-            'labor_administrator' => $institution->labor_administrator,
             'created_by' => $institution->created_by,
             'updated_by' => $institution->updated_by
         ]);

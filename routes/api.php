@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\pages\PermissionController;
+use App\Http\Controllers\pages\RoleController;
 use App\Http\Controllers\pages\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/users', [UserController::class, 'getAllUsers']);
+Route::get('/roles', [RoleController::class, 'getAllRoles']);
+Route::get('/permissions', [PermissionController::class, 'getAllPermissions']);

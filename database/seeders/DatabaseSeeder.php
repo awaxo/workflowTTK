@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
         // Run the generic seeders first
         $this->call([
             RolesTableSeeder::class,
+            PermissionsTableSeeder::class,
             UserRolesTableSeeder::class,
         ]);
 

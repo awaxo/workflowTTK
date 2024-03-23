@@ -25,18 +25,18 @@
         "slug": "pages-user-list"
     },
     {
-        "url": "/auth/login-basic",
-        "name": "Csoportok és jogok",
-        "icon": "menu-icon tf-icons bx bx-group",
+        "url": "/",
+        "name": "Szerepek & Jogok",
+        "icon": "menu-icon tf-icons bx bx-check-shield",
         "slug": "authorizations",
         "submenu": [
             {
-                "url": "/",
-                "name": "Csoportok",
-                "slug": "authorizations-groups"
+                "url": "/szerepkorok",
+                "name": "Szerepkörök",
+                "slug": "authorizations-roles"
             },
             {
-                "url": "/dashboard/crm",
+                "url": "/jogosultsagok",
                 "name": "Jogosultságok",
                 "slug": "authorizations-permissions"
             }

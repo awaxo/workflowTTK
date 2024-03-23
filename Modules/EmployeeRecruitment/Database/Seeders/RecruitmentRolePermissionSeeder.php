@@ -9,13 +9,14 @@ class RecruitmentRolePermissionSeeder extends Seeder
 {
     public function run()
     {
+        // TODO: nem kellene mindent megadni, hanem automatikusan rendeljen hozzá minden permission-t
         $role = Role::findByName('adminisztrator');
         $role->givePermissionTo([
             'read_recruitment',
             'create_recruitment',
             'suspend_recruitment',
             'cancel_recruitment',
-            'approve_email'
+            'approve_email_address'
         ]);
     }
 }

@@ -4,15 +4,12 @@ namespace App\Http\Controllers\pages;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('content.pages.list-users');
+        return view('content.pages.users');
     }
 
     public function getAllUsers()

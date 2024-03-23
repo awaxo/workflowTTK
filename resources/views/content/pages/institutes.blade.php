@@ -18,13 +18,12 @@
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">
-        <span class="text-muted fw-light">Intézetek</span>
-    </h4>
+    <h4 class="py-3 mb-4">Intézetek</h4>
 
     <div class="row g-5">
-        {{-- @foreach($institutes as $institute)
+        @foreach($institutes as $institute)
             <div class="col-lg-3 col-sm-4 col-6 mb-4">
+                <a href="#">
                 <div class="card card-border-shadow-primary h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-2 pb-1">
@@ -44,7 +43,8 @@
                         </p>
                     </div>
                 </div>
+                </a>
             </div>
-        @endforeach --}}
+        @endforeach
     </div>
 @endsection

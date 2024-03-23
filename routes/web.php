@@ -6,6 +6,8 @@ use App\Http\Controllers\pages\MiscError;
 use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\pages\DashboardController;
 use App\Http\Controllers\pages\InstituteController;
+use App\Http\Controllers\pages\PermissionController;
+use App\Http\Controllers\pages\RoleController;
 use App\Http\Controllers\pages\UserController;
 
 /*
@@ -19,21 +21,18 @@ use App\Http\Controllers\pages\UserController;
 |
 */
 
-// Main Page Route
-//Route::get('/', [HomePage::class, 'index'])->name('pages-home');
 
-// Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-
-// Institutes
 Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
+Route::get('/szerepkorok', [RoleController::class, 'index'])->middleware(['auth'])->name('authorizations-roles');
+Route::get('/jogosultsagok', [PermissionController::class, 'index'])->middleware(['auth'])->name('authorizations-permissions');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 
 // pages
 Route::get('/pages/misc-error', [MiscError::class, 'index'])->name('pages-misc-error');
-Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-list-users');
+Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-users');
 
 // Display the login form
 Route::get('/login', [LoginBasic::class, 'index'])->name('login');

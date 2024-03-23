@@ -14,7 +14,7 @@ class RecruitmentPermissionSeeder extends Seeder
             'create_recruitment',
             'suspend_recruitment',
             'cancel_recruitment',
-            'approve_email'
+            'approve_email_address'
         ];
 
         foreach ($permissions as $permission) {

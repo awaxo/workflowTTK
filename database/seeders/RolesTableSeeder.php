@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 
 class RolesTableSeeder extends Seeder
 {
@@ -13,12 +13,12 @@ class RolesTableSeeder extends Seeder
             'adminisztrator',
             'penzugyi_osztalyvezeto',
             'projektkoordinacios_osztalyvezeto',
-            'gazdasagi_igazgatosag_titkarsagvezeto',
-            'foigazgatosag_titkarsagvezeto',
             'informatikai_osztalyvezeto',
             'humanpolitikai_osztalyvezeto',
             'gazdasagi_igazgato',
             'foigazgato',
+            'titkar_foigazgatosag',
+            'titkar_gazdasagi_igazgatosag',
             'titkar_szki',
             'titkar_aki',
             'titkar_ei',

@@ -3,16 +3,21 @@
 namespace Database\Seeders;
 
 use App\Models\Permission;
+use Database\Seeders\Interfaces\IPermissionSeeder;
 use Illuminate\Database\Seeder;
 
-class PermissionsTableSeeder extends Seeder
+class PermissionSeeder extends Seeder implements IPermissionSeeder
 {
-    public function run()
+    public static function getPermissions(): array
     {
-        $permissions = [
+        return [
             'update_global_settings',
         ];
+    }
 
+    public function run()
+    {
+        $permissions = self::getPermissions();
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }

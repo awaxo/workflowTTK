@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
+use Database\Seeders\Interfaces\IPermissionSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -28,15 +30,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Run the generic seeders first
         $this->call([
-            RolesTableSeeder::class,
-            PermissionsTableSeeder::class,
-            UserRolesTableSeeder::class,
+            RoleSeeder::class,
+            PermissionSeeder::class,
+            UserRoleSeeder::class,
         ]);
 
+        Role::findByName('adminisztrator')->givePermissionTo(PermissionSeeder::getPermissions());
+
+        // Run the generic seeders first
         foreach (self::$seeders as $seederClass) {
             $this->call($seederClass);
+
+            // Assign permissions to admin role
+            if (in_array(IPermissionSeeder::class, class_implements($seederClass))) {
+                Role::findByName('adminisztrator')->givePermissionTo($seederClass::getPermissions());
+            }
         }
     }
 }

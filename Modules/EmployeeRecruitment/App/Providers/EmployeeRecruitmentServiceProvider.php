@@ -107,7 +107,6 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
     public function registerSeeders(): void
     {
         DatabaseSeeder::addSeeder(RecruitmentPermissionSeeder::class);
-        DatabaseSeeder::addSeeder(RecruitmentRolePermissionSeeder::class);
         DatabaseSeeder::addSeeder(RecruitmentWorkflowTypeSeeder::class);
     }
 

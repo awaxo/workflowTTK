@@ -2,13 +2,14 @@
 
 namespace Modules\EmployeeRecruitment\App\Providers;
 
+use App\Services\WorkflowRegistry;
 use Database\Seeders\DatabaseSeeder;
 use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentPermissionSeeder;
-use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentRolePermissionSeeder;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentWorkflowTypeSeeder;
 
 class EmployeeRecruitmentServiceProvider extends ServiceProvider
@@ -27,6 +28,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->registerSeeders();
+        $this->registerWorkflow();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/migrations'));
     }
 
@@ -108,6 +110,11 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
     {
         DatabaseSeeder::addSeeder(RecruitmentPermissionSeeder::class);
         DatabaseSeeder::addSeeder(RecruitmentWorkflowTypeSeeder::class);
+    }
+
+    public function registerWorkflow(): void
+    {
+        WorkflowRegistry::register(RecruitmentWorkflow::class);
     }
 
     /**

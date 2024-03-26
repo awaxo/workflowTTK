@@ -14,5 +14,5 @@ interface IStateResponsibility {
      * @param User $user The user to check.
      * @return bool True if the user is responsible, false otherwise.
      */
-    public function isUserResponsible(User $user): bool;
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool;
 }

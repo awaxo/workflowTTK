@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 
@@ -15,7 +16,7 @@ class StateITHeadApproval implements IStateResponsibility {
      * @param User $user The user to check.
      * @return bool True if the user is responsible, false otherwise.
      */
-    public function isUserResponsible(User $user): bool {
-        return $user->hasRole('informatikai_osztalyvezeto');
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+        return $user->can('approve_email_address');
     }
 }

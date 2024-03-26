@@ -6,12 +6,18 @@ use App\Models\AbstractWorkflow;
 use App\Models\Position;
 use App\Models\Workgroup;
 use App\Models\CostCenter;
+use Illuminate\Database\Eloquent\Collection;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
 class RecruitmentWorkflow extends AbstractWorkflow
 {
     use WorkflowTrait;
+
+    public static function fetchActive(): Collection
+    {
+        return RecruitmentWorkflow::where('state', '!=', 'completed')->get();
+    }
 
     protected static function newFactory()
     {

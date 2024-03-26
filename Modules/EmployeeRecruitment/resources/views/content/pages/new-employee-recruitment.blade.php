@@ -161,18 +161,20 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="workgroup_id_1" class="form-label">Csoport 1</label>
-                                    <select class="form-select" id="workgroup_id_1">
-                                        <option value="1" selected>Első</option>
-                                        <option value="2">Második</option>
-                                        <option value="3">Harmadik</option>
+                                    <select class="form-select select2" id="workgroup_id_1">
+                                        <option value="0" selected>Válassz csoportot</option>
+                                        @foreach($workgroups1 as $workgroup)
+                                            <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="workgroup_id_2" class="form-label">Csoport 2</label>
-                                    <select class="form-select" id="workgroup_id_2">
-                                        <option value="1" selected>Első</option>
-                                        <option value="2">Második</option>
-                                        <option value="3">Harmadik</option>
+                                    <select class="form-select select2" id="workgroup_id_2">
+                                        <option value="0" selected></option>
+                                        @foreach($workgroups2 as $workgroup)
+                                            <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-12 d-flex justify-content-between">

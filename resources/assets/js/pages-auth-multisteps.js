@@ -256,8 +256,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
         // You can submit the form
         // stepsValidationForm.submit()
         // or send the form data to server via an Ajax request
-        // To make the demo simple, I just placed an alert
-        alert('Submitted..!!');
       });
 
       stepsValidationNext.forEach(item => {

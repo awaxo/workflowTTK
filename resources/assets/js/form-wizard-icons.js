@@ -55,7 +55,7 @@ $(function () {
     }
     if (wizardIconsBtnSubmit) {
       wizardIconsBtnSubmit.addEventListener('click', event => {
-        alert('Submitted..!!');
+        //
       });
     }
   }

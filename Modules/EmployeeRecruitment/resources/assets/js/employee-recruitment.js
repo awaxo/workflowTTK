@@ -1,3 +1,4 @@
+import Dropzone from 'dropzone';
 import moment from 'moment';
 
 const previewTemplate = `
@@ -118,25 +119,52 @@ $(function () {
     });
 
     // file uploads
+    Dropzone.autoDiscover = false;
+    new Dropzone('#job_description', {
+        ...genericDropzoneOptions,
+        maxFilesize: 20,
+        maxFiles: 1,
+        acceptedFiles: 'application/pdf',
+        paramName: 'file',
+        sending: function(file, xhr, formData) {
+            console.log("Sending file", file.name);
+            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
+            formData.append("type", "job_description");
+        },
+    });
+
     new Dropzone('#personal_data_sheet', {
         ...genericDropzoneOptions,
         maxFilesize: 20,
         maxFiles: 1,
         acceptedFiles: 'application/pdf',
+        sending: function(file, xhr, formData) {
+            console.log("Sending file", file.name);
+            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
+            formData.append("type", "personal_data_sheet");
+        },
     });
-
+    
     new Dropzone('#student_status_verification', {
         ...genericDropzoneOptions,
         maxFilesize: 20,
         maxFiles: 1,
         acceptedFiles: 'application/pdf',
+        sending: function(file, xhr, formData) {
+            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
+            formData.append("type", "student_status_verification");
+        },
     });
 
     new Dropzone('#certificates', {
         ...genericDropzoneOptions,
         maxFilesize: 20,
-        maxFiles: 1,
+        maxFiles: 5,
         acceptedFiles: 'application/pdf',
+        sending: function(file, xhr, formData) {
+            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
+            formData.append("type", "certificates");
+        },
     });
 
     // Initially hide the commute support file upload
@@ -152,6 +180,32 @@ $(function () {
 
     // Initialize popover on a target element
     citizenshipPopover();
+
+    $('.btn-submit').on('click', function (event) {
+        event.preventDefault();
+
+        var formData = {};
+        $('#new-recruitment :input').each(function() {
+            var id = $(this).attr('id');
+            var value = $(this).is(':checkbox') ? $(this).is(':checked') : $(this).val();
+            formData[id] = value;
+        });
+
+        $.ajax({
+            url: '/employee-recruitment',
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (data) {
+                alert('Mentés sikeres!');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // Handle errors here
+            }
+        });
+    });
 });
 
 function citizenshipPopover() {

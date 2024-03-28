@@ -18,11 +18,27 @@ class UserRoleSeeder extends Seeder
         }
 
         // add titkar_aki test user
-        $akiEmail = 'akititkar@b.com';
-        $aki = User::where('email', $akiEmail)->first();
+        $email = 'akititkar@b.com';
+        $user = User::where('email', $email)->first();
 
-        if ($aki) {
-            $aki->assignRole('titkar_aki');
+        if ($user) {
+            $user->assignRole('titkar_aki');
+        }
+
+        // add informatikai_osztalyvezeto test user
+        $akiEmail = 'it@b.com';
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            $user->assignRole('informatikai_osztalyvezeto');
+        }
+
+        // add betekinto test user
+        $akiEmail = 'betekinto@b.com';
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            $user->assignRole('betekinto');
         }
     }
 }

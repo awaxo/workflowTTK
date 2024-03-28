@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\files\FileUploadController;
 use Illuminate\Support\Facades\Route;
 use Modules\EmployeeRecruitment\App\Http\Controllers\pages\EmployeeRecruitmentController;
 
@@ -15,3 +16,7 @@ use Modules\EmployeeRecruitment\App\Http\Controllers\pages\EmployeeRecruitmentCo
 */
 
 Route::get('/uj-felveteli-kerelem', [EmployeeRecruitmentController::class, 'index'])->middleware(['auth'])->name('pages-new-process');
+
+// API routes
+Route::post('/employee-recruitment', [EmployeeRecruitmentController::class, 'store'])->middleware(['auth']);
+Route::post('/file/upload', [FileUploadController::class, 'upload'])->name('file.upload');

@@ -16,6 +16,7 @@ return new class extends Migration
             $this->addGenericFields($table);
 
             // Add the specific fields
+            $table->string('name', 100);
             $table->unsignedTinyInteger('job_ad_exists')->default(1);
             $table->unsignedInteger('applicants_female_count');
             $table->unsignedInteger('applicants_male_count');

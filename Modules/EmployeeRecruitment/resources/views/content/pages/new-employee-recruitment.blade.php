@@ -34,8 +34,8 @@
   'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js',
   'resources/assets/vendor/libs/jquery-timepicker/jquery-timepicker.js',
   'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
-  'resources/assets/vendor/libs/dropzone/dropzone.js'
-])
+  'resources/assets/vendor/libs/dropzone/dropzone.js',
+  ])
 @endsection
 
 @section('page-script')
@@ -117,7 +117,7 @@
                     </div>
                 </div>
                 <div class="bs-stepper-content">
-                    <form onSubmit="return false">
+                    <form onSubmit="return false" id="new-recruitment">
                         <!-- Data section 1 -->
                         <div id="data-section-1" class="content">
                             <div class="content-header mb-3">
@@ -126,7 +126,7 @@
                             </div>
                             <div class="row g-3">
                                 <div class="col-sm-4">
-                                    <label class="form-label" for="last_name">Név</label>
+                                    <label class="form-label" for="name">Név</label>
                                     <input type="text" id="name" class="form-control" />
                                 </div>
                                 <div class="col-sm-8">
@@ -211,8 +211,8 @@
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
-                                    <label for="personal_data_sheet" class="form-label">Munkaköri leírás</label>
-                                    <div class="dropzone needsclick" id="personal_data_sheet">
+                                    <label for="job_description" class="form-label">Munkaköri leírás</label>
+                                    <div class="dropzone needsclick" id="job_description">
                                         <div class="dz-message needsclick">
                                         Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                         </div>
@@ -651,8 +651,5 @@
             </div>
         </div>
         <!-- /Vertical Wizard -->
-        
-        <!-- Because of a bug, this hidden wizard-numbered is required to appear vertical wizard correctly -->
-        <input type="hidden" class="wizard-numbered" />
     </div>
 @endsection

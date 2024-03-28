@@ -28,7 +28,7 @@ $(function () {
 (function () {
   // Numbered Wizard
   // --------------------------------------------------------------------
-  const wizardNumbered = document.querySelector('.wizard-numbered'),
+  /*const wizardNumbered = document.querySelector('.wizard-numbered'),
     wizardNumberedBtnNextList = [].slice.call(wizardNumbered.querySelectorAll('.btn-next')),
     wizardNumberedBtnPrevList = [].slice.call(wizardNumbered.querySelectorAll('.btn-prev')),
     wizardNumberedBtnSubmit = wizardNumbered.querySelector('.btn-submit');
@@ -53,10 +53,10 @@ $(function () {
     }
     if (wizardNumberedBtnSubmit) {
       wizardNumberedBtnSubmit.addEventListener('click', event => {
-        alert('Submitted..!!');
+        //
       });
     }
-  }
+  }*/
 
   // Vertical Wizard
   // --------------------------------------------------------------------
@@ -86,14 +86,14 @@ $(function () {
 
     if (wizardVerticalBtnSubmit) {
       wizardVerticalBtnSubmit.addEventListener('click', event => {
-        alert('Submitted..!!');
+        //
       });
     }
   }
 
   // Modern Wizard
   // --------------------------------------------------------------------
-  const wizardModern = document.querySelector('.wizard-modern-example'),
+  /*const wizardModern = document.querySelector('.wizard-modern-example'),
     wizardModernBtnNextList = [].slice.call(wizardModern.querySelectorAll('.btn-next')),
     wizardModernBtnPrevList = [].slice.call(wizardModern.querySelectorAll('.btn-prev')),
     wizardModernBtnSubmit = wizardModern.querySelector('.btn-submit');
@@ -120,11 +120,11 @@ $(function () {
         alert('Submitted..!!');
       });
     }
-  }
+  }*/
 
   // Modern Vertical Wizard
   // --------------------------------------------------------------------
-  const wizardModernVertical = document.querySelector('.wizard-modern-vertical'),
+  /*const wizardModernVertical = document.querySelector('.wizard-modern-vertical'),
     wizardModernVerticalBtnNextList = [].slice.call(wizardModernVertical.querySelectorAll('.btn-next')),
     wizardModernVerticalBtnPrevList = [].slice.call(wizardModernVertical.querySelectorAll('.btn-prev')),
     wizardModernVerticalBtnSubmit = wizardModernVertical.querySelector('.btn-submit');
@@ -151,5 +151,5 @@ $(function () {
         alert('Submitted..!!');
       });
     }
-  }
+  }*/
 })();

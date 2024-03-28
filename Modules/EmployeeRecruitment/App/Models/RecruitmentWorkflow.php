@@ -7,6 +7,7 @@ use App\Models\Position;
 use App\Models\Workgroup;
 use App\Models\CostCenter;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
@@ -31,7 +32,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
         parent::__construct($attributes);
 
         $this->fillable = array_merge($this->fillable, [
-            // recruitment specific fields
+            'name',
             'job_ad_exists',
             'applicants_female_count',
             'applicants_male_count',

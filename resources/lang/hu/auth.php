@@ -3,6 +3,7 @@
 return [
     'roles' => [
         'adminisztrator' => 'Adminisztrátor',
+        'betekinto' => 'Betekintő',
         'penzugyi_osztalyvezeto' => 'Pénzügyi osztályvezető',
         'projektkoordinacios_osztalyvezeto' => 'Projektkoordinációs osztályvezető',
         'informatikai_osztalyvezeto' => 'Informatikai osztályvezető',

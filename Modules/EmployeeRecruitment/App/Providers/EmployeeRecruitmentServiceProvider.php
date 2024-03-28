@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentPermissionSeeder;
+use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentRolePermissionSeeder;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentWorkflowTypeSeeder;
 
 class EmployeeRecruitmentServiceProvider extends ServiceProvider
@@ -110,6 +111,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
     {
         DatabaseSeeder::addSeeder(RecruitmentPermissionSeeder::class);
         DatabaseSeeder::addSeeder(RecruitmentWorkflowTypeSeeder::class);
+        DatabaseSeeder::addSeeder(RecruitmentRolePermissionSeeder::class);
     }
 
     public function registerWorkflow(): void

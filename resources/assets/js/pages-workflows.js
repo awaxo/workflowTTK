@@ -3,12 +3,27 @@ import moment from 'moment';
 $(function() {
     'use strict';
   
-    $('.datatables-permissions').DataTable({
-        ajax: '/api/permissions',
+    $('.datatables-workflows').DataTable({
+        ajax: '/api/workflows',
         columns: [
             { data: 'id', visible: false, searchable: false },
-            { data: 'name_readable' },
-            { data: 'users_count' },
+            { data: 'workflow_type' },
+            { data: 'state' },
+            { data: 'initiator_workgroup' },
+            { data: 'updated_by_name' },
+            { 
+                data: 'updated_at',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD HH:mm:ss');
+                }
+            },
+            { data: 'created_by_name' },
+            { 
+                data: 'created_at',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD HH:mm:ss');
+                }
+            },
         ],
         columnDefs: [
             {
@@ -20,30 +35,6 @@ $(function() {
                 searchable: false,
                 render: function(data, type, full, meta) {
                     return '';
-                }
-            },
-            {
-                // Users count
-                targets: 2,
-                responsivePriority: 3,
-                render: function(data, type, full, meta) {
-                    let $roles_count = full['roles_count'];
-
-                    var $row_output = '';
-
-                    if ($roles_count === 0) {
-                        $row_output = '<span class="badge bg-label-warning m-1">' +
-                            $roles_count +
-                            ' felhasználó</span>';
-                    } else {
-                        $row_output = '<a href="/szerepkorok/jogosultsag/' + full['name'] + '">' +
-                            '<span class="badge bg-label-primary m-1">' +
-                            $roles_count +
-                            ' felhasználó</span>' +
-                            '</a>';
-                    }
-
-                    return $row_output;
                 }
             },
         ],

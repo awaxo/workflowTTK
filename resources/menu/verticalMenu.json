@@ -13,10 +13,10 @@
         "slug": "pages-institutes"
     },
     {
-        "url": "/uj-felveteli-kerelem",
-        "icon": "menu-icon tf-icons bx bx-directions",
+        "url": "/folyamatok",
         "name": "Folyamatok",
-        "slug": "pages-new-employee-recruitment"
+        "icon": "menu-icon tf-icons bx bx-directions",
+        "slug": "pages-workflows"        
     },
     {
         "url": "/felhasznalok",

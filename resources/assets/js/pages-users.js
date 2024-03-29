@@ -2,9 +2,11 @@ import moment from 'moment';
 
 $(function() {
     'use strict';
+
+    let apiEndpoint = $('.datatables-users').data('api-endpoint');
   
     $('.datatables-users').DataTable({
-        ajax: '/api/users',
+        ajax: apiEndpoint,
         columns: [
             { data: '' },
             { data: 'id', visible: false, searchable: false },
@@ -23,40 +25,6 @@ $(function() {
                 searchable: false,
                 render: function(data, type, full, meta) {
                     return '';
-                }
-            },
-            {
-                // Avatar image/badge, Name
-                targets: 2,
-                responsivePriority: 4,
-                render: function(data, type, full, meta) {
-                    let $user_img = full['avatar'],
-                        $name = full['full_name'],
-                        $initials;
-
-                    /*if ($user_img) {
-                        // For Avatar image
-                        var $output =
-                        '<img src="' + assetsPath + '/img/avatars/' + $user_img + '" alt="Avatar" class="rounded-circle">';
-                    } else {
-                        // For Avatar badge
-                        var $state = 'primary';
-                        $name = full['full_name'],
-                        $initials = $name.match(/\b\w/g) || [];
-                        $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-                        $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
-                    }*/
-
-                    // Creates full output for row
-                    var $row_output =
-                        '<div class="d-flex justify-content-start align-items-center">' +
-                            '<div class="d-flex flex-column">' +
-                                '<span class="emp_name text-truncate">' +
-                                    $name +
-                                '</span>' +
-                            '</div>' +
-                        '</div>';
-                    return $row_output;
                 }
             },
             {

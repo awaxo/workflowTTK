@@ -41,7 +41,7 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-datatable table-responsive pt-0">
-                    <table class="datatables-roles table border-top">
+                    <table class="datatables-roles table border-top" data-api-endpoint="{{ $apiEndpoint }}">
                         <thead>
                             <tr>
                                 <th></th>

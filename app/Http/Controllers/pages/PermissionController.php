@@ -38,7 +38,7 @@ class PermissionController extends Controller
         ->map(function ($permission) use ($mergedPermissions) {
             // Localize the permission names based on merged permissions
             $localizedPermission = $mergedPermissions[$permission->name] ?? $permission->name;
-            $permission->name = $localizedPermission;
+            $permission->name_readable = $localizedPermission;
             return $permission;
         });
 

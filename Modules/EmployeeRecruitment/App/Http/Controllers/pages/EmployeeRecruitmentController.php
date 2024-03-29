@@ -37,17 +37,17 @@ class EmployeeRecruitmentController extends Controller
         $validatedData = $request->all();
 
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
+
         $validatedData['workflow_type_id'] = $workflowType->id;
         $validatedData['created_by'] = auth()->user()->id;
         $validatedData['updated_by'] = auth()->user()->id;
         /*$validatedData['personal_data_sheet'] = $personalDataSheetPath;
         $validatedData['student_status_verification'] = $studentStatusVerificationPath;
         $validatedData['certificates'] = $certificatesPaths;*/
-
-        //Log::debug($validatedData);
         $recruitment = new RecruitmentWorkflow();
         $recruitment->state = 'it_head_approval';
         $recruitment->workflow_type_id = $workflowType->id;
+        $recruitment->initiator_workgroup_id = $validatedData['workgroup_id_1'] != 800 ? $validatedData['workgroup_id_1'] : $validatedData['workgroup_id_2'];
         $recruitment->name = $validatedData['name'];
         $recruitment->created_by = auth()->user()->id;
         $recruitment->updated_by = auth()->user()->id;
@@ -67,6 +67,14 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->weekly_working_hours = $validatedData['weekly_working_hours'];
         $recruitment->work_start_monday = $validatedData['work_start_monday'];
         $recruitment->work_end_monday = $validatedData['work_end_monday'];
+        $recruitment->work_start_tuesday = $validatedData['work_start_tuesday'];
+        $recruitment->work_end_tuesday = $validatedData['work_end_tuesday'];
+        $recruitment->work_start_wednesday = $validatedData['work_start_wednesday'];
+        $recruitment->work_end_wednesday = $validatedData['work_end_wednesday'];
+        $recruitment->work_start_thursday = $validatedData['work_start_thursday'];
+        $recruitment->work_end_thursday = $validatedData['work_end_thursday'];
+        $recruitment->work_start_friday = $validatedData['work_start_friday'];
+        $recruitment->work_end_friday = $validatedData['work_end_friday'];
         $recruitment->email = $validatedData['email'];
 
         //$recruitment->fill($validatedData);

@@ -2,12 +2,14 @@ import moment from 'moment';
 
 $(function() {
     'use strict';
+
+    let apiEndpoint = $('.datatables-roles').data('api-endpoint');
   
     $('.datatables-roles').DataTable({
-        ajax: '/api/roles',
+        ajax: apiEndpoint,
         columns: [
             { data: 'id', visible: false, searchable: false },
-            { data: 'name' },
+            { data: 'name_readable' },
             { data: 'users_count' },
         ],
         columnDefs: [
@@ -36,7 +38,7 @@ $(function() {
                             $users_count +
                             ' felhasználó</span>';
                     } else {
-                        $row_output = '<a href="">' +
+                        $row_output = '<a href="/felhasznalok/szerepkor/' + full['name'] + '">' +
                             '<span class="badge bg-label-primary m-1">' +
                             $users_count +
                             ' felhasználó</span>' +

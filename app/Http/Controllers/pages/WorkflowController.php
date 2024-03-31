@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\pages;
 
 use App\Http\Controllers\Controller;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use App\Services\WorkflowVisibilityService;
+use Illuminate\Support\Facades\Auth;
 
 class WorkflowController extends Controller
 {
@@ -12,28 +13,20 @@ class WorkflowController extends Controller
         return view('content.pages.workflows');
     }
 
-    // TODO: ideiglenes megoldás, amíg nincs általánosítva a workflow kezelés, mert itt nem hivatkozhatunk specifikus workflow osztályokra
     public function getAllWorkflows()
     {
-        $workflows = RecruitmentWorkflow::query()
-            ->select([
-                'recruitment_workflow.*',
-                'wf_workflow_type.name as workflow_type', 
-                'initiator_workgroup.workgroup_number as initiator_workgroup', 
-                'updatedBy.name as updated_by_name', 
-                'createdBy.name as created_by_name'
-            ])
-            ->join('wf_workflow_type', 'recruitment_workflow.workflow_type_id', '=', 'wf_workflow_type.id')
-            ->join('wf_workgroup as initiator_workgroup', 'recruitment_workflow.initiator_workgroup_id', '=', 'initiator_workgroup.id')
-            ->join('wf_user as updatedBy', 'recruitment_workflow.updated_by', '=', 'updatedBy.id')
-            ->join('wf_user as createdBy', 'recruitment_workflow.created_by', '=', 'createdBy.id')
-            ->where('recruitment_workflow.deleted', '=', false)
-            ->get();
+        $wfService = new WorkflowVisibilityService();
 
-        // TODO: map függvény, mint a RoleController-nél
-        foreach ($workflows as $workflow) {
-            $workflow->state = __('states.' . $workflow->state);
-        }
+        $workflows = $wfService->getVisibleWorkflows(Auth::user())
+            ->map(function ($workflow) {
+                $workflow->workflow_type_name = $workflow->workflow_type["name"];
+                $workflow->initiator_workgroup_number = $workflow->initiator_workgroup["workgroup_number"];
+                $workflow->updated_by_name = $workflow->updated_by["name"];
+                $workflow->created_by_name = $workflow->created_by["name"];
+                $workflow->state = __('states.' . $workflow->state);
+
+                return $workflow;
+            });
 
         return response()->json(['data' => $workflows]);
     }

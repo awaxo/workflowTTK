@@ -53,3 +53,17 @@ Route::post('/login', [LoginBasic::class, 'authenticate']);
 Route::post('/logout', [LoginBasic::class, 'logout'])->name('logout');
 
 //Route::get('/auth/register-basic', [RegisterBasic::class, 'index'])->name('auth-register-basic');
+
+
+// API routes
+Route::prefix('api')->middleware(['auth'])->group(function () {
+    Route::get('/users', [UserController::class, 'getAllUsers']);
+    Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
+    Route::get('/roles/permission/{permissionName}', [RoleController::class, 'getRolesByPermission']);
+
+    Route::get('/roles', [RoleController::class, 'getAllRoles']);
+
+    Route::get('/permissions', [PermissionController::class, 'getAllPermissions']);
+
+    Route::get('/workflows', [WorkflowController::class, 'getAllWorkflows']);
+});

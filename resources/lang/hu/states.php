@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'it_head_approval' => 'Email cím jóváhagyására vár',
-    'supervisor_approval' => 'Témavezető jóváhagyására vár',
+    'it_head_approval' => 'Email cím jóváhagyás',
+    'supervisor_approval' => 'Témavezető jóváhagyás',
 ];

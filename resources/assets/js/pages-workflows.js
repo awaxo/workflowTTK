@@ -7,9 +7,9 @@ $(function() {
         ajax: '/api/workflows',
         columns: [
             { data: 'id', visible: false, searchable: false },
-            { data: 'workflow_type' },
+            { data: 'workflow_type_name' },
             { data: 'state' },
-            { data: 'initiator_workgroup' },
+            { data: 'initiator_workgroup_number' },
             { data: 'updated_by_name' },
             { 
                 data: 'updated_at',
@@ -35,6 +35,28 @@ $(function() {
                 searchable: false,
                 render: function(data, type, full, meta) {
                     return '';
+                }
+            },
+            {
+                // State
+                targets: 2,
+                responsivePriority: 3,
+                render: function(data, type, full, meta) {
+                    let $is_user_responsible = full['is_user_responsible'];
+
+                    var $row_output = '';
+
+                    if ($is_user_responsible) {
+                        $row_output = '<a href="#">' +
+                            '<span class="badge bg-label-info m-1">' +
+                            data +
+                            '</span></a>';
+                    } else {
+                        $row_output = '<span class="badge bg-label-secondary m-1">' +
+                            data + '</span>';
+                    }
+
+                    return $row_output;
                 }
             },
         ],

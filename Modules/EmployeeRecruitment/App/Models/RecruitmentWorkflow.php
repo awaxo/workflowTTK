@@ -15,11 +15,6 @@ class RecruitmentWorkflow extends AbstractWorkflow
 {
     use WorkflowTrait;
 
-    public static function fetchActive(): Collection
-    {
-        return RecruitmentWorkflow::where('state', '!=', 'completed')->get();
-    }
-
     protected static function newFactory()
     {
         return RecruitmentWorkflowFactory::new();

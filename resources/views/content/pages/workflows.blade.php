@@ -49,9 +49,9 @@
                                 <th>Státusz</th>
                                 <th>Folyamatindító</th>
                                 <th>Utolsó módosító</th>
-                                <th>Utolsó módosítás dátuma</th>
+                                <th>Utolsó módosítás</th>
                                 <th>Létrehozó</th>
-                                <th>Létrehozás dátuma</th>
+                                <th>Létrehozás</th>
                             </tr>
                         </thead>
                     </table>

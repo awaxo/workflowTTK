@@ -26,7 +26,7 @@ class UserRoleSeeder extends Seeder
         }
 
         // add informatikai_osztalyvezeto test user
-        $akiEmail = 'it@b.com';
+        $email = 'it@b.com';
         $user = User::where('email', $email)->first();
 
         if ($user) {
@@ -34,7 +34,7 @@ class UserRoleSeeder extends Seeder
         }
 
         // add betekinto test user
-        $akiEmail = 'betekinto@b.com';
+        $email = 'betekinto@b.com';
         $user = User::where('email', $email)->first();
 
         if ($user) {

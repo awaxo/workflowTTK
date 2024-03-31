@@ -15,13 +15,23 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
     use HasFactory;
     use WorkflowTrait;
 
-    abstract public static function fetchActive(): Collection;
     abstract protected static function newFactory();
+
+    /**
+     * Fetch active workflows.
+     *
+     * @return Collection|AbstractWorkflow[]
+     */
+    public static function fetchActive(): Collection
+    {
+        return static::where('state', '!=', 'completed')->with(['workflowType', 'initiatorWorkgroup', 'createdBy', 'updatedBy'])->get();
+    }
 
     protected $fillable = [
         'workflow_type_id',
         'workflow_deadline',
         'state',
+        'initiator_workgroup_id',
         'meta_key',
         'meta_value',
         'created_by',
@@ -39,6 +49,11 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
     public function workflowType()
     {
         return $this->belongsTo(WorkflowType::class, 'workflow_type_id');
+    }
+
+    public function initiatorWorkgroup()
+    {
+        return $this->belongsTo(Workgroup::class, 'initiator_workgroup_id');
     }
 
     public function createdBy(): BelongsTo

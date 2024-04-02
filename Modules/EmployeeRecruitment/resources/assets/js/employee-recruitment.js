@@ -180,6 +180,11 @@ $(function () {
 
     // Initialize popover on a target element
     citizenshipPopover();
+    // Filter position options based on selected type
+    filterPositionOptions();
+    // Filter employee room options based on selected workgroups
+    filterEmployeeRoomOptions();
+
 
     $('.btn-submit').on('click', function (event) {
         event.preventDefault();
@@ -221,3 +226,63 @@ function citizenshipPopover() {
         }
     });
 }
+
+// Filtering position
+function filterPositionOptions() {
+    filterPositionIdOptions('kutatói');
+
+    $('#position_type').on('change', function() {
+        let selectedType = $(this).val();
+        filterPositionIdOptions(selectedType);
+    });
+}
+
+function filterPositionIdOptions(type) {
+    // Show only options where data-type = selected type
+    $('#position_id option').each(function() {
+        let optionType = $(this).data('type');
+        if (optionType === type) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+
+    // Reset the selected option
+    $('#position_id').val('');
+}
+// End of filtering position
+
+// Filtering employee room
+let originalEmployeeRoomOptions = $('#employee_room').html();
+
+function filterEmployeeRoomOptions() {
+    if (!originalEmployeeRoomOptions) {
+        originalEmployeeRoomOptions = $('#employee_room').html();
+    }
+
+    $('#workgroup_id_1, #workgroup_id_2').on('change', filterEmployeeRoomIdOptions);
+
+    // Trigger change to refresh the employee_room combo based on current selections
+    $('#workgroup_id_1, #workgroup_id_2').trigger('change');
+}
+
+function filterEmployeeRoomIdOptions() {
+    let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
+    let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
+
+    // Restore the original options in the employee room select
+    $('#employee_room').html(originalEmployeeRoomOptions);
+
+    // Filter and remove options
+    $('#employee_room option').filter(function() {
+        let optionWorkgroup = $(this).data('workgroup');
+        return optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
+    }).remove();
+
+    // Refresh Select2 to apply changes
+    $('#employee_room').select2();
+    // Clear the selection
+    $('#employee_room').val(null).trigger('change');
+}
+// End of filtering employee room

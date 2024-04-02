@@ -162,18 +162,18 @@
                                 <div class="col-sm-4">
                                     <label for="workgroup_id_1" class="form-label">Csoport 1</label>
                                     <select class="form-select select2" id="workgroup_id_1">
-                                        <option value="0" selected>Válassz csoportot</option>
+                                        <option selected>Válassz csoportot</option>
                                         @foreach($workgroups1 as $workgroup)
-                                            <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
+                                            <option value="{{ $workgroup->id }}" data-workgroup="{{ $workgroup->workgroup_number }}">{{ $workgroup->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="workgroup_id_2" class="form-label">Csoport 2</label>
                                     <select class="form-select select2" id="workgroup_id_2">
-                                        <option value="0" selected></option>
+                                        <option selected></option>
                                         @foreach($workgroups2 as $workgroup)
-                                            <option value="{{ $workgroup->id }}">{{ $workgroup->name }}</option>
+                                            <option value="{{ $workgroup->id }}" data-workgroup="{{ $workgroup->workgroup_number }}">{{ $workgroup->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -199,15 +199,16 @@
                                 <div class="col-sm-4">
                                     <label for="position_type" class="form-label">Munkakör típusa</label>
                                     <select class="form-select" id="position_type">
-                                        <option value="1" selected>Kutatói</option>
-                                        <option value="2">Nem kutatói</option>
+                                        <option value="kutatói" selected>Kutatói</option>
+                                        <option value="nem-kutatói">Nem kutatói</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="position_id" class="form-label">Munkakör</label>
                                     <select class="form-select" id="position_id">
-                                        <option value="1" selected>Munkakör 1</option>
-                                        <option value="2">Munkakör 2</option>
+                                        @foreach($positions as $position)
+                                            <option value="{{ $position->id }}" data-type="{{ $position->type }}">{{ $position->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
@@ -260,10 +261,11 @@
                                 <p class="mb-0"><strong>Alapbér</strong></p>
                                 <div class="col-sm-6">
                                     <label for="base_salary_cost_center_1" class="form-label">Költséghely 1</label>
-                                    <select class="form-select" id="base_salary_cost_center_1">
-                                        <option value="1" selected>Első költséghely</option>
-                                        <option value="2">Második költséghely</option>
-                                        <option value="3">Harmadik költséghely</option>
+                                    <select class="form-select select2" id="base_salary_cost_center_1">
+                                        <option selected>Válassz költséghelyet</option>
+                                        @foreach($costcenters as $costcenter)
+                                            <option value="{{ $costcenter->id }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
@@ -272,11 +274,11 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <label for="base_salary_cost_center_2" class="form-label">Költséghely 2</label>
-                                    <select class="form-select" id="base_salary_cost_center_2">
+                                    <select class="form-select select2" id="base_salary_cost_center_2">
                                         <option selected>Válassz költséghelyet</option>
-                                        <option value="1">Első költséghely</option>
-                                        <option value="2">Második költséghely</option>
-                                        <option value="3">Harmadik költséghely</option>
+                                        @foreach($costcenters as $costcenter)
+                                            <option value="{{ $costcenter->id }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
@@ -285,11 +287,11 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <label for="base_salary_cost_center_3" class="form-label">Költséghely 3</label>
-                                    <select class="form-select" id="base_salary_cost_center_3">
+                                    <select class="form-select select2" id="base_salary_cost_center_3">
                                         <option selected>Válassz költséghelyet</option>
-                                        <option value="1">Első költséghely</option>
-                                        <option value="2">Második költséghely</option>
-                                        <option value="3">Harmadik költséghely</option>
+                                        @foreach($costcenters as $costcenter)
+                                            <option value="{{ $costcenter->id }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
@@ -302,11 +304,11 @@
                                 <p class="mb-0 mt-0"><strong>Egészségügyi pótlék</strong></p>
                                 <div class="col-sm-6">
                                     <label for="health_allowance_cost_center_4" class="form-label">Költséghely 4</label>
-                                    <select class="form-select" id="health_allowance_cost_center_4">
+                                    <select class="form-select select2" id="health_allowance_cost_center_4">
                                         <option selected>Válassz költséghelyet</option>
-                                        <option value="1">Első költséghely</option>
-                                        <option value="2">Második költséghely</option>
-                                        <option value="3">Harmadik költséghely</option>
+                                        @foreach($costcenters as $costcenter)
+                                            <option value="{{ $costcenter->id }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
@@ -319,11 +321,11 @@
                                 <p class="mb-0 mt-0"><strong>Vezetői pótlék</strong></p>
                                 <div class="col-sm-4">
                                     <label for="management_allowance_cost_center_5" class="form-label">Költséghely 5</label>
-                                    <select class="form-select" id="management_allowance_cost_center_5">
+                                    <select class="form-select select2" id="management_allowance_cost_center_5">
                                         <option selected>Válassz költséghelyet</option>
-                                        <option value="1">Első költséghely</option>
-                                        <option value="2">Második költséghely</option>
-                                        <option value="3">Harmadik költséghely</option>
+                                        @foreach($costcenters as $costcenter)
+                                            <option value="{{ $costcenter->id }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
@@ -340,11 +342,11 @@
                                 <p class="mb-0 mt-0"><strong>Bérpótlék 1</strong></p>
                                 <div class="col-sm-4">
                                     <label for="extra_pay_1_cost_center_6" class="form-label">Költséghely 6</label>
-                                    <select class="form-select" id="extra_pay_1_cost_center_6">
+                                    <select class="form-select select2" id="extra_pay_1_cost_center_6">
                                         <option selected>Válassz költséghelyet</option>
-                                        <option value="1">Első költséghely</option>
-                                        <option value="2">Második költséghely</option>
-                                        <option value="3">Harmadik költséghely</option>
+                                        @foreach($costcenters as $costcenter)
+                                            <option value="{{ $costcenter->id }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
@@ -361,11 +363,11 @@
                                 <p class="mb-0 mt-0"><strong>Bérpótlék 2</strong></p>
                                 <div class="col-sm-4">
                                     <label for="extra_pay_2_cost_center_7" class="form-label">Költséghely 7</label>
-                                    <select class="form-select" id="extra_pay_2_cost_center_7">
+                                    <select class="form-select select2" id="extra_pay_2_cost_center_7">
                                         <option selected>Válassz költséghelyet</option>
-                                        <option value="1">Első költséghely</option>
-                                        <option value="2">Második költséghely</option>
-                                        <option value="3">Harmadik költséghely</option>
+                                        @foreach($costcenters as $costcenter)
+                                            <option value="{{ $costcenter->id }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
@@ -502,15 +504,15 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="entry_permissions" class="form-label">Belépési jogosultságok</label>
-                                    <select class="selectpicker w-100" id="entry_permissions" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <select class="selectpicker w-100" id="entry_permissions" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
                                         <optgroup label="Általános belépési engedélyek">
-                                            <option value="1">Autó behajtás</option>
-                                            <option value="2">Kerékpár behajtás</option>
+                                            <option value="auto">Autó behajtás</option>
+                                            <option value="kerekpar">Kerékpár behajtás</option>
                                         </optgroup>
                                         <optgroup label="Intézményi belépési engedélyek">
-                                            <option value="3">Helység 1</option>
-                                            <option value="4">Szoba 2</option>
-                                            <option value="4">Raktár 1</option>
+                                            @foreach($rooms as $room)
+                                                <option value="{{ $room->room_number }}" data-workgroup="{{ $room->workgroup_number }}">{{ $room->room_number }}</option>
+                                            @endforeach
                                         </optgroup>
                                     </select>
                                 </div>
@@ -520,11 +522,11 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="employee_room" class="form-label">Dolgozószoba</label>
-                                    <select class="form-select" id="employee_room">
+                                    <select class="form-select select2" id="employee_room">
                                         <option selected>Válassz dolgozószobát</option>
-                                        <option value="1">Szoba 1</option>
-                                        <option value="2">Szoba 2</option>
-                                        <option value="3">Szoba 3</option>
+                                        @foreach($rooms as $room)
+                                            <option value="{{ $room->room_number }}" data-workgroup="{{ $room->workgroup_number }}">{{ $room->room_number }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
@@ -533,23 +535,30 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="external_access_rights" class="form-label">Hozzáférési jogosultságok</label>
-                                    <select class="selectpicker w-100" id="external_access_rights" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
-                                        <option value="1">Hozzáférés 1</option>
-                                        <option value="2">Hozzáférés 2</option>
-                                        <option value="3">Hozzáférés 3</option>
+                                    <select class="selectpicker w-100" id="external_access_rights" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                        @foreach($externalAccessRights as $externalAccessRight)
+                                            <option value="{{ $externalAccessRight->id }}">{{ $externalAccessRight->external_system }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="required_tools" class="form-label">Munkavégzéshez szükséges eszközök</label>
-                                    <select class="selectpicker w-100" id="required_tools" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
-                                        <option value="1">Eszköz 1</option>
-                                        <option value="2">Eszköz 2</option>
-                                        <option value="3">Eszköz 3</option>
+                                    <select class="selectpicker w-100" id="required_tools" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                        <option value="asztal">asztal</option>
+                                        <option value="szék">szék</option>
+                                        <option value="asztali_szamitogep">asztali számítógép</option>
+                                        <option value="laptop">laptop</option>
+                                        <option value="laptop_taska">laptop táska</option>
+                                        <option value="monitor">monitor</option>
+                                        <option value="billentyuzet">billentyűzet</option>
+                                        <option value="eger">egér</option>
+                                        <option value="dokkolo">dokkoló</option>
+                                        <option value="mobiltelefon">mobiltelefon</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
                                     <label for="available_tools" class="form-label">Munkavégzéshez rendelkezésre álló eszközök</label>
-                                    <select class="selectpicker w-100" id="available_tools" placeholder="Kérjük válassz" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                    <select class="selectpicker w-100" id="available_tools" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
                                         <option value="1">Eszköz 1</option>
                                         <option value="2">Eszköz 2</option>
                                         <option value="3">Eszköz 3</option>

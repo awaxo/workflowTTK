@@ -3,6 +3,10 @@
 namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 
 use App\Http\Controllers\Controller;
+use App\Models\CostCenter;
+use App\Models\ExternalAccessRight;
+use App\Models\Position;
+use App\Models\Room;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use Illuminate\Http\RedirectResponse;
@@ -18,10 +22,18 @@ class EmployeeRecruitmentController extends Controller
     {
         $workgroups1 = Workgroup::all();
         $workgroups2 = Workgroup::where('workgroup_number', '!=', 800)->get();
+        $positions = Position::all();
+        $costCenters = CostCenter::all();
+        $rooms = Room::all();
+        $externalAccessRights = ExternalAccessRight::all();
         
         return view('employeerecruitment::content.pages.new-employee-recruitment', [
             'workgroups1' => $workgroups1,
-            'workgroups2' => $workgroups2
+            'workgroups2' => $workgroups2,
+            'positions' => $positions,
+            'costcenters' => $costCenters,
+            'rooms' => $rooms,
+            'externalAccessRights' => $externalAccessRights
         ]);
     }
 

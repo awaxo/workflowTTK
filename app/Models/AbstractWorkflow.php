@@ -66,11 +66,6 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public function getDataAttribute($attribute)
-    {
-        return $this->$attribute ?? null;
-    }
-
     public function getCurrentState(): string
     {
         return $this->state;

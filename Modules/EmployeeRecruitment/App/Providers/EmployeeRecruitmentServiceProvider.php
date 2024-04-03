@@ -30,6 +30,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerSeeders();
         $this->registerWorkflow();
+        $this->registerClassAliases();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/migrations'));
     }
 
@@ -117,6 +118,11 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
     public function registerWorkflow(): void
     {
         WorkflowRegistry::register(RecruitmentWorkflow::class);
+    }
+
+    public function registerClassAliases(): void
+    {
+        class_alias(\Carbon\Carbon::class, 'Carbon');
     }
 
     /**

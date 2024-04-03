@@ -154,9 +154,9 @@
                                 <div class="col-sm-4">
                                     <label for="citizenship" class="form-label">Állampolgárság</label>
                                     <select class="form-select" id="citizenship">
-                                        <option value="1" selected>Magyar</option>
-                                        <option value="2">EGT tagállambeli</option>
-                                        <option value="3">Harmadik országbeli</option>
+                                        <option value="Magyar" selected>Magyar</option>
+                                        <option value="EGT tagállambeli">EGT tagállambeli</option>
+                                        <option value="Harmadik országbeli">Harmadik országbeli</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-4">
@@ -222,8 +222,8 @@
                                 <div class="col-sm-4">
                                     <label for="employment_type" class="form-label">Jogviszony típusa</label>
                                     <select class="form-select" id="employment_type">
-                                        <option value="1" selected>Határozott</option>
-                                        <option value="2">Határozatlan</option>
+                                        <option value="Határozott" selected>Határozott</option>
+                                        <option value="Határozatlan">Határozatlan</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-8">

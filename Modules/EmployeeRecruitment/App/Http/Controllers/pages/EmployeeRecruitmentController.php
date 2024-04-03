@@ -9,10 +9,11 @@ use App\Models\Position;
 use App\Models\Room;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
+use App\Services\WorkflowService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
@@ -93,5 +94,19 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->save();
 
         return response()->json($recruitment, 201);
+    }
+
+    public function approveById($id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+        
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            return view('employeerecruitment::content.pages.recruitment-approval', [
+                'recruitment' => $recruitment
+            ]);
+        } else {
+            return view('content.pages.misc-not-authorized');
+        }
     }
 }

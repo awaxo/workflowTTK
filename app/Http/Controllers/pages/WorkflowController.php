@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\pages;
 
 use App\Http\Controllers\Controller;
-use App\Services\WorkflowVisibilityService;
+use App\Services\WorkflowService;
 use Illuminate\Support\Facades\Auth;
 
 class WorkflowController extends Controller
@@ -15,9 +15,9 @@ class WorkflowController extends Controller
 
     public function getAllWorkflows()
     {
-        $wfService = new WorkflowVisibilityService();
+        $service = new WorkflowService();
 
-        $workflows = $wfService->getVisibleWorkflows(Auth::user())
+        $workflows = $service->getVisibleWorkflows(Auth::user())
             ->map(function ($workflow) {
                 $workflow->workflow_type_name = $workflow->workflow_type["name"];
                 $workflow->initiator_workgroup_number = $workflow->initiator_workgroup["workgroup_number"];

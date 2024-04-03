@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\Facades\Module;
 
-class WorkflowVisibilityService
+class WorkflowService
 {
     public function getVisibleWorkflows(User $user): Collection
     {
@@ -31,6 +31,12 @@ class WorkflowVisibilityService
         }
 
         return new \Illuminate\Database\Eloquent\Collection($visibleWorkflows->all());
+    }
+
+    public function isUserResponsible(User $user, AbstractWorkflow $workflow): bool
+    {
+        $stateHandler = $this->getStateHandler($workflow);
+        return $stateHandler && $stateHandler->isUserResponsible($user, $workflow);
     }
 
     /**

@@ -47,13 +47,9 @@ $(function() {
                     var $row_output = '';
 
                     if ($is_user_responsible) {
-                        $row_output = '<a href="#">' +
-                            '<span class="badge bg-label-info m-1">' +
-                            data +
-                            '</span></a>';
+                        $row_output = `<a href="/folyamat-jovahagyas/${full['id']}"><span class="badge bg-label-info m-1">${data}</span></a>`;
                     } else {
-                        $row_output = '<span class="badge bg-label-secondary m-1">' +
-                            data + '</span>';
+                        $row_output = `<span class="badge bg-label-secondary m-1">${data}</span>`;
                     }
 
                     return $row_output;

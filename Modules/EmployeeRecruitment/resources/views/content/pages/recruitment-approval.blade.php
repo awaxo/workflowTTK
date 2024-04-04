@@ -1,22 +1,23 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Folyamatok / ###') <!-- The title will be dynamically filled -->
+@section('title', 'Folyamatok / ' . $recruitment->name)
 
-<!-- Include necessary styles and scripts as in the previous example, assuming they are still relevant -->
 @section('vendor-style')
-@vite([
-  // Add paths to the necessary CSS files for the page
-])
+    @vite([
+    // Add paths to the necessary CSS files for the page
+    ])
 @endsection
 
 @section('vendor-script')
-@vite([
-  // Add paths to the necessary JavaScript files for the page
-])
+    @vite([
+    // Add paths to the necessary JavaScript files for the page
+    ])
 @endsection
 
 @section('page-script')
-    @vite(['resources/assets/js/form-layouts.js'])
+    @vite([
+        'Modules/EmployeeRecruitment/resources/assets/js/approve-recruitment.js'
+    ])
 @endsection
 
 @section('content')
@@ -42,7 +43,7 @@
                     <textarea id="decision_message" class="form-control" placeholder="Üzenet..."></textarea>
                 </div>
                 <div class="d-grid mt-4 d-md-block">
-                    <button type="submit" class="btn btn-label-success me-2">Jóváhagyás</button>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#approveConfirmation" class="btn btn-label-success me-2">Jóváhagyás</button>
                     <button type="button" class="btn btn-label-danger me-2">Elutasítás</button>
                     <button type="button" class="btn btn-label-warning">Felfüggesztés</button>
                 </div>
@@ -375,6 +376,25 @@
                         </div>
                     </div>
                 </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="approveConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Biztosan szeretnéd jóváhagyni ezt a folyamatlépést?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                <button type="button" id="confirm_approve" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Jóváhagyás</button>
             </div>
         </div>
     </div>

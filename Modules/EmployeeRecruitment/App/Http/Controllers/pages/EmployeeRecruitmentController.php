@@ -96,7 +96,7 @@ class EmployeeRecruitmentController extends Controller
         return response()->json($recruitment, 201);
     }
 
-    public function approveById($id)
+    public function beforeApprove($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
@@ -108,5 +108,85 @@ class EmployeeRecruitmentController extends Controller
         } else {
             return view('content.pages.misc-not-authorized');
         }
+    }
+
+    public function approve(Request $request, $id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+        
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            $transition = $this->getNextTransition($recruitment->workflow_transitions());
+            if ($transition) {
+                $recruitment->workflow_apply($transition);
+                $recruitment->save();
+                
+                return response()->json(['redirectUrl' => route('pages-workflows')]);
+            } else {            
+                Log::error('Nincs vagy nem pontosan 1 valós transition van az adott státuszból');
+                throw new \Exception('No valid transition found');
+            }
+
+            return redirect()->route('content.pages.workflows');
+        } else {
+            return view('content.pages.misc-not-authorized');
+        }
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+        
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            if (strlen($request->input('decision_message')) > 0) {
+                $recruitment->workflow_apply('to_request_review');
+                $recruitment->save();
+                return redirect()->route('content.pages.workflows');
+            } else {
+                // TODO: notikáció a felületen
+                Log::error('Rejecting recruitment request without a message');
+            }
+        } else {
+            return view('content.pages.misc-not-authorized');
+        }
+    }
+
+    public function suspend(Request $request, $id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+        
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            if (strlen($request->input('decision_message')) > 0) {
+                $recruitment->workflow_apply('to_suspended');
+                $recruitment->save();
+
+                // TODO: le kell menteni, melyik lépésnél lett felfüggesztve, mert csak oda lehet visszaállítani
+                return redirect()->route('content.pages.workflows');
+            } else {
+                // TODO: notikáció a felületen
+                Log::error('Rejecting recruitment request without a message');
+            }
+        } else {
+            return view('content.pages.misc-not-authorized');
+        }
+    }
+
+    /**
+     * Returns the next transition that can be made from the current state. It has to be one transition which is not suspended or request_review.
+     */
+    private function getNextTransition($transitions) {
+        $filteredTransitions = array_filter($transitions, function($transition) {
+            $tos = $transition->getTos();
+            return !in_array("suspended", $tos) && !in_array("request_review", $tos);
+        });
+    
+        if (count($filteredTransitions) === 1) {
+            $uniqueTransition = reset($filteredTransitions);
+            return $uniqueTransition->getName();
+        }
+    
+        return null;
     }
 }

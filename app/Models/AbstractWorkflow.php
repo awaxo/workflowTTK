@@ -24,16 +24,15 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      */
     public static function fetchActive(): Collection
     {
-        return static::where('state', '!=', 'completed')->with(['workflowType', 'initiatorWorkgroup', 'createdBy', 'updatedBy'])->get();
+        return static::where('state', '!=', 'completed')->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])->get();
     }
 
     protected $fillable = [
         'workflow_type_id',
         'workflow_deadline',
         'state',
-        'initiator_workgroup_id',
-        'meta_key',
-        'meta_value',
+        'initiator_institute_id',
+        'meta_data',
         'created_by',
         'updated_by',
     ];
@@ -51,9 +50,9 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
         return $this->belongsTo(WorkflowType::class, 'workflow_type_id');
     }
 
-    public function initiatorWorkgroup()
+    public function initiatorInstitute()
     {
-        return $this->belongsTo(Workgroup::class, 'initiator_workgroup_id');
+        return $this->belongsTo(Institute::class, 'initiator_institute_id');
     }
 
     public function createdBy(): BelongsTo

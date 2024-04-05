@@ -7,6 +7,7 @@ use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
 use App\Models\Position;
 use App\Models\Room;
+use App\Models\User;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\WorkflowService;
@@ -60,7 +61,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = new RecruitmentWorkflow();
         $recruitment->state = 'it_head_approval';
         $recruitment->workflow_type_id = $workflowType->id;
-        $recruitment->initiator_workgroup_id = $validatedData['workgroup_id_1'] != 800 ? $validatedData['workgroup_id_1'] : $validatedData['workgroup_id_2'];
+
+        $workgroup = User::find(auth()->user()->id)->workgroup;
+        $firstLetter = substr($workgroup->workgroup_number, 0, 1);
+        $recruitment->initiator_institute_id = $firstLetter;
+
         $recruitment->name = $validatedData['name'];
         $recruitment->created_by = auth()->user()->id;
         $recruitment->updated_by = auth()->user()->id;
@@ -135,17 +140,20 @@ class EmployeeRecruitmentController extends Controller
 
     public function reject(Request $request, $id)
     {
+        // TODO: decisionMessage mentése a metaadatok közé meta_data
+
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            if (strlen($request->input('decision_message')) > 0) {
+            if (strlen($request->input('decisionMessage')) > 0) {
                 $recruitment->workflow_apply('to_request_review');
                 $recruitment->save();
-                return redirect()->route('content.pages.workflows');
+
+                return response()->json(['redirectUrl' => route('pages-workflows')]);
             } else {
-                // TODO: notikáció a felületen
-                Log::error('Rejecting recruitment request without a message');
+                Log::error('Nincs indoklás az elutasításhoz');
+                throw new \Exception('No reason given for rejection');
             }
         } else {
             return view('content.pages.misc-not-authorized');
@@ -158,7 +166,7 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            if (strlen($request->input('decision_message')) > 0) {
+            if (strlen($request->input('decisionMessage')) > 0) {
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->save();
 

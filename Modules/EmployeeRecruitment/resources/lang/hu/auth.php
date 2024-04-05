@@ -6,6 +6,5 @@ return [
         'create_recruitment' => 'Felvételi kérelem létrehozás',
         'suspend_recruitment' => 'Felvételi kérelem felfüggesztés',
         'cancel_recruitment' => 'Felvételi kérelem visszavonás',
-        'approve_email_address' => 'Email jóváhagyás',
     ],
 ];

@@ -44,7 +44,7 @@
                 </div>
                 <div class="d-grid mt-4 d-md-block">
                     <button type="button" data-bs-toggle="modal" data-bs-target="#approveConfirmation" class="btn btn-label-success me-2">Jóváhagyás</button>
-                    <button type="button" class="btn btn-label-danger me-2">Elutasítás</button>
+                    <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
                     <button type="button" class="btn btn-label-warning">Felfüggesztés</button>
                 </div>
             </form>
@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="d-flex">
                                     <label class="form-label col-6 col-md-3">Folyamatindító intézet</label>
-                                    <span class="fw-bold ms-1">{{ $recruitment->initiatorWorkgroup ? $recruitment->initiatorWorkgroup->workgroup_number . ' - ' . $recruitment->initiatorWorkgroup->name : '' }}</span>
+                                    <span class="fw-bold ms-1">{{ $recruitment->initiatorInstitute ? $recruitment->initiatorInstitute->group_level . ' - ' . $recruitment->initiatorInstitute->name : '' }}</span>
                                 </div>
                                 <div class="d-flex">
                                     <label class="form-label col-6 col-md-3">Felvétel álláshirdetéssel történt</label>
@@ -381,16 +381,16 @@
     </div>
 </div>
 
-<!-- Confirmation Modal -->
+<!-- Approve confirmation modal -->
 <div class="modal fade" id="approveConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Biztosan szeretnéd jóváhagyni ezt a folyamatlépést?</p>
+                <p>Biztosan szeretnéd jóváhagyni ezt az ügyet?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
@@ -399,4 +399,38 @@
         </div>
     </div>
 </div>
+
+<!-- Decision message missing modal -->
+<div class="modal fade" id="messageMissing" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Amennyiben elutasítod a kérelem jóváhagyását, kérlek írj indoklást az üzenet mezőbe!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject confirmation modal -->
+<div class="modal fade" id="rejectConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Biztosan szeretnéd elutasítani ezt az ügyet és visszaküldeni az indítóhoz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                <button type="button" id="confirm_reject" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Elutasítás</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

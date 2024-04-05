@@ -9,7 +9,7 @@ $(function() {
             { data: 'id', visible: false, searchable: false },
             { data: 'workflow_type_name' },
             { data: 'state' },
-            { data: 'initiator_workgroup_number' },
+            { data: 'initiator_institute_group_level' },
             { data: 'updated_by_name' },
             { 
                 data: 'updated_at',

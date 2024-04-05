@@ -12,12 +12,6 @@ class RoleSeeder extends Seeder
         $roles = [
             'adminisztrator',
             'betekinto',
-            'penzugyi_osztalyvezeto',
-            'projektkoordinacios_osztalyvezeto',
-            'informatikai_osztalyvezeto',
-            'humanpolitikai_osztalyvezeto',
-            'gazdasagi_igazgato',
-            'foigazgato',
             'titkar_foigazgatosag',
             'titkar_gazdasagi_igazgatosag',
             'titkar_szki',

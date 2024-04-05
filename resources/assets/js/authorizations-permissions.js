@@ -34,12 +34,12 @@ $(function() {
                     if ($roles_count === 0) {
                         $row_output = '<span class="badge bg-label-warning m-1">' +
                             $roles_count +
-                            ' felhasználó</span>';
+                            ' szerepkör</span>';
                     } else {
                         $row_output = '<a href="/szerepkorok/jogosultsag/' + full['name'] + '">' +
                             '<span class="badge bg-label-primary m-1">' +
                             $roles_count +
-                            ' felhasználó</span>' +
+                            ' szerepkör</span>' +
                             '</a>';
                     }
 

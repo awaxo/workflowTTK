@@ -75,6 +75,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'license_plate',
             'employee_room',
             'phone_extension',
+            'external_access_rights',
             'required_tools',
             'available_tools',
             'inventory_numbers_of_available_tools',

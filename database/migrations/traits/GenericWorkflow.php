@@ -12,9 +12,8 @@ trait GenericWorkflow
         $table->unsignedBigInteger('workflow_type_id');
         $table->unsignedInteger('workflow_deadline')->nullable();
         $table->string('state')->default($default_state);
-        $table->unsignedBigInteger('initiator_workgroup_id')->nullable();
-        $table->string('meta_key')->nullable();
-        $table->text('meta_value')->nullable();
+        $table->unsignedBigInteger('initiator_institute_id')->nullable();
+        $table->text('meta_data')->nullable();
         $table->tinyInteger('deleted')->unsigned()->default(0);
         $table->timestamps();
         $table->unsignedBigInteger('created_by');

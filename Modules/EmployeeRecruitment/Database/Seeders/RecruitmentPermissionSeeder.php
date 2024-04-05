@@ -15,7 +15,6 @@ class RecruitmentPermissionSeeder extends Seeder implements IPermissionSeeder
             'create_recruitment',
             'suspend_recruitment',
             'cancel_recruitment',
-            'approve_email_address'
         ];
     }
 

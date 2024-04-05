@@ -1,6 +1,7 @@
 <?php
 
 return [
+	'request_review' => 'Kérelem újraellenőrzése',
     'it_head_approval' => 'Email cím jóváhagyás',
     'supervisor_approval' => 'Témavezető jóváhagyás',
 ];

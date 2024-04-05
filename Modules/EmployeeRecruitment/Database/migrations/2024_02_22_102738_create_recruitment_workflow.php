@@ -64,6 +64,7 @@ return new class extends Migration
             $table->string('license_plate', 15)->nullable();
             $table->string('employee_room')->nullable();
             $table->unsignedInteger('phone_extension');
+            $table->string('external_access_rights', 1000)->nullable();
             $table->string('required_tools')->nullable();
             $table->string('available_tools')->nullable();
             $table->string('inventory_numbers_of_available_tools', 1000)->nullable();

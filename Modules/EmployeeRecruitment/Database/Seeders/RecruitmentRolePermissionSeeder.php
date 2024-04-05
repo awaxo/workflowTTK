@@ -9,14 +9,6 @@ class RecruitmentRolePermissionSeeder extends Seeder
 {
     public function run()
     {
-        $role = Role::findByName('informatikai_osztalyvezeto');
-        $permissions = [
-            'read_recruitment',
-            'suspend_recruitment',
-            'approve_email_address'
-        ];
-        $role->syncPermissions($permissions);
-
         $role = Role::findByName('titkar_aki');
         $permissions = [
             'read_recruitment',

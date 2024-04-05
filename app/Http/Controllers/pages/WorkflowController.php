@@ -20,7 +20,7 @@ class WorkflowController extends Controller
         $workflows = $service->getVisibleWorkflows(Auth::user())
             ->map(function ($workflow) {
                 $workflow->workflow_type_name = $workflow->workflow_type["name"];
-                $workflow->initiator_workgroup_number = $workflow->initiator_workgroup["workgroup_number"];
+                $workflow->initiator_institute_group_level = $workflow->initiator_institute["group_level"];
                 $workflow->updated_by_name = $workflow->updated_by["name"];
                 $workflow->created_by_name = $workflow->created_by["name"];
                 $workflow->state = __('states.' . $workflow->state);

@@ -23,3 +23,4 @@ Route::post('/employee-recruitment', [EmployeeRecruitmentController::class, 'sto
 Route::post('/file/upload', [FileUploadController::class, 'upload'])->name('file.upload');
 
 Route::post('/employee-recruitment/{id}/approve', [EmployeeRecruitmentController::class, 'approve'])->middleware(['auth']);
+Route::post('/employee-recruitment/{id}/reject', [EmployeeRecruitmentController::class, 'reject'])->middleware(['auth']);

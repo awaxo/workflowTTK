@@ -45,7 +45,7 @@
                 <div class="d-grid mt-4 d-md-block">
                     <button type="button" data-bs-toggle="modal" data-bs-target="#approveConfirmation" class="btn btn-label-success me-2">Jóváhagyás</button>
                     <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
-                    <button type="button" class="btn btn-label-warning">Felfüggesztés</button>
+                    <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
                 </div>
             </form>
             </div>
@@ -428,6 +428,25 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
                 <button type="button" id="confirm_reject" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Elutasítás</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Suspend confirmation modal -->
+<div class="modal fade" id="suspendConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Biztosan szeretnéd felfüggeszteni ezt az ügyet?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                <button type="button" id="confirm_suspend" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Felfüggesztés</button>
             </div>
         </div>
     </div>

@@ -140,15 +140,11 @@ class EmployeeRecruitmentController extends Controller
 
     public function reject(Request $request, $id)
     {
-        // TODO: decision_message mentése a metaadatok közé meta_data
-
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('decision_message')) > 0) {
-                $recruitment->workflow_apply('to_request_review');
-
                 // Save decision_message in meta_data
                 $metaData = [
                     'user_id' => Auth::id(),
@@ -157,7 +153,7 @@ class EmployeeRecruitmentController extends Controller
                     'decision_message' => $request->input('decision_message'),
                 ];
                 $recruitment->meta_data = json_encode($metaData);
-
+                $recruitment->workflow_apply('to_request_review');
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -177,14 +173,22 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('decision_message')) > 0) {
+                // Save decision_message in meta_data
+                $metaData = [
+                    'user_id' => Auth::id(),
+                    'source_state' => $recruitment->state,
+                    'decision' => 'suspend',
+                    'datetime' => now(),
+                    'decision_message' => $request->input('decision_message'),
+                ];
+                $recruitment->meta_data = json_encode($metaData);
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->save();
 
-                // TODO: le kell menteni, melyik lépésnél lett felfüggesztve, mert csak oda lehet visszaállítani
-                return redirect()->route('content.pages.workflows');
+                return response()->json(['redirectUrl' => route('pages-workflows')]);
             } else {
-                // TODO: notikáció a felületen
-                Log::error('Rejecting recruitment request without a message');
+                Log::error('Nincs indoklás az elutasításhoz');
+                throw new \Exception('No reason given for rejection');
             }
         } else {
             return view('content.pages.misc-not-authorized');

@@ -60,6 +60,6 @@ class WorkflowService
             }
         }
 
-        throw new Exception("State handler for {$workflow->getCurrentState()} not found.");
+        throw new Exception("State handler for {$workflow->getCurrentState()} ({$stateClass}) not found.");
     }
 }

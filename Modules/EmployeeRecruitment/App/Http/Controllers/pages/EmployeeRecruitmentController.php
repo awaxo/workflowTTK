@@ -140,14 +140,23 @@ class EmployeeRecruitmentController extends Controller
 
     public function reject(Request $request, $id)
     {
-        // TODO: decisionMessage mentése a metaadatok közé meta_data
+        // TODO: decision_message mentése a metaadatok közé meta_data
 
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            if (strlen($request->input('decisionMessage')) > 0) {
+            if (strlen($request->input('decision_message')) > 0) {
                 $recruitment->workflow_apply('to_request_review');
+
+                // Save decision_message in meta_data
+                $metaData = [
+                    'user_id' => Auth::id(),
+                    'datetime' => now(),
+                    'decision_message' => $request->input('decision_message'),
+                ];
+                $recruitment->meta_data = json_encode($metaData);
+
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -166,7 +175,7 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            if (strlen($request->input('decisionMessage')) > 0) {
+            if (strlen($request->input('decision_message')) > 0) {
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->save();
 

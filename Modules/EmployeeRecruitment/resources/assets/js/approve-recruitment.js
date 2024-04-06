@@ -19,9 +19,9 @@ $(function () {
 
     $('#reject').on('click', function () {
         var recruitmentId = $(this).data('recruitment-id');
-        var decisionMessage = $('#decision_message').val();
+        var decision_message = $('#decision_message').val();
 
-        if (decisionMessage.length === 0) {
+        if (decision_message.length === 0) {
             $('#messageMissing').modal('show');
         } else {
             $('#rejectConfirmation').modal('show');
@@ -36,7 +36,7 @@ $(function () {
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
-                decisionMessage: $('#decision_message').val()
+                decision_message: $('#decision_message').val()
             },
             success: function (response) {
                 window.location.href = response.redirectUrl;

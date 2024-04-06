@@ -152,6 +152,7 @@ class EmployeeRecruitmentController extends Controller
                 // Save decision_message in meta_data
                 $metaData = [
                     'user_id' => Auth::id(),
+                    'decision' => 'reject',
                     'datetime' => now(),
                     'decision_message' => $request->input('decision_message'),
                 ];

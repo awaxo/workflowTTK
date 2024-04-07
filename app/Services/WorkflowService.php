@@ -39,6 +39,12 @@ class WorkflowService
         return $stateHandler && $stateHandler->isUserResponsible($user, $workflow);
     }
 
+    public function isAllApproved(AbstractWorkflow $workflow): bool
+    {
+        $stateHandler = $this->getStateHandler($workflow);
+        return $stateHandler && $stateHandler->isAllApproved($workflow);
+    }
+
     /**
      * Determines and instantiates the appropriate state handler for a given workflow.
      *

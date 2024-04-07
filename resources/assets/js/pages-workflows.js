@@ -47,7 +47,11 @@ $(function() {
                     var $row_output = '';
 
                     if ($is_user_responsible) {
-                        $row_output = `<a href="/folyamat-jovahagyas/${full['id']}"><span class="badge bg-label-info m-1">${data}</span></a>`;
+                        if (full['state_name'] === 'suspended') {
+                            $row_output = `<a href="/folyamat-visszaallitas/${full['id']}"><span class="badge bg-label-info m-1">${data}</span></a>`;
+                        } else {
+                            $row_output = `<a href="/folyamat-jovahagyas/${full['id']}"><span class="badge bg-label-info m-1">${data}</span></a>`;
+                        }
                     } else {
                         $row_output = `<span class="badge bg-label-secondary m-1">${data}</span>`;
                     }

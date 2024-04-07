@@ -10,9 +10,11 @@ use App\Models\User;
 interface IStateResponsibility {
     /**
      * Checks if a user is responsible for the state.
-     *
-     * @param User $user The user to check.
-     * @return bool True if the user is responsible, false otherwise.
      */
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool;
+    
+    /**
+     * Checks if all the necessary approvals are given.
+     */
+    public function isAllApproved(IGenericWorkflow $workflow): bool;
 }

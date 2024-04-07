@@ -121,18 +121,21 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            $transition = $this->getNextTransition($recruitment->workflow_transitions());
-            if ($transition) {
-                $recruitment->workflow_apply($transition);
-                $recruitment->save();
-                
-                return response()->json(['redirectUrl' => route('pages-workflows')]);
-            } else {            
-                Log::error('Nincs vagy nem pontosan 1 valós transition van az adott státuszból');
-                throw new \Exception('No valid transition found');
+            if ($service->isAllApproved($recruitment)) {
+                $transition = $this->getNextTransition($recruitment->workflow_transitions());
+                if ($transition) {
+                    $recruitment->workflow_apply($transition);
+    
+                    $recruitment->save();
+                    
+                    return response()->json(['redirectUrl' => route('pages-workflows')]);
+                } else {            
+                    Log::error('Nincs vagy nem pontosan 1 valós transition van az adott státuszból');
+                    throw new \Exception('No valid transition found');
+                }                    
             }
 
-            return redirect()->route('content.pages.workflows');
+            return response()->json(['redirectUrl' => route('pages-workflows')]);
         } else {
             return view('content.pages.misc-not-authorized');
         }
@@ -145,15 +148,22 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('decision_message')) > 0) {
-                // Save decision_message in meta_data
-                $metaData = [
+                $reject = [
                     'user_id' => Auth::id(),
-                    'decision' => 'reject',
                     'datetime' => now(),
                     'decision_message' => $request->input('decision_message'),
                 ];
+                $metaData = json_decode($recruitment->meta_data, true);
+                if ($metaData === null) {
+                    $metaData = [
+                        'reject' => $reject,
+                    ];
+                } else {
+                    $metaData['reject'] = $reject;
+                }
                 $recruitment->meta_data = json_encode($metaData);
                 $recruitment->workflow_apply('to_request_review');
+
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -173,16 +183,23 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('decision_message')) > 0) {
-                // Save decision_message in meta_data
-                $metaData = [
+                $suspend = [
                     'user_id' => Auth::id(),
                     'source_state' => $recruitment->state,
-                    'decision' => 'suspend',
                     'datetime' => now(),
                     'decision_message' => $request->input('decision_message'),
                 ];
+                $metaData = json_decode($recruitment->meta_data, true);
+                if ($metaData === null) {
+                    $metaData = [
+                        'suspend' => $suspend,
+                    ];
+                } else {
+                    $metaData['suspend'] = $suspend;
+                }
                 $recruitment->meta_data = json_encode($metaData);
                 $recruitment->workflow_apply('to_suspended');
+
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -190,6 +207,48 @@ class EmployeeRecruitmentController extends Controller
                 Log::error('Nincs indoklás az elutasításhoz');
                 throw new \Exception('No reason given for rejection');
             }
+        } else {
+            return view('content.pages.misc-not-authorized');
+        }
+    }
+
+    public function beforeRestore($id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+        
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            return view('employeerecruitment::content.pages.recruitment-restore', [
+                'recruitment' => $recruitment
+            ]);
+        } else {
+            return view('content.pages.misc-not-authorized');
+        }
+    }
+
+    public function restore(Request $request, $id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+        
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            $previous_state = json_decode($recruitment->meta_data)->suspend->source_state;
+            
+            if ($recruitment->workflow_can('restore_from_suspended')) {
+                $metaData = json_decode($recruitment->meta_data, true);
+                $metaData['suspend'] = null;
+                $recruitment->meta_data = json_encode($metaData);
+                $recruitment->state = $previous_state;
+
+                $recruitment->save();
+                
+                return response()->json(['redirectUrl' => route('pages-workflows')]);
+            } else {            
+                Log::error('Nincs definiált transition az adott státuszból');
+                throw new \Exception('No valid transition found');
+            }
+
+            return redirect()->route('content.pages.workflows');
         } else {
             return view('content.pages.misc-not-authorized');
         }

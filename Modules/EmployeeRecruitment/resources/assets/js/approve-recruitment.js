@@ -18,7 +18,6 @@ $(function () {
     });
 
     $('#reject').on('click', function () {
-        var recruitmentId = $(this).data('recruitment-id');
         var decision_message = $('#decision_message').val();
 
         if (decision_message.length === 0) {
@@ -48,7 +47,6 @@ $(function () {
     });
 
     $('#suspend').on('click', function () {
-        var recruitmentId = $(this).data('recruitment-id');
         var decision_message = $('#decision_message').val();
 
         if (decision_message.length === 0) {

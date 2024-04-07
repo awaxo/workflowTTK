@@ -123,7 +123,7 @@ return [
                 ],
                 'to' => 'request_review',
             ],
-            'resume_from_suspended' => [
+            'restore_from_suspended' => [
                 'from' => 'suspended',
                 'to' => [
                     'new_request', 'it_head_approval', 'supervisor_approval', 'group_lead_approval',

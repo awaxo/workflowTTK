@@ -19,13 +19,18 @@ class WorkflowController extends Controller
 
         $workflows = $service->getVisibleWorkflows(Auth::user())
             ->map(function ($workflow) {
-                $workflow->workflow_type_name = $workflow->workflow_type["name"];
-                $workflow->initiator_institute_group_level = $workflow->initiator_institute["group_level"];
-                $workflow->updated_by_name = $workflow->updated_by["name"];
-                $workflow->created_by_name = $workflow->created_by["name"];
-                $workflow->state = __('states.' . $workflow->state);
-
-                return $workflow;
+                return [
+                    'id' => $workflow->id,
+                    'workflow_type_name' => $workflow->workflow_type["name"],
+                    'state' => __('states.' . $workflow->state),
+                    'state_name' => $workflow->state,
+                    'initiator_institute_group_level' => $workflow->initiator_institute["group_level"],
+                    'updated_by_name' => $workflow->updated_by["name"],
+                    'updated_at' => $workflow->updated_at,
+                    'created_by_name' => $workflow->created_by["name"],
+                    'created_at' => $workflow->created_at,
+                    'is_user_responsible' => $workflow->is_user_responsible
+                ];
             });
 
         return response()->json(['data' => $workflows]);

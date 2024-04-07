@@ -16,12 +16,12 @@
 
 @section('page-script')
     @vite([
-        'Modules/EmployeeRecruitment/resources/assets/js/approve-recruitment.js'
+        'Modules/EmployeeRecruitment/resources/assets/js/restore-recruitment.js'
     ])
 @endsection
 
 @section('content')
-<h4 class="py-3 mb-4">Folyamat jóváhagyás / <span class="dynamic-part">{{ $recruitment->name }}</span></h4>
+<h4 class="py-3 mb-4">Folyamat visszaállítás / <span class="dynamic-part">{{ $recruitment->name }}</span></h4>
 
 <!-- Form with Tabs -->
 <div class="row">
@@ -29,7 +29,7 @@
         <div class="nav-align-top mb-3">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab_decision" role="tab" aria-selected="true">Jóváhagyás</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab_decision" role="tab" aria-selected="true">Visszaállítás</button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab_process_details" role="tab" aria-selected="false">Folyamat részletek</button>
@@ -38,14 +38,8 @@
         <div class="tab-content">
             <div class="tab-pane fade active show" id="tab_decision" role="tabpanel">
             <form>
-                <div class="mb-3">
-                    <label class="form-label" for="decision_message">Üzenet</label>
-                    <textarea id="decision_message" class="form-control" placeholder="Üzenet..."></textarea>
-                </div>
                 <div class="d-grid mt-4 d-md-block">
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#approveConfirmation" class="btn btn-label-success me-2">Jóváhagyás</button>
-                    <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
-                    <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
+                    <button type="button" id="restore" class="btn btn-label-success">Visszaállítás</button>
                 </div>
             </form>
             </div>
@@ -381,8 +375,8 @@
     </div>
 </div>
 
-<!-- Approve confirmation modal -->
-<div class="modal fade" id="approveConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+<!-- Restore confirmation modal -->
+<div class="modal fade" id="restoreConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -390,63 +384,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Biztosan szeretnéd jóváhagyni ezt az ügyet?</p>
+                <p>Biztosan szeretnéd visszaállítani ezt az ügyet?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                <button type="button" id="confirm_approve" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Jóváhagyás</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Decision message missing modal -->
-<div class="modal fade" id="messageMissing" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <p>Amennyiben elutasítod a kérelem jóváhagyását, kérlek írj indoklást az üzenet mezőbe!</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Reject confirmation modal -->
-<div class="modal fade" id="rejectConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Biztosan szeretnéd elutasítani ezt az ügyet és visszaküldeni az indítóhoz?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                <button type="button" id="confirm_reject" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Elutasítás</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Suspend confirmation modal -->
-<div class="modal fade" id="suspendConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Biztosan szeretnéd felfüggeszteni ezt az ügyet?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                <button type="button" id="confirm_suspend" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Felfüggesztés</button>
+                <button type="button" id="confirm_restore" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Visszaállítás</button>
             </div>
         </div>
     </div>

@@ -167,9 +167,9 @@ class RecruitmentWorkflowTransitionTest extends TestCase
     }
 
     /** @test */
-    public function it_resumes_from_suspended_to_all_states_except_completed_and_suspended()
+    public function it_restores_from_suspended_to_all_states_except_completed_and_suspended()
     {
-        $resumableStates = [
+        $restorableStates = [
             'new_request', 'it_head_approval', 'supervisor_approval', 'group_lead_approval',
             'director_approval', 'hr_lead_approval', 'proof_of_coverage', 'project_coordination_lead_approval',
             'post_financing_approval', 'registration', 'financial_counterparty_approval', 'obligee_approval',
@@ -179,10 +179,10 @@ class RecruitmentWorkflowTransitionTest extends TestCase
 
         $suspendedWorkflow = $this->createState('suspended');
 
-        foreach ($resumableStates as $state) {
+        foreach ($restorableStates as $state) {
             if ($state !== 'completed' && $state !== 'suspended') {
                 $workflow = clone $suspendedWorkflow;
-                $workflow->workflow_apply('resume_from_suspended');
+                $workflow->workflow_apply('restore_from_suspended');
                 $workflow->state = $state;
                 $workflow->save();
                 $this->assertEquals($state, $workflow->refresh()->state);

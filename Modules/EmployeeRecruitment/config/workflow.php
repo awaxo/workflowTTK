@@ -52,7 +52,7 @@ return [
                 'to' => 'director_approval',
             ],
             'to_hr_lead_approval' => [
-                'from' => 'director_approval',
+                'from' => ['director_approval', 'group_lead_approval'],
                 'to' => 'hr_lead_approval',
             ],
             'to_proof_of_coverage' => [

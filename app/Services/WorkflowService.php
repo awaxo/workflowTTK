@@ -7,7 +7,6 @@ use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\Facades\Module;
 
 class WorkflowService
@@ -45,13 +44,19 @@ class WorkflowService
         return $stateHandler && $stateHandler->isAllApproved($workflow);
     }
 
+    public function getNextTransition(AbstractWorkflow $workflow): string
+    {
+        $stateHandler = $this->getStateHandler($workflow);
+        return $stateHandler->getNextTransition($workflow);
+    }
+
     /**
      * Determines and instantiates the appropriate state handler for a given workflow.
      *
      * @param AbstractWorkflow $workflow The workflow instance.
      * @return ?IStateResponsibility The state handler or null if not found.
      */
-    protected function getStateHandler(AbstractWorkflow $workflow): ?IStateResponsibility
+    public function getStateHandler(AbstractWorkflow $workflow): ?IStateResponsibility
     {
         $currentState = $workflow->getCurrentState();
         $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $currentState)));

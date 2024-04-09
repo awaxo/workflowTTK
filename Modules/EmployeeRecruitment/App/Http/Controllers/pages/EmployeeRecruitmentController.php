@@ -96,6 +96,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->email = $validatedData['email'];
 
         //$recruitment->fill($validatedData);
+        $recruitment->updated_by = Auth::id();
         $recruitment->save();
 
         return response()->json($recruitment, 201);
@@ -122,10 +123,11 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if ($service->isAllApproved($recruitment)) {
-                $transition = $this->getNextTransition($recruitment->workflow_transitions());
+                $transition = $service->getNextTransition($recruitment);
                 if ($transition) {
                     $recruitment->workflow_apply($transition);
     
+                    $recruitment->updated_by = Auth::id();
                     $recruitment->save();
                     
                     return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -164,6 +166,7 @@ class EmployeeRecruitmentController extends Controller
                 $recruitment->meta_data = json_encode($metaData);
                 $recruitment->workflow_apply('to_request_review');
 
+                $recruitment->updated_by = Auth::id();
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -200,6 +203,7 @@ class EmployeeRecruitmentController extends Controller
                 $recruitment->meta_data = json_encode($metaData);
                 $recruitment->workflow_apply('to_suspended');
 
+                $recruitment->updated_by = Auth::id();
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -240,6 +244,7 @@ class EmployeeRecruitmentController extends Controller
                 $recruitment->meta_data = json_encode($metaData);
                 $recruitment->state = $previous_state;
 
+                $recruitment->updated_by = Auth::id();
                 $recruitment->save();
                 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -252,22 +257,5 @@ class EmployeeRecruitmentController extends Controller
         } else {
             return view('content.pages.misc-not-authorized');
         }
-    }
-
-    /**
-     * Returns the next transition that can be made from the current state. It has to be one transition which is not suspended or request_review.
-     */
-    private function getNextTransition($transitions) {
-        $filteredTransitions = array_filter($transitions, function($transition) {
-            $tos = $transition->getTos();
-            return !in_array("suspended", $tos) && !in_array("request_review", $tos);
-        });
-    
-        if (count($filteredTransitions) === 1) {
-            $uniqueTransition = reset($filteredTransitions);
-            return $uniqueTransition->getName();
-        }
-    
-        return null;
     }
 }

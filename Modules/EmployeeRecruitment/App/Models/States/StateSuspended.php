@@ -25,4 +25,9 @@ class StateSuspended implements IStateResponsibility {
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return true;
     }
+
+    public function getNextTransition(IGenericWorkflow $workflow): string {
+        // next transition depends on from where we get suspended
+        return '';
+    }
 }

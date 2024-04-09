@@ -52,4 +52,8 @@ class StateRequestReview implements IStateResponsibility {
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return true;
     }
+
+    public function getNextTransition(IGenericWorkflow $workflow): string {
+        return 'to_it_head_approval';
+    }
 }

@@ -28,7 +28,7 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
 
             if (isset($metaData['additional_fields']) && is_array($metaData['additional_fields'])) {
                 foreach ($metaData['additional_fields'] as $field) {
-                    if (isset($field['post_financed_application']) && $field['post_financed_application'] === true) {
+                    if (isset($field['post_financed_application']) && $field['post_financed_application']) {
                         $postFinancedExists = true;
                         break;
                     }
@@ -36,9 +36,9 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
             }
 
             if ($postFinancedExists) {
-                return 'post_financing_approval';
+                return 'to_post_financing_approval';
             } else {
-                return 'registration';
+                return 'to_registration';
             }
         }
     }

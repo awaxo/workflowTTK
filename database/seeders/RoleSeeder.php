@@ -12,16 +12,17 @@ class RoleSeeder extends Seeder
         $roles = [
             'adminisztrator',
             'betekinto',
-            'titkar_foigazgatosag',
-            'titkar_gazdasagi_igazgatosag',
-            'titkar_szki',
-            'titkar_aki',
-            'titkar_ei',
-            'titkar_kpi',
-            'titkar_akk',
-            'titkar_szkk',
-            'titkar_gyfl',
-            'nyilvantartas_rogzito_penzugyi_osztaly'
+            'titkar_9_fi',
+            'titkar_9_gi',
+            'titkar_1',
+            'titkar_3',
+            'titkar_4',
+            'titkar_5',
+            'titkar_6',
+            'titkar_7',
+            'titkar_8',
+            'utofinanszirozas_fedezetigazolo',
+            'munkaber_kotelezettsegvallalas_nyilvantarto',
         ];
 
         foreach ($roles as $role) {

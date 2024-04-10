@@ -25,6 +25,7 @@ class Workgroup extends Model
         'workgroup_number',
         'name',
         'leader',
+        'labor_administrator',
         'created_by',
         'updated_by'
     ];
@@ -53,6 +54,14 @@ class Workgroup extends Model
     public function leader()
     {
         return $this->belongsTo(User::class, 'leader');
+    }
+
+    /**
+     * Get the labor administrator associated with the workgroup.
+     */
+    public function laborAdministrator()
+    {
+        return $this->belongsTo(User::class, 'labor_administrator');
     }
 
     /**

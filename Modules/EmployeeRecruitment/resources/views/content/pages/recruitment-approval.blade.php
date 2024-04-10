@@ -59,6 +59,13 @@
                         <label class="form-check-label" for="post_financed_application">Utófinanszírozott pályázat?</label>
                     </div>
                 @endif
+                @if($recruitment->state == 'draft_contract_pending')
+                    <div class="col-sm-2 mb-3">
+                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" target="_blank">
+                            <i class="fa fa-print fs-1"></i>
+                        </a>
+                    </div>
+                @endif
                 <div class="mb-3">
                     <label class="form-label" for="message">Üzenet</label>
                     <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
@@ -414,7 +421,7 @@
                             </div>
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
     </div>

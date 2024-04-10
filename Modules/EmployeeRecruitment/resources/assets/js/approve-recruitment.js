@@ -23,6 +23,7 @@ $(function () {
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
                 probation_period: $('#probation_period').val(),
+                post_financed_application: $('#post_financed_application').val(),
                 message: $('#message').val()
             },
             success: function (response) {

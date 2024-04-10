@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\WorkflowService;
+use Barryvdh\DomPDF\Facade\PDF;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -109,7 +110,8 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             return view('employeerecruitment::content.pages.recruitment-approval', [
-                'recruitment' => $recruitment
+                'recruitment' => $recruitment,
+                'id' => $id,
             ]);
         } else {
             return view('content.pages.misc-not-authorized');
@@ -227,6 +229,16 @@ class EmployeeRecruitmentController extends Controller
         } else {
             return view('content.pages.misc-not-authorized');
         }
+    }
+
+    public function generatePDF($id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $pdf = PDF::loadView('employeerecruitment::content.pdf.recruitment', [
+            'recruitment' => $recruitment
+        ]);
+
+        return $pdf->download('FelveteliKerelem_' . $id . '.pdf');
     }
 
     private function validateFields(RecruitmentWorkflow $recruitment, Request $request)

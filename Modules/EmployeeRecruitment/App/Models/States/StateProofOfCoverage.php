@@ -86,7 +86,7 @@ class StateProofOfCoverage implements IStateResponsibility {
                 }
 
                 if ($postFinancedExists) {
-                    return 'post_financing_approval';
+                    return 'to_post_financing_approval';
                 } else {
                     return 'to_registration';
                 }

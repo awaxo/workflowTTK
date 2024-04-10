@@ -14,6 +14,7 @@ use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 class StateGroupLeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
+            // Check if user is a workgroup leader
             $workgroup_lead = 
                 ($workflow->workgroup1 && $workflow->workgroup1->leader == $user->id) ||
                 ($workflow->workgroup2 && $workflow->workgroup2->leader == $user->id);
@@ -32,10 +33,11 @@ class StateGroupLeadApproval implements IStateResponsibility {
                 }
             }
 
+            // Check if user has already approved the workflow
             $metaData = json_decode($workflow->meta_data, true);
             $already_approved_by_user = false;
-            if (isset($metaData['group_lead_approval']['approval_user_ids']) && 
-                in_array($user->id, $metaData['group_lead_approval']['approval_user_ids'])) {
+            if (isset($metaData['approvals'][$workflow->state]['approval_user_ids']) && 
+                in_array($user->id, $metaData['approvals'][$workflow->state]['approval_user_ids'])) {
                     $already_approved_by_user = true;
             }
 
@@ -49,10 +51,10 @@ class StateGroupLeadApproval implements IStateResponsibility {
         if ($workflow instanceof RecruitmentWorkflow) {
             $metaData = json_decode($workflow->meta_data, true);
 
-            $approval_user_ids = $metaData['group_lead_approval']['approval_user_ids'] ?? [];
+            $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
             $approval_user_ids[] = Auth::id();
 
-            $metaData['group_lead_approval']['approval_user_ids'] = $approval_user_ids;
+            $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
             $workflow->meta_data = json_encode($metaData);
 
             $workgroup_lead = [

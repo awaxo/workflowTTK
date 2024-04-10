@@ -87,6 +87,9 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'certificates',
             'requires_commute_support',
             'commute_support_form',
+            'probation_period',
+            'post_financed_application',
+            'contract'
         ]);
 
         $this->casts = array_merge($this->casts, [
@@ -96,6 +99,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'work_with_radioactive_isotopes' => 'boolean',
             'work_with_carcinogenic_materials' => 'boolean',
             'requires_commute_support' => 'boolean',
+            'post_financed_application' => 'boolean',
         ]);
 
         $this->attributes = array_merge($this->attributes, [

@@ -4,41 +4,61 @@ namespace Modules\EmployeeRecruitment\App\Models\States;
 
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
-use App\Models\Room;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
 class StateDirectorApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
-            $workgroup_lead = 
-                ($workflow->workgroup1 && $workflow->workgroup1->leader == $user->id) ||
-                ($workflow->workgroup2 && $workflow->workgroup2->leader == $user->id);
+            $cost_center_codes = array_filter([
+                optional($workflow->base_salary_cc1)->cost_center_code,
+                optional($workflow->base_salary_cc2)->cost_center_code,
+                optional($workflow->base_salary_cc3)->cost_center_code,
+                optional($workflow->health_allowance_cc)->cost_center_code,
+                optional($workflow->management_allowance_cc)->cost_center_code,
+                optional($workflow->extra_pay_1_cc)->cost_center_code,
+                optional($workflow->extra_pay_2_cc)->cost_center_code,
+            ]);
 
-            $room_numbers = explode(',', $workflow->entry_permissions);
-            foreach ($room_numbers as $room_number) {
-                $room = Room::where('room_number', $room_number)->first();
+            // Check if user is a director
+            $director = false;
+            foreach ($cost_center_codes as $cost_center_code) {
+                $workgroup_number = substr($cost_center_code, -3);
 
-                if ($room) {
-                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
-
+                // Determine the director based on the workgroup number
+                if (in_array(substr($workgroup_number, 0, 1), ['1', '3', '4', '5', '6', '7', '8'])) {
+                    $workgroup = Workgroup::where('workgroup_number', substr($workgroup_number, 0, 1) . '00')->first();
                     if ($workgroup && $workgroup->leader == $user->id) {
-                        $workgroup_lead = true;
+                        $director = true;
+                        break;
+                    }
+                } elseif (in_array($workgroup_number, ['900', '901', '905', '908'])) {
+                    $workgroup = Workgroup::where('workgroup_number', '901')->first();
+                    if ($workgroup && $workgroup->leader == $user->id) {
+                        $director = true;
+                        break;
+                    }
+                } elseif (in_array($workgroup_number, ['903', '907', '910', '911', '912', '914', '915'])) {
+                    $workgroup = Workgroup::where('workgroup_number', '903')->first();
+                    if ($workgroup && $workgroup->leader == $user->id) {
+                        $director = true;
                         break;
                     }
                 }
             }
-
+            
+            // Check if user has already approved the workflow
             $metaData = json_decode($workflow->meta_data, true);
             $already_approved_by_user = false;
-            if (isset($metaData['group_lead_approval']['approval_user_ids']) && 
-                in_array($user->id, $metaData['group_lead_approval']['approval_user_ids'])) {
+            if (isset($metaData['approvals'][$workflow->state]['approval_user_ids']) && 
+                in_array($user->id, $metaData['approvals'][$workflow->state]['approval_user_ids'])) {
                     $already_approved_by_user = true;
             }
 
-            return $workgroup_lead && !$already_approved_by_user;
+            return $director && !$already_approved_by_user;
         } else {
             return false;
         }
@@ -48,35 +68,48 @@ class StateDirectorApproval implements IStateResponsibility {
         if ($workflow instanceof RecruitmentWorkflow) {
             $metaData = json_decode($workflow->meta_data, true);
 
-            $approval_user_ids = $metaData['group_lead_approval']['approval_user_ids'] ?? [];
+            $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
             $approval_user_ids[] = Auth::id();
 
-            $metaData['group_lead_approval']['approval_user_ids'] = $approval_user_ids;
+            $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
             $workflow->meta_data = json_encode($metaData);
 
-            $workgroup_lead = [
-                optional($workflow->workgroup1)->leader,
-                optional($workflow->workgroup2)->leader
-            ];
+            $cost_center_codes = array_filter([
+                optional($workflow->base_salary_cc1)->cost_center_code,
+                optional($workflow->base_salary_cc2)->cost_center_code,
+                optional($workflow->base_salary_cc3)->cost_center_code,
+                optional($workflow->health_allowance_cc)->cost_center_code,
+                optional($workflow->management_allowance_cc)->cost_center_code,
+                optional($workflow->extra_pay_1_cc)->cost_center_code,
+                optional($workflow->extra_pay_2_cc)->cost_center_code,
+            ]);
+            $director_ids = [];
+            foreach ($cost_center_codes as $cost_center_code) {
+                $workgroup_number = substr($cost_center_code, -3);
 
-            $room_numbers = explode(',', $workflow->entry_permissions);
-            foreach ($room_numbers as $room_number) {
-                $room = Room::where('room_number', $room_number)->first();
-
-                if ($room) {
-                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
-
+                if (in_array($workgroup_number, ['100', '300', '400', '500', '600', '700', '800'])) {
+                    $workgroup = Workgroup::where('workgroup_number', substr($workgroup_number, 0, 1) . '00')->first();
                     if ($workgroup) {
-                        $workgroup_lead[] = $workgroup->leader;
+                        $director_ids[] = $workgroup->leader;
+                    }
+                } elseif (in_array($workgroup_number, ['900', '901', '905', '908'])) {
+                    $workgroup = Workgroup::where('workgroup_number', '901')->first();
+                    if ($workgroup) {
+                        $director_ids[] = $workgroup->leader;
+                    }
+                } elseif (in_array($workgroup_number, ['903', '907', '910', '911', '912', '914', '915'])) {
+                    $workgroup = Workgroup::where('workgroup_number', '903')->first();
+                    if ($workgroup) {
+                        $director_ids[] = $workgroup->leader;
                     }
                 }
             }
-            $workgroup_lead = array_filter($workgroup_lead);
+            $director_ids = array_filter($director_ids);
 
             $workflow->updated_by = Auth::id();
             $workflow->save();
 
-            return count(array_diff($workgroup_lead, $approval_user_ids)) === 0;
+            return count(array_diff($director_ids, $approval_user_ids)) === 0;
         } else {
             return false;
         }

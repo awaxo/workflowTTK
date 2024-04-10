@@ -1,4 +1,19 @@
 $(function () {
+    if ($('.numeral-mask').length > 0) {
+        new Cleave(".numeral-mask", {
+            numeral: true
+        });
+    }
+
+    $('#approve').on('click', function () {
+        if ($('#state').val() === 'hr_lead_approval' && ($('#probation_period').val() < 7 || $('#probation_period').val() > 90)) {
+            $('#probationMissing').modal('show');
+            return;
+        }
+
+        $('#approveConfirmation').modal('show');
+    });
+
     $('#confirm_approve').on('click', function () {
         var recruitmentId = $(this).data('recruitment-id');
 
@@ -6,7 +21,9 @@ $(function () {
             url: '/employee-recruitment/' + recruitmentId + '/approve',
             type: 'POST',
             data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                probation_period: $('#probation_period').val(),
+                message: $('#message').val()
             },
             success: function (response) {
                 window.location.href = response.redirectUrl;
@@ -18,9 +35,9 @@ $(function () {
     });
 
     $('#reject').on('click', function () {
-        var decision_message = $('#decision_message').val();
+        var message = $('#message').val();
 
-        if (decision_message.length === 0) {
+        if (message.length === 0) {
             $('#messageMissing').modal('show');
         } else {
             $('#rejectConfirmation').modal('show');
@@ -35,7 +52,7 @@ $(function () {
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
-                decision_message: $('#decision_message').val()
+                message: $('#message').val()
             },
             success: function (response) {
                 window.location.href = response.redirectUrl;
@@ -47,9 +64,9 @@ $(function () {
     });
 
     $('#suspend').on('click', function () {
-        var decision_message = $('#decision_message').val();
+        var message = $('#message').val();
 
-        if (decision_message.length === 0) {
+        if (message.length === 0) {
             $('#messageMissing').modal('show');
         } else {
             $('#suspendConfirmation').modal('show');
@@ -64,7 +81,7 @@ $(function () {
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
-                decision_message: $('#decision_message').val()
+                message: $('#message').val()
             },
             success: function (response) {
                 window.location.href = response.redirectUrl;

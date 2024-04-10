@@ -11,7 +11,7 @@ use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 class StateSupervisorApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
-            $cc_given_for_user = 
+            $is_supervisor = 
                 ($workflow->base_salary_cc1 && $workflow->base_salary_cc1->lead_user_id == $user->id) ||
                 ($workflow->base_salary_cc2 && $workflow->base_salary_cc2->lead_user_id == $user->id) ||
                 ($workflow->base_salary_cc3 && $workflow->base_salary_cc3->lead_user_id == $user->id) ||
@@ -22,12 +22,12 @@ class StateSupervisorApproval implements IStateResponsibility {
 
             $metaData = json_decode($workflow->meta_data, true);
             $already_approved_by_user = false;
-            if (isset($metaData['supervisor_approval']['approval_user_ids']) && 
-                in_array($user->id, $metaData['supervisor_approval']['approval_user_ids'])) {
+            if (isset($metaData['approvals'][$workflow->state]['approval_user_ids']) && 
+                in_array($user->id, $metaData['approvals'][$workflow->state]['approval_user_ids'])) {
                     $already_approved_by_user = true;
             }
 
-            return $cc_given_for_user && !$already_approved_by_user;
+            return $is_supervisor && !$already_approved_by_user;
         } else {
             return false;
         }
@@ -37,13 +37,13 @@ class StateSupervisorApproval implements IStateResponsibility {
         if ($workflow instanceof RecruitmentWorkflow) {
             $metaData = json_decode($workflow->meta_data, true);
 
-            $approval_user_ids = $metaData['supervisor_approval']['approval_user_ids'] ?? [];
+            $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
             $approval_user_ids[] = Auth::id();
 
-            $metaData['supervisor_approval']['approval_user_ids'] = $approval_user_ids;
+            $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
             $workflow->meta_data = json_encode($metaData);
 
-            $cost_center_user_ids = array_filter([
+            $cost_center_lead_user_ids = array_filter([
                 optional($workflow->base_salary_cc1)->lead_user_id,
                 optional($workflow->base_salary_cc2)->lead_user_id,
                 optional($workflow->base_salary_cc3)->lead_user_id,
@@ -56,7 +56,7 @@ class StateSupervisorApproval implements IStateResponsibility {
             $workflow->updated_by = Auth::id();
             $workflow->save();
 
-            return count(array_diff($cost_center_user_ids, $approval_user_ids)) === 0;
+            return count(array_diff($cost_center_lead_user_ids, $approval_user_ids)) === 0;
         } else {
             return false;
         }

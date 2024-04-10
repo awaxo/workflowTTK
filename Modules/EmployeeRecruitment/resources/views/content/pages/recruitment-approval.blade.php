@@ -10,7 +10,8 @@
 
 @section('vendor-script')
     @vite([
-    // Add paths to the necessary JavaScript files for the page
+        'resources/assets/vendor/libs/cleavejs/cleave.js',
+        'resources/assets/vendor/libs/cleavejs/cleave-phone.js'
     ])
 @endsection
 
@@ -38,12 +39,32 @@
         <div class="tab-content">
             <div class="tab-pane fade active show" id="tab_decision" role="tabpanel">
             <form>
+                <input type="hidden" id="state" value="{{ $recruitment->state }}">
+                @if($recruitment->state == 'hr_lead_approval')
+                    <div class="col-sm-2 mb-3">
+                        <label class="form-label" for="probation_period">Próbaidő</label>
+                        <input class="form-control numeral-mask" type="text" id="probation_period" placeholder="Próbaidő...">
+                    </div>
+                @endif
+                @if($recruitment->state == 'proof_of_coverage' &&
+                    ($recruitment->base_salary_cc1 && $recruitment->base_salary_cc1->leadUser == Auth::user() && ($recruitment->base_salary_cc1->type->tender || $recruitment->base_salary_cc1->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->base_salary_cc2 && $recruitment->base_salary_cc2->leadUser == Auth::user() && ($recruitment->base_salary_cc2->type->tender || $recruitment->base_salary_cc2->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->base_salary_cc3 && $recruitment->base_salary_cc3->leadUser == Auth::user() && ($recruitment->base_salary_cc3->type->tender || $recruitment->base_salary_cc3->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->health_allowance_cc && $recruitment->health_allowance_cc->leadUser == Auth::user() && ($recruitment->health_allowance_cc->type->tender || $recruitment->health_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->management_allowance_cc && $recruitment->management_allowance_cc->leadUser == Auth::user() && ($recruitment->management_allowance_cc->type->tender || $recruitment->management_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->extra_pay_1_cc && $recruitment->extra_pay_1_cc->leadUser == Auth::user() && ($recruitment->extra_pay_1_cc->type->tender || $recruitment->extra_pay_1_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->extra_pay_2_cc && $recruitment->extra_pay_2_cc->leadUser == Auth::user() && ($recruitment->extra_pay_2_cc->type->tender || $recruitment->extra_pay_2_cc->type->name == "Vállalkozási tevékenység")))
+                    <div class="col-sm-2 mb-3">
+                        <input class="form-check-input" type="checkbox" id="post_financed_application">
+                        <label class="form-check-label" for="post_financed_application">Utófinanszírozott pályázat?</label>
+                    </div>
+                @endif
                 <div class="mb-3">
-                    <label class="form-label" for="decision_message">Üzenet</label>
-                    <textarea id="decision_message" class="form-control" placeholder="Üzenet..."></textarea>
+                    <label class="form-label" for="message">Üzenet</label>
+                    <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
                 </div>
                 <div class="d-grid mt-4 d-md-block">
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#approveConfirmation" class="btn btn-label-success me-2">Jóváhagyás</button>
+                    <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
                     <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
                     <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
                 </div>
@@ -375,6 +396,28 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card accordion-item">
+                        <h2 class="accordion-header" id="heading_documents">
+                            <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_additional_data" aria-expanded="false" aria-controls="collapse_additional_data">Kiegészítő adatok</button>
+                        </h2>
+                        <div id="collapse_additional_data" class="accordion-collapse collapse" aria-labelledby="heading_additional_data" data-bs-parent="#accordion_process_details">
+                            <div class="accordion-body">
+                                <div class="d-flex">
+                                    <label class="form-label col-6 col-md-3">Próbaidő hossza</label>
+                                    <span class="fw-bold ms-1">{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</span>
+                                </div>
+                                <div class="d-flex">
+                                    <label class="form-label col-6 col-md-3">Utófinanszírozott pályázat</label>
+                                    <span class="fw-bold ms-1">{{ $recruitment->post_financed_application ? $recruitment->post_financed_application : '-' }}</span>
+                                </div>
+                                <div class="d-flex">
+                                    <label class="form-label col-6 col-md-3">Szerződés</label>
+                                    <span class="fw-bold ms-1">{{ $recruitment->contract ? $recruitment->contract : '-' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>                
             </div>
         </div>
@@ -406,6 +449,20 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p>Amennyiben elutasítod a kérelem jóváhagyását, kérlek írj indoklást az üzenet mezőbe!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Probation period missing modal -->
+<div class="modal fade" id="probationMissing" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a próbaidő hosszát!</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>

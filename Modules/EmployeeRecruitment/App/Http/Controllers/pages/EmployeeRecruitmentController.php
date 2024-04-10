@@ -125,8 +125,10 @@ class EmployeeRecruitmentController extends Controller
             if ($service->isAllApproved($recruitment)) {
                 $transition = $service->getNextTransition($recruitment);
                 if ($transition) {
-                    $recruitment->workflow_apply($transition);
-    
+                    $this->validateFields($recruitment, $request);
+
+                    $recruitment->meta_data = $this->storeMetadata($recruitment, $request, 'approvals');
+                    $recruitment->workflow_apply($transition);   
                     $recruitment->updated_by = Auth::id();
                     $recruitment->save();
                     
@@ -149,21 +151,8 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            if (strlen($request->input('decision_message')) > 0) {
-                $reject = [
-                    'user_id' => Auth::id(),
-                    'datetime' => now(),
-                    'decision_message' => $request->input('decision_message'),
-                ];
-                $metaData = json_decode($recruitment->meta_data, true);
-                if ($metaData === null) {
-                    $metaData = [
-                        'reject' => $reject,
-                    ];
-                } else {
-                    $metaData['reject'] = $reject;
-                }
-                $recruitment->meta_data = json_encode($metaData);
+            if (strlen($request->input('message')) > 0) {
+                $recruitment->meta_data = $this->storeMetadata($recruitment, $request, 'rejections');
                 $recruitment->workflow_apply('to_request_review');
 
                 $recruitment->updated_by = Auth::id();
@@ -185,22 +174,8 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            if (strlen($request->input('decision_message')) > 0) {
-                $suspend = [
-                    'user_id' => Auth::id(),
-                    'source_state' => $recruitment->state,
-                    'datetime' => now(),
-                    'decision_message' => $request->input('decision_message'),
-                ];
-                $metaData = json_decode($recruitment->meta_data, true);
-                if ($metaData === null) {
-                    $metaData = [
-                        'suspend' => $suspend,
-                    ];
-                } else {
-                    $metaData['suspend'] = $suspend;
-                }
-                $recruitment->meta_data = json_encode($metaData);
+            if (strlen($request->input('message')) > 0) {
+                $recruitment->meta_data = $this->storeMetadata($recruitment, $request, 'suspensions');
                 $recruitment->workflow_apply('to_suspended');
 
                 $recruitment->updated_by = Auth::id();
@@ -257,5 +232,43 @@ class EmployeeRecruitmentController extends Controller
         } else {
             return view('content.pages.misc-not-authorized');
         }
+    }
+
+    private function validateFields(RecruitmentWorkflow $recruitment, Request $request)
+    {
+        if ($recruitment->state === 'hr_lead_approval') {
+            $probation_period = $request->input('probation_period');
+            if ($probation_period === null || $probation_period < 7 || $probation_period > 90) {
+                Log::error('A próbaidő hossza nem megfelelő');
+                throw new \Exception('Probationary period length is not valid');
+            }
+
+            $recruitment->probation_period = $probation_period;
+        }
+    }
+
+    private function storeMetadata(RecruitmentWorkflow $recruitment, Request $request, string $decision) 
+    {
+        $suspension = [
+            'user_id' => Auth::id(),
+            'datetime' => now()->toDateTimeString(),
+            'message' => $request->input('message'),
+        ];
+
+        $metaData = json_decode($recruitment->meta_data, true) ?? [];
+        if (!isset($metaData[$decision])) {
+            $metaData[$decision] = [];
+        }
+
+        if (!isset($metaData[$decision][$recruitment->state])) {
+            $metaData[$decision][$recruitment->state] = [
+                'approval_user_ids' => [],
+                'details' => [],
+            ];
+        }
+
+        $metaData[$decision][$recruitment->state]['details'][] = $suspension;
+
+        return json_encode($metaData);
     }
 }

@@ -47,13 +47,13 @@
                     </div>
                 @endif
                 @if($recruitment->state == 'proof_of_coverage' &&
-                    ($recruitment->base_salary_cc1 && $recruitment->base_salary_cc1->leadUser == Auth::user() && ($recruitment->base_salary_cc1->type->tender || $recruitment->base_salary_cc1->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->base_salary_cc2 && $recruitment->base_salary_cc2->leadUser == Auth::user() && ($recruitment->base_salary_cc2->type->tender || $recruitment->base_salary_cc2->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->base_salary_cc3 && $recruitment->base_salary_cc3->leadUser == Auth::user() && ($recruitment->base_salary_cc3->type->tender || $recruitment->base_salary_cc3->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->health_allowance_cc && $recruitment->health_allowance_cc->leadUser == Auth::user() && ($recruitment->health_allowance_cc->type->tender || $recruitment->health_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->management_allowance_cc && $recruitment->management_allowance_cc->leadUser == Auth::user() && ($recruitment->management_allowance_cc->type->tender || $recruitment->management_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->extra_pay_1_cc && $recruitment->extra_pay_1_cc->leadUser == Auth::user() && ($recruitment->extra_pay_1_cc->type->tender || $recruitment->extra_pay_1_cc->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->extra_pay_2_cc && $recruitment->extra_pay_2_cc->leadUser == Auth::user() && ($recruitment->extra_pay_2_cc->type->tender || $recruitment->extra_pay_2_cc->type->name == "Vállalkozási tevékenység")))
+                    ($recruitment->base_salary_cc1 && $recruitment->base_salary_cc1->leadUser == Auth::user() && $recruitment->base_salary_cc1->type && ($recruitment->base_salary_cc1->type->tender || $recruitment->base_salary_cc1->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->base_salary_cc2 && $recruitment->base_salary_cc2->leadUser == Auth::user() && $recruitment->base_salary_cc2->type && ($recruitment->base_salary_cc2->type->tender || $recruitment->base_salary_cc2->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->base_salary_cc3 && $recruitment->base_salary_cc3->leadUser == Auth::user() && $recruitment->base_salary_cc3->type && ($recruitment->base_salary_cc3->type->tender || $recruitment->base_salary_cc3->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->health_allowance_cc && $recruitment->health_allowance_cc->leadUser == Auth::user() && $recruitment->health_allowance_cc->type && ($recruitment->health_allowance_cc->type->tender || $recruitment->health_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->management_allowance_cc && $recruitment->management_allowance_cc->leadUser == Auth::user() && $recruitment->management_allowance_cc->type && ($recruitment->management_allowance_cc->type->tender || $recruitment->management_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->extra_pay_1_cc && $recruitment->extra_pay_1_cc->leadUser == Auth::user() && $recruitment->extra_pay_1_cc->type && ($recruitment->extra_pay_1_cc->type->tender || $recruitment->extra_pay_1_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->extra_pay_2_cc && $recruitment->extra_pay_2_cc->leadUser == Auth::user() && $recruitment->extra_pay_2_cc->type && ($recruitment->extra_pay_2_cc->type->tender || $recruitment->extra_pay_2_cc->type->name == "Vállalkozási tevékenység")))
                     <div class="col-sm-2 mb-3">
                         <input class="form-check-input" type="checkbox" id="post_financed_application">
                         <label class="form-check-label" for="post_financed_application">Utófinanszírozott pályázat?</label>
@@ -406,10 +406,6 @@
                                 <div class="d-flex">
                                     <label class="form-label col-6 col-md-3">Próbaidő hossza</label>
                                     <span class="fw-bold ms-1">{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</span>
-                                </div>
-                                <div class="d-flex">
-                                    <label class="form-label col-6 col-md-3">Utófinanszírozott pályázat</label>
-                                    <span class="fw-bold ms-1">{{ $recruitment->post_financed_application ? $recruitment->post_financed_application : '-' }}</span>
                                 </div>
                                 <div class="d-flex">
                                     <label class="form-label col-6 col-md-3">Szerződés</label>

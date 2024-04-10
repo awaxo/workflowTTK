@@ -79,7 +79,6 @@ return new class extends Migration
 
             // Additional fields filled later through the process
             $table->unsignedTinyInteger('probation_period')->nullable();
-            $table->unsignedTinyInteger('post_financed_application')->nullable();
             $table->string('contract')->nullable();
 
             $table->foreign('workgroup_id_1')->references('id')->on('wf_workgroup');

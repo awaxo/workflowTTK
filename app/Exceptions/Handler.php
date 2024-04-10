@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -26,5 +27,27 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function report(Throwable $exception)
+    {
+        if ($this->shouldReport($exception)) {
+            // Excluding the stack trace
+            $logMessage = sprintf(
+                "[%s] %s: %s in %s:%d",
+                now()->toDateTimeString(),
+                get_class($exception),
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine()
+            );
+
+            $logMessage .= PHP_EOL . "--------------------------------";
+
+            Log::error($logMessage);
+        }
+
+        // Uncomment this line to log the stack trace
+        //parent::report($exception);
     }
 }

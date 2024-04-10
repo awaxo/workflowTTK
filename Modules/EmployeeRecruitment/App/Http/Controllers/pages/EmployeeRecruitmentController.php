@@ -126,10 +126,10 @@ class EmployeeRecruitmentController extends Controller
                 $transition = $service->getNextTransition($recruitment);
                 if ($transition) {
                     $this->validateFields($recruitment, $request);
-
-                    $recruitment->meta_data = $this->storeMetadata($recruitment, $request, 'approvals');
+                    $this->storeMetadata($recruitment, $request, 'approvals');
                     $recruitment->workflow_apply($transition);   
                     $recruitment->updated_by = Auth::id();
+
                     $recruitment->save();
                     
                     return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -152,10 +152,10 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('message')) > 0) {
-                $recruitment->meta_data = $this->storeMetadata($recruitment, $request, 'rejections');
+                $this->storeMetadata($recruitment, $request, 'rejections');
                 $recruitment->workflow_apply('to_request_review');
-
                 $recruitment->updated_by = Auth::id();
+
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -175,10 +175,10 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('message')) > 0) {
-                $recruitment->meta_data = $this->storeMetadata($recruitment, $request, 'suspensions');
+                $this->storeMetadata($recruitment, $request, 'suspensions');
                 $recruitment->workflow_apply('to_suspended');
-
                 $recruitment->updated_by = Auth::id();
+                
                 $recruitment->save();
 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -210,16 +210,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
-        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            $previous_state = json_decode($recruitment->meta_data)->suspend->source_state;
-            
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {            
             if ($recruitment->workflow_can('restore_from_suspended')) {
-                $metaData = json_decode($recruitment->meta_data, true);
-                $metaData['suspend'] = null;
-                $recruitment->meta_data = json_encode($metaData);
-                $recruitment->state = $previous_state;
-
+                $this->setPreviousState($recruitment);
                 $recruitment->updated_by = Auth::id();
+
                 $recruitment->save();
                 
                 return response()->json(['redirectUrl' => route('pages-workflows')]);
@@ -242,14 +237,27 @@ class EmployeeRecruitmentController extends Controller
                 Log::error('A próbaidő hossza nem megfelelő');
                 throw new \Exception('Probationary period length is not valid');
             }
-
             $recruitment->probation_period = $probation_period;
+        } elseif ($recruitment->state === 'proof_of_coverage') {
+            $post_financed_application = $request->input('post_financed_application');
+            if ($post_financed_application === null) {
+                return;
+            }
+
+            $additional_fields = [
+                'user_id' => Auth::id(),
+                'datetime' => now()->toDateTimeString(),
+                'post_financed_application' => $post_financed_application,
+            ];
+            $metaData = json_decode($recruitment->meta_data, true) ?? [];
+            $metaData['additional_fields'][] = $additional_fields;
+            $recruitment->meta_data = json_encode($metaData);
         }
     }
 
     private function storeMetadata(RecruitmentWorkflow $recruitment, Request $request, string $decision) 
     {
-        $suspension = [
+        $detail = [
             'user_id' => Auth::id(),
             'datetime' => now()->toDateTimeString(),
             'message' => $request->input('message'),
@@ -267,8 +275,31 @@ class EmployeeRecruitmentController extends Controller
             ];
         }
 
-        $metaData[$decision][$recruitment->state]['details'][] = $suspension;
+        $metaData[$decision][$recruitment->state]['details'][] = $detail;
 
-        return json_encode($metaData);
+        $recruitment->meta_data = json_encode($metaData);
+    }
+
+    private function setPreviousState(RecruitmentWorkflow $recruitment) {
+        $metaData = json_decode($recruitment->meta_data, true);
+        $latestDateTime = null;
+        $previousState = 'suspended';
+    
+        if (isset($metaData['approvals']) && is_array($metaData['approvals'])) {
+            foreach ($metaData['approvals'] as $state => $approvalData) {
+                if (isset($approvalData['details']) && is_array($approvalData['details'])) {
+                    foreach ($approvalData['details'] as $detail) {
+                        // Compare datetimes to find the latest
+                        $currentDateTime = isset($detail['datetime']) ? strtotime($detail['datetime']) : null;
+                        if ($currentDateTime && (!$latestDateTime || $currentDateTime > $latestDateTime)) {
+                            $latestDateTime = $currentDateTime;
+                            $previousState = $state;
+                        }
+                    }
+                }
+            }
+        }
+    
+        $recruitment->state = $previousState;
     }
 }

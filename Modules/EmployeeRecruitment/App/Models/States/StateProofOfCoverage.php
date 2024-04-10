@@ -63,6 +63,34 @@ class StateProofOfCoverage implements IStateResponsibility {
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
-        return 'to_project_coordination_lead_approval';
+        if ($workflow instanceof RecruitmentWorkflow) {
+            if (($workflow->base_salary_cc1 && $workflow->base_salary_cc1->type && $workflow->base_salary_cc1->type->tender) ||
+                ($workflow->base_salary_cc2 && $workflow->base_salary_cc2->type && $workflow->base_salary_cc2->type->tender) ||
+                ($workflow->base_salary_cc3 && $workflow->base_salary_cc3->type && $workflow->base_salary_cc3->type->tender) ||
+                ($workflow->health_allowance_cc && $workflow->health_allowance_cc->type && $workflow->health_allowance_cc->type->tender) ||
+                ($workflow->management_allowance_cc && $workflow->management_allowance_cc->type && $workflow->management_allowance_cc->type->tender) ||
+                ($workflow->extra_pay_1_cc && $workflow->extra_pay_1_cc->type && $workflow->extra_pay_1_cc->type->tender) ||
+                ($workflow->extra_pay_2_cc && $workflow->extra_pay_2_cc->type && $workflow->extra_pay_2_cc->type->tender)) {
+                return 'to_project_coordination_lead_approval';
+            } else {
+                $metaData = json_decode($workflow->meta_data, true);
+                $postFinancedExists = false;
+
+                if (isset($metaData['additional_fields']) && is_array($metaData['additional_fields'])) {
+                    foreach ($metaData['additional_fields'] as $field) {
+                        if (isset($field['post_financed_application']) && $field['post_financed_application'] === true) {
+                            $postFinancedExists = true;
+                            break;
+                        }
+                    }
+                }
+
+                if ($postFinancedExists) {
+                    return 'post_financing_approval';
+                } else {
+                    return 'to_registration';
+                }
+            }
+        }
     }
 }

@@ -64,11 +64,11 @@ return [
                 'to' => 'project_coordination_lead_approval',
             ],
             'to_post_financing_approval' => [
-                'from' => 'project_coordination_lead_approval',
+                'from' => ['project_coordination_lead_approval', 'proof_of_coverage'],
                 'to' => 'post_financing_approval',
             ],
             'to_registration' => [
-                'from' => 'post_financing_approval',
+                'from' => ['post_financing_approval', 'project_coordination_lead_approval', 'proof_of_coverage'],
                 'to' => 'registration',
             ],
             'to_financial_counterparty_approval' => [

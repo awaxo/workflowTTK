@@ -88,7 +88,6 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'requires_commute_support',
             'commute_support_form',
             'probation_period',
-            'post_financed_application',
             'contract'
         ]);
 
@@ -99,7 +98,6 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'work_with_radioactive_isotopes' => 'boolean',
             'work_with_carcinogenic_materials' => 'boolean',
             'requires_commute_support' => 'boolean',
-            'post_financed_application' => 'boolean',
         ]);
 
         $this->attributes = array_merge($this->attributes, [

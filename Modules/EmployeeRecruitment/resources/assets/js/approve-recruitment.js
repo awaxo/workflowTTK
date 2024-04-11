@@ -92,4 +92,8 @@ $(function () {
             }
         });
     });
+
+    $('.print-icon').on('click', function() {
+        $('#message_parent').removeClass('d-none');
+    });
 });

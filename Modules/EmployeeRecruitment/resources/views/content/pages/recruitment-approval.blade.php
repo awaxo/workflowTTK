@@ -61,15 +61,21 @@
                 @endif
                 @if($recruitment->state == 'draft_contract_pending')
                     <div class="col-sm-2 mb-3">
-                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" target="_blank">
+                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon" target="_blank">
                             <i class="fa fa-print fs-1"></i>
                         </a>
                     </div>
+                    <div id="message_parent" class="mb-3 d-none">
+                        <label class="form-label" for="message">Üzenet</label>
+                        <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
+                    </div>
                 @endif
-                <div class="mb-3">
-                    <label class="form-label" for="message">Üzenet</label>
-                    <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
-                </div>
+                @if($recruitment->state != 'draft_contract_pending')
+                    <div class="mb-3">
+                        <label class="form-label" for="message">Üzenet</label>
+                        <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
+                    </div>
+                @endif
                 <div class="d-grid mt-4 d-md-block">
                     <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
                     <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>

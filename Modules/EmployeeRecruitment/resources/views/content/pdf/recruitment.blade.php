@@ -6,362 +6,317 @@
     <title>Felvételi kérelem</title>
     <style>
         body {
-            font-family: 'Helvetica', sans-serif;
+            font-family: 'DejaVu Sans', sans-serif;
         }
         .title {
             text-align: center;
             margin-top: 20px;
             font-size: 24px;
         }
-        /* Add additional styling as needed */
+        .fw-bold {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="title">Felvételi kérelem</div>
 
-    <div class="accordion" id="accordion_process_details">
-        <div class="card accordion-item">
-            <h2 class="accordion-header" id="heading_base_data">
-                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_base_data" aria-expanded="false" aria-controls="collapse_base_data">Alapadatok</button>
-            </h2>
-            <div id="collapse_base_data" class="accordion-collapse collapse" aria-labelledby="heading_base_data" data-bs-parent="#accordion_process_details">
-                <div class="accordion-body">
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Név</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->name }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Folyamatindító intézet</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->initiatorInstitute ? $recruitment->initiatorInstitute->group_level . ' - ' . $recruitment->initiatorInstitute->name : '' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Felvétel álláshirdetéssel történt</label>
-                        <span class="fw-bold ms-1">
-                            @if($recruitment->job_ad_exists)
-                                <i class="fas fa-check text-success"></i>
-                            @else
-                                <i class="fas fa-times text-danger"></i>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Álláshirdetésre jelentkezett nők száma</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->applicants_female_count }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Álláshirdetésre jelentkezett férfiak száma</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->applicants_male_count }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Volt már munkajogviszonya a Kutatóközponttal</label>
-                        <span class="fw-bold ms-1">
-                            @if($recruitment->has_prior_employment)
-                                <i class="fas fa-check text-success"></i>
-                            @else
-                                <i class="fas fa-times text-danger"></i>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal</label>
-                        <span class="fw-bold ms-1">
-                            @if($recruitment->has_current_volunteer_contract)
-                                <i class="fas fa-check text-success"></i>
-                            @else
-                                <i class="fas fa-times text-danger"></i>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Állampolgárság</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->citizenship }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Csoport 1</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->workgroup1 ? $recruitment->workgroup1->workgroup_number . ' - ' . $recruitment->workgroup1->name : '' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Csoport 2</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->workgroup2 ? $recruitment->workgroup2->workgroup_number . ' - ' . $recruitment->workgroup2->name : '-' }}</span>
-                    </div>                                
-                </div>
-            </div>
-        </div>
-    
-        <div class="card accordion-item">
-            <h2 class="accordion-header" id="heading_legal_relationship">
-                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_legal_relationship" aria-expanded="false" aria-controls="collapse_legal_relationship">Jogviszony</button>
-            </h2>
-            <div id="collapse_legal_relationship" class="accordion-collapse collapse" aria-labelledby="heading_legal_relationship" data-bs-parent="#accordion_process_details">
-                <div class="accordion-body">
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Munkakör típusa</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->position ? $recruitment->position->type : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Munkakör</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->position ? $recruitment->position->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Munkaköri leírás</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->job_description }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Jogviszony típusa</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->employment_type }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Feladat</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->task ? $recruitment->task : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Jogviszony kezdete</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->employment_start_date }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Jogviszony vége</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->employment_end_date }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <div class="card accordion-item">
-            <h2 class="accordion-header" id="heading_salary_elements">
-                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_salary_elements" aria-expanded="false" aria-controls="collapse_salary_elements">Bérelemek</button>
-            </h2>
-            <div id="collapse_salary_elements" class="accordion-collapse collapse" aria-labelledby="heading_salary_elements" data-bs-parent="#accordion_process_details">
-                <div class="accordion-body">
-                    <p class="mb-1"><strong>Alapbér</strong></p>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Költséghely 1</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->base_salary_cc1 ? $recruitment->base_salary_cc1->cost_center_code . ' - ' . $recruitment->base_salary_cc1->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Havi bruttó bér 1</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->base_salary_monthly_gross_1 ? number_format($recruitment->base_salary_monthly_gross_1, 0, ',', ' ') . ' Ft' : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Költséghely 2</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->base_salary_cc2 ? $recruitment->base_salary_cc2->cost_center_code . ' - ' . $recruitment->base_salary_cc2->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Havi bruttó bér 2</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->base_salary_monthly_gross_2 ? number_format($recruitment->base_salary_monthly_gross_2, 0, ',', ' ') . ' Ft' : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Költséghely 3</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->base_salary_cc3 ? $recruitment->base_salary_cc3->cost_center_code . ' - ' . $recruitment->base_salary_cc3->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Havi bruttó bér 3</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->base_salary_monthly_gross_3 ? number_format($recruitment->base_salary_monthly_gross_3, 0, ',', ' ') . ' Ft' : '-' }}</span>
-                    </div>
-
-                    <p class="mb-1"><strong>Egészségügyi pótlék</strong></p>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Költséghely 4</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->health_allowance_cc ? $recruitment->health_allowance_cc->cost_center_code . ' - ' . $recruitment->health_allowance_cc->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Havi bruttó bér 4</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->health_allowance_monthly_gross_4 ? number_format($recruitment->health_allowance_monthly_gross_4, 0, ',', ' ') . ' Ft' : '-' }}</span>
-                    </div>
-
-                    <p class="mb-1"><strong>Vezetői pótlék</strong></p>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Költséghely 5</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->management_allowance_cc ? $recruitment->management_allowance_cc->cost_center_code . ' - ' . $recruitment->management_allowance_cc->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Havi bruttó bér 5</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->management_allowance_monthly_gross_5 ? number_format($recruitment->management_allowance_monthly_gross_5, 0, ',', ' ') . ' Ft' : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Időtartam vége</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->management_allowance_end_date }}</span>
-                    </div>
-
-                    <p class="mb-1"><strong>Bérpótlék 1</strong></p>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Költséghely 6</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_cc ? $recruitment->extra_pay_1_cc->cost_center_code . ' - ' . $recruitment->extra_pay_1_cc->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Havi bruttó bér 6</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_monthly_gross_6 ? number_format($recruitment->extra_pay_1_monthly_gross_6, 0, ',', ' ') . ' Ft' : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Időtartam vége</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_end_date }}</span>
-                    </div>
-
-                    <p class="mb-1"><strong>Bérpótlék 2</strong></p>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Költséghely 7</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->extra_pay_2_cc ? $recruitment->extra_pay_2_cc->cost_center_code . ' - ' . $recruitment->extra_pay_2_cc->name : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Havi bruttó bér 7</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_monthly_gross_7 ? number_format($recruitment->extra_pay_1_monthly_gross_7, 0, ',', ' ') . ' Ft' : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Időtartam vége</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->extra_pay_2_end_date }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <div class="card accordion-item">
-            <h2 class="accordion-header" id="heading_working_hours">
-                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_working_hours" aria-expanded="false" aria-controls="collapse_working_hours">Munkaidő</button>
-            </h2>
-            <div id="collapse_working_hours" class="accordion-collapse collapse" aria-labelledby="heading_working_hours" data-bs-parent="#accordion_process_details">
-                <div class="accordion-body">
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Heti munkaóraszám</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->weekly_working_hours }}</span>
-                    </div>
-
-                    <p class="mb-1"><strong>Munkaidő</strong></p>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Hétfő</label>
-                        <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Kedd</label>
-                        <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Szerda</label>
-                        <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Csütörtök</label>
-                        <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Péntek</label>
-                        <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <div class="card accordion-item">
-            <h2 class="accordion-header" id="heading_other_details">
-                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_other_details" aria-expanded="false" aria-controls="collapse_other_details">Egyéb adatok</button>
-            </h2>
-            <div id="collapse_other_details" class="accordion-collapse collapse" aria-labelledby="heading_other_details" data-bs-parent="#accordion_process_details">
-                <div class="accordion-body">
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Javasolt email cím</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->email }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Belépési jogosultságok</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->entry_permissions ? $recruitment->entry_permissions : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Rendszám</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->license_plate ? $recruitment->license_plate : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Dolgozószoba</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->employee_room ? $recruitment->employee_room : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Telefon mellék</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->phone_extension ? $recruitment->phone_extension : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Hozzáférési jogosultságok</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->required_tools ? $recruitment->required_tools : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Munkavégzéshez rendelkezésre álló eszközök</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->available_tools ? $recruitment->available_tools : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Rendelkezésre álló eszközök leltári száma</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->inventory_numbers_of_available_tools ? $recruitment->inventory_numbers_of_available_tools : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Sugárzó izotóppal fog dolgozni</label>
-                        <span class="fw-bold ms-1">
-                            @if($recruitment->work_with_radioactive_isotopes)
-                                <i class="fas fa-check text-success"></i>
-                            @else
-                                <i class="fas fa-times text-danger"></i>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Rákkeltő anyaggal fog dolgozni?</label>
-                        <span class="fw-bold ms-1">
-                            @if($recruitment->work_with_carcinogenic_materials)
-                                <i class="fas fa-check text-success"></i>
-                            @else
-                                <i class="fas fa-times text-danger"></i>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Használni tervezett rákkeltő anyagok felsorolása</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->planned_carcinogenic_materials_use ? $recruitment->planned_carcinogenic_materials_use : '-' }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <div class="card accordion-item">
-            <h2 class="accordion-header" id="heading_documents">
-                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_documents" aria-expanded="false" aria-controls="collapse_documents">Dokumentumok</button>
-            </h2>
-            <div id="collapse_documents" class="accordion-collapse collapse" aria-labelledby="heading_documents" data-bs-parent="#accordion_process_details">
-                <div class="accordion-body">
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Személyi adatlap</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->personal_data_sheet ? $recruitment->personal_data_sheet : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Hallgatói jogviszony igazolás</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->student_status_verification ? $recruitment->student_status_verification : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Bizonyítványok</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->certificates ? $recruitment->certificates : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Munkába járási támogatást igényel</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->requires_commute_support ? $recruitment->requires_commute_support : '-' }}</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Munkába járási adatlap</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->commute_support_form ? $recruitment->commute_support_form : '-' }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card accordion-item">
-            <h2 class="accordion-header" id="heading_documents">
-                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_additional_data" aria-expanded="false" aria-controls="collapse_additional_data">Kiegészítő adatok</button>
-            </h2>
-            <div id="collapse_additional_data" class="accordion-collapse collapse" aria-labelledby="heading_additional_data" data-bs-parent="#accordion_process_details">
-                <div class="accordion-body">
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Próbaidő hossza</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</span>
-                    </div>
-                    <div class="d-flex">
-                        <label class="form-label col-6 col-md-3">Szerződés</label>
-                        <span class="fw-bold ms-1">{{ $recruitment->contract ? $recruitment->contract : '-' }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <table>
+        <tbody>
+            <!-- Alapadatok Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Alapadatok</th>
+            </tr>
+            <tr>
+                <td>Név</td>
+                <td>{{ $recruitment->name }}</td>
+            </tr>
+            <tr>
+                <td>Folyamatindító intézet</td>
+                <td>{{ $recruitment->initiatorInstitute ? $recruitment->initiatorInstitute->group_level . ' - ' . $recruitment->initiatorInstitute->name : '' }}</td>
+            </tr>
+            <tr>
+                <td>Felvétel álláshirdetéssel történt</td>
+                <td>@if($recruitment->job_ad_exists)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+            </tr>
+            <tr>
+                <td>Álláshirdetésre jelentkezett nők száma</td>
+                <td>{{ $recruitment->applicants_female_count }}</td>
+            </tr>
+            <tr>
+                <td>Álláshirdetésre jelentkezett férfiak száma</td>
+                <td>{{ $recruitment->applicants_male_count }}</td>
+            </tr>
+            <tr>
+                <td>Volt már munkajogviszonya a Kutatóközponttal</td>
+                <td>@if($recruitment->has_prior_employment)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+            </tr>
+            <tr>
+                <td>Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal</td>
+                <td>@if($recruitment->has_current_volunteer_contract)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+            </tr>
+            <tr>
+                <td>Állampolgárság</td>
+                <td>{{ $recruitment->citizenship }}</td>
+            </tr>
+            <tr>
+                <td>Csoport 1</td>
+                <td>{{ $recruitment->workgroup1 ? $recruitment->workgroup1->workgroup_number . ' - ' . $recruitment->workgroup1->name : '' }}</td>
+            </tr>
+            <tr>
+                <td>Csoport 2</td>
+                <td>{{ $recruitment->workgroup2 ? $recruitment->workgroup2->workgroup_number . ' - ' . $recruitment->workgroup2->name : '-' }}</td>
+            </tr>
+            
+            <!-- Jogviszony Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Jogviszony</th>
+            </tr>
+            <tr>
+                <td>Munkakör típusa</td>
+                <td>{{ $recruitment->position ? $recruitment->position->type : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Munkakör</td>
+                <td>{{ $recruitment->position ? $recruitment->position->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Munkaköri leírás</td>
+                <td>{{ $recruitment->job_description }}</td>
+            </tr>
+            <tr>
+                <td>Jogviszony típusa</td>
+                <td>{{ $recruitment->employment_type }}</td>
+            </tr>
+            <tr>
+                <td>Feladat</td>
+                <td>{{ $recruitment->task ? $recruitment->task : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Jogviszony kezdete</td>
+                <td>{{ $recruitment->employment_start_date }}</td>
+            </tr>
+            <tr>
+                <td>Jogviszony vége</td>
+                <td>{{ $recruitment->employment_end_date }}</td>
+            </tr>
+            
+            <!-- Bérelemek Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Bérelemek</th>
+            </tr>
+            <!-- Alapbér -->
+            <tr>
+                <th colspan="2" class="fw-bold">Alapbér</th>
+            </tr>
+            <tr>
+                <td>Költséghely 1</td>
+                <td>{{ $recruitment->base_salary_cc1 ? $recruitment->base_salary_cc1->cost_center_code . ' - ' . $recruitment->base_salary_cc1->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér 1</td>
+                <td>{{ $recruitment->base_salary_monthly_gross_1 ? number_format($recruitment->base_salary_monthly_gross_1, 0, ',', ' ') . ' Ft' : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Költséghely 2</td>
+                <td>{{ $recruitment->base_salary_cc2 ? $recruitment->base_salary_cc2->cost_center_code . ' - ' . $recruitment->base_salary_cc2->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér 2</td>
+                <td>{{ $recruitment->base_salary_monthly_gross_2 ? number_format($recruitment->base_salary_monthly_gross_2, 0, ',', ' ') . ' Ft' : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Költséghely 3</td>
+                <td>{{ $recruitment->base_salary_cc3 ? $recruitment->base_salary_cc3->cost_center_code . ' - ' . $recruitment->base_salary_cc3->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér 3</td>
+                <td>{{ $recruitment->base_salary_monthly_gross_3 ? number_format($recruitment->base_salary_monthly_gross_3, 0, ',', ' ') . ' Ft' : '-' }}</td>
+            </tr>
+            
+            <!-- Egészségügyi pótlék -->
+            <tr>
+                <th colspan="2" class="fw-bold">Egészségügyi pótlék</th>
+            </tr>
+            <tr>
+                <td>Költséghely 4</td>
+                <td>{{ $recruitment->health_allowance_cc ? $recruitment->health_allowance_cc->cost_center_code . ' - ' . $recruitment->health_allowance_cc->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér 4</td>
+                <td>{{ $recruitment->health_allowance_monthly_gross_4 ? number_format($recruitment->health_allowance_monthly_gross_4, 0, ',', ' ') . ' Ft' : '-' }}</td>
+            </tr>
+            
+            <!-- Vezetői pótlék -->
+            <tr>
+                <th colspan="2" class="fw-bold">Vezetői pótlék</th>
+            </tr>
+            <tr>
+                <td>Költséghely 5</td>
+                <td>{{ $recruitment->management_allowance_cc ? $recruitment->management_allowance_cc->cost_center_code . ' - ' . $recruitment->management_allowance_cc->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér 5</td>
+                <td>{{ $recruitment->management_allowance_monthly_gross_5 ? number_format($recruitment->management_allowance_monthly_gross_5, 0, ',', ' ') . ' Ft' : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Időtartam vége</td>
+                <td>{{ $recruitment->management_allowance_end_date }}</td>
+            </tr>
+            
+            <!-- Bérpótlék 1 -->
+            <tr>
+                <th colspan="2" class="fw-bold">Bérpótlék 1</th>
+            </tr>
+            <tr>
+                <td>Költséghely 6</td>
+                <td>{{ $recruitment->extra_pay_1_cc ? $recruitment->extra_pay_1_cc->cost_center_code . ' - ' . $recruitment->extra_pay_1_cc->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér 6</td>
+                <td>{{ $recruitment->extra_pay_1_monthly_gross_6 ? number_format($recruitment->extra_pay_1_monthly_gross_6, 0, ',', ' ') . ' Ft' : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Időtartam vége</td>
+                <td>{{ $recruitment->extra_pay_1_end_date }}</td>
+            </tr>
+            
+            <!-- Bérpótlék 2 -->
+            <tr>
+                <th colspan="2" class="fw-bold">Bérpótlék 2</th>
+            </tr>
+            <tr>
+                <td>Költséghely 7</td>
+                <td>{{ $recruitment->extra_pay_2_cc ? $recruitment->extra_pay_2_cc->cost_center_code . ' - ' . $recruitment->extra_pay_2_cc->name : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér 7</td>
+                <td>{{ $recruitment->extra_pay_1_monthly_gross_7 ? number_format($recruitment->extra_pay_1_monthly_gross_7, 0, ',', ' ') . ' Ft' : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Időtartam vége</td>
+                <td>{{ $recruitment->extra_pay_2_end_date }}</td>
+            </tr>
+            
+            <!-- Munkaidő Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Munkaidő</th>
+            </tr>
+            <tr>
+                <td>Heti munkaóraszám</td>
+                <td>{{ $recruitment->weekly_working_hours }}</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold"><strong>Munkaidő</strong></th>
+            </tr>
+            <tr>
+                <td>Hétfő</td>
+                <td>{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Kedd</td>
+                <td>{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Szerda</td>
+                <td>{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Csütörtök</td>
+                <td>{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Péntek</td>
+                <td>{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</td>
+            </tr>
+            
+            <!-- Egyéb adatok Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Egyéb adatok</th>
+            </tr>
+            <tr>
+                <td>Javasolt email cím</td>
+                <td>{{ $recruitment->email }}</td>
+            </tr>
+            <tr>
+                <td>Belépési jogosultságok</td>
+                <td>{{ $recruitment->entry_permissions ? $recruitment->entry_permissions : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Rendszám</td>
+                <td>{{ $recruitment->license_plate ? $recruitment->license_plate : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Dolgozószoba</td>
+                <td>{{ $recruitment->employee_room ? $recruitment->employee_room : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Telefon mellék</td>
+                <td>{{ $recruitment->phone_extension ? $recruitment->phone_extension : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Hozzáférési jogosultságok</td>
+                <td>{{ $recruitment->required_tools ? $recruitment->required_tools : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Munkavégzéshez rendelkezésre álló eszközök</td>
+                <td>{{ $recruitment->available_tools ? $recruitment->available_tools : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Rendelkezésre álló eszközök leltári száma</td>
+                <td>{{ $recruitment->inventory_numbers_of_available_tools ? $recruitment->inventory_numbers_of_available_tools : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Sugárzó izotóppal fog dolgozni</td>
+                <td>@if($recruitment->work_with_radioactive_isotopes)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+            </tr>
+            <tr>
+                <td>Rákkeltő anyaggal fog dolgozni?</td>
+                <td>@if($recruitment->work_with_carcinogenic_materials)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+            </tr>
+            <tr>
+                <td>Használni tervezett rákkeltő anyagok felsorolása</td>
+                <td>{{ $recruitment->planned_carcinogenic_materials_use ? $recruitment->planned_carcinogenic_materials_use : '-' }}</td>
+            </tr>
+            
+            <!-- Dokumentumok Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Dokumentumok</th>
+            </tr>
+            <tr>
+                <td>Személyi adatlap</td>
+                <td>{{ $recruitment->personal_data_sheet ? $recruitment->personal_data_sheet : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Hallgatói jogviszony igazolás</td>
+                <td>{{ $recruitment->student_status_verification ? $recruitment->student_status_verification : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Bizonyítványok</td>
+                <td>{{ $recruitment->certificates ? $recruitment->certificates : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Munkába járási támogatást igényel</td>
+                <td>{{ $recruitment->requires_commute_support ? $recruitment->requires_commute_support : '-' }}</td>
+            </tr>
+            <tr>
+                <td>Munkába járási adatlap</td>
+                <td>{{ $recruitment->commute_support_form ? $recruitment->commute_support_form : '-' }}</td>
+            </tr>
+            
+            <!-- Kiegészítő adatok Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Kiegészítő adatok</th>
+            </tr>
+            <tr>
+                <td>Próbaidő hossza</td>
+                <td>{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</td>
+            </tr>
+            <tr>
+                <td>Szerződés</td>
+                <td>{{ $recruitment->contract ? $recruitment->contract : '-' }}</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

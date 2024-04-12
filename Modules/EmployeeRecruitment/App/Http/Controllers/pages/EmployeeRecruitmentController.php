@@ -264,6 +264,8 @@ class EmployeeRecruitmentController extends Controller
             $metaData = json_decode($recruitment->meta_data, true) ?? [];
             $metaData['additional_fields'][] = $additional_fields;
             $recruitment->meta_data = json_encode($metaData);
+        } elseif ($recruitment->state === 'employee_signature') {
+            $recruitment->contract = $request->input('contract_file');
         }
     }
 

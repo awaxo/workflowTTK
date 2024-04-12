@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\files\FileUploadController;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Modules\EmployeeRecruitment\App\Http\Controllers\pages\EmployeeRecruitmentController;
 
@@ -31,3 +32,10 @@ Route::post('/employee-recruitment/{id}/restore', [EmployeeRecruitmentController
 Route::get('/generate-pdf/{id}', [EmployeeRecruitmentController::class, 'generatePDF'])->middleware(['auth'])->name('generate.pdf');
 
 Route::post('/file/upload', [FileUploadController::class, 'upload'])->name('file.upload');
+Route::get('/dokumentumok/{filename}', function ($filename) {
+    $path = storage_path('app/public/uploads/' . $filename);
+    if (!File::exists($path)) {
+        abort(404);
+    }
+    return response()->file($path);
+});

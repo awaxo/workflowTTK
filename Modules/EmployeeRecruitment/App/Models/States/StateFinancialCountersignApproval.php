@@ -9,9 +9,9 @@ use App\Models\User;
 /**
  * The state of the recruitment process when the IT head has to approve the recruitment.
  */
-class StateRegistration implements IStateResponsibility {
+class StateFinancialCountersignApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
-        return $user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto');
+        return $user->hasRole('titkar_9_gi');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
@@ -19,6 +19,6 @@ class StateRegistration implements IStateResponsibility {
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
-        return 'to_financial_counterparty_approval';
+        return 'to_obligee_signature';
     }
 }

@@ -4,14 +4,16 @@
 
 @section('vendor-style')
     @vite([
-    // Add paths to the necessary CSS files for the page
+        'resources/assets/vendor/libs/dropzone/dropzone.scss',
     ])
 @endsection
 
 @section('vendor-script')
     @vite([
         'resources/assets/vendor/libs/cleavejs/cleave.js',
-        'resources/assets/vendor/libs/cleavejs/cleave-phone.js'
+        'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
+        'node_modules/dropzone/dist/min/dropzone.min.js',
+        'resources/assets/vendor/libs/dropzone/dropzone.js',
     ])
 @endsection
 
@@ -38,7 +40,6 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade active show" id="tab_decision" role="tabpanel">
-            <form>
                 <input type="hidden" id="state" value="{{ $recruitment->state }}">
                 @if($recruitment->state == 'hr_lead_approval')
                     <div class="col-sm-2 mb-3">
@@ -76,12 +77,23 @@
                         <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
                     </div>
                 @endif
+                @if($recruitment->state == 'employee_signature')
+                    <div class="mb-3">
+                        <label class="form-label" for="contract">Szerződés</label>
+                        <form action="/file/upload" class="dropzone needsclick" id="contract">
+                            @csrf
+                            <div class="dz-message needsclick">
+                                Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                            </div>
+                        </form>
+                        <input type="hidden" id="contract_file" data-original-name="" />
+                    </div>
+                @endif
                 <div class="d-grid mt-4 d-md-block">
                     <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
                     <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
                     <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
                 </div>
-            </form>
             </div>
             <div class="tab-pane fade" id="tab_process_details" role="tabpanel">
                 <div class="accordion" id="accordion_process_details">
@@ -472,6 +484,20 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a próbaidő hosszát!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contract missing modal -->
+<div class="modal fade" id="contractMissing" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Amennyiben jóváhagyod a kérelmet, fel kell töltened a szerződést!</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>

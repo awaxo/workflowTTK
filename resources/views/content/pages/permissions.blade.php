@@ -36,28 +36,25 @@
 
 @section('content')
     <h4 class="py-3 mb-4">Jogosultságok</h4>
-    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
+    <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.2.0/min/dropzone.min.js"></script>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <h1>Upload Multiple Images using dropzone.js and Laravel</h1>
-                <!-- FILEPATH: /c:/Munka/TTK/workflowTTK/resources/views/content/pages/permissions.blade.php -->
-                <!-- BEGIN: ed8c6549bwf9 -->
                 <form action="/test" method="POST" enctype="multipart/form-data" class="dropzone" id="image-upload">
                     <div>
                         <h3>Upload Multiple Image By Click On Box</h3>
                     </div>
                 </form>
-                <!-- END: ed8c6549bwf9 -->
             </div>
         </div>
     </div><script type="text/javascript">
             Dropzone.options.imageUpload = {
-                maxFilesize         :       1,
-                acceptedFiles: ".jpeg,.jpg,.png,.gif"
+                maxFilesize         :       20,
+                acceptedFiles: ".pdf"
             };
-    </script> --}}
+    </script>-->
 
     <div class="row">
         <div class="col-12 mb-4">

@@ -27,7 +27,7 @@ class EmployeeRecruitmentController extends Controller
         $workgroups2 = Workgroup::where('workgroup_number', '!=', 800)->get();
         $positions = Position::all();
         $costCenters = CostCenter::all();
-        $rooms = Room::all();
+        $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::all();
         
         return view('employeerecruitment::content.pages.new-employee-recruitment', [
@@ -83,6 +83,8 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->employment_end_date = $validatedData['employment_end_date'];
         $recruitment->base_salary_cost_center_1 = $validatedData['base_salary_cost_center_1'];
         $recruitment->base_salary_monthly_gross_1 = $validatedData['base_salary_monthly_gross_1'];
+        $recruitment->base_salary_cost_center_2 = $validatedData['base_salary_cost_center_2'];
+        $recruitment->base_salary_monthly_gross_2 = $validatedData['base_salary_monthly_gross_2'];
         $recruitment->weekly_working_hours = $validatedData['weekly_working_hours'];
         $recruitment->work_start_monday = $validatedData['work_start_monday'];
         $recruitment->work_end_monday = $validatedData['work_end_monday'];

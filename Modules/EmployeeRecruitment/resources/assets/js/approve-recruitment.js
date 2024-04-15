@@ -40,26 +40,28 @@ $(function () {
     };
 
     // file uploads
-    let contractUpload = Dropzone.getElement('.dropzone').dropzone;
-    contractUpload.options = Object.assign(contractUpload.options, {
-        ...genericDropzoneOptions,
-        maxFilesize: 20,
-        maxFiles: 1,
-        acceptedFiles: 'application/pdf',
-        paramName: 'file'
-    });
+    if ($('.dropzone').length > 0) {
+        let contractUpload = Dropzone.getElement('.dropzone').dropzone;
+        contractUpload.options = Object.assign(contractUpload.options, {
+            ...genericDropzoneOptions,
+            maxFilesize: 20,
+            maxFiles: 1,
+            acceptedFiles: 'application/pdf',
+            paramName: 'file'
+        });
 
-    contractUpload.on("success", (file, response) => {
-        $('#contract_file').val(response.fileName);
-        $('#contract_file').attr('data-original-name', file.name);
-    });
+        contractUpload.on("success", (file, response) => {
+            $('#contract_file').val(response.fileName);
+            $('#contract_file').attr('data-original-name', file.name);
+        });
 
-    contractUpload.on("removedfile", (file) => {
-        if (file.name === $('#contract_file').data('original-name')) {
-            $('#contract_file').val('');
-            $('#contract_file').attr('data-original-name', '');    
-        }
-    });
+        contractUpload.on("removedfile", (file) => {
+            if (file.name === $('#contract_file').data('original-name')) {
+                $('#contract_file').val('');
+                $('#contract_file').attr('data-original-name', '');    
+            }
+        });
+    }
 
     $('#approve').on('click', function () {
         if ($('#state').val() === 'hr_lead_approval' && ($('#probation_period').val() < 7 || $('#probation_period').val() > 90)) {

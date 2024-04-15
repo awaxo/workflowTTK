@@ -232,7 +232,7 @@ function filterPositionOptions() {
     filterPositionIdOptions('kutatói');
 
     $('#position_type').on('change', function() {
-        let selectedType = $(this).val();
+        let selectedType = $(this).val().toLowerCase();
         filterPositionIdOptions(selectedType);
     });
 }

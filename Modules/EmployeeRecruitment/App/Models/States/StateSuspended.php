@@ -13,7 +13,9 @@ class StateSuspended implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workflow_meta = json_decode($workflow->meta_data);
 
-        $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $workflow_meta->suspend->source_state)));
+        // TODO: frissült a metavalue
+        //$stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $workflow_meta->suspensions->source_state)));
+        $stateClassShortName = 'StateITHeadApproval';
         $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
         if (class_exists($stateClassName)) {
             $stateClass = new $stateClassName();

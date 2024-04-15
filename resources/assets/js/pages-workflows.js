@@ -1,4 +1,5 @@
 import moment from 'moment';
+import GLOBALS from '../../js/globals.js';
 
 $(function() {
     'use strict';
@@ -96,9 +97,35 @@ $(function() {
                 }
             }
         },
-        language: {
-            url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hungarian.json'
+        language: GLOBALS.DATATABLE_TRANSLATION,
+        initComplete: function() {
+            var checkboxHtml = `
+                <div class="form-check form-switch show-own-cases">
+                    <input class="form-check-input" type="checkbox" role="switch" id="show_only_own">
+                    <label class="form-check-label" for="show_only_own">Csak saját ügyek listázása</label>
+                </div>
+            `;
+            var parent = $(this).closest('.dataTables_wrapper').find('.dataTables_length').parent();
+            parent.css('display', 'flex').css('align-items', 'center');
+            parent.find('.dataTables_length').css('margin-right', '20px');
+            parent.find('.dataTables_length').after(checkboxHtml);
+
+            $('#show_only_own').on('change', function() {
+                $('.datatables-workflows').DataTable().draw();
+            });
         },
+        drawCallback: function() {
+            var table = this.api();
+            var showOnlyOwn = $('#show_only_own').is(':checked');
+            table.rows().every(function() {
+                var data = this.data();
+                if (showOnlyOwn && !data.is_user_responsible) {
+                    $(this.node()).hide();
+                } else {
+                    $(this.node()).show();
+                }
+            });
+        }
     });
 
     // Filter form control to default size

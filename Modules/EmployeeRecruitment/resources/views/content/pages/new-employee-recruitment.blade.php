@@ -602,9 +602,7 @@
                             <div class="col-sm-4">
                                 <label for="available_tools" class="form-label">Munkavégzéshez rendelkezésre álló eszközök</label>
                                 <select class="selectpicker w-100" id="available_tools" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
-                                    <option value="1">Eszköz 1</option>
-                                    <option value="2">Eszköz 2</option>
-                                    <option value="3">Eszköz 3</option>
+                                    <!-- dynamically updated -->
                                 </select>
                             </div>
                             <div class="col-sm-4 dynamic-tools-container">

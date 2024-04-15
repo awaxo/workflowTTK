@@ -34,13 +34,14 @@ const genericDropzoneOptions = {
 };
 
 $(function () {
-    // Set numeral mask to number fields
+    // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
             numeral: true
         });
     });
 
+    // set datepicker date fields
     $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date").datepicker({
         format: "yyyy.mm.dd",
         startDate: new Date(),
@@ -119,8 +120,13 @@ $(function () {
         $(durationId).val(`${hours}:${paddedMinutes}`);
     }
 
+    // add or remove available_tools based on selected required_tools
+    $('#required_tools').on('changed.bs.select', function () {
+        updateAvailableTools();
+    });
+
     // add or remove inventory_numbers_of_available_tools based on selected available_tools
-    $('#available_tools').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    /*$('#available_tools').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
         // Get the selected option value and text
         var selectedOptionValue = $(this).find('option').eq(clickedIndex).val();
         var selectedOptionText = $(this).find('option').eq(clickedIndex).text();
@@ -139,7 +145,7 @@ $(function () {
             // If option is deselected, remove the corresponding input field
             $('#group_' + inputId).remove();
         }
-    });
+    });*/
 
     // Initially hide the carcinogenic materials use textarea
     $('.planned-carcinogenic-materials').hide();
@@ -320,3 +326,43 @@ function filterEmployeeRoomIdOptions() {
     $('#employee_room').val(null).trigger('change');
 }
 // End of filtering employee room
+
+// Filtering available tools
+function updateAvailableTools() {
+    var optionsHtml = '';
+
+    $('#required_tools option:selected').each(function() {
+        optionsHtml += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
+    });
+
+    $('#available_tools').html(optionsHtml);
+    $('#available_tools').selectpicker('destroy').html(optionsHtml).selectpicker();
+    updateInventoryNumbersOfAvailableTools();
+}
+updateAvailableTools();
+// End of filtering available tools
+
+// Filtering inventory numbers of available tools
+function updateInventoryNumbersOfAvailableTools() {
+    $('#available_tools').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        // Get the selected option value and text
+        var selectedOptionValue = $(this).find('option').eq(clickedIndex).val();
+        var selectedOptionText = $(this).find('option').eq(clickedIndex).text();
+
+        // ID for the dynamic input corresponding to this option
+        var inputId = 'inventory_numbers_of_available_tools_' + selectedOptionValue;
+
+        if (isSelected) {
+            // If option is selected, add an input field
+            var inputHtml = '<div class="form-group" id="group_' + inputId + '">' +
+                                '<label class="form-label" for="' + inputId + '">' + selectedOptionText + ' leltári száma</label>' +
+                                '<input type="text" id="' + inputId + '" class="form-control" placeholder="Leltári szám" />' +
+                            '</div>';
+            $('.dynamic-tools-container').append(inputHtml);
+        } else {
+            // If option is deselected, remove the corresponding input field
+            $('#group_' + inputId).remove();
+        }
+    });
+}
+// End of filtering inventory numbers of available tools

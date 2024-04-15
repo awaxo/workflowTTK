@@ -34,8 +34,42 @@ const genericDropzoneOptions = {
 };
 
 $(function () {
-    $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date, #employment_start_date, #employment_end_date").datepicker({
+    // Set numeral mask to number fields
+    $('.numeral-mask').toArray().forEach(function(field){
+        new Cleave(field, {
+            numeral: true
+        });
+    });
+
+    $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date").datepicker({
         format: "yyyy.mm.dd",
+        startDate: new Date(),
+        endDate: '+4Y',
+    });
+
+    $("#citizenship").on('change', function() {
+        var startDate = $(this).val() === 'Harmadik országbeli' ? '+3M' : '+21D';
+        $("#employment_start_date").datepicker('setStartDate', startDate);
+    });
+    $("#employment_start_date").datepicker({
+        format: "yyyy.mm.dd",
+        startDate: '+21D',
+        endDate: '+30Y',
+    });
+
+    $("#employment_start_date").on('change', function() {
+        var startDate = $(this).datepicker('getDate');
+        if (startDate) {
+            startDate.setMonth(startDate.getMonth() + 6);
+            startDate.setDate(startDate.getDate() + 20);
+    
+            $("#employment_end_date").datepicker('setStartDate', startDate);
+        }
+    });
+    $("#employment_end_date").datepicker({
+        format: "yyyy.mm.dd",
+        startDate: '+200D',
+        endDate: '+30Y',
     });
 
     setWorkingHours("#work_start_monday", "#work_end_monday", "#monday_duration");

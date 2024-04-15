@@ -23,8 +23,31 @@ class EmployeeRecruitmentController extends Controller
 {
     public function index()
     {
-        $workgroups1 = Workgroup::all();
-        $workgroups2 = Workgroup::where('workgroup_number', '!=', 800)->get();
+        // if not 'titkar*' role, return not authorized
+        $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
+        $user = User::find(Auth::id());
+        if (!$user->hasAnyRole($roles)) {
+            return view('content.pages.misc-not-authorized');
+        }
+
+        $workgroups = collect();
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                $workgroupNumber = substr($role, -1);
+                $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->get();
+                $workgroups = $workgroups->concat($workgroupsForRole);
+            }
+        }
+        $workgroup800 = Workgroup::where('workgroup_number', 800)->get();
+
+        $workgroups2 = $workgroups->unique('id')->map(function ($workgroup) {
+            $workgroup->leader_name = $workgroup->leader()->first()?->name;
+            return $workgroup;
+        });
+        $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
+            $workgroup->leader_name = $workgroup->leader()->first()?->name;
+            return $workgroup;
+        });
         $positions = Position::all();
         $costCenters = CostCenter::all();
         $rooms = Room::orderBy('room_number')->get();

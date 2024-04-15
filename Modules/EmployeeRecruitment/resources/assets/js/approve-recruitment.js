@@ -1,11 +1,12 @@
 import Dropzone from 'dropzone';
 
 $(function () {
-    if ($('.numeral-mask').length > 0) {
-        new Cleave(".numeral-mask", {
+    // Set numeral mask to number fields
+    $('.numeral-mask').toArray().forEach(function(field){
+        new Cleave(field, {
             numeral: true
         });
-    }
+    });
 
     // TODO: kirakni pl. egy globális osztályba
     const previewTemplate = `

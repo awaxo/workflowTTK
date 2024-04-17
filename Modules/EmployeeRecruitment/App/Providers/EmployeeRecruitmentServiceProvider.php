@@ -8,6 +8,7 @@ use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentPermissionSeeder;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentRolePermissionSeeder;
@@ -106,6 +107,8 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
 
         $componentNamespace = str_replace('/', '\\', config('modules.namespace').'\\'.$this->moduleName.'\\'.config('modules.paths.generator.component-class.path'));
         Blade::componentNamespace($componentNamespace, $this->moduleNameLower);
+
+        View::addNamespace($this->moduleName, $sourcePath);
     }
 
     public function registerSeeders(): void

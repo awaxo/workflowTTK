@@ -18,6 +18,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Models\States\StateGroupLeadApproval;
+use NunoMaduro\Collision\Adapters\Phpunit\State;
 
 class EmployeeRecruitmentController extends Controller
 {
@@ -128,6 +130,16 @@ class EmployeeRecruitmentController extends Controller
         return response()->json($recruitment, 201);
     }
 
+    public function view($id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        
+        return view('employeerecruitment::content.pages.recruitment-view', [
+            'recruitment' => $recruitment,
+            'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
+        ]);
+    }
+
     public function beforeApprove($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -137,6 +149,7 @@ class EmployeeRecruitmentController extends Controller
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
+                'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             ]);
         } else {
             return view('content.pages.misc-not-authorized');

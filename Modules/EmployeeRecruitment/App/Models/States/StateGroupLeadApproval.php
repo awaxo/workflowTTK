@@ -47,6 +47,34 @@ class StateGroupLeadApproval implements IStateResponsibility {
         }
     }
 
+    /**
+     * Check if user is responsible for the workflow, but not a basic workgroup leader
+     * Needed for a specific UI requirement
+     */
+    public function isUserResponsibleNonBaseWorkgroup(User $user, IGenericWorkflow $workflow): bool {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $workgroup_lead = false;
+
+            $room_numbers = explode(',', $workflow->entry_permissions);
+            foreach ($room_numbers as $room_number) {
+                $room = Room::where('room_number', $room_number)->first();
+
+                if ($room) {
+                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
+
+                    if ($workgroup && $workgroup->leader == $user->id) {
+                        $workgroup_lead = true;
+                        break;
+                    }
+                }
+            }
+
+            return $workgroup_lead;
+        } else {
+            return false;
+        }
+    }
+
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
             $metaData = json_decode($workflow->meta_data, true);

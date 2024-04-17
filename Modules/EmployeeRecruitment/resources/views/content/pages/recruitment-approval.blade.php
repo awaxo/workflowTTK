@@ -32,70 +32,15 @@
         <div class="nav-align-top mb-3">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab_decision" role="tab" aria-selected="true">Jóváhagyás</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab_decision" role="tab" aria-selected="true">Részletek</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab_process_details" role="tab" aria-selected="false">Folyamat részletek</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab_process_details" role="tab" aria-selected="false">Státusztörténet</button>
             </li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade active show" id="tab_decision" role="tabpanel">
-                <input type="hidden" id="state" value="{{ $recruitment->state }}">
-                @if($recruitment->state == 'hr_lead_approval')
-                    <div class="col-sm-2 mb-3">
-                        <label class="form-label" for="probation_period">Próbaidő</label>
-                        <input class="form-control numeral-mask" type="text" id="probation_period" placeholder="Próbaidő...">
-                    </div>
-                @endif
-                @if($recruitment->state == 'proof_of_coverage' &&
-                    ($recruitment->base_salary_cc1 && $recruitment->base_salary_cc1->leadUser == Auth::user() && $recruitment->base_salary_cc1->type && ($recruitment->base_salary_cc1->type->tender || $recruitment->base_salary_cc1->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->base_salary_cc2 && $recruitment->base_salary_cc2->leadUser == Auth::user() && $recruitment->base_salary_cc2->type && ($recruitment->base_salary_cc2->type->tender || $recruitment->base_salary_cc2->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->base_salary_cc3 && $recruitment->base_salary_cc3->leadUser == Auth::user() && $recruitment->base_salary_cc3->type && ($recruitment->base_salary_cc3->type->tender || $recruitment->base_salary_cc3->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->health_allowance_cc && $recruitment->health_allowance_cc->leadUser == Auth::user() && $recruitment->health_allowance_cc->type && ($recruitment->health_allowance_cc->type->tender || $recruitment->health_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->management_allowance_cc && $recruitment->management_allowance_cc->leadUser == Auth::user() && $recruitment->management_allowance_cc->type && ($recruitment->management_allowance_cc->type->tender || $recruitment->management_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->extra_pay_1_cc && $recruitment->extra_pay_1_cc->leadUser == Auth::user() && $recruitment->extra_pay_1_cc->type && ($recruitment->extra_pay_1_cc->type->tender || $recruitment->extra_pay_1_cc->type->name == "Vállalkozási tevékenység")) ||
-                    ($recruitment->extra_pay_2_cc && $recruitment->extra_pay_2_cc->leadUser == Auth::user() && $recruitment->extra_pay_2_cc->type && ($recruitment->extra_pay_2_cc->type->tender || $recruitment->extra_pay_2_cc->type->name == "Vállalkozási tevékenység")))
-                    <div class="col-sm-2 mb-3">
-                        <input class="form-check-input" type="checkbox" id="post_financed_application">
-                        <label class="form-check-label" for="post_financed_application">Utófinanszírozott pályázat?</label>
-                    </div>
-                @endif
-                @if($recruitment->state == 'draft_contract_pending')
-                    <div class="col-sm-2 mb-3">
-                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon" target="_blank">
-                            <i class="fa fa-print fs-1"></i>
-                        </a>
-                    </div>
-                    <div id="message_parent" class="mb-3 d-none">
-                        <label class="form-label" for="message">Üzenet</label>
-                        <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
-                    </div>
-                @endif
-                @if($recruitment->state != 'draft_contract_pending')
-                    <div class="mb-3">
-                        <label class="form-label" for="message">Üzenet</label>
-                        <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
-                    </div>
-                @endif
-                @if($recruitment->state == 'employee_signature')
-                    <div class="mb-3">
-                        <label class="form-label" for="contract">Szerződés</label>
-                        <form action="/file/upload" class="dropzone needsclick" id="contract">
-                            @csrf
-                            <div class="dz-message needsclick">
-                                Húzd ide a fájlt, vagy kattints a feltöltéshez.
-                            </div>
-                        </form>
-                        <input type="hidden" id="contract_file" data-original-name="" />
-                    </div>
-                @endif
-                <div class="d-grid mt-4 d-md-block">
-                    <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
-                    <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
-                    <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="tab_process_details" role="tabpanel">
+                <!-- Recruitment details -->
                 <div class="accordion" id="accordion_process_details">
                     <div class="card accordion-item">
                         <h2 class="accordion-header" id="heading_base_data">
@@ -422,7 +367,7 @@
                         </div>
                     </div>
 
-                    <div class="card accordion-item">
+                    <div class="card accordion-item mb-5">
                         <h2 class="accordion-header" id="heading_documents">
                             <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_additional_data" aria-expanded="false" aria-controls="collapse_additional_data">Kiegészítő adatok</button>
                         </h2>
@@ -434,12 +379,74 @@
                                 </div>
                                 <div class="d-flex">
                                     <label class="form-label col-6 col-md-3">Szerződés</label>
-                                    <span class="fw-bold ms-1">{{ $recruitment->contract ? $recruitment->contract : '-' }}</span>
+                                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->contract ? $recruitment->contract : '-' }}" target="_blank">szerződés megtekintése</a></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Approval controls -->
+                <input type="hidden" id="state" value="{{ $recruitment->state }}">
+                @if($recruitment->state == 'hr_lead_approval')
+                    <div class="col-sm-2 mb-3">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label" for="probation_period">Próbaidő</label>
+                            <input class="form-control numeral-mask" type="text" id="probation_period">
+                            <span class="ms-2">Nap</span>
+                        </div>
+                    </div>
+                @endif
+                @if($recruitment->state == 'proof_of_coverage' &&
+                    ($recruitment->base_salary_cc1 && $recruitment->base_salary_cc1->leadUser == Auth::user() && $recruitment->base_salary_cc1->type && ($recruitment->base_salary_cc1->type->tender || $recruitment->base_salary_cc1->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->base_salary_cc2 && $recruitment->base_salary_cc2->leadUser == Auth::user() && $recruitment->base_salary_cc2->type && ($recruitment->base_salary_cc2->type->tender || $recruitment->base_salary_cc2->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->base_salary_cc3 && $recruitment->base_salary_cc3->leadUser == Auth::user() && $recruitment->base_salary_cc3->type && ($recruitment->base_salary_cc3->type->tender || $recruitment->base_salary_cc3->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->health_allowance_cc && $recruitment->health_allowance_cc->leadUser == Auth::user() && $recruitment->health_allowance_cc->type && ($recruitment->health_allowance_cc->type->tender || $recruitment->health_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->management_allowance_cc && $recruitment->management_allowance_cc->leadUser == Auth::user() && $recruitment->management_allowance_cc->type && ($recruitment->management_allowance_cc->type->tender || $recruitment->management_allowance_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->extra_pay_1_cc && $recruitment->extra_pay_1_cc->leadUser == Auth::user() && $recruitment->extra_pay_1_cc->type && ($recruitment->extra_pay_1_cc->type->tender || $recruitment->extra_pay_1_cc->type->name == "Vállalkozási tevékenység")) ||
+                    ($recruitment->extra_pay_2_cc && $recruitment->extra_pay_2_cc->leadUser == Auth::user() && $recruitment->extra_pay_2_cc->type && ($recruitment->extra_pay_2_cc->type->tender || $recruitment->extra_pay_2_cc->type->name == "Vállalkozási tevékenység")))
+                    <div class="col-sm-2 mb-3">
+                        <input class="form-check-input" type="checkbox" id="post_financed_application">
+                        <label class="form-check-label" for="post_financed_application">Utófinanszírozott pályázat?</label>
+                    </div>
+                @endif
+                @if($recruitment->state == 'draft_contract_pending')
+                    <div class="col-sm-2 mb-3">
+                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon" target="_blank">
+                            <i class="fa fa-print fs-1"></i>
+                        </a>
+                    </div>
+                    <div id="message_parent" class="mb-3 d-none">
+                        <label class="form-label" for="message">Üzenet</label>
+                        <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
+                    </div>
+                @endif
+                @if($recruitment->state != 'draft_contract_pending')
+                    <div class="mb-3">
+                        <label class="form-label" for="message">Üzenet</label>
+                        <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
+                    </div>
+                @endif
+                @if($recruitment->state == 'employee_signature')
+                    <div class="mb-3">
+                        <label class="form-label" for="contract">Szerződés</label>
+                        <form action="/file/upload" class="dropzone needsclick" id="contract">
+                            @csrf
+                            <div class="dz-message needsclick">
+                                Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                            </div>
+                        </form>
+                        <input type="hidden" id="contract_file" data-original-name="" />
+                    </div>
+                @endif
+                <div class="d-grid mt-4 d-md-block">
+                    <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
+                    <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
+                    <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab_process_details" role="tabpanel">
+                
             </div>
         </div>
     </div>

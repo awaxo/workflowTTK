@@ -27,7 +27,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
 Route::get('/szerepkorok', [RoleController::class, 'index'])->middleware(['auth'])->name('authorizations-roles');
 Route::get('/jogosultsagok', [PermissionController::class, 'index'])->middleware(['auth'])->name('authorizations-permissions');
-Route::get('/folyamatok', [WorkflowController::class, 'index'])->middleware(['auth'])->name('pages-workflows');
+Route::get('/folyamatok/nyitott', [WorkflowController::class, 'index'])->middleware(['auth'])->name('pages-workflows');
+Route::get('/folyamatok/lezart', [WorkflowController::class, 'closed'])->middleware(['auth'])->name('pages-workflows-closed');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
@@ -66,4 +67,5 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/permissions', [PermissionController::class, 'getAllPermissions']);
 
     Route::get('/workflows', [WorkflowController::class, 'getAllWorkflows']);
+    Route::get('/workflows/closed', [WorkflowController::class, 'getClosedWorkflows']);
 });

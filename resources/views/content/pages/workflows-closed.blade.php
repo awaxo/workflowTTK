@@ -30,12 +30,12 @@
 
 @section('page-script')
     @vite([
-        'resources/assets/js/pages-workflows.js'
+        'resources/assets/js/pages-workflows-closed.js'
     ])
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">Nyitott folyamatok</h4>
+    <h4 class="py-3 mb-4">Lezárt folyamatok</h4>
 
     <div class="row">
         <div class="col-12 mb-4">

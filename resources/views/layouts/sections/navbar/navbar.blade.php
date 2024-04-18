@@ -1,5 +1,5 @@
 @php
-$containerNav = $containerNav ?? 'container-fluid';
+$containerNav = 'container-fluid';
 $navbarDetached = ($navbarDetached ?? '');
 
 @endphp

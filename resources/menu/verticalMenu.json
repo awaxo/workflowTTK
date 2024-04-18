@@ -13,10 +13,22 @@
         "slug": "pages-institutes"
     },
     {
-        "url": "/folyamatok",
+        "url": "/",
         "name": "Folyamatok",
         "icon": "menu-icon tf-icons bx bx-directions",
-        "slug": "pages-workflows"        
+        "slug": "pages-workflows-all",
+        "submenu": [
+            {
+                "url": "/folyamatok/nyitott",
+                "name": "Nyitott folyamatok",
+                "slug": "pages-workflows"
+            },
+            {
+                "url": "/folyamatok/lezart",
+                "name": "Lezárt folyamatok",
+                "slug": "pages-workflows-closed"
+            }
+        ]
     },
     {
         "url": "/felhasznalok",

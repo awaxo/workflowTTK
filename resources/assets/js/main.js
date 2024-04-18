@@ -352,7 +352,7 @@ if (document.getElementById('layout-menu')) {
   // If current layout is vertical and current window screen is > small
 
   // Auto update menu collapsed/expanded based on the themeConfig
-  if (typeof TemplateCustomizer !== 'undefined') {
+  if (typeof TemplateCustomizer !== 'undefined' && window.templateCustomizer !== undefined) {
     if (window.templateCustomizer.settings.defaultMenuCollapsed) {
       window.Helpers.setCollapsed(true, false);
     } else {

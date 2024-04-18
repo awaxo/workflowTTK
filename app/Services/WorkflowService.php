@@ -32,6 +32,27 @@ class WorkflowService
         return new \Illuminate\Database\Eloquent\Collection($visibleWorkflows->all());
     }
 
+    public function getClosedWorkflows(User $user): Collection
+    {
+        $visibleWorkflows = collect();
+
+        foreach (WorkflowRegistry::getAll() as $workflowClass) {
+            $activeWorkflows = $workflowClass::fetchClosed();
+    
+            $marked = $activeWorkflows->map(function ($workflow) use ($user) {
+                $stateHandler = $this->getStateHandler($workflow);
+                $is_user_responsible = $stateHandler && $stateHandler->isUserResponsible($user, $workflow);
+    
+                // add is_user_responsible field to the output
+                return (object) array_merge($workflow->toArray(), ['is_user_responsible' => $is_user_responsible]);
+            });
+    
+            $visibleWorkflows = $visibleWorkflows->merge($marked);
+        }
+
+        return new \Illuminate\Database\Eloquent\Collection($visibleWorkflows->all());
+    }
+
     public function isUserResponsible(User $user, AbstractWorkflow $workflow): bool
     {
         $stateHandler = $this->getStateHandler($workflow);

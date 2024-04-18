@@ -27,6 +27,16 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
         return static::where('state', '!=', 'completed')->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])->get();
     }
 
+    /**
+     * Fetch closed workflows.
+     *
+     * @return Collection|AbstractWorkflow[]
+     */
+    public static function fetchClosed(): Collection
+    {
+        return static::whereIn('state', ['completed', 'rejected'])->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])->get();
+    }
+
     protected $fillable = [
         'workflow_type_id',
         'workflow_deadline',

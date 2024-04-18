@@ -2,16 +2,15 @@
 
 namespace App\Helpers;
 
-use Config;
+//use Config;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 
 class Helpers
 {
   public static function appClasses()
   {
-
     $data = config('custom.custom');
-
 
     // default data array
     $DefaultData = [
@@ -23,7 +22,7 @@ class Helpers
       'hasCustomizer' => true,
       'showDropdownOnHover' => true,
       'displayCustomizer' => true,
-      'contentLayout' => 'compact',
+      'contentLayout' => 'wide',
       'headerType' => 'fixed',
       'navbarType' => 'fixed',
       'menuFixed' => true,

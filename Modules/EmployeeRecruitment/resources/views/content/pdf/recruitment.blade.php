@@ -37,7 +37,7 @@
             </tr>
             <tr>
                 <td>Felvétel álláshirdetéssel történt</td>
-                <td>@if($recruitment->job_ad_exists)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+                <td>{{ $recruitment->job_ad_exists ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Álláshirdetésre jelentkezett nők száma</td>
@@ -49,11 +49,11 @@
             </tr>
             <tr>
                 <td>Volt már munkajogviszonya a Kutatóközponttal</td>
-                <td>@if($recruitment->has_prior_employment)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+                <td>{{ $recruitment->has_prior_employment ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal</td>
-                <td>@if($recruitment->has_current_volunteer_contract)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+                <td>{{ $recruitment->has_current_volunteer_contract ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Állampolgárság</td>
@@ -82,7 +82,7 @@
             </tr>
             <tr>
                 <td>Munkaköri leírás</td>
-                <td>{{ $recruitment->job_description }}</td>
+                <td>{{ $recruitment->job_description ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Jogviszony típusa</td>
@@ -268,11 +268,11 @@
             </tr>
             <tr>
                 <td>Sugárzó izotóppal fog dolgozni</td>
-                <td>@if($recruitment->work_with_radioactive_isotopes)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+                <td>{{ $recruitment->work_with_radioactive_isotopes ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Rákkeltő anyaggal fog dolgozni?</td>
-                <td>@if($recruitment->work_with_carcinogenic_materials)<i class="fas fa-check text-success"></i>@else<i class="fas fa-times text-danger"></i>@endif</td>
+                <td>{{ $recruitment->work_with_carcinogenic_materials ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Használni tervezett rákkeltő anyagok felsorolása</td>
@@ -285,23 +285,23 @@
             </tr>
             <tr>
                 <td>Személyi adatlap</td>
-                <td>{{ $recruitment->personal_data_sheet ? $recruitment->personal_data_sheet : '-' }}</td>
+                <td>{{ $recruitment->personal_data_sheet ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Hallgatói jogviszony igazolás</td>
-                <td>{{ $recruitment->student_status_verification ? $recruitment->student_status_verification : '-' }}</td>
+                <td>{{ $recruitment->student_status_verification ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Bizonyítványok</td>
-                <td>{{ $recruitment->certificates ? $recruitment->certificates : '-' }}</td>
+                <td>{{ $recruitment->certificates ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Munkába járási támogatást igényel</td>
-                <td>{{ $recruitment->requires_commute_support ? $recruitment->requires_commute_support : '-' }}</td>
+                <td>{{ $recruitment->requires_commute_support ? 'Igen' : 'Nem' }}</td>
             </tr>
             <tr>
                 <td>Munkába járási adatlap</td>
-                <td>{{ $recruitment->commute_support_form ? $recruitment->commute_support_form : '-' }}</td>
+                <td>{{ $recruitment->commute_support_form ? 'Igen' : 'Nem' }}</td>
             </tr>
             
             <!-- Kiegészítő adatok Section -->
@@ -314,7 +314,7 @@
             </tr>
             <tr>
                 <td>Szerződés</td>
-                <td>{{ $recruitment->contract ? $recruitment->contract : '-' }}</td>
+                <td>{{ $recruitment->contract ? 'Igen' : 'Nem' }}</td>
             </tr>
         </tbody>
     </table>

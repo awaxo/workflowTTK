@@ -17,7 +17,7 @@ use Modules\EmployeeRecruitment\App\Http\Controllers\pages\EmployeeRecruitmentCo
 */
 
 // Page routes
-Route::get('/uj-felveteli-kerelem', [EmployeeRecruitmentController::class, 'index'])->middleware(['auth'])->name('pages-new-process');
+Route::get('/felveteli-kerelem/uj', [EmployeeRecruitmentController::class, 'index'])->middleware(['auth'])->name('pages-new-process');
 Route::get('/folyamat/jovahagyas/{id}', [EmployeeRecruitmentController::class, 'beforeApprove'])->middleware(['auth'])->name('pages-approve-process');
 Route::get('/folyamat/visszaallitas/{id}', [EmployeeRecruitmentController::class, 'beforeRestore'])->middleware(['auth'])->name('pages-restore-process');
 Route::get('/folyamat/megtekintes/{id}', [EmployeeRecruitmentController::class, 'view'])->middleware(['auth'])->name('pages-restore-process');

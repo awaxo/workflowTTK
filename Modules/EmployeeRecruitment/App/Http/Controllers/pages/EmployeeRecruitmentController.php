@@ -146,7 +146,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
-        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+        if ($recruitment->status != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
@@ -240,7 +240,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
-        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+        if ($recruitment->status == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             return view('employeerecruitment::content.pages.recruitment-restore', [
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),

@@ -335,7 +335,11 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Szerződés</label>
-                <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->contract ? $recruitment->contract : '-' }}" target="_blank">szerződés megtekintése</a></span>
+                @if($recruitment->contract)
+                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->contract }}" target="_blank">szerződés megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1">-</span>
+                @endif
             </div>
         </div>
     </div>

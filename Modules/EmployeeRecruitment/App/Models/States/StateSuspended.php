@@ -13,15 +13,21 @@ class StateSuspended implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workflow_meta = json_decode($workflow->meta_data);
 
-        // TODO: frissült a metavalue
-        //$stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $workflow_meta->suspensions->source_state)));
-        $stateClassShortName = 'StateITHeadApproval';
-        $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
-        if (class_exists($stateClassName)) {
-            $stateClass = new $stateClassName();
-        }
+        // get user by id of last entry in 'history' of meta_value
+        $lastEntry = end($workflow_meta->history);
+        $lastUser = User::find($lastEntry->user_id);
 
-        return $stateClass && $stateClass->isUserResponsible($user, $workflow);
+        if (!$lastUser->deleted && $lastUser->id === $user->id) {
+            return true;
+        } else {
+            $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $lastEntry->status)));
+            $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
+            if (class_exists($stateClassName)) {
+                $stateClass = new $stateClassName();
+            }
+
+            return $stateClass && $stateClass->isUserResponsible($user, $workflow);
+        }
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

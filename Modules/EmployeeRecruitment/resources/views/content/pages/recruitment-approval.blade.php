@@ -111,7 +111,31 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="tab_status_history" role="tabpanel">
-                
+                <div id="status_history">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Döntés</th>
+                                <th>Dátum</th>
+                                <th>Felhasználó</th>
+                                <th>Státusz</th>
+                                <th>Üzenet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($history as $history_entry)
+                            <tr>
+                                <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : 'info')) }} me-1">
+                                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : 'Visszaállítás')) }}</span></td>
+                                <td>{{ $history_entry['datetime'] }}</td>
+                                <td>{{ $history_entry['user_name'] }}</td>
+                                <td>{{ __('states.' . $history_entry['status']) }}</td>
+                                <td>{{ $history_entry['message'] }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

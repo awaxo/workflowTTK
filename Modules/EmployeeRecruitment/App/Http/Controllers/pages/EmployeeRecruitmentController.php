@@ -136,6 +136,7 @@ class EmployeeRecruitmentController extends Controller
         
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
+            'history' => $this->getHistory($recruitment),
             'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
         ]);
     }
@@ -149,6 +150,7 @@ class EmployeeRecruitmentController extends Controller
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
+                'history' => $this->getHistory($recruitment),
                 'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             ]);
         } else {
@@ -178,6 +180,8 @@ class EmployeeRecruitmentController extends Controller
                     throw new \Exception('No valid transition found');
                 }                    
             }
+            $this->storeMetadata($recruitment, $request, 'approvals');
+            $recruitment->save();
 
             return response()->json(['redirectUrl' => route('pages-workflows')]);
         } else {
@@ -238,7 +242,9 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             return view('employeerecruitment::content.pages.recruitment-restore', [
-                'recruitment' => $recruitment
+                'recruitment' => $recruitment,
+                'history' => $this->getHistory($recruitment),
+                'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             ]);
         } else {
             return view('content.pages.misc-not-authorized');
@@ -252,7 +258,8 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {            
             if ($recruitment->workflow_can('restore_from_suspended')) {
-                $this->setPreviousState($recruitment);
+                $this->storeMetadata($recruitment, $request, 'restorations');
+                $this->setPreviousStateToRestore($recruitment);
                 $recruitment->updated_by = Auth::id();
 
                 $recruitment->save();
@@ -263,7 +270,7 @@ class EmployeeRecruitmentController extends Controller
                 throw new \Exception('No valid transition found');
             }
 
-            return redirect()->route('content.pages.workflows');
+            //return redirect()->route('content.pages.workflows');
         } else {
             return view('content.pages.misc-not-authorized');
         }
@@ -314,6 +321,13 @@ class EmployeeRecruitmentController extends Controller
             'datetime' => now()->toDateTimeString(),
             'message' => $request->input('message'),
         ];
+        $history = [
+            'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : 'restore')),
+            'status' => $recruitment->state,
+            'user_id' => Auth::id(),
+            'datetime' => now()->toDateTimeString(),
+            'message' => $request->input('message'),
+        ];
 
         $metaData = json_decode($recruitment->meta_data, true) ?? [];
         if (!isset($metaData[$decision])) {
@@ -328,17 +342,18 @@ class EmployeeRecruitmentController extends Controller
         }
 
         $metaData[$decision][$recruitment->state]['details'][] = $detail;
+        $metaData['history'][] = $history;
 
         $recruitment->meta_data = json_encode($metaData);
     }
 
-    private function setPreviousState(RecruitmentWorkflow $recruitment) {
+    private function setPreviousStateToRestore(RecruitmentWorkflow $recruitment) {
         $metaData = json_decode($recruitment->meta_data, true);
         $latestDateTime = null;
         $previousState = 'suspended';
     
-        if (isset($metaData['approvals']) && is_array($metaData['approvals'])) {
-            foreach ($metaData['approvals'] as $state => $approvalData) {
+        if (isset($metaData['suspensions']) && is_array($metaData['suspensions'])) {
+            foreach ($metaData['suspensions'] as $state => $approvalData) {
                 if (isset($approvalData['details']) && is_array($approvalData['details'])) {
                     foreach ($approvalData['details'] as $detail) {
                         // Compare datetimes to find the latest
@@ -353,5 +368,23 @@ class EmployeeRecruitmentController extends Controller
         }
     
         $recruitment->state = $previousState;
+    }
+
+    private function getHistory(RecruitmentWorkflow $recruitment) {
+        $metaData = json_decode($recruitment->meta_data, true);
+        $history = $metaData['history'] ?? [];
+    
+        // Add user_name to the details array
+        foreach ($history as $key => $history_entry) {
+            $user = User::find($history_entry['user_id']);
+            $history[$key]['user_name'] = $user->name;
+        }
+    
+        // order history by datetime descreasing
+        usort($history, function($a, $b) {
+            return strtotime($b['datetime']) - strtotime($a['datetime']);
+        });
+    
+        return $history;
     }
 }

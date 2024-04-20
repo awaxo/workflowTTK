@@ -28,4 +28,27 @@ class InstituteController extends Controller
 
         return view('content.pages.institutes', compact('institutes'));
     }
+
+    public function manage()
+    {
+        return view('content.pages.institutes-manage');
+    }
+
+    public function getAllInstitutes()
+    {
+        // get all institutes and updated_by and created_by user's name as updated_by_name and created_by_name
+        $institutes = Institute::all()->map(function ($institute) {
+            return [
+                'id' => $institute->id,
+                'name' => $institute->name,
+                'group_level' => $institute->group_level,
+                'deleted' => $institute->deleted,
+                'created_at' => $institute->created_at,
+                'created_by_name' => $institute->createdBy->name,
+                'updated_at' => $institute->updated_at,
+                'updated_by_name' => $institute->updatedBy->name,
+            ];
+        });
+        return response()->json(['data' => $institutes]);
+    }
 }

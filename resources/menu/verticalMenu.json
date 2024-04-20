@@ -16,17 +16,39 @@
         "url": "/",
         "name": "Folyamatok",
         "icon": "menu-icon tf-icons bx bx-directions",
-        "slug": "pages-workflows-all",
+        "slug": "workflows",
         "submenu": [
             {
                 "url": "/folyamatok/nyitott",
                 "name": "Nyitott folyamatok",
-                "slug": "pages-workflows"
+                "slug": "workflows-all-open"
             },
             {
                 "url": "/folyamatok/lezart",
                 "name": "Lezárt folyamatok",
-                "slug": "pages-workflows-closed"
+                "slug": "workflows-all-closed"
+            },
+            {
+                "url": "/",
+                "name": "Felvételi kérelem",
+                "slug": "workflows-employee-recruitment",
+                "submenu":[
+                    {
+                        "url": "/felveteli-kerelem/uj",
+                        "name": "Új felvételi kérelem",
+                        "slug": "workflows-employee-recruitment-new"
+                    },
+                    {
+                        "url": "/felveteli-kerelem/nyitott",
+                        "name": "Nyitott felvételi kérelmek",
+                        "slug": "workflows-employee-recruitment-open"
+                    },
+                    {
+                        "url": "/felveteli-kerelem/lezart",
+                        "name": "Lezárt felvételi kérelmek",
+                        "slug": "workflows-employee-recruitment-closed"
+                    }
+                ]
             }
         ]
     },
@@ -60,6 +82,24 @@
         "icon": "menu-icon tf-icons bx bx-cog",
         "slug": "auth-register-basic",
         "target": "_blank"
+    },
+    {
+        "url": "/",
+        "name": "Segédadatok",
+        "icon": "menu-icon tf-icons bx bx-data",
+        "slug": "auxiliary-data",
+        "submenu": [
+            {
+                "url": "/segedadat/intezetek",
+                "name": "Intézet",
+                "slug": "auxiliary-data-institute"
+            },
+            {
+                "url": "/segedadat/csoportok",
+                "name": "Csoport",
+                "slug": "auxiliary-data-workgroup"
+            }
+        ]
     }
     ]
 }

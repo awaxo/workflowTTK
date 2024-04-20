@@ -1,7 +1,15 @@
-import Dropzone from 'dropzone';
 import moment from 'moment';
+import DropzoneManager from '../../../../../resources/js/dropzone-manager';
 
-const previewTemplate = `
+$(function () {
+    // set numeral mask to number fields
+    $('.numeral-mask').toArray().forEach(function(field){
+        new Cleave(field, {
+            numeral: true
+        });
+    });
+
+    const previewTemplate = `
     <div class="dz-preview dz-file-preview">
         <div class="dz-details">
         <div class="dz-thumbnail">
@@ -19,27 +27,18 @@ const previewTemplate = `
         </div>
     </div>`;
 
-const genericDropzoneOptions = {
-    previewTemplate: previewTemplate,
-    parallelUploads: 1,
-    addRemoveLinks: true,
-    url: "/file/upload",
+    const genericDropzoneOptions = {
+        previewTemplate: previewTemplate,
+        parallelUploads: 1,
+        addRemoveLinks: true,
 
-    dictRemoveFile: 'Törlés',
-    dictFileTooBig: 'A fájl mérete túl nagy ({{filesize}}MiB). Maximum: {{maxFilesize}}MiB.',
-    dictMaxFilesExceeded: 'Maximum {{maxFiles}} fájl tölthető fel.',
-    dictInvalidFileType: 'Nem tölthető fel ilyen típusú fájl.',
-    dictResponseError: 'Szerver hiba történt. Kérjük próbálja újra később.',
-    dictCancelUpload: 'Mégse'
-};
-
-$(function () {
-    // set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true
-        });
-    });
+        dictRemoveFile: 'Törlés',
+        dictFileTooBig: 'A fájl mérete túl nagy ({{filesize}}MiB). Maximum: {{maxFilesize}}MiB.',
+        dictMaxFilesExceeded: 'Maximum {{maxFiles}} fájl tölthető fel.',
+        dictInvalidFileType: 'Nem tölthető fel ilyen típusú fájl.',
+        dictResponseError: 'Szerver hiba történt. Kérjük próbálja újra később.',
+        dictCancelUpload: 'Mégse'
+    };
 
     // set datepicker date fields
     $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date").datepicker({
@@ -125,28 +124,6 @@ $(function () {
         updateAvailableTools();
     });
 
-    // add or remove inventory_numbers_of_available_tools based on selected available_tools
-    /*$('#available_tools').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-        // Get the selected option value and text
-        var selectedOptionValue = $(this).find('option').eq(clickedIndex).val();
-        var selectedOptionText = $(this).find('option').eq(clickedIndex).text();
-
-        // ID for the dynamic input corresponding to this option
-        var inputId = 'inventory_numbers_of_available_tools_' + selectedOptionValue;
-
-        if (isSelected) {
-            // If option is selected, add an input field
-            var inputHtml = '<div class="form-group" id="group_' + inputId + '">' +
-                                '<label class="form-label" for="' + inputId + '">' + selectedOptionText + ' leltári száma</label>' +
-                                '<input type="text" id="' + inputId + '" class="form-control" placeholder="Leltári szám" />' +
-                            '</div>';
-            $('.dynamic-tools-container').append(inputHtml);
-        } else {
-            // If option is deselected, remove the corresponding input field
-            $('#group_' + inputId).remove();
-        }
-    });*/
-
     // Initially hide the carcinogenic materials use textarea
     $('.planned-carcinogenic-materials').hide();
 
@@ -159,53 +136,11 @@ $(function () {
     });
 
     // file uploads
-    Dropzone.autoDiscover = false;
-    new Dropzone('#job_description', {
-        ...genericDropzoneOptions,
-        maxFilesize: 20,
-        maxFiles: 1,
-        acceptedFiles: 'application/pdf',
-        paramName: 'file',
-        sending: function(file, xhr, formData) {
-            console.log("Sending file", file.name);
-            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
-            formData.append("type", "job_description");
-        },
-    });
-
-    new Dropzone('#personal_data_sheet', {
-        ...genericDropzoneOptions,
-        maxFilesize: 20,
-        maxFiles: 1,
-        acceptedFiles: 'application/pdf',
-        sending: function(file, xhr, formData) {
-            console.log("Sending file", file.name);
-            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
-            formData.append("type", "personal_data_sheet");
-        },
-    });
-    
-    new Dropzone('#student_status_verification', {
-        ...genericDropzoneOptions,
-        maxFilesize: 20,
-        maxFiles: 1,
-        acceptedFiles: 'application/pdf',
-        sending: function(file, xhr, formData) {
-            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
-            formData.append("type", "student_status_verification");
-        },
-    });
-
-    new Dropzone('#certificates', {
-        ...genericDropzoneOptions,
-        maxFilesize: 20,
-        maxFiles: 5,
-        acceptedFiles: 'application/pdf',
-        sending: function(file, xhr, formData) {
-            formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
-            formData.append("type", "certificates");
-        },
-    });
+    DropzoneManager.init('job_description');
+    DropzoneManager.init('personal_data_sheet');
+    DropzoneManager.init('student_status_verification');
+    DropzoneManager.init('certificates');
+    DropzoneManager.init('commute_support_form');
 
     // Initially hide the commute support file upload
     $('.commute-support-form').hide();

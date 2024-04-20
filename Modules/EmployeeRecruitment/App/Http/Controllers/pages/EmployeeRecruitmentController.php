@@ -67,13 +67,6 @@ class EmployeeRecruitmentController extends Controller
 
     public function store(Request $request)
     {
-        $uploads = session('file_uploads', []);
-
-        // Retrieve paths by type
-        /*$personalDataSheetPath = $uploads['personal_data_sheet'] ?? null;
-        $studentStatusVerificationPath = $uploads['student_status_verification'] ?? null;
-        $certificatesPaths = $uploads['certificates'] ?? [];*/
-
         $validatedData = $request->all();
 
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
@@ -81,9 +74,6 @@ class EmployeeRecruitmentController extends Controller
         $validatedData['workflow_type_id'] = $workflowType->id;
         $validatedData['created_by'] = auth()->user()->id;
         $validatedData['updated_by'] = auth()->user()->id;
-        /*$validatedData['personal_data_sheet'] = $personalDataSheetPath;
-        $validatedData['student_status_verification'] = $studentStatusVerificationPath;
-        $validatedData['certificates'] = $certificatesPaths;*/
         $recruitment = new RecruitmentWorkflow();
         $recruitment->state = 'it_head_approval';
         $recruitment->workflow_type_id = $workflowType->id;
@@ -174,7 +164,7 @@ class EmployeeRecruitmentController extends Controller
 
                     $recruitment->save();
                     
-                    return response()->json(['redirectUrl' => route('pages-workflows')]);
+                    return response()->json(['redirectUrl' => route('workflows-all-open')]);
                 } else {            
                     Log::error('Nincs vagy nem pontosan 1 valós transition van az adott státuszból');
                     throw new \Exception('No valid transition found');
@@ -183,7 +173,7 @@ class EmployeeRecruitmentController extends Controller
             $this->storeMetadata($recruitment, $request, 'approvals');
             $recruitment->save();
 
-            return response()->json(['redirectUrl' => route('pages-workflows')]);
+            return response()->json(['redirectUrl' => route('workflows-all-open')]);
         } else {
             return view('content.pages.misc-not-authorized');
         }
@@ -202,7 +192,7 @@ class EmployeeRecruitmentController extends Controller
 
                 $recruitment->save();
 
-                return response()->json(['redirectUrl' => route('pages-workflows')]);
+                return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {
                 Log::error('Nincs indoklás az elutasításhoz');
                 throw new \Exception('No reason given for rejection');
@@ -225,7 +215,7 @@ class EmployeeRecruitmentController extends Controller
                 
                 $recruitment->save();
 
-                return response()->json(['redirectUrl' => route('pages-workflows')]);
+                return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {
                 Log::error('Nincs indoklás az elutasításhoz');
                 throw new \Exception('No reason given for rejection');
@@ -264,7 +254,7 @@ class EmployeeRecruitmentController extends Controller
 
                 $recruitment->save();
                 
-                return response()->json(['redirectUrl' => route('pages-workflows')]);
+                return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {            
                 Log::error('Nincs definiált transition az adott státuszból');
                 throw new \Exception('No valid transition found');

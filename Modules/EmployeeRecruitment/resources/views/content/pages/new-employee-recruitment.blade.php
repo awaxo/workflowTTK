@@ -36,7 +36,9 @@
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
     'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
+    'node_modules/dropzone/dist/min/dropzone.min.js',
     'resources/assets/vendor/libs/dropzone/dropzone.js',
+    'resources/js/dropzone-manager.js'
   ])
 @endsection
 
@@ -220,11 +222,13 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="job_description" class="form-label">Munkaköri leírás</label>
-                                <div class="dropzone needsclick" id="job_description">
+                                <form action="/file/upload" class="dropzone needsclick" id="job_description">
+                                    @csrf
                                     <div class="dz-message needsclick">
-                                    Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                        Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
-                                </div>
+                                </form>
+                                <input type="hidden" id="job_description_file" data-original-name="" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="employment_type" class="form-label">Jogviszony típusa</label>
@@ -650,27 +654,33 @@
                         <div class="row g-3">
                             <div class="col-sm-6">
                                 <label for="personal_data_sheet" class="form-label">Személyi adatlap</label>
-                                <div class="dropzone needsclick" id="personal_data_sheet">
+                                <form action="/file/upload" class="dropzone needsclick" id="personal_data_sheet">
+                                    @csrf
                                     <div class="dz-message needsclick">
-                                    Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                        Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
-                                </div>
+                                </form>
+                                <input type="hidden" id="personal_data_sheet_file" data-original-name="" />
                             </div>
                             <div class="col-sm-6">
                                 <label for="student_status_verification" class="form-label">Hallgatói jogviszony igazolás</label>
-                                <div class="dropzone needsclick" id="student_status_verification">
+                                <form action="/file/upload" class="dropzone needsclick" id="student_status_verification">
+                                    @csrf
                                     <div class="dz-message needsclick">
-                                    Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                        Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
-                                </div>
+                                </form>
+                                <input type="hidden" id="student_status_verification_file" data-original-name="" />
                             </div>
                             <div class="col-sm-12">
                                 <label for="certificates" class="form-label">Bizonyítványok</label>
-                                <div class="dropzone needsclick" id="certificates">
+                                <form action="/file/upload" class="dropzone needsclick" id="certificates">
+                                    @csrf
                                     <div class="dz-message needsclick">
-                                    Húzd ide a fájlokat, vagy kattints a feltöltéshez.
+                                        Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
-                                </div>
+                                </form>
+                                <input type="hidden" id="certificates_file" data-original-name="" />
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-check form-switch">
@@ -680,11 +690,13 @@
                             </div>
                             <div class="col-sm-6 commute-support-form">
                                 <label for="commute_support_form" class="form-label">Munkába járási adatlap</label>
-                                <div class="dropzone needsclick" id="commute_support_form">
+                                <form action="/file/upload" class="dropzone needsclick" id="commute_support_form">
+                                    @csrf
                                     <div class="dz-message needsclick">
-                                    Húzd ide a fájlt, vagy kattints a feltöltéshez.
+                                        Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
-                                </div>
+                                </form>
+                                <input type="hidden" id="commute_support_form_file" data-original-name="" />
                             </div>
                         
                             <div class="col-12 d-flex justify-content-between">

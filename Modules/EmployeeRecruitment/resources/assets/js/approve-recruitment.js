@@ -1,4 +1,4 @@
-import Dropzone from 'dropzone';
+import DropzoneManager from '../../../../../resources/js/dropzone-manager';
 
 $(function () {
     // Set numeral mask to number fields
@@ -8,61 +8,8 @@ $(function () {
         });
     });
 
-    // TODO: kirakni pl. egy globális osztályba
-    const previewTemplate = `
-    <div class="dz-preview dz-file-preview">
-        <div class="dz-details">
-        <div class="dz-thumbnail">
-            <img data-dz-thumbnail>
-            <span class="dz-nopreview">Nincs előnézet</span>
-            <div class="dz-success-mark"></div>
-            <div class="dz-error-mark"></div>
-            <div class="dz-error-message"><span data-dz-errormessage></span></div>
-            <div class="progress">
-            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-dz-uploadprogress></div>
-            </div>
-        </div>
-        <div class="dz-filename" data-dz-name></div>
-        <div class="dz-size" data-dz-size></div>
-        </div>
-    </div>`;
-
-    const genericDropzoneOptions = {
-        previewTemplate: previewTemplate,
-        parallelUploads: 1,
-        addRemoveLinks: true,
-
-        dictRemoveFile: 'Törlés',
-        dictFileTooBig: 'A fájl mérete túl nagy ({{filesize}}MiB). Maximum: {{maxFilesize}}MiB.',
-        dictMaxFilesExceeded: 'Maximum {{maxFiles}} fájl tölthető fel.',
-        dictInvalidFileType: 'Nem tölthető fel ilyen típusú fájl.',
-        dictResponseError: 'Szerver hiba történt. Kérjük próbálja újra később.',
-        dictCancelUpload: 'Mégse'
-    };
-
     // file uploads
-    if ($('.dropzone').length > 0) {
-        let contractUpload = Dropzone.getElement('.dropzone').dropzone;
-        contractUpload.options = Object.assign(contractUpload.options, {
-            ...genericDropzoneOptions,
-            maxFilesize: 20,
-            maxFiles: 1,
-            acceptedFiles: 'application/pdf',
-            paramName: 'file'
-        });
-
-        contractUpload.on("success", (file, response) => {
-            $('#contract_file').val(response.fileName);
-            $('#contract_file').attr('data-original-name', file.name);
-        });
-
-        contractUpload.on("removedfile", (file) => {
-            if (file.name === $('#contract_file').data('original-name')) {
-                $('#contract_file').val('');
-                $('#contract_file').attr('data-original-name', '');    
-            }
-        });
-    }
+    DropzoneManager.init('contract_file');
 
     $('#approve').on('click', function () {
         if ($('#state').val() === 'hr_lead_approval' && ($('#probation_period').val() < 7 || $('#probation_period').val() > 90)) {

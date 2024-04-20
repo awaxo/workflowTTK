@@ -24,7 +24,10 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      */
     public static function fetchActive(): Collection
     {
-        return static::where('state', '!=', 'completed')->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])->get();
+        return static::where('state', '!=', 'completed')
+            ->where('deleted', 0)
+            ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
+            ->get();
     }
 
     /**
@@ -34,7 +37,10 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      */
     public static function fetchClosed(): Collection
     {
-        return static::whereIn('state', ['completed', 'rejected'])->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])->get();
+        return static::whereIn('state', ['completed', 'rejected'])
+            ->orWhere('deleted', 1)
+            ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
+            ->get();
     }
 
     protected $fillable = [

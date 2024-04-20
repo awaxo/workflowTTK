@@ -36,11 +36,11 @@ class EmployeeRecruitmentController extends Controller
         foreach ($roles as $role) {
             if ($user->hasRole($role)) {
                 $workgroupNumber = substr($role, -1);
-                $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->get();
+                $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
                 $workgroups = $workgroups->concat($workgroupsForRole);
             }
         }
-        $workgroup800 = Workgroup::where('workgroup_number', 800)->get();
+        $workgroup800 = Workgroup::where('workgroup_number', 800)->where('deleted', 0)->get();
 
         $workgroups2 = $workgroups->unique('id')->map(function ($workgroup) {
             $workgroup->leader_name = $workgroup->leader()->first()?->name;
@@ -50,10 +50,10 @@ class EmployeeRecruitmentController extends Controller
             $workgroup->leader_name = $workgroup->leader()->first()?->name;
             return $workgroup;
         });
-        $positions = Position::all();
-        $costCenters = CostCenter::all();
+        $positions = Position::where('deleted', 0)->get();
+        $costCenters = CostCenter::where('deleted', 0)->get();
         $rooms = Room::orderBy('room_number')->get();
-        $externalAccessRights = ExternalAccessRight::all();
+        $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
         
         return view('employeerecruitment::content.pages.new-employee-recruitment', [
             'workgroups1' => $workgroups1,

@@ -12,11 +12,11 @@ class InstituteController extends Controller
     public function index()
     {
         // TODO: itt nem hivatkozhatunk a RecruitmentWorkflow-ra, a service providerben kell a workflowkat regisztrálni
-        $institutes = Institute::all()->map(function ($institute) {
-            $workgroupCount = Workgroup::where('workgroup_number', 'like', $institute->group_level . '%')->count();
+        $institutes = Institute::where('deleted', 0)->get()->map(function ($institute) {
+            $workgroupCount = Workgroup::where('workgroup_number', 'like', $institute->group_level . '%')->where('deleted', 0)->count();
             $activeWorkflowCount = RecruitmentWorkflow::whereHas('createdBy', function ($query) use ($institute) {
                 $query->whereHas('workgroup', function ($query) use ($institute) {
-                    $query->where('workgroup_number', 'like', $institute->group_level . '%');
+                    $query->where('workgroup_number', 'like', $institute->group_level . '%')->where('deleted', 0);
                 });
             })->count();
 
@@ -37,7 +37,7 @@ class InstituteController extends Controller
     public function getAllInstitutes()
     {
         // get all institutes and updated_by and created_by user's name as updated_by_name and created_by_name
-        $institutes = Institute::all()->map(function ($institute) {
+        $institutes = Institute::where('deleted', 0)->get()->map(function ($institute) {
             return [
                 'id' => $institute->id,
                 'name' => $institute->name,

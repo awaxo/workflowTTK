@@ -14,7 +14,7 @@ use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 class StateProjectCoordinationLeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
-        return $workgroup911 && $workgroup911->leader === $user->id;
+        return $workgroup911 && $workgroup911->leader_id === $user->id;
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

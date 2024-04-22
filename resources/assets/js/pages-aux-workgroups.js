@@ -3,20 +3,15 @@ import GLOBALS from '../../js/globals.js';
 
 $(function() {
     'use strict';
-
-    // Set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true
-        });
-    });
   
-    $('.datatables-institutes').DataTable({
-        ajax: '/api/institutes',
+    $('.datatables-workgroups').DataTable({
+        ajax: '/api/workgroups',
         columns: [
             { data: 'id', visible: false, searchable: false },
-            { data: 'group_level' },
+            { data: 'workgroup_number' },
             { data: 'name' },
+            { data: 'leader_name' },
+            { data: 'labor_administrator_name' },
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
@@ -67,10 +62,10 @@ $(function() {
                         '<div class="d-inline-block">' +
                         '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
                         '<ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a href="javascript:;" class="dropdown-item modify-institute" data-bs-toggle="offcanvas" data-bs-target="#new_institute">Módosítás</a></li>' +
-                        (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-institute">Visszaállítás</a></li>' : '') +
+                        '<li><a href="javascript:;" class="dropdown-item modify-workgroup" data-bs-toggle="offcanvas" data-bs-target="#new_workgroup">Módosítás</a></li>' +
+                        (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-workgroup">Visszaállítás</a></li>' : '') +
                         '<div class="dropdown-divider"></div>' +
-                        '<li><a href="javascript:;" class="dropdown-item text-danger delete-institute">Törlés</a></li>' +
+                        '<li><a href="javascript:;" class="dropdown-item text-danger delete-workgroup">Törlés</a></li>' +
                         '</ul>' +
                         '</div>'
                     );
@@ -83,11 +78,11 @@ $(function() {
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
-                text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új intézet felvétele</span>',
+                text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új csoport felvétele</span>',
                 className: 'create-new btn btn-primary',
                 attr: {
                     'data-bs-toggle': 'offcanvas',
-                    'data-bs-target': '#new_institute'
+                    'data-bs-target': '#new_workgroup'
                 },
             }
         ],
@@ -137,7 +132,7 @@ $(function() {
             parent.find('.dataTables_length').after(checkboxHtml);
 
             $('#show_inactive').on('change', function() {
-                $('.datatables-institutes').DataTable().draw();
+                $('.datatables-workgroups').DataTable().draw();
             });
         },
         drawCallback: function() {
@@ -166,21 +161,21 @@ $(function() {
         $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
 
-    // delete institute
-    $(document).on('click', '.delete-institute', function() {
+    // delete workgroup
+    $(document).on('click', '.delete-workgroup', function() {
         var row = $(this).closest('tr');
-        var instituteId = $('.datatables-institutes').DataTable().row(row).data().id;
+        var workgroupId = $('.datatables-workgroups').DataTable().row(row).data().id;
 
-        $('#confirm_delete').attr('data-institute-id', instituteId);
+        $('#confirm_delete').attr('data-workgroup-id', workgroupId);
         $('#deleteConfirmation').modal('show');
     });
 
-    // confirm delete institute
+    // confirm delete workgroup
     $('#confirm_delete').on('click', function () {
-        var instituteId = $(this).data('institute-id');
+        var workgroupId = $(this).data('workgroup-id');
 
         $.ajax({
-            url: '/api/institute/' + instituteId + '/delete',
+            url: '/api/workgroup/' + workgroupId + '/delete',
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
@@ -197,21 +192,21 @@ $(function() {
         });
     });
 
-    //restore institute
-    $(document).on('click', '.restore-institute', function() {
+    //restore workgroup
+    $(document).on('click', '.restore-workgroup', function() {
         var row = $(this).closest('tr');
-        var instituteId = $('.datatables-institutes').DataTable().row(row).data().id;
+        var workgroupId = $('.datatables-workgroups').DataTable().row(row).data().id;
 
-        $('#confirm_restore').attr('data-institute-id', instituteId);
+        $('#confirm_restore').attr('data-workgroup-id', workgroupId);
         $('#restoreConfirmation').modal('show');
     });
 
-    // confirm restore institute
+    // confirm restore workgroup
     $('#confirm_restore').on('click', function () {
-        var instituteId = $(this).data('institute-id');
+        var workgroupId = $(this).data('workgroup-id');
 
         $.ajax({
-            url: '/api/institute/' + instituteId + '/restore',
+            url: '/api/workgroup/' + workgroupId + '/restore',
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
@@ -228,34 +223,36 @@ $(function() {
         });
     });
 
-    // modify institute
-    $(document).on('click', '.modify-institute', function() {
+    // modify workgroup
+    $(document).on('click', '.modify-workgroup', function() {
         var row = $(this).closest('tr');
-        var institute = $('.datatables-institutes').DataTable().row(row).data();
+        var workgroup = $('.datatables-workgroups').DataTable().row(row).data();
 
-        $('#new_institute #group_level').val(institute.group_level);
-        $('#new_institute #name').val(institute.name);
-        $('.data-submit').attr('data-institute-id', institute.id);
+        $('#new_workgroup #group_level').val(workgroup.group_level);
+        $('#new_workgroup #name').val(workgroup.name);
+        $('.data-submit').attr('data-workgroup-id', workgroup.id);
     });
 
-    // submit institute
+    // submit workgroup
     $('.data-submit').on('click', function() {
-        var instituteId = $(this).data('institute-id');
-        var url = instituteId ? '/api/institute/' + instituteId + '/update' : '/api/institute/create';
+        var workgroupId = $(this).data('workgroup-id');
+        var url = workgroupId ? '/api/workgroup/' + workgroupId + '/update' : '/api/workgroup/create';
 
         $.ajax({
             url: url,
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
-                group_level: $('#group_level').val(),
-                name: $('#name').val()
+                workgroup_number: $('#workgroup_number').val(),
+                name: $('#name').val(),
+                leader_id: $('#leader_id').val(),
+                labor_administrator: $('#labor_administrator').val(),
             },
             success: function (response) {
                 window.location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_institute')).hide();
+                bootstrap.Offcanvas.getInstance(document.getElementById('new_workgroup')).hide();
                 $('#errorAlertMessage').text('Hiba történt a mentés során!');
                 $('#errorAlert').removeClass('d-none');
                 console.log(textStatus, errorThrown);

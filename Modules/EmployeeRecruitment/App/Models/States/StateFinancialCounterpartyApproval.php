@@ -13,7 +13,7 @@ use App\Models\Workgroup;
 class StateFinancialCounterpartyApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup903 = Workgroup::where('workgroup_number', 903)->first();
-        return $workgroup903 && $workgroup903->leader === $user->id;
+        return $workgroup903 && $workgroup903->leader_id === $user->id;
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

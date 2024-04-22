@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('workgroup_number', 5)->unique();
             $table->string('name', 255);
-            $table->unsignedBigInteger('leader');
+            $table->unsignedBigInteger('leader_id');
             $table->unsignedBigInteger('labor_administrator')->nullable();
             $table->tinyInteger('deleted')->unsigned()->default(0);
             $table->timestamps();

@@ -13,7 +13,7 @@ use App\Models\Workgroup;
 class StateObligeeApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup901 = Workgroup::where('workgroup_number', 901)->first();
-        return $workgroup901 && $workgroup901->leader === $user->id;
+        return $workgroup901 && $workgroup901->leader_id === $user->id;
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

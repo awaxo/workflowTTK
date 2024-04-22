@@ -16,8 +16,8 @@ class StateGroupLeadApproval implements IStateResponsibility {
         if ($workflow instanceof RecruitmentWorkflow) {
             // Check if user is a workgroup leader
             $workgroup_lead = 
-                ($workflow->workgroup1 && $workflow->workgroup1->leader == $user->id) ||
-                ($workflow->workgroup2 && $workflow->workgroup2->leader == $user->id);
+                ($workflow->workgroup1 && $workflow->workgroup1->leader_id == $user->id) ||
+                ($workflow->workgroup2 && $workflow->workgroup2->leader_id == $user->id);
 
             $room_numbers = explode(',', $workflow->entry_permissions);
             foreach ($room_numbers as $room_number) {
@@ -26,7 +26,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
                 if ($room) {
                     $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
 
-                    if ($workgroup && $workgroup->leader == $user->id) {
+                    if ($workgroup && $workgroup->leader_id == $user->id) {
                         $workgroup_lead = true;
                         break;
                     }
@@ -62,7 +62,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
                 if ($room) {
                     $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
 
-                    if ($workgroup && $workgroup->leader == $user->id) {
+                    if ($workgroup && $workgroup->leader_id == $user->id) {
                         $workgroup_lead = true;
                         break;
                     }
@@ -86,8 +86,8 @@ class StateGroupLeadApproval implements IStateResponsibility {
             $workflow->meta_data = json_encode($metaData);
 
             $workgroup_lead = [
-                optional($workflow->workgroup1)->leader,
-                optional($workflow->workgroup2)->leader
+                optional($workflow->workgroup1)->leader_id,
+                optional($workflow->workgroup2)->leader_id
             ];
 
             $room_numbers = explode(',', $workflow->entry_permissions);
@@ -98,7 +98,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
                     $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
 
                     if ($workgroup) {
-                        $workgroup_lead[] = $workgroup->leader;
+                        $workgroup_lead[] = $workgroup->leader_id;
                     }
                 }
             }

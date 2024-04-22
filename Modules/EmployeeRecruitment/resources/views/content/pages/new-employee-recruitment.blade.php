@@ -16,7 +16,6 @@
     'resources/assets/vendor/libs/@form-validation/form-validation.scss',
     'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.scss',
     'resources/assets/vendor/libs/jquery-timepicker/jquery-timepicker.scss',
-    'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.scss',
     'resources/assets/vendor/libs/dropzone/dropzone.scss',
     'resources/css/app.css'
 ])
@@ -33,7 +32,6 @@
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
     'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js',
     'resources/assets/vendor/libs/jquery-timepicker/jquery-timepicker.js',
-    'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
     'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
     'node_modules/dropzone/dist/min/dropzone.min.js',

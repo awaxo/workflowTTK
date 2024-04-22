@@ -5,6 +5,8 @@ namespace App\Http\Controllers\pages;
 use App\Http\Controllers\Controller;
 use App\Models\Institute;
 use App\Models\Workgroup;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
 class InstituteController extends Controller
@@ -36,8 +38,7 @@ class InstituteController extends Controller
 
     public function getAllInstitutes()
     {
-        // get all institutes and updated_by and created_by user's name as updated_by_name and created_by_name
-        $institutes = Institute::where('deleted', 0)->get()->map(function ($institute) {
+        $institutes = Institute::all()->map(function ($institute) {
             return [
                 'id' => $institute->id,
                 'name' => $institute->name,
@@ -50,5 +51,42 @@ class InstituteController extends Controller
             ];
         });
         return response()->json(['data' => $institutes]);
+    }
+
+    public function delete($id)
+    {
+        $institute = Institute::find($id);
+        $institute->deleted = 1;
+        $institute->save();
+        return response()->json(['message' => 'Institute deleted successfully']);
+    }
+
+    public function restore($id)
+    {
+        $institute = Institute::find($id);
+        $institute->deleted = 0;
+        $institute->save();
+        return response()->json(['message' => 'Institute restored successfully']);
+    }
+
+    public function update($id)
+    {
+        $institute = Institute::find($id);
+        $institute->name = request('name');
+        $institute->group_level = request('group_level');
+        $institute->updated_by = Auth::id();
+        $institute->save();
+        return response()->json(['message' => 'Institute updated successfully']);
+    }
+
+    public function create()
+    {
+        $institute = new Institute();
+        $institute->name = request('name');
+        $institute->group_level = request('group_level');
+        $institute->created_by = Auth::id();
+        $institute->updated_by = Auth::id();
+        $institute->save();
+        return response()->json(['message' => 'Institute created successfully']);
     }
 }

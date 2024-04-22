@@ -24,7 +24,7 @@ class Workgroup extends Model
     protected $fillable = [
         'workgroup_number',
         'name',
-        'leader',
+        'leader_id',
         'labor_administrator',
         'created_by',
         'updated_by'
@@ -53,7 +53,7 @@ class Workgroup extends Model
      */
     public function leader()
     {
-        return $this->belongsTo(User::class, 'leader');
+        return $this->belongsTo(User::class, 'leader_id');
     }
 
     /**

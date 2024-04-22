@@ -10,6 +10,7 @@ use App\Http\Controllers\pages\PermissionController;
 use App\Http\Controllers\pages\RoleController;
 use App\Http\Controllers\pages\UserController;
 use App\Http\Controllers\pages\WorkflowController;
+use App\Http\Controllers\pages\WorkgroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,7 @@ Route::get('/jogosultsagok', [PermissionController::class, 'index'])->middleware
 Route::get('/folyamatok/nyitott', [WorkflowController::class, 'index'])->middleware(['auth'])->name('workflows-all-open');
 Route::get('/folyamatok/lezart', [WorkflowController::class, 'closed'])->middleware(['auth'])->name('workflows-all-closed');
 Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-institute');
+Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-workgroup');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
@@ -71,4 +73,14 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/workflows/closed', [WorkflowController::class, 'getClosedWorkflows']);
 
     Route::get('/institutes', [InstituteController::class, 'getAllInstitutes']);
+    Route::post('/institute/{id}/delete', [InstituteController::class, 'delete']);
+    Route::post('/institute/{id}/restore', [InstituteController::class, 'restore']);
+    Route::post('/institute/{id}/update', [InstituteController::class, 'update']);
+    Route::post('/institute/create', [InstituteController::class, 'create']);
+
+    Route::get('/workgroups', [WorkgroupController::class, 'getAllWorkgroups']);
+    Route::post('/workgroup/{id}/delete', [WorkgroupController::class, 'delete']);
+    Route::post('/workgroup/{id}/restore', [WorkgroupController::class, 'restore']);
+    Route::post('/workgroup/{id}/update', [WorkgroupController::class, 'update']);
+    Route::post('/workgroup/create', [WorkgroupController::class, 'create']);
 });

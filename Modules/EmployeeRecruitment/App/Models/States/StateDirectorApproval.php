@@ -31,19 +31,19 @@ class StateDirectorApproval implements IStateResponsibility {
                 // Determine the director based on the workgroup number
                 if (in_array(substr($workgroup_number, 0, 1), ['1', '3', '4', '5', '6', '7', '8'])) {
                     $workgroup = Workgroup::where('workgroup_number', substr($workgroup_number, 0, 1) . '00')->first();
-                    if ($workgroup && $workgroup->leader == $user->id) {
+                    if ($workgroup && $workgroup->leader_id == $user->id) {
                         $director = true;
                         break;
                     }
                 } elseif (in_array($workgroup_number, ['900', '901', '905', '908'])) {
                     $workgroup = Workgroup::where('workgroup_number', '901')->first();
-                    if ($workgroup && $workgroup->leader == $user->id) {
+                    if ($workgroup && $workgroup->leader_id == $user->id) {
                         $director = true;
                         break;
                     }
                 } elseif (in_array($workgroup_number, ['903', '907', '910', '911', '912', '914', '915'])) {
                     $workgroup = Workgroup::where('workgroup_number', '903')->first();
-                    if ($workgroup && $workgroup->leader == $user->id) {
+                    if ($workgroup && $workgroup->leader_id == $user->id) {
                         $director = true;
                         break;
                     }
@@ -90,17 +90,17 @@ class StateDirectorApproval implements IStateResponsibility {
                 if (in_array($workgroup_number, ['100', '300', '400', '500', '600', '700', '800'])) {
                     $workgroup = Workgroup::where('workgroup_number', substr($workgroup_number, 0, 1) . '00')->first();
                     if ($workgroup) {
-                        $director_ids[] = $workgroup->leader;
+                        $director_ids[] = $workgroup->leader_id;
                     }
                 } elseif (in_array($workgroup_number, ['900', '901', '905', '908'])) {
                     $workgroup = Workgroup::where('workgroup_number', '901')->first();
                     if ($workgroup) {
-                        $director_ids[] = $workgroup->leader;
+                        $director_ids[] = $workgroup->leader_id;
                     }
                 } elseif (in_array($workgroup_number, ['903', '907', '910', '911', '912', '914', '915'])) {
                     $workgroup = Workgroup::where('workgroup_number', '903')->first();
                     if ($workgroup) {
-                        $director_ids[] = $workgroup->leader;
+                        $director_ids[] = $workgroup->leader_id;
                     }
                 }
             }

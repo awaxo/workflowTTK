@@ -5,6 +5,8 @@
 <!-- Vendor Styles -->
 @section('vendor-style')
 @vite([
+    'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.scss',
+    'resources/assets/vendor/libs/select2/select2.scss',
     'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
     'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
     'resources/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.scss',
@@ -21,6 +23,9 @@
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
     'resources/assets/vendor/libs/moment/moment.js',
+    'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
+    'resources/assets/vendor/libs/select2/select2.js',
+    'node_modules/select2/dist/js/i18n/hu.js',
     'resources/assets/vendor/libs/flatpickr/flatpickr.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
@@ -32,12 +37,13 @@
 
 @section('page-script')
     @vite([
-        'resources/assets/js/pages-aux-institutes.js'
+        'resources/assets/js/forms-selects.js',
+        'resources/assets/js/pages-aux-workgroups.js'
     ])
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">Intézetek</h4>
+    <h4 class="py-3 mb-4">Csoportok</h4>
 
     <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
         <span id="errorAlertMessage"></span>
@@ -49,12 +55,14 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-datatable table-responsive pt-0">
-                    <table class="datatables-institutes table border-top">
+                    <table class="datatables-workgroups table border-top">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Szám</th>
+                                <th>Csoportszám</th>
                                 <th>Név</th>
+                                <th>Csoportvezető</th>
+                                <th>Munkaügyi ügyintéző</th>
                                 <th>Aktív</th>
                                 <th>Utolsó módosító</th>
                                 <th>Utolsó módosítás</th>
@@ -69,17 +77,17 @@
         </div>
     </div>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="new_institute" aria-labelledby="new_institute_label">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="new_workgroup" aria-labelledby="new_workgroup_label">
         <div class="offcanvas-header border-bottom">
-            <h5 id="new_institute_label" class="offcanvas-title">Új intézet</h5>
+            <h5 id="new_workgroup_label" class="offcanvas-title">Új csoport</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body mx-0 flex-grow-0">
+        <div class="offcanvas-body mx-0 flex-grow-1">
             <form class="add-new-record pt-0 row g-2 fv-plugins-bootstrap5 fv-plugins-framework" id="form-add-new-record" onsubmit="return false" novalidate="novalidate">
                 <div class="col-sm-12 fv-plugins-icon-container">
-                    <label class="form-label" for="group_level">Intézet szám</label>
+                    <label class="form-label" for="group_level">Csoportszám szám</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input class="form-control numeral-mask" type="text" id="group_level" />
+                        <input class="form-control numeral-mask" type="text" id="workgroup_number" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
@@ -90,8 +98,26 @@
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
+                <div class="col-sm-12 fv-plugins-icon-container">
+                    <label class="form-label" for="leader_id">Csoportvezető</label>
+                    <select class="form-select select2" id="leader_id">
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+                <div class="col-sm-12 fv-plugins-icon-container">
+                    <label class="form-label" for="labor_administrator">Munkaügyi ügyintéző</label>
+                    <select class="form-select select2" id="labor_administrator">
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
                 <div class="col-sm-12">
-                    <button type="button" class="btn btn-primary data-submit me-sm-3 me-1" data-institute-id="">Mentés</button>
+                    <button type="button" class="btn btn-primary data-submit me-sm-3 me-1" data-workgroup-id="">Mentés</button>
                     <button type="reset" class="btn btn-outline-secondary cancel" data-bs-dismiss="offcanvas">Mégse</button>
                 </div>
             </form>
@@ -107,11 +133,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Biztosan szeretnéd törölni ezt az intézményt?</p>
+                    <p>Biztosan szeretnéd törölni ezt a csoportot?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                    <button type="button" id="confirm_delete" data-institute-id="" class="btn btn-primary">Törlés</button>
+                    <button type="button" id="confirm_delete" data-workgroup-id="" class="btn btn-primary">Törlés</button>
                 </div>
             </div>
         </div>
@@ -126,11 +152,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Biztosan szeretnéd visszaállítani ezt az intézményt?</p>
+                    <p>Biztosan szeretnéd visszaállítani ezt a csoportot?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                    <button type="button" id="confirm_restore" data-institute-id="" class="btn btn-primary">Visszaállítás</button>
+                    <button type="button" id="confirm_restore" data-workgroup-id="" class="btn btn-primary">Visszaállítás</button>
                 </div>
             </div>
         </div>

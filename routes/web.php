@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\language\LanguageController;
 use App\Http\Controllers\pages\MiscError;
 use App\Http\Controllers\authentications\LoginBasic;
+use App\Http\Controllers\pages\CostCenterController;
 use App\Http\Controllers\pages\DashboardController;
 use App\Http\Controllers\pages\ExternalAccessController;
 use App\Http\Controllers\pages\InstituteController;
@@ -34,6 +35,7 @@ Route::get('/folyamatok/lezart', [WorkflowController::class, 'closed'])->middlew
 Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-institute');
 Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-workgroup');
 Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-external-access');
+Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-costcenter');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
@@ -91,4 +93,10 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/external-access/{id}/restore', [ExternalAccessController::class, 'restore']);
     Route::post('/external-access/{id}/update', [ExternalAccessController::class, 'update']);
     Route::post('/external-access/create', [ExternalAccessController::class, 'create']);
+
+    Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters']);
+    Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
+    Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
+    Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
+    Route::post('/costcenter/create', [CostCenterController::class, 'create']);
 });

@@ -90,11 +90,6 @@
         "slug": "auxiliary-data",
         "submenu": [
             {
-                "url": "/segedadat/intezetek",
-                "name": "Intézet",
-                "slug": "auxiliary-data-institute"
-            },
-            {
                 "url": "/segedadat/csoportok",
                 "name": "Csoport",
                 "slug": "auxiliary-data-workgroup"
@@ -103,6 +98,16 @@
                 "url": "/segedadat/hozzaferesi-jogosultsagok",
                 "name": "Hozzáférési jogosultság",
                 "slug": "auxiliary-data-external-access"
+            },
+            {
+                "url": "/segedadat/intezetek",
+                "name": "Intézet",
+                "slug": "auxiliary-data-institute"
+            },
+            {
+                "url": "/segedadat/koltseghelyek",
+                "name": "Költséghely",
+                "slug": "auxiliary-data-costcenter"
             }
         ]
     }

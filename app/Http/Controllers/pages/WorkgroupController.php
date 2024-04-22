@@ -13,7 +13,7 @@ class WorkgroupController extends Controller
     {
         $users = User::where('deleted', 0)->get();
 
-        return view('content.pages.workgroups-manage', compact('users'));
+        return view('content.pages.workgroups', compact('users'));
     }
 
     public function getAllWorkgroups()

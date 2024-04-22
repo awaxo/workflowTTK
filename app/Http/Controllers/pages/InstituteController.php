@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Institute;
 use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
 class InstituteController extends Controller

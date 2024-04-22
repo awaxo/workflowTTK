@@ -78,7 +78,7 @@ $(function() {
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
-                text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új csoport felvétele</span>',
+                text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új csoport</span>',
                 className: 'create-new btn btn-primary',
                 attr: {
                     'data-bs-toggle': 'offcanvas',
@@ -228,8 +228,12 @@ $(function() {
         var row = $(this).closest('tr');
         var workgroup = $('.datatables-workgroups').DataTable().row(row).data();
 
-        $('#new_workgroup #group_level').val(workgroup.group_level);
+        $('#new_workgroup #workgroup_number').val(workgroup.workgroup_number);
         $('#new_workgroup #name').val(workgroup.name);
+        $('#new_workgroup #leader_id').val(workgroup.leader_id);
+        $('#new_workgroup #leader_id').trigger('change');
+        $('#new_workgroup #labor_administrator').val(workgroup.labor_administrator);
+        $('#new_workgroup #labor_administrator').trigger('change');
         $('.data-submit').attr('data-workgroup-id', workgroup.id);
     });
 

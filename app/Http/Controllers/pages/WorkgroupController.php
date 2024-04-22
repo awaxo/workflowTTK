@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class WorkgroupController extends Controller
 {
@@ -24,7 +23,9 @@ class WorkgroupController extends Controller
                 'id' => $workgroup->id,
                 'name' => $workgroup->name,
                 'workgroup_number' => $workgroup->workgroup_number,
+                'leader_id' => $workgroup->leader_id,
                 'leader_name' => $workgroup->leader->name,
+                'labor_administrator' => $workgroup->labor_administrator,
                 'labor_administrator_name' => optional($workgroup->laborAdministrator)->name ?? '',
                 'deleted' => $workgroup->deleted,
                 'created_at' => $workgroup->created_at,

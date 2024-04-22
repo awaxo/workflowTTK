@@ -98,6 +98,11 @@
                 "url": "/segedadat/csoportok",
                 "name": "Csoport",
                 "slug": "auxiliary-data-workgroup"
+            },
+            {
+                "url": "/segedadat/hozzaferesi-jogosultsagok",
+                "name": "Hozzáférési jogosultság",
+                "slug": "auxiliary-data-external-access"
             }
         ]
     }

@@ -5,6 +5,7 @@ use App\Http\Controllers\language\LanguageController;
 use App\Http\Controllers\pages\MiscError;
 use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\pages\DashboardController;
+use App\Http\Controllers\pages\ExternalAccessController;
 use App\Http\Controllers\pages\InstituteController;
 use App\Http\Controllers\pages\PermissionController;
 use App\Http\Controllers\pages\RoleController;
@@ -32,6 +33,7 @@ Route::get('/folyamatok/nyitott', [WorkflowController::class, 'index'])->middlew
 Route::get('/folyamatok/lezart', [WorkflowController::class, 'closed'])->middleware(['auth'])->name('workflows-all-closed');
 Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-institute');
 Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-workgroup');
+Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-external-access');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
@@ -83,4 +85,10 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/workgroup/{id}/restore', [WorkgroupController::class, 'restore']);
     Route::post('/workgroup/{id}/update', [WorkgroupController::class, 'update']);
     Route::post('/workgroup/create', [WorkgroupController::class, 'create']);
+
+    Route::get('/external-access', [ExternalAccessController::class, 'getAllExternalAccess']);
+    Route::post('/external-access/{id}/delete', [ExternalAccessController::class, 'delete']);
+    Route::post('/external-access/{id}/restore', [ExternalAccessController::class, 'restore']);
+    Route::post('/external-access/{id}/update', [ExternalAccessController::class, 'update']);
+    Route::post('/external-access/create', [ExternalAccessController::class, 'create']);
 });

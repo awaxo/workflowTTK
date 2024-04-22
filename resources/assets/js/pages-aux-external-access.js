@@ -3,20 +3,13 @@ import GLOBALS from '../../js/globals.js';
 
 $(function() {
     'use strict';
-
-    // Set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true
-        });
-    });
   
-    $('.datatables-institutes').DataTable({
-        ajax: '/api/institutes',
+    $('.datatables-external-access').DataTable({
+        ajax: '/api/external-access',
         columns: [
             { data: 'id', visible: false, searchable: false },
-            { data: 'group_level' },
-            { data: 'name' },
+            { data: 'external_system' },
+            { data: 'admin_group_name' },
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
@@ -67,10 +60,10 @@ $(function() {
                         '<div class="d-inline-block">' +
                         '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
                         '<ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li><a href="javascript:;" class="dropdown-item modify-institute" data-bs-toggle="offcanvas" data-bs-target="#new_institute">Módosítás</a></li>' +
-                        (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-institute">Visszaállítás</a></li>' : '') +
+                        '<li><a href="javascript:;" class="dropdown-item modify-external-access" data-bs-toggle="offcanvas" data-bs-target="#new_external_access">Módosítás</a></li>' +
+                        (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-external-access">Visszaállítás</a></li>' : '') +
                         '<div class="dropdown-divider"></div>' +
-                        '<li><a href="javascript:;" class="dropdown-item text-danger delete-institute">Törlés</a></li>' +
+                        '<li><a href="javascript:;" class="dropdown-item text-danger delete-external-access">Törlés</a></li>' +
                         '</ul>' +
                         '</div>'
                     );
@@ -83,11 +76,11 @@ $(function() {
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
-                text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új intézet</span>',
+                text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új hozzáférési jogosultság</span>',
                 className: 'create-new btn btn-primary',
                 attr: {
                     'data-bs-toggle': 'offcanvas',
-                    'data-bs-target': '#new_institute'
+                    'data-bs-target': '#new_external_access'
                 },
             }
         ],
@@ -137,7 +130,7 @@ $(function() {
             parent.find('.dataTables_length').after(checkboxHtml);
 
             $('#show_inactive').on('change', function() {
-                $('.datatables-institutes').DataTable().draw();
+                $('.datatables-external-access').DataTable().draw();
             });
         },
         drawCallback: function() {
@@ -166,21 +159,21 @@ $(function() {
         $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
 
-    // delete institute
-    $(document).on('click', '.delete-institute', function() {
+    // delete external access
+    $(document).on('click', '.delete-external-access', function() {
         var row = $(this).closest('tr');
-        var instituteId = $('.datatables-institutes').DataTable().row(row).data().id;
+        var externalAccessId = $('.datatables-external-access').DataTable().row(row).data().id;
 
-        $('#confirm_delete').attr('data-institute-id', instituteId);
+        $('#confirm_delete').attr('data-external-access-id', externalAccessId);
         $('#deleteConfirmation').modal('show');
     });
 
-    // confirm delete institute
+    // confirm delete external access
     $('#confirm_delete').on('click', function () {
-        var instituteId = $(this).data('institute-id');
+        var externalAccessId = $(this).data('external-access-id');
 
         $.ajax({
-            url: '/api/institute/' + instituteId + '/delete',
+            url: '/api/external-access/' + externalAccessId + '/delete',
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
@@ -197,21 +190,21 @@ $(function() {
         });
     });
 
-    //restore institute
-    $(document).on('click', '.restore-institute', function() {
+    //restore external access
+    $(document).on('click', '.restore-external-access', function() {
         var row = $(this).closest('tr');
-        var instituteId = $('.datatables-institutes').DataTable().row(row).data().id;
+        var externalAccessId = $('.datatables-external-access').DataTable().row(row).data().id;
 
-        $('#confirm_restore').attr('data-institute-id', instituteId);
+        $('#confirm_restore').attr('data-external-access-id', externalAccessId);
         $('#restoreConfirmation').modal('show');
     });
 
-    // confirm restore institute
+    // confirm restore external access
     $('#confirm_restore').on('click', function () {
-        var instituteId = $(this).data('institute-id');
+        var externalAccessId = $(this).data('external-access-id');
 
         $.ajax({
-            url: '/api/institute/' + instituteId + '/restore',
+            url: '/api/external-access/' + externalAccessId + '/restore',
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
@@ -228,34 +221,36 @@ $(function() {
         });
     });
 
-    // modify institute
-    $(document).on('click', '.modify-institute', function() {
+    // modify external access
+    $(document).on('click', '.modify-external-access', function() {
         var row = $(this).closest('tr');
-        var institute = $('.datatables-institutes').DataTable().row(row).data();
+        var externalAccess = $('.datatables-external-access').DataTable().row(row).data();
 
-        $('#new_institute #group_level').val(institute.group_level);
-        $('#new_institute #name').val(institute.name);
-        $('.data-submit').attr('data-institute-id', institute.id);
+        $('#new_external_access #external_system').val(externalAccess.external_system);
+        $('#new_external_access #admin_group_number').val(externalAccess.admin_group_number);
+        $('#new_external_access #admin_group_number').trigger('change');
+
+        $('.data-submit').attr('data-external-access-id', externalAccess.id);
     });
 
-    // submit institute
+    // submit external access
     $('.data-submit').on('click', function() {
-        var instituteId = $(this).data('institute-id');
-        var url = instituteId ? '/api/institute/' + instituteId + '/update' : '/api/institute/create';
+        var externalAccessId = $(this).data('external-access-id');
+        var url = externalAccessId ? '/api/external-access/' + externalAccessId + '/update' : '/api/external-access/create';
 
         $.ajax({
             url: url,
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
-                group_level: $('#group_level').val(),
-                name: $('#name').val()
+                external_system: $('#external_system').val(),
+                admin_group_number: $('#admin_group_number').val()
             },
             success: function (response) {
                 window.location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_institute')).hide();
+                bootstrap.Offcanvas.getInstance(document.getElementById('new_external_access')).hide();
                 $('#errorAlertMessage').text('Hiba történt a mentés során!');
                 $('#errorAlert').removeClass('d-none');
                 console.log(textStatus, errorThrown);

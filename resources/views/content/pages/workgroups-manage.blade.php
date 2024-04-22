@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Folyamatok')
+@section('title', 'Csoportok')
 
 <!-- Vendor Styles -->
 @section('vendor-style')
@@ -85,7 +85,7 @@
         <div class="offcanvas-body mx-0 flex-grow-1">
             <form class="add-new-record pt-0 row g-2 fv-plugins-bootstrap5 fv-plugins-framework" id="form-add-new-record" onsubmit="return false" novalidate="novalidate">
                 <div class="col-sm-12 fv-plugins-icon-container">
-                    <label class="form-label" for="group_level">Csoportszám szám</label>
+                    <label class="form-label" for="workgroup_number">Csoportszám szám</label>
                     <div class="input-group input-group-merge has-validation">
                         <input class="form-control numeral-mask" type="text" id="workgroup_number" />
                     </div>

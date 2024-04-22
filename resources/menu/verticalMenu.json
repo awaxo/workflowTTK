@@ -96,7 +96,7 @@
             },
             {
                 "url": "/segedadat/hozzaferesi-jogosultsagok",
-                "name": "Hozzáférési jogosultság",
+                "name": "Hozzáférési jog",
                 "slug": "auxiliary-data-external-access"
             },
             {
@@ -108,6 +108,11 @@
                 "url": "/segedadat/koltseghelyek",
                 "name": "Költséghely",
                 "slug": "auxiliary-data-costcenter"
+            },
+            {
+                "url": "/segedadat/koltseghely-tipusok",
+                "name": "Költséghely típus",
+                "slug": "auxiliary-data-costcenter-type"
             }
         ]
     }

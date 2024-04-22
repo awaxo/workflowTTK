@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Controllers\pages;
+
+use App\Http\Controllers\Controller;
+use App\Models\CostCenterType;
+use Illuminate\Support\Facades\Auth;
+
+class CostCenterTypeController extends Controller
+{
+    public function manage()
+    {
+        return view('content.pages.costcenter-types');
+    }
+
+    public function getAllCostCenterTypes()
+    {
+        $costcenterTypes = CostCenterType::all()->map(function ($costcenterType) {
+            return [
+                'id' => $costcenterType->id,
+                'name' => $costcenterType->name,
+                'tender' => $costcenterType->tender,
+                'clause_template' => $costcenterType->clause_template,
+                'deleted' => $costcenterType->deleted,
+                'created_at' => $costcenterType->created_at,
+                'created_by_name' => $costcenterType->createdBy->name,
+                'updated_at' => $costcenterType->updated_at,
+                'updated_by_name' => $costcenterType->updatedBy->name,
+            ];
+        });
+        return response()->json(['data' => $costcenterTypes]);
+    }
+
+    public function delete($id)
+    {
+        $costcenterType = CostCenterType::find($id);
+        $costcenterType->deleted = 1;
+        $costcenterType->save();
+        return response()->json(['message' => 'Cost center type deleted successfully']);
+    }
+
+    public function restore($id)
+    {
+        $costcenterType = CostCenterType::find($id);
+        $costcenterType->deleted = 0;
+        $costcenterType->save();
+        return response()->json(['message' => 'Cost center type restored successfully']);
+    }
+
+    public function update($id)
+    {
+        $costcenterType = CostCenterType::find($id);
+        $costcenterType->name = request('name');
+        $costcenterType->tender = request('tender') == 'true' ? 1 : 0;
+        $costcenterType->clause_template = request('clause_template') ?? '';
+        $costcenterType->updated_by = Auth::id();
+        $costcenterType->save();
+        return response()->json(['message' => 'Cost center type updated successfully']);
+    }
+
+    public function create()
+    {
+        $costcenterType = new CostCenterType();
+        $costcenterType->name = request('name');
+        $costcenterType->tender = request('tender') == 'true' ? 1 : 0;
+        $costcenterType->clause_template = request('clause_template') ?? '';
+        $costcenterType->created_by = Auth::id();
+        $costcenterType->updated_by = Auth::id();
+        $costcenterType->save();
+        return response()->json(['message' => 'Cost center type created successfully']);
+    }
+}

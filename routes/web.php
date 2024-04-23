@@ -10,6 +10,7 @@ use App\Http\Controllers\pages\DashboardController;
 use App\Http\Controllers\pages\ExternalAccessController;
 use App\Http\Controllers\pages\InstituteController;
 use App\Http\Controllers\pages\PermissionController;
+use App\Http\Controllers\pages\PositionController;
 use App\Http\Controllers\pages\RoleController;
 use App\Http\Controllers\pages\UserController;
 use App\Http\Controllers\pages\WorkflowController;
@@ -38,6 +39,7 @@ Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->midd
 Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-external-access');
 Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-costcenter');
 Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-costcenter-type');
+Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-position');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
@@ -107,4 +109,10 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/costcenter-type/{id}/restore', [CostCenterTypeController::class, 'restore']);
     Route::post('/costcenter-type/{id}/update', [CostCenterTypeController::class, 'update']);
     Route::post('/costcenter-type/create', [CostCenterTypeController::class, 'create']);
+
+    Route::get('/positions', [PositionController::class, 'getAllPositions']);
+    Route::post('/position/{id}/delete', [PositionController::class, 'delete']);
+    Route::post('/position/{id}/restore', [PositionController::class, 'restore']);
+    Route::post('/position/{id}/update', [PositionController::class, 'update']);
+    Route::post('/position/create', [PositionController::class, 'create']);
 });

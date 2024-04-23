@@ -113,6 +113,11 @@
                 "url": "/segedadat/koltseghely-tipusok",
                 "name": "Költséghely típus",
                 "slug": "auxiliary-data-costcenter-type"
+            },
+            {
+                "url": "/segedadat/munkakorok",
+                "name": "Munkakör",
+                "slug": "auxiliary-data-position"
             }
         ]
     }

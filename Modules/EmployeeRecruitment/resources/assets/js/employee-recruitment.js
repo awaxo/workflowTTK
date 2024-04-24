@@ -16,10 +16,19 @@ $(function () {
         endDate: '+4Y',
     });
 
+    $('#job_ad_exists').on('change', function() {
+        toggleApplicantCountInputs($(this).is(':checked'));
+    });
+
+    $('#employment_type').change(function() {
+        toggleTaskInput($(this).val());
+    });
+
     $("#citizenship").on('change', function() {
         var startDate = $(this).val() === 'Harmadik országbeli' ? '+3M' : '+21D';
         $("#employment_start_date").datepicker('setStartDate', startDate);
     });
+    
     $("#employment_start_date").datepicker({
         format: "yyyy.mm.dd",
         startDate: '+21D',
@@ -122,6 +131,10 @@ $(function () {
         }
     });
 
+    // Initially hide the job ad exists inputs
+    toggleApplicantCountInputs($('#job_ad_exists').is(':checked'));
+    // Disable task input if employment type is fixed
+    toggleTaskInput($('#employment_type').val());
     // Initialize popover on a target element
     citizenshipPopover();
     // Filter position options based on selected type
@@ -159,9 +172,27 @@ $(function () {
     });
 });
 
+function toggleApplicantCountInputs(isChecked) {
+    if (isChecked) {
+        $('#applicants_female_count').prop('disabled', false);
+        $('#applicants_male_count').prop('disabled', false);
+    } else {
+        $('#applicants_female_count').val('').prop('disabled', true);
+        $('#applicants_male_count').val('').prop('disabled', true);
+    }
+}
+
+function toggleTaskInput(employmentType) {
+    if (employmentType === 'Határozott') {
+        $('#task').prop('disabled', true);
+    } else {
+        $('#task').prop('disabled', false);
+    }
+}
+
 function citizenshipPopover() {
     $('#citizenship').on('change', function () {
-        if ($(this).val() === '2') {
+        if ($(this).val() === 'EGT tagállambeli') {
             $(this).popover({
                 content: 'EGT tagjai az Európai Unió tagállamai mellett: Izland, Norvégia és Liechtenstein',
                 placement: 'bottom',

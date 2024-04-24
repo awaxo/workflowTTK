@@ -82,7 +82,11 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkaköri leírás</label>
-                <span class="fw-bold ms-1">{{ $recruitment->job_description }}</span>
+                @if($recruitment->job_description)
+                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->job_description }}" target="_blank">munkaköri leírás megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1">-</span>
+                @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Jogviszony típusa</label>
@@ -263,7 +267,20 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Rendelkezésre álló eszközök leltári száma</label>
-                <span class="fw-bold ms-1">{{ $recruitment->inventory_numbers_of_available_tools ? $recruitment->inventory_numbers_of_available_tools : '-' }}</span>
+                <div>
+                    @if($recruitment->inventory_numbers_of_available_tools)
+                        @php
+                            $tools = json_decode($recruitment->inventory_numbers_of_available_tools, true);
+                        @endphp
+                        @foreach($tools as $tool)
+                            @foreach($tool as $key => $value)
+                                <span class="fw-bold ms-1">{{ ucfirst($key) . ': ' . $value }}</span><br/>
+                            @endforeach
+                        @endforeach
+                    @else
+                        <span class="fw-bold ms-1">-</span>
+                    @endif
+                </div>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Sugárzó izotóppal fog dolgozni</label>
@@ -301,23 +318,45 @@
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Személyi adatlap</label>
-                <span class="fw-bold ms-1">{{ $recruitment->personal_data_sheet ? $recruitment->personal_data_sheet : '-' }}</span>
+                @if($recruitment->personal_data_sheet)
+                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->personal_data_sheet }}" target="_blank">személyi adatlap megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1">-</span>
+                @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Hallgatói jogviszony igazolás</label>
-                <span class="fw-bold ms-1">{{ $recruitment->student_status_verification ? $recruitment->student_status_verification : '-' }}</span>
+                @if($recruitment->student_status_verification)
+                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->student_status_verification }}" target="_blank">hallgatói jogviszony igazolás megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1">-</span>
+                @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Bizonyítványok</label>
-                <span class="fw-bold ms-1">{{ $recruitment->certificates ? $recruitment->certificates : '-' }}</span>
+                @if($recruitment->certificates)
+                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->certificates }}" target="_blank">bizonyítványok megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1">-</span>
+                @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkába járási támogatást igényel</label>
-                <span class="fw-bold ms-1">{{ $recruitment->requires_commute_support ? $recruitment->requires_commute_support : '-' }}</span>
+                <span class="fw-bold ms-1">
+                    @if($recruitment->requires_commute_support)
+                        <i class="fas fa-check text-success"></i>
+                    @else
+                        <i class="fas fa-times text-danger"></i>
+                    @endif
+                </span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkába járási adatlap</label>
-                <span class="fw-bold ms-1">{{ $recruitment->commute_support_form ? $recruitment->commute_support_form : '-' }}</span>
+                @if($recruitment->commute_support_form)
+                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->commute_support_form }}" target="_blank">munkába járási adatlap megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1">-</span>
+                @endif
             </div>
         </div>
     </div>

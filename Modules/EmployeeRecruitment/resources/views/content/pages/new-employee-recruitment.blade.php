@@ -239,8 +239,8 @@
                             <div class="col-sm-4">
                                 <label for="employment_type" class="form-label">Jogviszony típusa</label>
                                 <select class="form-select" id="employment_type">
-                                    <option value="Határozott" selected>Határozott</option>
-                                    <option value="Határozatlan">Határozatlan</option>
+                                    <option value="Határozatlan" selected>Határozatlan</option>
+                                    <option value="Határozott">Határozott</option>
                                 </select>
                             </div>
                             <div class="col-sm-8">

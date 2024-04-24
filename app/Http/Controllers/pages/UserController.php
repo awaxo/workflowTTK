@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Workgroup;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -14,15 +14,25 @@ class UserController extends Controller
     {
         $apiEndpoint = '/api/users';
         $workgroups = Workgroup::where('deleted', 0)->get();
+        $roles = Role::all()->map(function ($role) {
+            $role->name_readable = __('auth.roles.' . $role->name);
+            return $role;
+        });
 
-        return view('content.pages.users', compact('apiEndpoint', 'workgroups'));
+        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles'));
     }
 
     public function indexByRole($roleName)
     {
         // Dynamically generate the API endpoint based on the role
         $apiEndpoint = "/api/users/role/$roleName";
-        return view('content.pages.users', compact('apiEndpoint'));
+        $workgroups = Workgroup::where('deleted', 0)->get();
+        $roles = Role::all()->map(function ($role) {
+            $role->name_readable = __('auth.roles.' . $role->name);
+            return $role;
+        });
+
+        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles'));
     }
 
     public function getAllUsers()
@@ -34,6 +44,12 @@ class UserController extends Controller
                 'email' => $user->email,
                 'workgroup_id' => $user->workgroup_id,
                 'workgroup_name' => ($user->workgroup->workgroup_number . ' - ' . $user->workgroup->name),
+                'role_names' => $user->roles->map(function ($role) {
+                    return $role->name;
+                }),
+                'roles' => $user->roles->map(function ($role) {
+                    return __('auth.roles.' . $role->name);
+                })->implode(', '),
                 'deleted' => $user->deleted,
                 'created_at' => $user->created_at,
                 'created_by_name' => $user->createdBy->name,
@@ -48,9 +64,68 @@ class UserController extends Controller
     {
         $role = Role::findByName($roleName);
         $users = $role->users->map(function ($user) {
-            return $user->only(['id', 'name', 'email', 'created_at']);
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'workgroup_id' => $user->workgroup_id,
+                'workgroup_name' => ($user->workgroup->workgroup_number . ' - ' . $user->workgroup->name),
+                'role_names' => $user->roles->map(function ($role) {
+                    return $role->name;
+                }),
+                'roles' => $user->roles->map(function ($role) {
+                    return __('auth.roles.' . $role->name);
+                })->implode(', '),
+                'deleted' => $user->deleted,
+                'created_at' => $user->created_at,
+                'created_by_name' => $user->createdBy->name,
+                'updated_at' => $user->updated_at,
+                'updated_by_name' => $user->updatedBy->name,
+            ];
         });
 
         return response()->json(['data' => $users]);
+    }
+
+    public function delete($id)
+    {
+        $user = User::find($id);
+        $user->deleted = 1;
+        $user->save();
+        return response()->json(['message' => 'User deleted successfully']);
+    }
+
+    public function restore($id)
+    {
+        $user = User::find($id);
+        $user->deleted = 0;
+        $user->save();
+        return response()->json(['message' => 'User restored successfully']);
+    }
+
+    public function update($id)
+    {
+        $user = User::find($id);
+        $user->name = request('name');
+        $user->email = request('email');
+        $user->workgroup_id = request('workgroup_id');
+        $user->syncRoles(request('roles'));
+        $user->updated_by = Auth::id();
+        $user->save();
+        return response()->json(['message' => 'User updated successfully']);
+    }
+
+    public function create()
+    {
+        $user = new User();
+        $user->name = request('name');
+        $user->email = request('email');
+        $user->workgroup_id = request('workgroup_id');
+        $user->syncRoles(request('roles'));
+        $user->password = bcrypt('password');
+        $user->created_by = Auth::id();
+        $user->updated_by = Auth::id();
+        $user->save();
+        return response()->json(['message' => 'User created successfully']);
     }
 }

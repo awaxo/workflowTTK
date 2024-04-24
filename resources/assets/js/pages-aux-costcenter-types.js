@@ -238,7 +238,7 @@ $(function() {
 
         $('#name').val(costcenterType.name);
         $('#tender').val(costcenterType.tender);
-        $('#clause_template').trigger('clause_template');
+        $('#clause_template').val(costcenterType.clause_template);
         $('.data-submit').attr('data-costcenter-type-id', costcenterType.id);
     });
 

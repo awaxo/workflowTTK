@@ -112,8 +112,8 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
 
     Route::get('/users', [UserController::class, 'getAllUsers']);
     Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
-    Route::post('/user/{id}/delete', [PositionController::class, 'delete']);
-    Route::post('/user/{id}/restore', [PositionController::class, 'restore']);
-    Route::post('/user/{id}/update', [PositionController::class, 'update']);
-    Route::post('/user/create', [PositionController::class, 'create']);
+    Route::post('/user/{id}/delete', [UserController::class, 'delete']);
+    Route::post('/user/{id}/restore', [UserController::class, 'restore']);
+    Route::post('/user/{id}/update', [UserController::class, 'update']);
+    Route::post('/user/create', [UserController::class, 'create']);
 });

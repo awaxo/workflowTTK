@@ -230,10 +230,8 @@ $(function() {
 
         $('#new_workgroup #workgroup_number').val(workgroup.workgroup_number);
         $('#new_workgroup #name').val(workgroup.name);
-        $('#new_workgroup #leader_id').val(workgroup.leader_id);
-        $('#new_workgroup #leader_id').trigger('change');
-        $('#new_workgroup #labor_administrator').val(workgroup.labor_administrator);
-        $('#new_workgroup #labor_administrator').trigger('change');
+        $('#new_workgroup #leader_id').val(workgroup.leader_id).trigger('change');
+        $('#new_workgroup #labor_administrator').val(workgroup.labor_administrator).trigger('change');
         $('.data-submit').attr('data-workgroup-id', workgroup.id);
     });
 

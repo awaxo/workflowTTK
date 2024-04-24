@@ -226,9 +226,9 @@ $(function() {
         var row = $(this).closest('tr');
         var externalAccess = $('.datatables-external-access').DataTable().row(row).data();
 
-        $('#new_external_access #external_system').val(externalAccess.external_system);
-        $('#new_external_access #admin_group_number').val(externalAccess.admin_group_number);
-        $('#new_external_access #admin_group_number').trigger('change');
+        $('#external_system').val(externalAccess.external_system);
+        $('#admin_group_number').val(externalAccess.admin_group_number).trigger('change');
+        $('#admin_group_number').trigger('change');
 
         $('.data-submit').attr('data-external-access-id', externalAccess.id);
     });

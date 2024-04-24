@@ -36,6 +36,7 @@
 @section('page-script')
     @vite([
         'resources/assets/js/forms-selects.js',
+        'resources/assets/js/form-basic-inputs.js',
         'resources/assets/js/pages-users.js'
     ])
 @endsection
@@ -59,6 +60,7 @@
                                 <th>Név</th>
                                 <th>Email</th>
                                 <th>Csoportnév</th>
+                                <th>Szerepkörök</th>
                                 <th>Aktív</th>
                                 <th>Utolsó módosító</th>
                                 <th>Utolsó módosítás</th>
@@ -99,6 +101,15 @@
                     <select class="form-select select2" id="workgroup_id">
                         @foreach($workgroups as $workgroup)
                             <option value="{{ $workgroup->id }}">{{ $workgroup->workgroup_number }} - {{ $workgroup->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+                <div class="col-sm-12 fv-plugins-icon-container">
+                    <label class="form-label" for="roles">Szerepkörök</label>
+                    <select class="form-select select2" id="roles" multiple>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->name }}">{{ $role->name_readable }}</option>
                         @endforeach
                     </select>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>

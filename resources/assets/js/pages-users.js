@@ -13,6 +13,7 @@ $(function() {
             { data: 'name' },
             { data: 'email' },
             { data: 'workgroup_name' },
+            { data: 'roles' },
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
@@ -162,12 +163,21 @@ $(function() {
         $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
 
-    // confirm delete workgroup
+    // delete user
+    $(document).on('click', '.delete-user', function() {
+        var row = $(this).closest('tr');
+        var userId = $('.datatables-users').DataTable().row(row).data().id;
+
+        $('#confirm_delete').attr('data-user-id', userId);
+        $('#deleteConfirmation').modal('show');
+    });
+
+    // confirm delete user
     $('#confirm_delete').on('click', function () {
-        var workgroupId = $(this).data('workgroup-id');
+        var userId = $(this).data('user-id');
 
         $.ajax({
-            url: '/api/workgroup/' + workgroupId + '/delete',
+            url: '/api/user/' + userId + '/delete',
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
@@ -184,21 +194,21 @@ $(function() {
         });
     });
 
-    //restore workgroup
-    $(document).on('click', '.restore-workgroup', function() {
+    //restore user
+    $(document).on('click', '.restore-user', function() {
         var row = $(this).closest('tr');
-        var workgroupId = $('.datatables-workgroups').DataTable().row(row).data().id;
+        var userId = $('.datatables-users').DataTable().row(row).data().id;
 
-        $('#confirm_restore').attr('data-workgroup-id', workgroupId);
+        $('#confirm_restore').attr('data-user-id', userId);
         $('#restoreConfirmation').modal('show');
     });
 
-    // confirm restore workgroup
+    // confirm restore user
     $('#confirm_restore').on('click', function () {
-        var workgroupId = $(this).data('workgroup-id');
+        var userId = $(this).data('user-id');
 
         $.ajax({
-            url: '/api/workgroup/' + workgroupId + '/restore',
+            url: '/api/user/' + userId + '/restore',
             type: 'POST',
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content')
@@ -222,8 +232,8 @@ $(function() {
 
         $('#name').val(user.name);
         $('#email').val(user.email);
-        $('#workgroup_id').val(user.workgroup_id);
-        $('#workgroup_id').trigger('change');
+        $('#workgroup_id').val(user.workgroup_id).trigger('change');
+        $('#roles').val(user.role_names).trigger('change');
         $('.data-submit').attr('data-user-id', user.id);
     });
 
@@ -240,6 +250,7 @@ $(function() {
                 name: $('#name').val(),
                 email: $('#email').val(),
                 workgroup_id: $('#workgroup_id').val(),
+                roles: $('#roles').val()
             },
             success: function (response) {
                 window.location.reload();

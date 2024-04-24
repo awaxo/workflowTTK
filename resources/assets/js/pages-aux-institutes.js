@@ -233,8 +233,8 @@ $(function() {
         var row = $(this).closest('tr');
         var institute = $('.datatables-institutes').DataTable().row(row).data();
 
-        $('#new_institute #group_level').val(institute.group_level);
-        $('#new_institute #name').val(institute.name);
+        $('#group_level').val(institute.group_level);
+        $('#name').val(institute.name);
         $('.data-submit').attr('data-institute-id', institute.id);
     });
 

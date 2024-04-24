@@ -253,12 +253,9 @@ $(function() {
 
         $('#cost_center_code').val(costcenter.cost_center_code);
         $('#name').val(costcenter.name);
-        $('#type_id').val(costcenter.type_id);
-        $('#type_id').trigger('change');
-        $('#lead_user_id').val(costcenter.lead_user_id);
-        $('#lead_user_id').trigger('change');
-        $('#project_coordinator_user_id').val(costcenter.project_coordinator_user_id);
-        $('#project_coordinator_user_id').trigger('change');
+        $('#type_id').val(costcenter.type_id).trigger('change');
+        $('#lead_user_id').val(costcenter.lead_user_id).trigger('change');
+        $('#project_coordinator_user_id').val(costcenter.project_coordinator_user_id).trigger('change');
         $('#due_date').val(costcenter.due_date);
         $('#minimal_order_limit').val(costcenter.minimal_order_limit);
         $('#valid_employee_recruitment').val(costcenter.valid_employee_recruitment);

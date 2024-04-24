@@ -40,16 +40,14 @@ Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::cl
 Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-costcenter');
 Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-costcenter-type');
 Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-position');
+Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-users');
+Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['auth'])->name('pages-users-role');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 
 // pages
 Route::get('/pages/misc-error', [MiscError::class, 'index'])->name('pages-misc-error');
-Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-users');
-Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])
-    ->middleware(['auth'])
-    ->name('pages-users-role');
 
 Route::get('/szerepkorok/jogosultsag/{permission}', [RoleController::class, 'indexByPermission'])
     ->middleware(['auth'])
@@ -69,10 +67,6 @@ Route::post('/logout', [LoginBasic::class, 'logout'])->name('logout');
 
 // API routes
 Route::prefix('api')->middleware(['auth'])->group(function () {
-    Route::get('/users', [UserController::class, 'getAllUsers']);
-    Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
-    Route::get('/roles/permission/{permissionName}', [RoleController::class, 'getRolesByPermission']);
-
     Route::get('/roles', [RoleController::class, 'getAllRoles']);
 
     Route::get('/permissions', [PermissionController::class, 'getAllPermissions']);
@@ -115,4 +109,11 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/position/{id}/restore', [PositionController::class, 'restore']);
     Route::post('/position/{id}/update', [PositionController::class, 'update']);
     Route::post('/position/create', [PositionController::class, 'create']);
+
+    Route::get('/users', [UserController::class, 'getAllUsers']);
+    Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
+    Route::post('/user/{id}/delete', [PositionController::class, 'delete']);
+    Route::post('/user/{id}/restore', [PositionController::class, 'restore']);
+    Route::post('/user/{id}/update', [PositionController::class, 'update']);
+    Route::post('/user/create', [PositionController::class, 'create']);
 });

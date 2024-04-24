@@ -59,22 +59,10 @@
         "slug": "pages-user-list"
     },
     {
-        "url": "/",
-        "name": "Szerepek & Jogok",
+        "url": "/szerepkorok",
+        "name": "Szerepkörök",
         "icon": "menu-icon tf-icons bx bx-check-shield",
-        "slug": "authorizations",
-        "submenu": [
-            {
-                "url": "/szerepkorok",
-                "name": "Szerepkörök",
-                "slug": "authorizations-roles"
-            },
-            {
-                "url": "/jogosultsagok",
-                "name": "Jogosultságok",
-                "slug": "authorizations-permissions"
-            }
-        ]
+        "slug": "authorizations-permissions"
     },
     {
         "url": "/auth/register-basic",

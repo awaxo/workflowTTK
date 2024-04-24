@@ -9,7 +9,7 @@ class RecruitmentRolePermissionSeeder extends Seeder
 {
     public function run()
     {
-        $roles = [
+        /*$roles = [
             'titkar_9_fi',
             'titkar_9_gi',
             'titkar_1',
@@ -37,6 +37,6 @@ class RecruitmentRolePermissionSeeder extends Seeder
         $permissions = [
             'read_recruitment'            
         ];
-        $role->syncPermissions($permissions);
+        $role->syncPermissions($permissions);*/
     }
 }

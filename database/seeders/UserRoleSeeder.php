@@ -58,11 +58,11 @@ class UserRoleSeeder extends Seeder
         }
 
         // add betekinto test user
-        $email = 'betekinto@b.com';
+        /*$email = 'betekinto@b.com';
         $user = User::where('email', $email)->first();
 
         if ($user) {
             $user->assignRole('betekinto');
-        }
+        }*/
     }
 }

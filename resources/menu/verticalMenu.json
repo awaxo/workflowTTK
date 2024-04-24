@@ -41,7 +41,7 @@
                     {
                         "url": "/felveteli-kerelem/nyitott",
                         "name": "Nyitott felvételi kérelmek",
-                        "slug": "workflows-employee-recruitment-open"
+                        "slug": "workflows-employee-recruitment-opened"
                     },
                     {
                         "url": "/felveteli-kerelem/lezart",

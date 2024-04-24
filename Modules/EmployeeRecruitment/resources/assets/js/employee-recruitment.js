@@ -1,5 +1,5 @@
 import moment from 'moment';
-import DropzoneManager from '../../../../../resources/js/dropzone-manager';
+import DropzoneManager from '/resources/js/dropzone-manager';
 
 $(function () {
     // set numeral mask to number fields
@@ -8,37 +8,6 @@ $(function () {
             numeral: true
         });
     });
-
-    const previewTemplate = `
-    <div class="dz-preview dz-file-preview">
-        <div class="dz-details">
-        <div class="dz-thumbnail">
-            <img data-dz-thumbnail>
-            <span class="dz-nopreview">Nincs előnézet</span>
-            <div class="dz-success-mark"></div>
-            <div class="dz-error-mark"></div>
-            <div class="dz-error-message"><span data-dz-errormessage></span></div>
-            <div class="progress">
-            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-dz-uploadprogress></div>
-            </div>
-        </div>
-        <div class="dz-filename" data-dz-name></div>
-        <div class="dz-size" data-dz-size></div>
-        </div>
-    </div>`;
-
-    const genericDropzoneOptions = {
-        previewTemplate: previewTemplate,
-        parallelUploads: 1,
-        addRemoveLinks: true,
-
-        dictRemoveFile: 'Törlés',
-        dictFileTooBig: 'A fájl mérete túl nagy ({{filesize}}MiB). Maximum: {{maxFilesize}}MiB.',
-        dictMaxFilesExceeded: 'Maximum {{maxFiles}} fájl tölthető fel.',
-        dictInvalidFileType: 'Nem tölthető fel ilyen típusú fájl.',
-        dictResponseError: 'Szerver hiba történt. Kérjük próbálja újra később.',
-        dictCancelUpload: 'Mégse'
-    };
 
     // set datepicker date fields
     $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date").datepicker({
@@ -120,7 +89,7 @@ $(function () {
     }
 
     // add or remove available_tools based on selected required_tools
-    $('#required_tools').on('changed.bs.select', function () {
+    $('#required_tools').on('change', function () {
         updateAvailableTools();
     });
 
@@ -179,10 +148,12 @@ $(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (data) {
-                alert('Mentés sikeres!');
+                // redirect needed on the server side
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                // Handle errors here
+                $('#errorAlertMessage').text('Hiba történt az ügy rögzítése során!');
+                $('#errorAlert').removeClass('d-none');
+                console.log(textStatus, errorThrown);
             }
         });
     });
@@ -264,14 +235,24 @@ function filterEmployeeRoomIdOptions() {
 
 // Filtering available tools
 function updateAvailableTools() {
-    var optionsHtml = '';
+    let options = [];
+    let selectedValues = $('#required_tools').val();
+    let previousSelectedValues = $('#available_tools').val();
 
-    $('#required_tools option:selected').each(function() {
-        optionsHtml += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
+    if (selectedValues) {
+        selectedValues.forEach(function(value) {
+            var text = $('#required_tools option[value="' + value + '"]').text();
+            options.push({ id: value, text: text });
+        });
+    }
+
+    $('#available_tools').empty().select2({
+        data: options
     });
 
-    $('#available_tools').html(optionsHtml);
-    $('#available_tools').selectpicker('destroy').html(optionsHtml).selectpicker();
+    if (previousSelectedValues) {
+        $('#available_tools').val(previousSelectedValues).trigger('change');
+    }
     updateInventoryNumbersOfAvailableTools();
 }
 updateAvailableTools();
@@ -279,24 +260,38 @@ updateAvailableTools();
 
 // Filtering inventory numbers of available tools
 function updateInventoryNumbersOfAvailableTools() {
-    $('#available_tools').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-        // Get the selected option value and text
-        var selectedOptionValue = $(this).find('option').eq(clickedIndex).val();
-        var selectedOptionText = $(this).find('option').eq(clickedIndex).text();
+    let previousSelectedOptions = [];
 
-        // ID for the dynamic input corresponding to this option
-        var inputId = 'inventory_numbers_of_available_tools_' + selectedOptionValue;
+    $(document).off('change', '#available_tools').on('change', '#available_tools', function (e) {
+        let currentSelectedOptions = $(this).val() || [];
+        
+        // Find out which options have been deselected
+        let deselectedOptions = previousSelectedOptions.filter(option => !currentSelectedOptions.includes(option));
 
-        if (isSelected) {
-            // If option is selected, add an input field
-            var inputHtml = '<div class="form-group" id="group_' + inputId + '">' +
-                                '<label class="form-label" for="' + inputId + '">' + selectedOptionText + ' leltári száma</label>' +
-                                '<input type="text" id="' + inputId + '" class="form-control" placeholder="Leltári szám" />' +
-                            '</div>';
-            $('.dynamic-tools-container').append(inputHtml);
-        } else {
-            // If option is deselected, remove the corresponding input field
-            $('#group_' + inputId).remove();
+        // Remove the input fields corresponding to the deselected options
+        deselectedOptions.forEach(option => {
+            $('#group_inventory_numbers_of_available_tools_' + option).remove();
+        });
+
+        let data = $(this).select2('data');
+        if (data.length > 0) {
+            data.forEach(function(item) {
+                let selectedOptionValue = item.id;
+                let selectedOptionText = item.text;
+
+                // ID for the dynamic input corresponding to this option
+                let inputId = 'inventory_numbers_of_available_tools_' + selectedOptionValue;
+
+                // If option is selected and the input field does not exist, add an input field
+                if (selectedOptionValue && !$('#' + inputId).length) {
+                    let inputHtml = '<div class="form-group" id="group_' + inputId + '">' +
+                                        '<label class="form-label" for="' + inputId + '">' + selectedOptionText + ' leltári száma</label>' +
+                                        '<input type="text" id="' + inputId + '" class="form-control" placeholder="Leltári szám" />' +
+                                    '</div>';
+                    $('.dynamic-tools-container').append(inputHtml);
+                }
+            });
+            previousSelectedOptions = currentSelectedOptions;
         }
     });
 }

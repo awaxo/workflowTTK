@@ -41,9 +41,8 @@
 
     <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
         <span id="errorAlertMessage"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-        </button>
-      </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     <div class="row">
         <div class="col-12 mb-4">

@@ -27,6 +27,7 @@
     'resources/assets/vendor/libs/bs-stepper/bs-stepper.js',
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/select2/select2.js',
+    'node_modules/select2/dist/js/i18n/hu.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
@@ -52,6 +53,11 @@
     <h4 class="py-3 mb-4">
         <span class="text-muted fw-light">Új folyamat /</span> Felvételi kérelem
     </h4>
+
+    <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
+        <span id="errorAlertMessage"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 
     <div class="row">
         <!-- Vertical Wizard -->
@@ -119,6 +125,7 @@
                     </div>
                 </div>
                 <div class="bs-stepper-content" id="new-recruitment">
+
                     <!-- Data section 1 -->
                     <div id="data-section-1" class="content">
                         <div class="content-header mb-3">
@@ -196,6 +203,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Data section 2 -->
                     <div id="data-section-2" class="content">
                         <div class="content-header mb-3">
@@ -260,6 +268,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Data section 3 -->
                     <div id="data-section-3" class="content">
                         <div class="content-header mb-3">
@@ -421,6 +430,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Data section 4 -->
                     <div id="data-section-4" class="content">
                         <div class="content-header mb-3">
@@ -536,6 +546,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Data section 5 -->
                     <div id="data-section-5" class="content">
                         <div class="content-header mb-3">
@@ -549,7 +560,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="entry_permissions" class="form-label">Belépési jogosultságok</label>
-                                <select class="selectpicker w-100" id="entry_permissions" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                <select class="form-select select2" id="entry_permissions" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
                                     <optgroup label="Általános belépési engedélyek">
                                         <option value="auto">Autó behajtás</option>
                                         <option value="kerekpar">Kerékpár behajtás</option>
@@ -567,7 +578,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="employee_room" class="form-label">Dolgozószoba</label>
-                                <select class="form-select select2" id="employee_room">
+                                <select class="form-select select2" id="employee_room" multiple>
                                     <option selected>Válassz dolgozószobát</option>
                                     @foreach($rooms as $room)
                                         <option value="{{ $room->room_number }}" data-workgroup="{{ $room->workgroup_number }}">{{ $room->room_number }}</option>
@@ -580,7 +591,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="external_access_rights" class="form-label">Hozzáférési jogosultságok</label>
-                                <select class="selectpicker w-100" id="external_access_rights" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                <select class="form-select select2" id="external_access_rights" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
                                     @foreach($externalAccessRights as $externalAccessRight)
                                         <option value="{{ $externalAccessRight->id }}">{{ $externalAccessRight->external_system }}</option>
                                     @endforeach
@@ -588,9 +599,9 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="required_tools" class="form-label">Munkavégzéshez szükséges eszközök</label>
-                                <select class="selectpicker w-100" id="required_tools" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                <select class="form-select select2" id="required_tools" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
                                     <option value="asztal">asztal</option>
-                                    <option value="szék">szék</option>
+                                    <option value="szek">szék</option>
                                     <option value="asztali_szamitogep">asztali számítógép</option>
                                     <option value="laptop">laptop</option>
                                     <option value="laptop_taska">laptop táska</option>
@@ -603,7 +614,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="available_tools" class="form-label">Munkavégzéshez rendelkezésre álló eszközök</label>
-                                <select class="selectpicker w-100" id="available_tools" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary">
+                                <select class="form-select select2" id="available_tools" placeholder="&nbsp;" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
                                     <!-- dynamically updated -->
                                 </select>
                             </div>
@@ -643,6 +654,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Data section 6 -->
                     <div id="data-section-6" class="content">
                         <div class="content-header mb-3">
@@ -709,6 +721,5 @@
                 </div>
             </div>
         </div>
-        <!-- /Vertical Wizard -->
     </div>
 @endsection

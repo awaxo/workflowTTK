@@ -12,6 +12,7 @@ use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\WorkflowService;
 use Barryvdh\DomPDF\Facade\PDF;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Models\States\StateGroupLeadApproval;
-use NunoMaduro\Collision\Adapters\Phpunit\State;
 
 class EmployeeRecruitmentController extends Controller
 {
@@ -67,24 +67,22 @@ class EmployeeRecruitmentController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->all();
-
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
-
-        $validatedData['workflow_type_id'] = $workflowType->id;
-        $validatedData['created_by'] = auth()->user()->id;
-        $validatedData['updated_by'] = auth()->user()->id;
+        $workgroup = User::find(Auth::id())->workgroup;
         $recruitment = new RecruitmentWorkflow();
+
+        $validatedData = $request->all();
+        
+        // generic data
         $recruitment->state = 'it_head_approval';
         $recruitment->workflow_type_id = $workflowType->id;
-
-        $workgroup = User::find(auth()->user()->id)->workgroup;
         $firstLetter = substr($workgroup->workgroup_number, 0, 1);
         $recruitment->initiator_institute_id = $firstLetter;
+        $recruitment->created_by = Auth::id();
+        $recruitment->updated_by = Auth::id();
 
+        // data section 1
         $recruitment->name = $validatedData['name'];
-        $recruitment->created_by = auth()->user()->id;
-        $recruitment->updated_by = auth()->user()->id;
         $recruitment->job_ad_exists = $validatedData['job_ad_exists'] == 'true' ? 1 : 0;
         $recruitment->has_prior_employment = $validatedData['has_prior_employment'] == 'true' ? 1 : 0;
         $recruitment->has_current_volunteer_contract = $validatedData['has_current_volunteer_contract'] == 'true' ? 1 : 0;
@@ -92,14 +90,36 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->applicants_male_count = $validatedData['applicants_male_count'];
         $recruitment->citizenship = $validatedData['citizenship'];
         $recruitment->workgroup_id_1 = $validatedData['workgroup_id_1'];
+        $recruitment->workgroup_id_2 = $validatedData['workgroup_id_2'];
+
+        // data section 2
         $recruitment->position_id = $validatedData['position_id'];
+        $recruitment->job_description = $validatedData['job_description_file'];
         $recruitment->employment_type = $validatedData['employment_type'];
+        $recruitment->task = $validatedData['task'];
         $recruitment->employment_start_date = $validatedData['employment_start_date'];
         $recruitment->employment_end_date = $validatedData['employment_end_date'];
+
+        // data section 3
         $recruitment->base_salary_cost_center_1 = $validatedData['base_salary_cost_center_1'];
         $recruitment->base_salary_monthly_gross_1 = $validatedData['base_salary_monthly_gross_1'];
         $recruitment->base_salary_cost_center_2 = $validatedData['base_salary_cost_center_2'];
         $recruitment->base_salary_monthly_gross_2 = $validatedData['base_salary_monthly_gross_2'];
+        $recruitment->base_salary_cost_center_3 = $validatedData['base_salary_cost_center_3'];
+        $recruitment->base_salary_monthly_gross_3 = $validatedData['base_salary_monthly_gross_3'];
+        $recruitment->health_allowance_cost_center_4 = $validatedData['health_allowance_cost_center_4'];
+        $recruitment->health_allowance_monthly_gross_4 = $validatedData['health_allowance_monthly_gross_4'];
+        $recruitment->management_allowance_cost_center_5 = $validatedData['management_allowance_cost_center_5'];
+        $recruitment->management_allowance_monthly_gross_5 = $validatedData['management_allowance_monthly_gross_5'];
+        $recruitment->management_allowance_end_date = $validatedData['management_allowance_end_date'];
+        $recruitment->extra_pay_1_cost_center_6 = $validatedData['extra_pay_1_cost_center_6'];
+        $recruitment->extra_pay_1_monthly_gross_6 = $validatedData['extra_pay_1_monthly_gross_6'];
+        $recruitment->extra_pay_1_end_date = $validatedData['extra_pay_1_end_date'];
+        $recruitment->extra_pay_2_cost_center_7 = $validatedData['extra_pay_2_cost_center_7'];
+        $recruitment->extra_pay_2_monthly_gross_7 = $validatedData['extra_pay_2_monthly_gross_7'];
+        $recruitment->extra_pay_2_end_date = $validatedData['extra_pay_2_end_date'];
+
+        // data section 4
         $recruitment->weekly_working_hours = $validatedData['weekly_working_hours'];
         $recruitment->work_start_monday = $validatedData['work_start_monday'];
         $recruitment->work_end_monday = $validatedData['work_end_monday'];
@@ -111,13 +131,101 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->work_end_thursday = $validatedData['work_end_thursday'];
         $recruitment->work_start_friday = $validatedData['work_start_friday'];
         $recruitment->work_end_friday = $validatedData['work_end_friday'];
+
+        // data section 5
         $recruitment->email = $validatedData['email'];
+        $recruitment->entry_permissions = implode(',', $validatedData['entry_permissions']);
+        $recruitment->license_plate = $validatedData['license_plate'];
+        $recruitment->employee_room = implode(',', $validatedData['employee_room']);
+        $recruitment->phone_extension = $validatedData['phone_extension'];
+        $recruitment->external_access_rights = implode(',', $validatedData['external_access_rights']);
+        $recruitment->required_tools = implode(',', $validatedData['required_tools']);
+        $recruitment->available_tools = implode(',', $validatedData['available_tools']);
+        $inventoryNumbers = [];
+        foreach ($validatedData as $key => $value) {
+            if (strpos($key, 'inventory_numbers_of_available_tools_') === 0) {
+                $toolName = substr($key, strlen('inventory_numbers_of_available_tools_'));
+                $inventoryNumbers[] = [$toolName => $value];
+            }
+        }
+        $recruitment->inventory_numbers_of_available_tools = json_encode($inventoryNumbers);
+        $recruitment->work_with_radioactive_isotopes = $validatedData['work_with_radioactive_isotopes'];
+        $recruitment->work_with_carcinogenic_materials = $validatedData['work_with_carcinogenic_materials'];
+        $recruitment->planned_carcinogenic_materials_use = $validatedData['planned_carcinogenic_materials_use'];
 
-        //$recruitment->fill($validatedData);
-        $recruitment->updated_by = Auth::id();
-        $recruitment->save();
+        // data section 6
+        $recruitment->personal_data_sheet = $validatedData['personal_data_sheet_file'];
+        $recruitment->student_status_verification = $validatedData['student_status_verification_file'];
+        $recruitment->certificates = $validatedData['certificates_file'];
+        $recruitment->requires_commute_support = $validatedData['requires_commute_support'] == 'true' ? 1 : 0;
+        $recruitment->commute_support_form = $validatedData['commute_support_form_file'];
 
-        return response()->json($recruitment, 201);
+        try {
+            $recruitment->save();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'An error occurred while saving the recruitment. Please try again later.'], 500);
+        }
+
+        return redirect()->route('workflows-employee-recruitment-opened');
+    }
+
+    public function opened()
+    {
+        return view('employeerecruitment::content.pages.recruitment-opened');
+    }
+
+    public function closed()
+    {
+        return view('employeerecruitment::content.pages.recruitment-closed');
+    }
+    
+    public function getAllOpened()
+    {
+        $recruitments = RecruitmentWorkflow::whereNotIn('state', ['completed', 'rejected', 'suspended'])->get()->map(function ($recruitment) {
+            return [
+                'id' => $recruitment->id,
+                'name' => $recruitment->name,
+                'state' => __('states.' . $recruitment->state),
+                'workgroup1' => $recruitment->workgroup1->name,
+                'workgroup2' => $recruitment->workgroup2?->name,
+                'position_type' => $recruitment->position->type,
+                'position_name' => $recruitment->position->name,
+                'base_salary_cost_center_1' => $recruitment->base_salary_cc1->name,
+                'employment_type' => $recruitment->employment_type,
+                'employment_start_date' => $recruitment->employment_start_date,
+                'created_at' => $recruitment->created_at,
+                'created_by_name' => $recruitment->createdBy->name,
+                'updated_at' => $recruitment->updated_at,
+                'updated_by_name' => $recruitment->updatedBy->name,
+            ];
+        });
+
+        return response()->json(['data' => $recruitments]);
+    }
+
+    public function getAllClosed()
+    {
+        $recruitments = RecruitmentWorkflow::whereIn('state', ['completed', 'rejected', 'suspended'])->get()->map(function ($recruitment) {
+            return [
+                'id' => $recruitment->id,
+                'name' => $recruitment->name,
+                'state' => __('states.' . $recruitment->state),
+                'workgroup1' => $recruitment->workgroup1->name,
+                'workgroup2' => $recruitment->workgroup2?->name,
+                'position_type' => $recruitment->position->type,
+                'position_name' => $recruitment->position->name,
+                'base_salary_cost_center_1' => $recruitment->base_salary_cc1->name,
+                'employment_type' => $recruitment->employment_type,
+                'employment_start_date' => $recruitment->employment_start_date,
+                'created_at' => $recruitment->created_at,
+                'created_by_name' => $recruitment->createdBy->name,
+                'updated_at' => $recruitment->updated_at,
+                'updated_by_name' => $recruitment->updatedBy->name,
+            ];
+        });
+
+        return response()->json(['data' => $recruitments]);
     }
 
     public function view($id)

@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('employment_type', 50);
             $table->string('task', 1000);
             $table->date('employment_start_date');
-            $table->date('employment_end_date');
+            $table->date('employment_end_date')->nullable();
             $table->unsignedBigInteger('base_salary_cost_center_1');
             $table->decimal('base_salary_monthly_gross_1', 10, 2);
             $table->unsignedBigInteger('base_salary_cost_center_2')->nullable();
@@ -64,7 +64,7 @@ return new class extends Migration
             $table->string('license_plate', 15)->nullable();
             $table->string('employee_room')->nullable();
             $table->unsignedInteger('phone_extension');
-            $table->string('external_access_rights', 1000)->nullable();
+            $table->string('external_access_rights')->nullable();
             $table->string('required_tools')->nullable();
             $table->string('available_tools')->nullable();
             $table->string('inventory_numbers_of_available_tools', 1000)->nullable();

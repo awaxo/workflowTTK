@@ -25,6 +25,14 @@ $(function() {
                     return moment(data).format('YYYY.MM.DD HH:mm:ss');
                 }
             },
+            {
+                data: 'is_manager_user', 
+                searchable: false, 
+                orderable: false,
+                render: function(data, type, row, meta) {
+                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-times text-danger"></i></a>' : '';
+                }
+            },
         ],
         columnDefs: [
             {
@@ -41,7 +49,7 @@ $(function() {
             {
                 // State
                 targets: 2,
-                responsivePriority: 3,
+                responsivePriority: 4,
                 render: function(data, type, full, meta) {
                     let $is_user_responsible = full['is_user_responsible'];
 
@@ -134,4 +142,55 @@ $(function() {
         $('.dataTables_filter .form-control').removeClass('form-control-sm');
         $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
+
+    // cancel workflow
+    $(document).on('click', '.delete-workflow', function() {
+        var row = $(this).closest('tr');
+        var workflowId = $('.datatables-workflows').DataTable().row(row).data().id;
+
+        $('#confirm_delete').attr('data-workflow-id', workflowId);
+        $('#deleteConfirmation').modal('show');
+    });
+
+    // confirm cancel workflow
+    $('#confirm_delete').on('click', function() {
+        var textarea = $('#cancel_reason');
+        if (!textarea.val().trim()) {
+            textarea.addClass('is-invalid');
+            textarea.next('.invalid-feedback').remove();
+            textarea.after('<div class="invalid-feedback">Kérlek, add meg sztornózás okát</div>');
+            return false;
+        } else {
+            textarea.removeClass('is-invalid');
+            textarea.next('.invalid-feedback').remove();
+            
+            let workflowId = $(this).data('workflow-id');
+            let reason = $('#cancel_reason').val();
+
+            $.ajax({
+                url: '/employee-recruitment/' + workflowId + '/suspend',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    is_cancel: true,
+                    message: reason
+                },
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#deleteConfirmation').modal('hide');
+                    $('#errorAlertMessage').text('Hiba történt a sztornózás során!');
+                    $('#errorAlert').removeClass('d-none');
+                    console.log(textStatus, errorThrown);
+                }
+            });
+        }
+    });
+
+    // Optional: Clear validation message when modal is closed or opened
+    $('#deleteConfirmation').on('hidden.bs.modal', function () {
+        $('#cancel_reason').removeClass('is-invalid').val('');
+        $('.invalid-feedback').remove();
+    });
 });

@@ -37,6 +37,11 @@
 @section('content')
     <h4 class="py-3 mb-4">Nyitott folyamatok</h4>
 
+    <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
+        <span id="errorAlertMessage"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card">
@@ -52,9 +57,33 @@
                                 <th>Utolsó módosítás</th>
                                 <th>Létrehozó</th>
                                 <th>Létrehozás</th>
+                                <th></th>
                             </tr>
                         </thead>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel confirmation modal -->
+    <div class="modal fade" id="deleteConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Biztosan szeretnéd sztornózni ezt az ügyet?</p>
+                    <div class="col-sm-12">
+                        <label for="cancel_reason" class="form-label">Indoklás</label>
+                        <textarea class="form-control" id="cancel_reason" rows="3"></textarea>                              
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                    <button type="button" id="confirm_delete" data-workflow-id="" class="btn btn-primary">Sztornózás</button>
                 </div>
             </div>
         </div>

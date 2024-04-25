@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\pages;
 
 use App\Http\Controllers\Controller;
+use App\Models\WorkflowType;
 use App\Services\WorkflowService;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,7 +35,8 @@ class WorkflowController extends Controller
                     'updated_at' => $workflow->updated_at,
                     'created_by_name' => $workflow->created_by["name"],
                     'created_at' => $workflow->created_at,
-                    'is_user_responsible' => $workflow->is_user_responsible
+                    'is_user_responsible' => $workflow->is_user_responsible,
+                    'is_manager_user' => WorkflowType::find($workflow->workflow_type_id)->first()->workgroup->leader_id == Auth::id()
                 ];
             });
 

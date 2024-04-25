@@ -182,7 +182,9 @@ class EmployeeRecruitmentController extends Controller
     
     public function getAllOpened()
     {
-        $recruitments = RecruitmentWorkflow::whereNotIn('state', ['completed', 'rejected', 'suspended'])->get()->map(function ($recruitment) {
+        $service = new WorkflowService();
+
+        $recruitments = RecruitmentWorkflow::whereNotIn('state', ['completed', 'rejected', 'suspended'])->get()->map(function ($recruitment) use ($service) {
             return [
                 'id' => $recruitment->id,
                 'name' => $recruitment->name,
@@ -198,6 +200,8 @@ class EmployeeRecruitmentController extends Controller
                 'created_by_name' => $recruitment->createdBy->name,
                 'updated_at' => $recruitment->updated_at,
                 'updated_by_name' => $recruitment->updatedBy->name,
+                'is_user_responsible' => $service->isUserResponsible(Auth::user(), $recruitment),
+                'is_manager_user' => WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()
             ];
         });
 
@@ -315,11 +319,14 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
-        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+        if ($service->isUserResponsible(Auth::user(), $recruitment) || $request->input('is_cancel')) {
             if (strlen($request->input('message')) > 0) {
                 $this->storeMetadata($recruitment, $request, 'suspensions');
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->updated_by = Auth::id();
+                if ($request->input('is_cancel')) {
+                    $recruitment->deleted = 1;
+                }
                 
                 $recruitment->save();
 

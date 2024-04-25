@@ -35,7 +35,15 @@ $(function() {
                 render: function(data, type, full, meta) {
                     return '';
                 }
-            }
+            },
+            {
+                // State
+                targets: -1,
+                responsivePriority: 3,
+                render: function(data, type, full, meta) {
+                    return `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1">${data}</span>`;
+                }
+            },
         ],
         order: [[1, 'asc']],
         displayLength: 10,

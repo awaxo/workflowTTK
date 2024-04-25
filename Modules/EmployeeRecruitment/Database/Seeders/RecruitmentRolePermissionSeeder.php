@@ -22,21 +22,12 @@ class RecruitmentRolePermissionSeeder extends Seeder
         ];
         
         $permissions = [
-            'read_recruitment',
-            'create_recruitment',
-            'suspend_recruitment',
-            'cancel_recruitment'
+            'create_recruitment'
         ];
         
         foreach ($roles as $roleName) {
             $role = Role::findByName($roleName);
             $role->syncPermissions($permissions);
-        }
-
-        $role = Role::findByName('betekinto');
-        $permissions = [
-            'read_recruitment'            
-        ];
-        $role->syncPermissions($permissions);*/
+        }*/
     }
 }

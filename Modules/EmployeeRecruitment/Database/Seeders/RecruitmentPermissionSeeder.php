@@ -10,7 +10,9 @@ class RecruitmentPermissionSeeder extends Seeder implements IPermissionSeeder
 {
     public static function getPermissions(): array
     {
-        return [];
+        return [
+            'create_recruitment'
+        ];
     }
 
     public function run()

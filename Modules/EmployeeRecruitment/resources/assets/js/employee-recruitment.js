@@ -29,12 +29,12 @@ $(function () {
         $("#employment_start_date").datepicker('setStartDate', startDate);
     });
     
+    // set datepicker date fields
     $("#employment_start_date").datepicker({
         format: "yyyy.mm.dd",
         startDate: '+21D',
         endDate: '+30Y',
     });
-
     $("#employment_start_date").on('change', function() {
         var startDate = $(this).datepicker('getDate');
         if (startDate) {
@@ -49,53 +49,11 @@ $(function () {
         startDate: '+200D',
         endDate: '+30Y',
     });
+    // set datepicker date fields
 
-    setWorkingHours("#work_start_monday", "#work_end_monday", "#monday_duration");
-    setWorkingHours("#work_start_tuesday", "#work_end_tuesday", "#tuesday_duration");
-    setWorkingHours("#work_start_wednesday", "#work_end_wednesday", "#wednesday_duration");
-    setWorkingHours("#work_start_thursday", "#work_end_thursday", "#thursday_duration");
-    setWorkingHours("#work_start_friday", "#work_end_friday", "#friday_duration");
-
-    calculateDuration("#work_start_monday", "#work_end_monday", "#monday_duration");
-    calculateDuration("#work_start_tuesday", "#work_end_tuesday", "#tuesday_duration");
-    calculateDuration("#work_start_wednesday", "#work_end_wednesday", "#wednesday_duration");
-    calculateDuration("#work_start_thursday", "#work_end_thursday", "#thursday_duration");
-    calculateDuration("#work_start_friday", "#work_end_friday", "#friday_duration");
-
-    // Function to set working hours and calculate duration
-    function setWorkingHours(startId, endId, durationId) {
-        $(`${startId}`).timepicker({
-            minTime: '07:00',
-            maxTime: '17:30',
-            listWidth: 1,
-            show2400: true,
-            timeFormat: 'H:i'
-        }).val('08:00');
-
-        $(`${endId}`).timepicker({
-            minTime: '07:30',
-            maxTime: '18:00',
-            listWidth: 1,
-            show2400: true,
-            timeFormat: 'H:i'
-        }).val('16:00');
-
-        $(`${startId}, ${endId}`).on('change', function () {
-            calculateDuration(startId, endId, durationId);
-        });
-    }
-
-    // Function to calculate duration based on start and end times
-    function calculateDuration(startId, endId, durationId) {
-        let start = moment($(startId).val(), 'HH:mm');
-        let end = moment($(endId).val(), 'HH:mm');
-
-        let hours = end.diff(start, 'hours');
-        let minutes = end.subtract(hours, 'hours').diff(start, 'minutes');
-        let paddedMinutes = String(minutes).padStart(2, '0');
-
-        $(durationId).val(`${hours}:${paddedMinutes}`);
-    }
+    $('#weekly_working_hours').on('change', function() {
+        setWorkingHoursWeekdays();
+    });
 
     // add or remove available_tools based on selected required_tools
     $('#required_tools').on('change', function () {
@@ -142,6 +100,8 @@ $(function () {
     filterPositionOptions();
     // Filter controls based on selected workgroups
     filterByWorkgroups();
+    // Set working hours and calculate duration
+    setWorkingHoursWeekdays();
 
 
     $('.btn-submit').on('click', function (event) {
@@ -316,6 +276,72 @@ function filterEmployeeRoomIdOptions() {
     $('#employee_room').val(null).trigger('change');
 }
 // End of filtering by workgroups
+
+// Setting working hours
+function setWorkingHoursWeekdays() {
+    setWorkingHours("#work_start_monday", "#work_end_monday", "#monday_duration");
+    setWorkingHours("#work_start_tuesday", "#work_end_tuesday", "#tuesday_duration");
+    setWorkingHours("#work_start_wednesday", "#work_end_wednesday", "#wednesday_duration");
+    setWorkingHours("#work_start_thursday", "#work_end_thursday", "#thursday_duration");
+    setWorkingHours("#work_start_friday", "#work_end_friday", "#friday_duration");
+
+    calculateDuration("#work_start_monday", "#work_end_monday", "#monday_duration");
+    calculateDuration("#work_start_tuesday", "#work_end_tuesday", "#tuesday_duration");
+    calculateDuration("#work_start_wednesday", "#work_end_wednesday", "#wednesday_duration");
+    calculateDuration("#work_start_thursday", "#work_end_thursday", "#thursday_duration");
+    calculateDuration("#work_start_friday", "#work_end_friday", "#friday_duration");
+}
+
+// Function to set working hours and calculate duration
+function setWorkingHours(startId, endId, durationId) {
+    let defaultStart = '';
+    let defaultEnd = '';
+    
+    if ($('#weekly_working_hours').val() === '40') {
+        defaultStart = '08:00';
+        defaultEnd = '16:30';
+    } else if ($('#weekly_working_hours').val() === '30') {
+        defaultStart = '09:00';
+        defaultEnd = '15:00';
+    }
+
+    $(`${startId}`).timepicker({
+        minTime: '07:00',
+        maxTime: '17:30',
+        listWidth: 1,
+        show2400: true,
+        timeFormat: 'H:i'
+    }).val(defaultStart);
+
+    $(`${endId}`).timepicker({
+        minTime: '07:30',
+        maxTime: '18:00',
+        listWidth: 1,
+        show2400: true,
+        timeFormat: 'H:i'
+    }).val(defaultEnd);
+
+    $(`${startId}, ${endId}`).off('change').on('change', function () {
+        calculateDuration(startId, endId, durationId);
+    });
+}
+
+// Function to calculate duration based on start and end times
+function calculateDuration(startId, endId, durationId) {
+    let start = moment($(startId).val(), 'HH:mm');
+    let end = moment($(endId).val(), 'HH:mm');
+
+    let hours = end.diff(start, 'hours');
+    let minutes = end.subtract(hours, 'hours').diff(start, 'minutes');
+    let paddedMinutes = String(minutes).padStart(2, '0');
+
+    let hoursValue = isNaN(hours) ? '' : hours;
+    let minutesValue = isNaN(paddedMinutes) ? '' : paddedMinutes;
+    let finalValue = (hoursValue === '' && minutesValue === '') ? '' : `${hoursValue}:${minutesValue}`;
+
+    $(durationId).val(finalValue);
+}
+// End of setting working hours
 
 // Filtering available tools
 function updateAvailableTools() {

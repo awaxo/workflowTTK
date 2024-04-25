@@ -119,6 +119,8 @@ $(function () {
     filterByWorkgroups();
     // Set working hours and calculate duration
     setWorkingHoursWeekdays();
+    // Filter controls based on selected position
+    filterByPosition();
 
 
     $('.btn-submit').on('click', function (event) {
@@ -222,12 +224,13 @@ let originalExtraPay1CostCenter6Options = $('#extra_pay_1_cost_center_6').html()
 let originalExtraPay2CostCenter7Options = $('#extra_pay_2_cost_center_7').html();
 
 function filterByWorkgroups() {
-    $('#workgroup_id_1, #workgroup_id_2').on('change', filterRoomOptions);
-    $('#workgroup_id_1, #workgroup_id_2').trigger('change');
+    filterRoomOptions();
+    filterCostCenters();
+    filterExternalAccess();
 
-    // filter base_salary_cost_center_1
+    $('#workgroup_id_1, #workgroup_id_2').on('change', filterRoomOptions);
     $('#workgroup_id_1, #workgroup_id_2').on('change', filterCostCenters);
-    $('#workgroup_id_1, #workgroup_id_2').trigger('change');
+    $('#workgroup_id_1').on('change', filterExternalAccess);
 }
 
 function filterCostCenters() {
@@ -300,6 +303,16 @@ function filterRoomOptions() {
         return $(this).val() !== 'auto' && $(this).val() !== 'kerekpar' && (optionWorkgroup === selectedWorkgroup1 || optionWorkgroup === selectedWorkgroup2);
     }).prop('selected', true);
     $('#entry_permissions').trigger('change');
+}
+
+function filterExternalAccess() {
+    let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
+
+    if (String(selectedWorkgroup1).charAt(0) === '9') {
+        $('#external_access_rights').prop('disabled', false).parent('div').parent('div').show();
+    } else {
+        $('#external_access_rights').prop('disabled', true).parent('div').parent('div').hide();
+    }
 }
 // End of filtering by workgroups
 
@@ -405,9 +418,13 @@ function updateInventoryNumbersOfAvailableTools() {
         let deselectedOptions = previousSelectedOptions.filter(option => !currentSelectedOptions.includes(option));
 
         // Remove the input fields corresponding to the deselected options
-        deselectedOptions.forEach(option => {
-            $('#group_inventory_numbers_of_available_tools_' + option).remove();
-        });
+        if (deselectedOptions.length === 0) {
+            $('[id^="group_inventory_numbers_of_available_tools_"]').remove();
+        } else {
+            deselectedOptions.forEach(option => {
+                $('#group_inventory_numbers_of_available_tools_' + option).remove();
+            });
+        }
 
         let data = $(this).select2('data');
         if (data.length > 0) {
@@ -432,3 +449,19 @@ function updateInventoryNumbersOfAvailableTools() {
     });
 }
 // End of filtering inventory numbers of available tools
+
+function filterByPosition()
+{
+    filterStudentStatus();
+    $('#position_id').on('change', filterStudentStatus);
+}
+function filterStudentStatus() {
+    let selectedPositionName = $('#position_id option:selected').text();
+    console.log(selectedPositionName);
+
+    if (selectedPositionName === 'egyetemi hallgató' || selectedPositionName === 'tudományos segédmunkatárs') {
+        $('#student_status_verification').prop('disabled', false).parent('div').show();
+    } else {
+        $('#student_status_verification').prop('disabled', true).parent('div').hide();
+    }
+}

@@ -55,6 +55,23 @@ $(function () {
         setWorkingHoursWeekdays();
     });
 
+    $('#entry_permissions').on('change', function() {
+        let selectedOptions = $(this).val() || [];
+        let filteredOptions = selectedOptions.filter(option => option !== 'auto' && option !== 'kerekpar');
+
+        $('#employee_room').empty();
+        filteredOptions.forEach(function(option) {
+            $('#employee_room').append(new Option(option, option)).trigger('change');
+        });
+
+        // set license plate input based on selected entry permission
+        if (selectedOptions.includes('auto')) {
+            $('#license_plate').prop('disabled', false);
+        } else {
+            $('#license_plate').val('').prop('disabled', true);
+        }
+    });
+
     // add or remove available_tools based on selected required_tools
     $('#required_tools').on('change', function () {
         updateAvailableTools();
@@ -194,6 +211,7 @@ function filterPositionIdOptions(type) {
 // End of filtering position
 
 // Filtering by workgroups
+let originalEntryPermissionsOptions = $('#entry_permissions').html();
 let originalEmployeeRoomOptions = $('#employee_room').html();
 let originalBaseSalaryCostCenter1Options = $('#base_salary_cost_center_1').html();
 let originalBaseSalaryCostCenter2Options = $('#base_salary_cost_center_2').html();
@@ -204,11 +222,7 @@ let originalExtraPay1CostCenter6Options = $('#extra_pay_1_cost_center_6').html()
 let originalExtraPay2CostCenter7Options = $('#extra_pay_2_cost_center_7').html();
 
 function filterByWorkgroups() {
-    // filter employee rooms
-    if (!originalEmployeeRoomOptions) {
-        originalEmployeeRoomOptions = $('#employee_room').html();
-    }
-    $('#workgroup_id_1, #workgroup_id_2').on('change', filterEmployeeRoomIdOptions);
+    $('#workgroup_id_1, #workgroup_id_2').on('change', filterRoomOptions);
     $('#workgroup_id_1, #workgroup_id_2').trigger('change');
 
     // filter base_salary_cost_center_1
@@ -259,21 +273,33 @@ function filterCostCenters() {
     $('#extra_pay_2_cost_center_7').select2();
 }
 
-function filterEmployeeRoomIdOptions() {
+function filterRoomOptions() {
     let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
     let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
+    let instituteCode1 = String(selectedWorkgroup1).charAt(0);
+    let instituteCode2 = String(selectedWorkgroup2).charAt(0);
 
+    $('#entry_permissions').html(originalEntryPermissionsOptions);
     $('#employee_room').html(originalEmployeeRoomOptions);
+
+    $('#entry_permissions option').filter(function() {
+        let optionWorkgroup = $(this).data('workgroup');
+        let optionInstituteCode = String(optionWorkgroup).charAt(0);
+
+        return $(this).val() !== 'auto' && $(this).val() !== 'kerekpar' && optionInstituteCode !== instituteCode1 && optionInstituteCode !== instituteCode2;
+    }).remove();
 
     $('#employee_room option').filter(function() {
         let optionWorkgroup = $(this).data('workgroup');
         return optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
     }).remove();
 
-    // Refresh Select2 to apply changes
-    $('#employee_room').select2();
-    // Clear the selection
-    $('#employee_room').val(null).trigger('change');
+    // Select options where data-workgroup is equal to selectedWorkgroup1 or selectedWorkgroup2
+    $('#entry_permissions option').filter(function() {
+        let optionWorkgroup = $(this).data('workgroup');
+        return $(this).val() !== 'auto' && $(this).val() !== 'kerekpar' && (optionWorkgroup === selectedWorkgroup1 || optionWorkgroup === selectedWorkgroup2);
+    }).prop('selected', true);
+    $('#entry_permissions').trigger('change');
 }
 // End of filtering by workgroups
 

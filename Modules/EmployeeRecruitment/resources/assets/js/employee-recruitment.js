@@ -20,7 +20,7 @@ $(function () {
         toggleApplicantCountInputs($(this).is(':checked'));
     });
 
-    $('#employment_type').change(function() {
+    $('#employment_type').on('change', function() {
         toggleTaskInput($(this).val());
     });
 
@@ -131,7 +131,8 @@ $(function () {
         }
     });
 
-    // Initially hide the job ad exists inputs
+    // Initially show the job ad exists inputs
+    $('#job_ad_exists').prop('checked', true);
     toggleApplicantCountInputs($('#job_ad_exists').is(':checked'));
     // Disable task input if employment type is fixed
     toggleTaskInput($('#employment_type').val());
@@ -139,8 +140,8 @@ $(function () {
     citizenshipPopover();
     // Filter position options based on selected type
     filterPositionOptions();
-    // Filter employee room options based on selected workgroups
-    filterEmployeeRoomOptions();
+    // Filter controls based on selected workgroups
+    filterByWorkgroups();
 
 
     $('.btn-submit').on('click', function (event) {
@@ -183,10 +184,12 @@ function toggleApplicantCountInputs(isChecked) {
 }
 
 function toggleTaskInput(employmentType) {
-    if (employmentType === 'Határozott') {
-        $('#task').prop('disabled', true);
+    if (employmentType === 'Határozatlan') {
+        $('#task').val('').prop('disabled', true);
+        $('#employment_end_date').val('').prop('disabled', true);
     } else {
         $('#task').prop('disabled', false);
+        $('#employment_end_date').prop('disabled', false);
     }
 }
 
@@ -230,28 +233,78 @@ function filterPositionIdOptions(type) {
 }
 // End of filtering position
 
-// Filtering employee room
+// Filtering by workgroups
 let originalEmployeeRoomOptions = $('#employee_room').html();
+let originalBaseSalaryCostCenter1Options = $('#base_salary_cost_center_1').html();
+let originalBaseSalaryCostCenter2Options = $('#base_salary_cost_center_2').html();
+let originalBaseSalaryCostCenter3Options = $('#base_salary_cost_center_3').html();
+let originalHealthAllowanceCostCenter4Options = $('#health_allowance_cost_center_4').html();
+let originalManagementAllowanceCostCenter5Options = $('#management_allowance_cost_center_5').html();
+let originalExtraPay1CostCenter6Options = $('#extra_pay_1_cost_center_6').html();
+let originalExtraPay2CostCenter7Options = $('#extra_pay_2_cost_center_7').html();
 
-function filterEmployeeRoomOptions() {
+function filterByWorkgroups() {
+    // filter employee rooms
     if (!originalEmployeeRoomOptions) {
         originalEmployeeRoomOptions = $('#employee_room').html();
     }
-
     $('#workgroup_id_1, #workgroup_id_2').on('change', filterEmployeeRoomIdOptions);
-
-    // Trigger change to refresh the employee_room combo based on current selections
     $('#workgroup_id_1, #workgroup_id_2').trigger('change');
+
+    // filter base_salary_cost_center_1
+    $('#workgroup_id_1, #workgroup_id_2').on('change', filterCostCenters);
+    $('#workgroup_id_1, #workgroup_id_2').trigger('change');
+}
+
+function filterCostCenters() {
+    let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
+    let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
+    let filterOptions = function(selector) {
+        $(selector + ' option').filter(function() {
+            let optionWorkgroup = $(this).data('workgroup');
+            return optionWorkgroup !== undefined && optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
+        }).remove();
+    }
+
+    // Restore the original options in the base_salary_cost_center_1 select
+    $('#base_salary_cost_center_1').html(originalBaseSalaryCostCenter1Options);
+    $('#base_salary_cost_center_2').html(originalBaseSalaryCostCenter2Options);
+    $('#base_salary_cost_center_3').html(originalBaseSalaryCostCenter3Options);
+    $('#health_allowance_cost_center_4').html(originalHealthAllowanceCostCenter4Options);
+    $('#management_allowance_cost_center_5').html(originalManagementAllowanceCostCenter5Options);
+    $('#extra_pay_1_cost_center_6').html(originalExtraPay1CostCenter6Options);
+    $('#extra_pay_2_cost_center_7').html(originalExtraPay2CostCenter7Options);
+
+    // Filter and remove options from cc1
+    $('#base_salary_cost_center_1 option').filter(function() {
+        let optionWorkgroup = $(this).data('workgroup');
+        return optionWorkgroup !== selectedWorkgroup1;
+    }).remove();
+
+    // Filter and remove options from all cc except cc1
+    filterOptions('#base_salary_cost_center_2');
+    filterOptions('#base_salary_cost_center_3');
+    filterOptions('#health_allowance_cost_center_4');
+    filterOptions('#management_allowance_cost_center_5');
+    filterOptions('#extra_pay_1_cost_center_6');
+    filterOptions('#extra_pay_2_cost_center_7');
+
+    // Refresh Select2 to apply changes
+    $('#base_salary_cost_center_1').select2();
+    $('#base_salary_cost_center_2').select2();
+    $('#base_salary_cost_center_3').select2();
+    $('#health_allowance_cost_center_4').select2();
+    $('#management_allowance_cost_center_5').select2();
+    $('#extra_pay_1_cost_center_6').select2();
+    $('#extra_pay_2_cost_center_7').select2();
 }
 
 function filterEmployeeRoomIdOptions() {
     let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
     let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
 
-    // Restore the original options in the employee room select
     $('#employee_room').html(originalEmployeeRoomOptions);
 
-    // Filter and remove options
     $('#employee_room option').filter(function() {
         let optionWorkgroup = $(this).data('workgroup');
         return optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
@@ -262,7 +315,7 @@ function filterEmployeeRoomIdOptions() {
     // Clear the selection
     $('#employee_room').val(null).trigger('change');
 }
-// End of filtering employee room
+// End of filtering by workgroups
 
 // Filtering available tools
 function updateAvailableTools() {

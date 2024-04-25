@@ -90,7 +90,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->applicants_male_count = $validatedData['applicants_male_count'];
         $recruitment->citizenship = $validatedData['citizenship'];
         $recruitment->workgroup_id_1 = $validatedData['workgroup_id_1'];
-        $recruitment->workgroup_id_2 = $validatedData['workgroup_id_2'];
+        $recruitment->workgroup_id_2 = $validatedData['workgroup_id_2'] == -1 ? null : $validatedData['workgroup_id_2'];
 
         // data section 2
         $recruitment->position_id = $validatedData['position_id'];

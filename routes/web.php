@@ -12,6 +12,7 @@ use App\Http\Controllers\pages\InstituteController;
 use App\Http\Controllers\pages\PermissionController;
 use App\Http\Controllers\pages\PositionController;
 use App\Http\Controllers\pages\RoleController;
+use App\Http\Controllers\pages\SettingsController;
 use App\Http\Controllers\pages\UserController;
 use App\Http\Controllers\pages\WorkflowController;
 use App\Http\Controllers\pages\WorkgroupController;
@@ -42,6 +43,7 @@ Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, '
 Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-position');
 Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-users');
 Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['auth'])->name('pages-users-role');
+Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['auth'])->name('settings');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);

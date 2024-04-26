@@ -65,11 +65,10 @@
         "slug": "authorizations-permissions"
     },
     {
-        "url": "/auth/register-basic",
+        "url": "/beallitasok",
         "name": "Beállítások",
         "icon": "menu-icon tf-icons bx bx-cog",
-        "slug": "auth-register-basic",
-        "target": "_blank"
+        "slug": "settings"
     },
     {
         "url": "/",

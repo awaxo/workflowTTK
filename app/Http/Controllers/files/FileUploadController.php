@@ -4,7 +4,7 @@ namespace App\Http\Controllers\files;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FileUploadController extends Controller
 {
@@ -12,9 +12,10 @@ class FileUploadController extends Controller
     {
         $file = $request->file('file');
         if ($file) {
-            $path = $file->store('uploads', 'public');
+            $extension = $file->getClientOriginalExtension();
+            $filename = Str::random(15) . '.' . $extension;
+            $path = $file->storeAs('uploads', $filename, 'public');
 
-            $url = Storage::url($path);
             $serverFilename = basename($path);
 
             return response()->json(['fileName' => $serverFilename], 201);

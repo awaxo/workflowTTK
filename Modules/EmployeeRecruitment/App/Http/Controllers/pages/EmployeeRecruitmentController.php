@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Models\States\StateGroupLeadApproval;
 
@@ -26,6 +27,7 @@ class EmployeeRecruitmentController extends Controller
     public function index()
     {
         // if not 'titkar*' role, return not authorized
+        // TODO: this should be handled in auth middleware
         $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
         $user = User::find(Auth::id());
         if (!$user->hasAnyRole($roles)) {
@@ -94,7 +96,7 @@ class EmployeeRecruitmentController extends Controller
 
         // data section 2
         $recruitment->position_id = $validatedData['position_id'];
-        $recruitment->job_description = $validatedData['job_description_file'];
+        $recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
         $recruitment->employment_type = $validatedData['employment_type'];
         $recruitment->task = $validatedData['task'];
         $recruitment->employment_start_date = $validatedData['employment_start_date'];
@@ -154,11 +156,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->planned_carcinogenic_materials_use = $validatedData['planned_carcinogenic_materials_use'];
 
         // data section 6
-        $recruitment->personal_data_sheet = $validatedData['personal_data_sheet_file'];
-        $recruitment->student_status_verification = $validatedData['student_status_verification_file'];
-        $recruitment->certificates = $validatedData['certificates_file'];
+        $recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
+        $recruitment->student_status_verification = $this->getNewFileName($validatedData['name'], 'HallgatóiJogviszony', $validatedData['student_status_verification_file']);
+        $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);
         $recruitment->requires_commute_support = $validatedData['requires_commute_support'] == 'true' ? 1 : 0;
-        $recruitment->commute_support_form = $validatedData['commute_support_form_file'];
+        $recruitment->commute_support_form = $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']);
 
         try {
             $recruitment->save();
@@ -248,7 +250,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
-        if ($recruitment->status != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
+        if ($recruitment->state != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
@@ -344,8 +346,8 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
-        
-        if ($recruitment->status == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
+
+        if ($recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             return view('employeerecruitment::content.pages.recruitment-restore', [
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
@@ -491,5 +493,12 @@ class EmployeeRecruitmentController extends Controller
         });
     
         return $history;
+    }
+
+    private function getNewFileName($name, $prefix, $originalFileName) : string {
+        $newFileName = str_replace(' ', '', $name) . '_' . $prefix . '_' . $originalFileName;
+        Storage::move('uploads/' . $originalFileName, 'uploads/' . $newFileName);
+
+        return $newFileName;
     }
 }

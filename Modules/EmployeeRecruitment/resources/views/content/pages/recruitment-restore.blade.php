@@ -39,7 +39,7 @@
             <div class="tab-pane fade active show" id="tab_decision" role="tabpanel">
                 <!-- Recruitment details -->
                 <div class="accordion" id="accordion_process_details">
-                    @if ($recruitment->state == 'it_head_approval')
+                    @if ($isITHead)
                         @include('EmployeeRecruitment::content._partials.it-head-approval', ['recruitment' => $recruitment])
                     @elseif ($nonBaseWorkgroupLead)
                         @include('EmployeeRecruitment::content._partials.nonbase-group-lead-approval', ['recruitment' => $recruitment])

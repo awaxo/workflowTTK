@@ -243,10 +243,13 @@ class EmployeeRecruitmentController extends Controller
     public function view($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
+        // IT workgroup
+        $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
         
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
+            'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
             'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
         ]);
     }
@@ -257,10 +260,14 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
         
         if ($recruitment->state != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
+            // IT workgroup
+            $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
+                'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
                 'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             ]);
         } else {
@@ -354,9 +361,13 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
 
         if ($recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
+            // IT workgroup
+            $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+
             return view('employeerecruitment::content.pages.recruitment-restore', [
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
+                'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
                 'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             ]);
         } else {

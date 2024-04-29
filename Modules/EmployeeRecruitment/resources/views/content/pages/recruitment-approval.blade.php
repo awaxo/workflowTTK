@@ -42,7 +42,7 @@
             <div class="tab-pane fade active show" id="tab_decision" role="tabpanel">
                 <!-- Recruitment details -->
                 <div class="accordion" id="accordion_process_details">
-                    @if ($recruitment->state == 'it_head_approval')
+                    @if ($isITHead)
                         @include('EmployeeRecruitment::content._partials.it-head-approval', ['recruitment' => $recruitment])
                     @elseif ($nonBaseWorkgroupLead)
                         @include('EmployeeRecruitment::content._partials.nonbase-group-lead-approval', ['recruitment' => $recruitment])
@@ -76,7 +76,7 @@
                     </div>
                 @endif
                 @if($recruitment->state == 'draft_contract_pending')
-                    <div class="col-sm-2 mb-3">
+                    <div class="col-sm-2 mb-3 mt-4">
                         <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon" target="_blank">
                             <i class="fa fa-print fs-1"></i>
                         </a>
@@ -87,7 +87,7 @@
                     </div>
                 @endif
                 @if($recruitment->state != 'draft_contract_pending')
-                    <div class="mb-3">
+                    <div class="mb-3 mt-4">
                         <label class="form-label" for="message">Üzenet</label>
                         <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
                     </div>

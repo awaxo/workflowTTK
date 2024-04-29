@@ -62,7 +62,11 @@ $(function() {
                             $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"<span class="badge bg-label-info m-1">${data}</span></a>`;
                         }
                     } else {
-                        $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1">${data}</span>`;
+                        if (full['is_initiator_role']) {
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-info m-1">${data}</span>`;
+                        } else {
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1">${data}</span>`;
+                        }
                     }
 
                     return $row_output;

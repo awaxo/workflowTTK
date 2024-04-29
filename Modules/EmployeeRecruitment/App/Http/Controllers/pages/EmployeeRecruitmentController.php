@@ -186,7 +186,7 @@ class EmployeeRecruitmentController extends Controller
     {
         $service = new WorkflowService();
 
-        $recruitments = RecruitmentWorkflow::whereNotIn('state', ['completed', 'rejected', 'suspended'])->get()->map(function ($recruitment) use ($service) {
+        $recruitments = RecruitmentWorkflow::whereNotIn('state', ['completed', 'rejected'])->get()->map(function ($recruitment) use ($service) {
             return [
                 'id' => $recruitment->id,
                 'name' => $recruitment->name,
@@ -206,6 +206,7 @@ class EmployeeRecruitmentController extends Controller
                 'updated_at' => $recruitment->updated_at,
                 'updated_by_name' => $recruitment->updatedBy->name,
                 'is_user_responsible' => $service->isUserResponsible(Auth::user(), $recruitment),
+                'is_initiator_role' => User::find(Auth::id())->hasRole('titkar_' . $recruitment->initiator_institute_id),
                 'is_manager_user' => WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()
             ];
         });
@@ -215,26 +216,29 @@ class EmployeeRecruitmentController extends Controller
 
     public function getAllClosed()
     {
-        $recruitments = RecruitmentWorkflow::whereIn('state', ['completed', 'rejected', 'suspended'])->get()->map(function ($recruitment) {
-            return [
-                'id' => $recruitment->id,
-                'name' => $recruitment->name,
-                'state' => __('states.' . $recruitment->state),
-                'workgroup1' => $recruitment->workgroup1->name,
-                'workgroup1_number' => $recruitment->workgroup1->workgroup_number,
-                'workgroup2' => $recruitment->workgroup2?->name,
-                'workgroup2_number' => $recruitment->workgroup2?->workgroup_number,
-                'position_type' => $recruitment->position->type,
-                'position_name' => $recruitment->position->name,
-                'base_salary_cost_center_1' => $recruitment->base_salary_cc1->name,
-                'base_salary_cost_center_1_code' => $recruitment->base_salary_cc1->cost_center_code,
-                'employment_type' => $recruitment->employment_type,
-                'employment_start_date' => $recruitment->employment_start_date,
-                'created_at' => $recruitment->created_at,
-                'created_by_name' => $recruitment->createdBy->name,
-                'updated_at' => $recruitment->updated_at,
-                'updated_by_name' => $recruitment->updatedBy->name,
-            ];
+        $recruitments = RecruitmentWorkflow::where(function ($query) {
+            $query->whereIn('state', ['completed', 'rejected'])
+            ->orWhere('deleted', 1);
+        })->get()->map(function ($recruitment) {
+                return [
+                    'id' => $recruitment->id,
+                    'name' => $recruitment->name,
+                    'state' => __('states.' . $recruitment->state),
+                    'workgroup1' => $recruitment->workgroup1->name,
+                    'workgroup1_number' => $recruitment->workgroup1->workgroup_number,
+                    'workgroup2' => $recruitment->workgroup2?->name,
+                    'workgroup2_number' => $recruitment->workgroup2?->workgroup_number,
+                    'position_type' => $recruitment->position->type,
+                    'position_name' => $recruitment->position->name,
+                    'base_salary_cost_center_1' => $recruitment->base_salary_cc1->name,
+                    'base_salary_cost_center_1_code' => $recruitment->base_salary_cc1->cost_center_code,
+                    'employment_type' => $recruitment->employment_type,
+                    'employment_start_date' => $recruitment->employment_start_date,
+                    'created_at' => $recruitment->created_at,
+                    'created_by_name' => $recruitment->createdBy->name,
+                    'updated_at' => $recruitment->updated_at,
+                    'updated_by_name' => $recruitment->updatedBy->name,
+                ];
         });
 
         return response()->json(['data' => $recruitments]);

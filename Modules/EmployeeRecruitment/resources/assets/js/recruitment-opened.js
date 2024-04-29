@@ -45,6 +45,24 @@ $(function() {
                 }
             },
             {
+                targets: 2,
+                render: function(data, type, full, meta) {
+                    return '<span title="' + data + '">' + full['workgroup1_number'] + '</span>';
+                }
+            },
+            {
+                targets: 3,
+                render: function(data, type, full, meta) {
+                    return data ? '<span title="' + data + '">' + full['workgroup2_number'] + '</span>' : '-';
+                }
+            },
+            {
+                targets: 4,
+                render: function(data, type, full, meta) {
+                    return '<span title="' + data + '">' + full['base_salary_cost_center_1_code'] + '</span>';
+                }
+            },
+            {
                 // State
                 targets: -1,
                 responsivePriority: 3,

@@ -12,8 +12,13 @@ class WorkgroupController extends Controller
     public function manage()
     {
         $users = User::where('deleted', 0)->get();
+        $labor_administrators = User::where('deleted', 0)
+            ->whereHas('workgroup', function ($query) {
+                $query->where('workgroup_number', 908);
+            })
+            ->get();
 
-        return view('content.pages.workgroups', compact('users'));
+        return view('content.pages.workgroups', compact('users', 'labor_administrators'));
     }
 
     public function getAllWorkgroups()

@@ -27,7 +27,7 @@
     'resources/assets/vendor/libs/bs-stepper/bs-stepper.js',
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/select2/select2.js',
-    'node_modules/select2/dist/js/i18n/hu.js',
+    'resources/assets/vendor/libs/select2/i18n/hu.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',

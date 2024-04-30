@@ -15,11 +15,20 @@ class StateCompleted implements IStateResponsibility {
         return false;
     }
 
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        return false;
+    }
+
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return false;
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
         return '';
+    }
+
+    public function getDelegations(User $user): array {
+        return [];
     }
 }

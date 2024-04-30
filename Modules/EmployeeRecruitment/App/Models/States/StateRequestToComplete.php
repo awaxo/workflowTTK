@@ -16,11 +16,20 @@ class StateRequestToComplete implements IStateResponsibility {
         return $workgroup908 && $workgroup908->labor_administrator === $user->id;
     }
 
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        return false;
+    }
+
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return true;
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
         return 'to_completed';
+    }
+
+    public function getDelegations(User $user): array {
+        return [];
     }
 }

@@ -20,7 +20,7 @@ class WorkflowService
     
             $marked = $activeWorkflows->map(function ($workflow) use ($user) {
                 $stateHandler = $this->getStateHandler($workflow);
-                $is_user_responsible = $stateHandler && $stateHandler->isUserResponsible($user, $workflow);
+                $is_user_responsible = $stateHandler && ($stateHandler->isUserResponsible($user, $workflow) || $stateHandler->isUserResponsibleAsDelegate($user, $workflow));
     
                 // add is_user_responsible field to the output
                 return (object) array_merge($workflow->toArray(), ['is_user_responsible' => $is_user_responsible]);
@@ -41,7 +41,7 @@ class WorkflowService
     
             $marked = $activeWorkflows->map(function ($workflow) use ($user) {
                 $stateHandler = $this->getStateHandler($workflow);
-                $is_user_responsible = $stateHandler && $stateHandler->isUserResponsible($user, $workflow);
+                $is_user_responsible = $stateHandler && ($stateHandler->isUserResponsible($user, $workflow) || $stateHandler->isUserResponsibleAsDelegate($user, $workflow));
     
                 // add is_user_responsible field to the output
                 return (object) array_merge($workflow->toArray(), ['is_user_responsible' => $is_user_responsible]);
@@ -56,7 +56,7 @@ class WorkflowService
     public function isUserResponsible(User $user, AbstractWorkflow $workflow): bool
     {
         $stateHandler = $this->getStateHandler($workflow);
-        return $stateHandler && $stateHandler->isUserResponsible($user, $workflow);
+        return $stateHandler && ($stateHandler->isUserResponsible($user, $workflow) || $stateHandler->isUserResponsibleAsDelegate($user, $workflow));
     }
 
     public function isAllApproved(AbstractWorkflow $workflow): bool

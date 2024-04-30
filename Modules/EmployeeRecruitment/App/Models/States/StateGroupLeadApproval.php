@@ -47,6 +47,11 @@ class StateGroupLeadApproval implements IStateResponsibility {
         }
     }
 
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        return false;
+    }
+
     /**
      * Check if user is responsible for the workflow, but not a basic workgroup leader
      * Needed for a specific UI requirement
@@ -141,5 +146,9 @@ class StateGroupLeadApproval implements IStateResponsibility {
         else {
             return 'to_director_approval';
         }
+    }
+
+    public function getDelegations(User $user): array {
+        return [];
     }
 }

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wf_role_substitute', function (Blueprint $table) {
+        Schema::create('wf_delegation', function (Blueprint $table) {
             $table->id();
             $table->foreignId('original_user_id')->constrained('wf_user');
-            $table->foreignId('substitute_user_id')->constrained('wf_user');
-            $table->foreignId('role_id')->constrained('roles');
+            $table->foreignId('delegate_user_id')->constrained('wf_user');
+            $table->string('type');
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->timestamps();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wf_role_substitute');
+        Schema::dropIfExists('wf_delegation');
     }
 };

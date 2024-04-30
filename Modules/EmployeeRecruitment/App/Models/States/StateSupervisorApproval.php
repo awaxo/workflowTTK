@@ -33,6 +33,11 @@ class StateSupervisorApproval implements IStateResponsibility {
         }
     }
 
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        return false;
+    }
+
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
             $metaData = json_decode($workflow->meta_data, true);
@@ -64,5 +69,9 @@ class StateSupervisorApproval implements IStateResponsibility {
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
         return 'to_group_lead_approval';
+    }
+
+    public function getDelegations(User $user): array {
+        return [];
     }
 }

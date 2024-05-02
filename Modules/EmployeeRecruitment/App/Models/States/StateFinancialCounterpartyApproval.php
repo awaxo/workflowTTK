@@ -30,10 +30,13 @@ class StateFinancialCounterpartyApproval implements IStateResponsibility {
 
     public function getDelegations(User $user): array {
         $workgroup903 = Workgroup::where('workgroup_number', 903)->first();
-        if ($workgroup903 && $workgroup903->leader_id === $user->id)
-        {
-            return ['financial_counterparty_approver'];
+        if ($workgroup903 && $workgroup903->leader_id === $user->id) {
+            return [[
+                'type' => 'financial_counterparty_approver',
+                'readable_name' => 'Gazdasági igazgató'
+            ]];
         }
+
         return [];
     }
 }

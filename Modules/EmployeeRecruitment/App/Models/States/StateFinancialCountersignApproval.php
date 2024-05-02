@@ -27,6 +27,11 @@ class StateFinancialCountersignApproval implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        return $user->hasRole('titkar_9_gi') ? ['financial_countersign_approver'] : [];
+        return $user->hasRole('titkar_9_gi')
+            ? [[
+                'type' => 'financial_countersign_approver',
+                'readable_name' => 'Pénzügyi ellenjegyző'
+            ]]
+            : [];
     }
 }

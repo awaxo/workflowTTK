@@ -159,7 +159,10 @@ class StateDirectorApproval implements IStateResponsibility {
         $workgroups = Workgroup::whereIn('workgroup_number', ['100', '300', '400', '500', '600', '700', '800', '901', '903'])->where('leader_id', $user->id)->get();
         if ($workgroups->count() > 0) {
             return $workgroups->map(function ($workgroup) {
-                return 'director_' . $workgroup->workgroup_number;
+                return [
+                    'type' => 'director_' . $workgroup->workgroup_number,
+                    'readable_name' => 'Intézeti igazgató (csoport: ' . $workgroup->workgroup_number . ')'
+                ];
             })->toArray();
         }
 

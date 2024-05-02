@@ -5,7 +5,6 @@ namespace Modules\EmployeeRecruitment\App\Models\States;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
-use App\Models\Workgroup;
 
 /**
  * The state of the recruitment process when the IT head has to approve the recruitment.

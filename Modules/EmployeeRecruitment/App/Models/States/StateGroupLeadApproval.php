@@ -180,8 +180,13 @@ class StateGroupLeadApproval implements IStateResponsibility {
         $workgroups = Workgroup::where('leader_id', $user->id)->get();
         if ($workgroups->count() > 0) {
             return $workgroups->map(function ($workgroup) {
-                return 'grouplead_' . $workgroup->workgroup_number;
+                return [
+                    'type' => 'grouplead_' . $workgroup->workgroup_number,
+                    'readable_name' => 'Témavezető (csoport: ' . $workgroup->workgroup_number . ')'
+                ];
             })->toArray();
         }
+
+        return [];
     }
 }

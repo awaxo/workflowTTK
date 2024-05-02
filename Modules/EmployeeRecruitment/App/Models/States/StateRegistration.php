@@ -27,6 +27,11 @@ class StateRegistration implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        return $user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto') ? ['registrator'] : [];
+        return $user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto') 
+            ? [[
+                'type' => 'registrator',
+                'readable_name' => 'Kötelezettségvállalás nyilvántartás rögzítő'
+            ]]
+            : [];
     }
 }

@@ -30,10 +30,13 @@ class StateRequestToComplete implements IStateResponsibility {
 
     public function getDelegations(User $user): array {
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
-        if ($workgroup908 && $workgroup908->labor_administrator === $user->id)
-        {
-            return ['hr_labor_administrator'];
+        if ($workgroup908 && $workgroup908->labor_administrator === $user->id) {
+            return [[
+                'type' => 'hr_labor_administrator',
+                'readable_name' => 'HR munkaügyi ügyintéző'
+            ]];
         }
+
         return [];
     }
 }

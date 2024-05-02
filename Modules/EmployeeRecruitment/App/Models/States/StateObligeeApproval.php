@@ -30,10 +30,13 @@ class StateObligeeApproval implements IStateResponsibility {
 
     public function getDelegations(User $user): array {
         $workgroup901 = Workgroup::where('workgroup_number', 901)->first();
-        if ($workgroup901 && $workgroup901->leader_id === $user->id)
-        {
-            return ['obligee_approver'];
+        if ($workgroup901 && $workgroup901->leader_id === $user->id) {
+            return [[
+                'type' => 'obligee_approver',
+                'readable_name' => 'Főigazgató'
+            ]];
         }
+
         return [];
     }
 }

@@ -50,8 +50,13 @@ class StateDraftContractPending implements IStateResponsibility {
         $workgroups = Workgroup::where('labor_administrator', $user->id)->get();
         if ($workgroups->count() > 0) {
             return $workgroups->map(function ($workgroup) {
-                return 'draft_contract_labor_administrator_' . $workgroup->workgroup_number;
+                return [
+                    'type' => 'draft_contract_labor_administrator_' . $workgroup->workgroup_number,
+                    'readable_name' => 'Munkaügyi ügyintéző (intézet: ' . substr($workgroup->workgroup_number, 0, 1) . ')'
+                ];
             })->toArray();
         }
+
+        return [];
     }
 }

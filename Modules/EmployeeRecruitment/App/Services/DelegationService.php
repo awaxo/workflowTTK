@@ -4,6 +4,7 @@ namespace Modules\EmployeeRecruitment\App\Services;
 
 use App\Models\Delegation;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class DelegationService
 {
@@ -12,7 +13,41 @@ class DelegationService
      */
     public function getAllDelegations(User $user)
     {
-        return;
+        $states = [
+            'StateCompleted',
+            'StateDirectorApproval',
+            'StateDraftContractPending',
+            'StateEmployeeSignature',
+            'StateFinancialCounterpartyApproval',
+            'StateFinancialCountersignApproval',
+            'StateGroupLeadApproval',
+            'StateHRLeadApproval',
+            'StateITHeadApproval',
+            'StateObligeeApproval',
+            'StateObligeeSignature',
+            'StatePostFinancingApproval',
+            'StateProjectCoordinationLeadApproval',
+            'StateProofOfCoverage',
+            'StateRegistration',
+            'StateRequestReview',
+            'StateRequestToComplete',
+            'StateSupervisorApproval',
+            'StateSuspended'
+        ];
+
+        $delegations = [];
+        foreach ($states as $state) {
+            $stateClass = "Modules\\EmployeeRecruitment\\App\\Models\\States\\" . $state;
+
+            if (class_exists($stateClass)) {
+                $stateInstance = new $stateClass();
+                $stateDelegations = $stateInstance->getDelegations($user);
+
+                $delegations = array_merge($delegations, $stateDelegations);
+            }
+        }
+
+        return $delegations;
     }
 
     /**

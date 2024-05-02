@@ -27,6 +27,11 @@ class StatePostFinancingApproval implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        return $user->hasRole('utofinanszirozas_fedezetigazolo') ? ['post_financing_approver'] : [];
+        return $user->hasRole('utofinanszirozas_fedezetigazolo') 
+            ? [[
+                'type' => 'post_financing_approver',
+                'readable_name' => 'Utófinanszírozás fedezetigazoló'
+            ]]
+            : [];
     }
 }

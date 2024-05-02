@@ -33,10 +33,13 @@ class StateITHeadApproval implements IStateResponsibility {
 
     public function getDelegations(User $user): array {
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
-        if ($workgroup915 && $workgroup915->leader_id === $user->id)
-        {
-            return ['it_head'];
+        if ($workgroup915 && $workgroup915->leader_id === $user->id) {
+            return [[
+                'type' => 'it_head',
+                'readable_name' => 'Informatikai osztályvezető'
+            ]];
         }
+
         return [];
     }
 }

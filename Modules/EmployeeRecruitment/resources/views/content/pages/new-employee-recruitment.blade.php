@@ -35,7 +35,7 @@
     'resources/assets/vendor/libs/jquery-timepicker/jquery-timepicker.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
     'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
-    'node_modules/dropzone/dist/min/dropzone.min.js',
+    'resources/assets/vendor/libs/dropzone/dropzone.min.js',
     'resources/assets/vendor/libs/dropzone/dropzone.js',
     'resources/js/dropzone-manager.js'
   ])

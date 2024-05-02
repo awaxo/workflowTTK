@@ -27,6 +27,11 @@ class StateObligeeSignature implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        return $user->hasRole('titkar_9_fi') ? ['obligee_signer'] : [];
+        return $user->hasRole('titkar_9_fi')
+            ? [[
+                'type' => 'obligee_signer',
+                'readable_name' => 'Kötelezettségvállaló'
+            ]]
+            : [];
     }
 }

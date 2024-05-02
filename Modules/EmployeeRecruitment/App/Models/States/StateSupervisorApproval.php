@@ -106,7 +106,10 @@ class StateSupervisorApproval implements IStateResponsibility {
         $distinct_workgroup_numbers = array_unique($workgroup_numbers);
         
         return array_map(function($number) {
-            return 'supervisor_workgroup_' . $number;
+            return [[
+                'type' => 'supervisor_workgroup_' . $number,
+                'readable_name' => 'Témavezető (csoport: ' . $number . ')'
+            ]];
         }, $distinct_workgroup_numbers);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Providers;
 
+use App\Services\ProfileRegistry;
 use App\Services\WorkflowRegistry;
 use Database\Seeders\DatabaseSeeder;
 use Dflydev\DotAccessData\Data;

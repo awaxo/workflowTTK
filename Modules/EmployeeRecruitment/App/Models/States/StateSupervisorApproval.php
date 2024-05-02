@@ -2,11 +2,13 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Models\CostCenter;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateSupervisorApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
@@ -20,14 +22,7 @@ class StateSupervisorApproval implements IStateResponsibility {
                 ($workflow->extra_pay_1_cc && $workflow->extra_pay_1_cc->lead_user_id == $user->id) ||
                 ($workflow->extra_pay_2_cc && $workflow->extra_pay_2_cc->lead_user_id == $user->id);
 
-            $metaData = json_decode($workflow->meta_data, true);
-            $already_approved_by_user = false;
-            if (isset($metaData['approvals'][$workflow->state]['approval_user_ids']) && 
-                in_array($user->id, $metaData['approvals'][$workflow->state]['approval_user_ids'])) {
-                    $already_approved_by_user = true;
-            }
-
-            return $is_supervisor && !$already_approved_by_user;
+            return $is_supervisor && !$workflow->isApprovedBy($user);
         } else {
             return false;
         }
@@ -35,7 +30,39 @@ class StateSupervisorApproval implements IStateResponsibility {
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
-        return false;
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $costCenters = [
+                $workflow->base_salary_cc1,
+                $workflow->base_salary_cc2,
+                $workflow->base_salary_cc3,
+                $workflow->health_allowance_cc,
+                $workflow->management_allowance_cc,
+                $workflow->extra_pay_1_cc,
+                $workflow->extra_pay_2_cc
+            ];
+            
+            $workgroups = [];
+            foreach ($costCenters as $costCenter) {
+                if ($costCenter) {
+                    $code = substr($costCenter->cost_center_code, -3);
+                    $workgroups[] = 'supervisor_workgroup_' . $code;
+                }
+            }
+            $workgroups = array_unique($workgroups);
+
+            $service = new DelegationService();
+            $isDelegate = false;
+            foreach ($workgroups as $workgroup) {
+                if ($service->isDelegate($user, $workgroup)) {
+                    $isDelegate = true;
+                    break;
+                }
+            }
+
+            return $isDelegate && !$workflow->isApprovedBy($user);
+        } else {
+            return false;
+        }
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
@@ -72,6 +99,14 @@ class StateSupervisorApproval implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        return [];
+        $cost_center_codes = CostCenter::where('lead_user_id', $user->id)->pluck('cost_center_code')->toArray();
+        $workgroup_numbers = array_map(function($code) {
+            return substr($code, -3);
+        }, $cost_center_codes);
+        $distinct_workgroup_numbers = array_unique($workgroup_numbers);
+        
+        return array_map(function($number) {
+            return 'supervisor_workgroup_' . $number;
+        }, $distinct_workgroup_numbers);
     }
 }

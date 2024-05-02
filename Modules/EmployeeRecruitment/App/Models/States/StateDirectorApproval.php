@@ -9,6 +9,7 @@ use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateDirectorApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
@@ -49,16 +50,52 @@ class StateDirectorApproval implements IStateResponsibility {
                     }
                 }
             }
-            
-            // Check if user has already approved the workflow
-            $metaData = json_decode($workflow->meta_data, true);
-            $already_approved_by_user = false;
-            if (isset($metaData['approvals'][$workflow->state]['approval_user_ids']) && 
-                in_array($user->id, $metaData['approvals'][$workflow->state]['approval_user_ids'])) {
-                    $already_approved_by_user = true;
+
+            return $director && !$workflow->isApprovedBy($user);
+        } else {
+            return false;
+        }
+    }
+
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $cost_center_codes = array_filter([
+                optional($workflow->base_salary_cc1)->cost_center_code,
+                optional($workflow->base_salary_cc2)->cost_center_code,
+                optional($workflow->base_salary_cc3)->cost_center_code,
+                optional($workflow->health_allowance_cc)->cost_center_code,
+                optional($workflow->management_allowance_cc)->cost_center_code,
+                optional($workflow->extra_pay_1_cc)->cost_center_code,
+                optional($workflow->extra_pay_2_cc)->cost_center_code,
+            ]);
+
+            $delegated = false;
+            $service = new DelegationService();
+
+            foreach ($cost_center_codes as $cost_center_code) {
+                $workgroup_number = substr($cost_center_code, -3);
+
+                if (in_array(substr($workgroup_number, 0, 1), ['1', '3', '4', '5', '6', '7', '8'])) {
+                    $workgroup_id = substr($workgroup_number, 0, 1) . '00';
+                    if ($service->isDelegate($user, 'director_' . $workgroup_id)) {
+                        $delegated = true;
+                        break;
+                    }
+                } elseif (in_array($workgroup_number, ['900', '901', '905', '908'])) {
+                    if ($service->isDelegate($user, 'director_901')) {
+                        $delegated = true;
+                        break;
+                    }
+                } elseif (in_array($workgroup_number, ['903', '907', '910', '911', '912', '914', '915'])) {
+                    if ($service->isDelegate($user, 'director_903')) {
+                        $delegated = true;
+                        break;
+                    }
+                }
             }
 
-            return $director && !$already_approved_by_user;
+            return $delegated && !$workflow->isApprovedBy($user);
         } else {
             return false;
         }
@@ -117,5 +154,16 @@ class StateDirectorApproval implements IStateResponsibility {
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
         return 'to_hr_lead_approval';
+    }
+
+    public function getDelegations(User $user): array {
+        $workgroups = Workgroup::whereIn('workgroup_number', ['100', '300', '400', '500', '600', '700', '800', '901', '903'])->where('leader_id', $user->id)->get();
+        if ($workgroups->count() > 0) {
+            return $workgroups->map(function ($workgroup) {
+                return 'director_' . $workgroup->workgroup_number;
+            })->toArray();
+        }
+
+        return [];
     }
 }

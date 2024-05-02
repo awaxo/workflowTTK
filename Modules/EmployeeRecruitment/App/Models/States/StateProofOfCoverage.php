@@ -2,11 +2,13 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Models\CostCenter;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateProofOfCoverage implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
@@ -20,18 +22,36 @@ class StateProofOfCoverage implements IStateResponsibility {
                 ($workflow->extra_pay_1_cc && $workflow->extra_pay_1_cc->project_coordinator_user_id == $user->id) ||
                 ($workflow->extra_pay_2_cc && $workflow->extra_pay_2_cc->project_coordinator_user_id == $user->id);
 
-            $metaData = json_decode($workflow->meta_data, true);
-            $already_approved_by_user = false;
-            if (isset($metaData['approvals'][$workflow->state]['approval_user_ids']) && 
-                in_array($user->id, $metaData['approvals'][$workflow->state]['approval_user_ids'])) {
-                    $already_approved_by_user = true;
-            }
-
-            return $is_project_coordinator && !$already_approved_by_user;
+            return $is_project_coordinator && !$workflow->isApprovedBy($user);
         } else {
             return false;
         }
     }
+
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $cost_center_keys = [
+                'base_salary_cc1', 'base_salary_cc2', 'base_salary_cc3',
+                'health_allowance_cc', 'management_allowance_cc', 
+                'extra_pay_1_cc', 'extra_pay_2_cc'
+            ];
+            
+            $delegated = false;
+            $service = new DelegationService();
+
+            foreach ($cost_center_keys as $key) {
+                $cc = $workflow->$key;
+                if ($cc && $service->isDelegate($user, 'project_coordinator_workgroup_' . substr($workflow->$key->cost_center_code, -3))) {
+                    $delegated = true;
+                    break;
+                }
+            }
+    
+            return $delegated && !$workflow->isApprovedBy($user);
+        } else {
+            return false;
+        }
+    }    
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
@@ -92,5 +112,17 @@ class StateProofOfCoverage implements IStateResponsibility {
                 }
             }
         }
+    }
+
+    public function getDelegations(User $user): array {
+        $cost_center_codes = CostCenter::where('project_coordinator_user_id', $user->id)->pluck('cost_center_code')->toArray();
+        $workgroup_numbers = array_map(function($code) {
+            return substr($code, -3);
+        }, $cost_center_codes);
+        $distinct_workgroup_numbers = array_unique($workgroup_numbers);
+        
+        return array_map(function($number) {
+            return 'project_coordinator_workgroup_' . $number;
+        }, $distinct_workgroup_numbers);
     }
 }

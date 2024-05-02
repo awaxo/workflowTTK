@@ -7,6 +7,7 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 /**
  * The state of the recruitment process when the IT head has to approve the recruitment.
@@ -19,19 +20,8 @@ class StateITHeadApproval implements IStateResponsibility {
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
-        // TODO: ez általános függvény, kirakni egy közös helyre
-        return Delegation::where('delegate_user_id', $user->id)
-            ->where('type', 'it_head')
-            ->where(function ($query) {
-                $query->where(function ($subquery) {
-                    $subquery->whereNotNull('end_date')
-                        ->whereDate('end_date', '>=', now());
-                })->orWhere(function ($subquery) {
-                    $subquery->whereNull('end_date')
-                        ->whereDate('start_date', '<=', now());
-                });
-            })
-            ->count() > 0;
+        $service = new DelegationService();
+        return $service->isDelegate($user, 'it_head');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

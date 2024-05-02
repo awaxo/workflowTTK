@@ -2,7 +2,6 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
-use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -38,6 +37,6 @@ class StateITHeadApproval implements IStateResponsibility {
         {
             return ['it_head'];
         }
-        return '';
+        return [];
     }
 }

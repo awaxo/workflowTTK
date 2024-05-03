@@ -17,6 +17,8 @@ class ProfileController extends Controller
         $delegations = $service->getAllDelegations(Auth::user());
         $users = User::where('deleted', 0)->get();
 
+        Log::info($delegations);
+
         return view('content.pages.profile', compact('delegations', 'users'));
     }
 
@@ -45,7 +47,7 @@ class ProfileController extends Controller
         return response()->json(['data' => $delegations]);
     }
 
-    public function createDelegation()
+    public function create()
     {
         $delegation = new Delegation();
         $delegation->type = request('type');
@@ -58,5 +60,13 @@ class ProfileController extends Controller
         $delegation->save();
 
         return response()->json(['message' => 'Delegation added successfully']);
+    }
+
+    public function delete($id)
+    {
+        $delegation = Delegation::find($id);
+        $delegation->deleted = 1;
+        $delegation->save();
+        return response()->json(['message' => 'Delegation deleted successfully']);
     }
 }

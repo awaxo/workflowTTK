@@ -22,6 +22,10 @@ class Delegation extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'deleted' => 'boolean',
+    ];
+
+    protected $attributes = [
         'deleted' => 0,
     ];
 

@@ -52,7 +52,7 @@ $(function () {
                 render: function(data, type, full, meta) {
                     return (
                         '<div class="d-inline-block">' +
-                        '<a href="javascript:;" class="btn btn-sm text-primary btn-icon"><i class="bx bx-trash"></i></a>' +
+                        '<a href="javascript:;" class="btn btn-sm text-danger btn-icon delete-delegation"><i class="bx bx-trash"></i></a>' +
                         '</div>'
                     );
                 }
@@ -85,10 +85,43 @@ $(function () {
                 end_date: $('#delegation_end_date').val()
             },
             success: function() {
-                alert('Sikeres delegálás');
+                $('.datatables-delegates').DataTable().ajax.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#errorAlertMessage').text('Hiba történt a helyettes kijelölése során!');
+                $('#errorAlert').removeClass('d-none');
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-delegation', function() {
+        var row = $(this).closest('tr');
+        var delegationId = $('.datatables-delegates').DataTable().row(row).data().id;
+
+        $('#confirm_delete').attr('data-delegation-id', delegationId);
+        $('#confirm_delete').data('row', row);
+        $('#deleteConfirmation').modal('show');
+    });
+
+    // confirm cancel workflow
+    $('#confirm_delete').on('click', function() {
+        let delegationId = $(this).data('delegation-id');
+        let row = $(this).data('row');
+
+        $.ajax({
+            url: '/api/delegation/' + delegationId + '/delete',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                $('#deleteConfirmation').modal('hide');
+                $('.datatables-delegates').DataTable().row(row).remove().draw();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#deleteConfirmation').modal('hide');
+                $('#errorAlertMessage').text('Hiba történt a törlés során!');
                 $('#errorAlert').removeClass('d-none');
                 console.log(textStatus, errorThrown);
             }

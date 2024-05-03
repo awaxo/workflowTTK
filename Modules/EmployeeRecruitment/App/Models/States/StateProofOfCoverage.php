@@ -3,6 +3,7 @@
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
 use App\Models\CostCenter;
+use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -72,6 +73,20 @@ class StateProofOfCoverage implements IStateResponsibility {
                 optional($workflow->extra_pay_1_cc)->project_coordinator_user_id,
                 optional($workflow->extra_pay_2_cc)->project_coordinator_user_id,
             ]);
+
+            foreach ($cost_center_project_coordinator_ids as $key => $userId) {
+                $delegation = Delegation::where('original_user_id', $userId)
+                    ->where('delegate_user_id', Auth::id())
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now())
+                    ->where('deleted', 0)
+                    ->where('type', 'like', 'project_coordinator_workgroup_%') // Check for any supervisor delegations
+                    ->first();
+
+                if ($delegation) {
+                    $cost_center_project_coordinator_ids[$key] = Auth::id();
+                }
+            }
 
             $workflow->updated_by = Auth::id();
             $workflow->save();

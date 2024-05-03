@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\Room;
@@ -118,7 +119,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
             $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
             $workflow->meta_data = json_encode($metaData);
 
-            $workgroup_lead = [
+            $workgroup_leads = [
                 optional($workflow->workgroup1)->leader_id,
                 optional($workflow->workgroup2)->leader_id
             ];
@@ -131,16 +132,30 @@ class StateGroupLeadApproval implements IStateResponsibility {
                     $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
 
                     if ($workgroup) {
-                        $workgroup_lead[] = $workgroup->leader_id;
+                        $workgroup_leads[] = $workgroup->leader_id;
                     }
                 }
             }
-            $workgroup_lead = array_filter($workgroup_lead);
+            $workgroup_leads = array_filter($workgroup_leads);
+
+            foreach ($workgroup_leads as $key => $userId) {
+                $delegation = Delegation::where('original_user_id', $userId)
+                    ->where('delegate_user_id', Auth::id())
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now())
+                    ->where('deleted', 0)
+                    ->where('type', 'like', 'grouplead_%') // Check for any supervisor delegations
+                    ->first();
+
+                if ($delegation) {
+                    $workgroup_leads[$key] = Auth::id();
+                }
+            }
 
             $workflow->updated_by = Auth::id();
             $workflow->save();
 
-            return count(array_diff($workgroup_lead, $approval_user_ids)) === 0;
+            return count(array_diff($workgroup_leads, $approval_user_ids)) === 0;
         } else {
             return false;
         }

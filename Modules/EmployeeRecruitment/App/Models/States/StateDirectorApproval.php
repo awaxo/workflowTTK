@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -141,6 +142,20 @@ class StateDirectorApproval implements IStateResponsibility {
                 }
             }
             $director_ids = array_filter($director_ids);
+
+            foreach ($director_ids as $key => $userId) {
+                $delegation = Delegation::where('original_user_id', $userId)
+                    ->where('delegate_user_id', Auth::id())
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now())
+                    ->where('deleted', 0)
+                    ->where('type', 'like', 'director_%') // Check for any supervisor delegations
+                    ->first();
+
+                if ($delegation) {
+                    $director_ids[$key] = Auth::id();
+                }
+            }
 
             $workflow->updated_by = Auth::id();
             $workflow->save();

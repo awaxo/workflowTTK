@@ -1,5 +1,6 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
+import { is } from 'immutable';
 
 'use strict';
 
@@ -74,23 +75,41 @@ $(function () {
     }, 300);
 
     $('#save_delegation').on('click', function() {
-        $.ajax({
-            url: 'api/delegation/create',
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                type: $('#delegation_type').val(),
-                delegated_user: $('#delegated_user').val(),
-                start_date: $('#delegation_start_date').val(),
-                end_date: $('#delegation_end_date').val()
-            },
-            success: function() {
-                $('.datatables-delegates').DataTable().ajax.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#errorAlertMessage').text('Hiba történt a helyettes kijelölése során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('.invalid-feedback').remove();
+
+        let fv = validateDelegations();
+
+        // Revalidate fields when their values change
+        $('#delegation_type, #delegated_user, #delegation_start_date, #delegation_end_date').off('change').on('change', function() {
+            fv.revalidateField('delegation_type');
+            fv.revalidateField('delegated_user');
+            fv.revalidateField('delegation_start_date');
+            fv.revalidateField('delegation_end_date');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: 'api/delegation/create',
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        type: $('#delegation_type').val(),
+                        delegated_user: $('#delegated_user').val(),
+                        start_date: $('#delegation_start_date').val(),
+                        end_date: $('#delegation_end_date').val()
+                    },
+                    success: function() {
+                        $('.datatables-delegates').DataTable().ajax.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $('#errorAlertMessage').text('Hiba történt a helyettes kijelölése során!');
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
+            } else {
+                // TODO: Handle the case when the fields are not valid
             }
         });
     });
@@ -128,3 +147,47 @@ $(function () {
         });
     });
 });
+
+function validateDelegations() {
+    let fv = FormValidation.formValidation(
+        document.getElementById('navs-pills-delegations'),
+        {
+            fields: {
+                delegated_user: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please select a delegate'
+                        }
+                    }
+                },
+                delegation_start_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter a start date'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Please enter a valid date in the format YYYY.MM.DD'
+                        }
+                    }
+                },
+                delegation_end_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter an end date'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Please enter a valid date in the format YYYY.MM.DD'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
+
+    return fv;
+}

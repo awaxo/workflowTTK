@@ -99,7 +99,7 @@
                         <div class="row">
                             <div class="col-sm-12 mb-3">
                                 <label for="delegation_type" class="form-label">Helyettesített funkció</label>
-                                <select class="form-select select2" id="delegation_type">
+                                <select class="form-select select2" id="delegation_type" name="delegation_type">
                                     <option selected>Válassz funkciót</option>
                                     @foreach($delegations as $delegation)
                                         @if(isset($delegation['type']))
@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-sm-12 mb-3">
                                 <label for="delegated_user" class="form-label">Helyettesítő</label>
-                                <select class="form-select select2" id="delegated_user">
+                                <select class="form-select select2" id="delegated_user" name="delegated_user">
                                     <option selected>Válassz helyettesítőt</option>
                                     @foreach($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -121,11 +121,11 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="delegation_start_date" class="form-label">Helyettesítés kezdete</label>
-                                <input type="text" id="delegation_start_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" />
+                                <input type="text" id="delegation_start_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="delegation_start_date" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="delegation_end_date" class="form-label">Helyettesítés vége</label>
-                                <input type="text" id="delegation_end_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" />
+                                <input type="text" id="delegation_end_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="delegation_end_date" />
                             </div>
                         </div>
                     </div>

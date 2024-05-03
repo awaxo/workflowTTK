@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->date('start_date');
             $table->date('end_date')->nullable();
+            $table->tinyInteger('deleted')->unsigned()->default(0);
             $table->timestamps();
             $table->foreignId('created_by')->constrained('wf_user');
             $table->foreignId('updated_by')->constrained('wf_user');

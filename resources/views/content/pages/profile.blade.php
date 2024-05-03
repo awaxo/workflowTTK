@@ -6,9 +6,12 @@
 @section('vendor-style')
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+    'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.scss',
+    'resources/assets/vendor/libs/select2/select2.scss',
     'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
     'resources/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.scss',
     'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
+    'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.scss',
     'resources/assets/vendor/libs/flatpickr/flatpickr.scss',
     'resources/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.scss',
     'resources/assets/vendor/libs/@form-validation/form-validation.scss',
@@ -20,11 +23,15 @@
 @section('vendor-script')
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
+    'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
+    'resources/assets/vendor/libs/select2/select2.js',
+    'resources/assets/vendor/libs/select2/i18n/hu.js',
     'resources/assets/vendor/libs/moment/moment.js',
     'resources/assets/vendor/libs/flatpickr/flatpickr.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
+    'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
     'resources/assets/vendor/libs/cleavejs/cleave-phone.js'
 ])
@@ -32,7 +39,8 @@
 
 @section('page-script')
     @vite([
-        'resources/assets/js/pages-settings.js'
+        'resources/assets/js/forms-selects.js',
+        'resources/assets/js/pages-profile.js'
     ])
 @endsection
 
@@ -86,15 +94,55 @@
                     <small>Add meg a helyettesíteni kívánt funkciót és a helyettest</small>
                 </div>
 
-                <div class="row g-3">
+                <div class="row">
                     <div class="col-sm-4">
-                        <label for="workgroup_id_1" class="form-label">Helyettesített funkció</label>
-                        <select class="form-select select2" id="workgroup_id_1">
-                            <option selected>Válassz funkciót</option>
-                            @foreach($delegations as $delegation)
-                                <option value="{{ $delegation['type'] }}">{{ $delegation['readable_name'] }}</option>
-                            @endforeach
-                        </select>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label for="delegation_type" class="form-label">Helyettesített funkció</label>
+                                <select class="form-select select2" id="delegation_type">
+                                    <option selected>Válassz funkciót</option>
+                                    @foreach($delegations as $delegation)
+                                        <option value="{{ $delegation['type'] }}">{{ $delegation['readable_name'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label for="delegated_user" class="form-label">Helyettesítő</label>
+                                <select class="form-select select2" id="delegated_user">
+                                    <option selected>Válassz helyettesítőt</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="delegation_start_date" class="form-label">Helyettesítés kezdete</label>
+                                <input type="text" id="delegation_start_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="delegation_end_date" class="form-label">Helyettesítés vége</label>
+                                <input type="text" id="delegation_end_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1 d-flex align-items-center justify-content-center">
+                        <a href="javascript:" id="save_delegation"><i class="fas fa-people-arrows text-success mt-4 fa-2x"></i></a>
+                    </div>
+                    <div class="col-sm-7 d-flex align-items-center">
+                        <div class="card-datatable table-responsive pt-0">
+                            <table class="datatables-delegates table border-top">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Helyettesítő</th>
+                                        <th>Funkció</th>
+                                        <th>Kezdete</th>
+                                        <th>Vége</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

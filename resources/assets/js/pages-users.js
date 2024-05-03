@@ -59,7 +59,6 @@ $(function() {
                 orderable: false,
                 searchable: false,
                 render: function(data, type, full, meta) {
-                    // 'visszaállítás' should be visible only if deleted is true
                     return (
                         '<div class="d-inline-block">' +
                         '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +

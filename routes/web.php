@@ -117,4 +117,7 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/user/{id}/restore', [UserController::class, 'restore']);
     Route::post('/user/{id}/update', [UserController::class, 'update']);
     Route::post('/user/create', [UserController::class, 'create']);
+
+    Route::get('/delegations', [ProfileController::class, 'getAllDelegations']);
+    Route::post('/delegation/create', [ProfileController::class, 'createDelegation']);
 });

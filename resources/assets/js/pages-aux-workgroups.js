@@ -286,14 +286,14 @@ function validateWorkgroup() {
                 workgroup_number: {
                     validators: {
                         notEmpty: {
-                            message: 'Kérjük add meg a csoportszámot'
+                            message: 'Kérjük, add meg a csoportszámot'
                         }
                     }
                 },
                 name: {
                     validators: {
                         notEmpty: {
-                            message: 'Kérjük adj meg nevet'
+                            message: 'Kérjük, add meg a csoport nevét'
                         }
                     }
                 }

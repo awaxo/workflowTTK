@@ -95,6 +95,7 @@ class WorkgroupController extends Controller
         $workgroup->labor_administrator = $validatedData['labor_administrator'];
         $workgroup->updated_by = Auth::id();
         $workgroup->save();
+
         return response()->json(['success' => 'Workgroup updated successfully']);
     }
 
@@ -118,12 +119,13 @@ class WorkgroupController extends Controller
                         $fail("Munkaügyi ügyintéző csak ilyen jogú felhasználó lehet");
                     }
                 }],
-        ], [
+        ],
+        [
             'name.required' => 'A név kötelező',
             'workgroup_number.required' => 'A csoportszám kötelező',
-            'workgroup_number.numeric' => 'A csoportszám csak szám érték lehet',
+            'workgroup_number.numeric' => 'A csoportszám id csak szám lehet',
             'leader_id.required' => 'A csoportvezető kötelező',
-            'leader_id.numeric' => 'A csoportvezető id megadása kötelező',
+            'leader_id.numeric' => 'A csoportvezető id csak szám lehet',
             'labor_administrator.required' => 'A munkaügyi ügyintéző kötelező',
         ]);
 
@@ -135,6 +137,7 @@ class WorkgroupController extends Controller
         $workgroup->created_by = Auth::id();
         $workgroup->updated_by = Auth::id();
         $workgroup->save();
+
         return response()->json(['success' => 'Workgroup created successfully']);
     }
 }

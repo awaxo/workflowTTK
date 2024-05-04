@@ -90,20 +90,20 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="cost_center_code">Költséghely</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input class="form-control" type="text" id="cost_center_code" />
+                        <input class="form-control" type="text" id="cost_center_code" name="cost_center_code" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="name">Megnevezés</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="text" id="name" class="form-control" />
+                        <input type="text" id="name" class="form-control" name="name" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="type_id">Típus</label>
-                    <select class="form-select select2" id="type_id">
+                    <select class="form-select select2" id="type_id" name="type_id">
                         @foreach($costcenterTypes as $costcenterType)
                             <option value="{{ $costcenterType->id }}">{{ $costcenterType->name }}</option>
                         @endforeach
@@ -112,7 +112,7 @@
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="lead_user_id">Témavezető</label>
-                    <select class="form-select select2" id="lead_user_id">
+                    <select class="form-select select2" id="lead_user_id" name="lead_user_id">
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
@@ -121,7 +121,7 @@
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="project_coordinator_user_id">Projektkoordinátor</label>
-                    <select class="form-select select2" id="project_coordinator_user_id">
+                    <select class="form-select select2" id="project_coordinator_user_id" name="project_coordinator_user_id">
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
@@ -131,14 +131,14 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="due_date">Lejárat</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="text" id="due_date" class="form-control" placeholder="ÉÉÉÉ.HH.NN" />
+                        <input type="text" id="due_date" class="form-control" placeholder="ÉÉÉÉ.HH.NN" name="due_date" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="minimal_order_limit">Minimális rendelési limit</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="text" id="minimal_order_limit" class="form-control numeral-mask" />
+                        <input type="text" id="minimal_order_limit" class="form-control numeral-mask" name="minimal_order_limit" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>

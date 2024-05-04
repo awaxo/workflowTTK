@@ -100,7 +100,7 @@
                             <div class="col-sm-12 mb-3">
                                 <label for="delegation_type" class="form-label">Helyettesített funkció</label>
                                 <select class="form-select select2" id="delegation_type" name="delegation_type">
-                                    <option selected>Válassz funkciót</option>
+                                    <option value="" selected>Válassz funkciót</option>
                                     @foreach($delegations as $delegation)
                                         @if(isset($delegation['type']))
                                             <option value="{{ $delegation['type'] }}">{{ $delegation['readable_name'] }}</option>
@@ -113,7 +113,7 @@
                             <div class="col-sm-12 mb-3">
                                 <label for="delegated_user" class="form-label">Helyettesítő</label>
                                 <select class="form-select select2" id="delegated_user" name="delegated_user">
-                                    <option selected>Válassz helyettesítőt</option>
+                                    <option value="" selected>Válassz helyettesítőt</option>
                                     @foreach($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
@@ -130,7 +130,7 @@
                         </div>
                     </div>
                     <div class="col-sm-1 d-flex align-items-center justify-content-center">
-                        <a href="javascript:" id="save_delegation"><i class="fas fa-people-arrows text-success mt-4 fa-2x"></i></a>
+                        <a href="javascript:" id="save_delegation"><i class="fas fa-angles-right text-success mt-4 fa-3x"></i></a>
                     </div>
                     <div class="col-sm-7 d-flex align-items-center">
                         <div class="card-datatable table-responsive pt-0">

@@ -5,6 +5,8 @@ import { is } from 'immutable';
 'use strict';
 
 $(function () {
+    var fv; // FormValidation instance
+
     $("#delegation_start_date, #delegation_end_date").datepicker({
         format: "yyyy.mm.dd",
         startDate: new Date()
@@ -77,10 +79,10 @@ $(function () {
     $('#save_delegation').on('click', function() {
         $('.invalid-feedback').remove();
 
-        let fv = validateDelegations();
+        fv = validateDelegations();
 
         // Revalidate fields when their values change
-        $('#delegation_type, #delegated_user, #delegation_start_date, #delegation_end_date').off('change').on('change', function() {
+        $('#delegation_type, #delegated_user, #delegation_start_date, #delegation_end_date').on('change', function() {
             fv.revalidateField('delegation_type');
             fv.revalidateField('delegated_user');
             fv.revalidateField('delegation_start_date');
@@ -149,36 +151,53 @@ $(function () {
 });
 
 function validateDelegations() {
-    let fv = FormValidation.formValidation(
+    return FormValidation.formValidation(
         document.getElementById('navs-pills-delegations'),
         {
             fields: {
+                delegation_type: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük válassz helyettesített funkciót'
+                        }
+                    }
+                },
                 delegated_user: {
                     validators: {
                         notEmpty: {
-                            message: 'Please select a delegate'
+                            message: 'Kérjük válassz helyettesítőt'
                         }
                     }
                 },
                 delegation_start_date: {
                     validators: {
                         notEmpty: {
-                            message: 'Please enter a start date'
+                            message: 'Kérjük add meg a helyettesítés kezdetét'
                         },
                         date: {
                             format: 'YYYY.MM.DD',
-                            message: 'Please enter a valid date in the format YYYY.MM.DD'
+                            message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
                         }
                     }
                 },
                 delegation_end_date: {
                     validators: {
                         notEmpty: {
-                            message: 'Please enter an end date'
+                            message: 'Kérjük add meg a helyettesítés végét'
                         },
                         date: {
                             format: 'YYYY.MM.DD',
-                            message: 'Please enter a valid date in the format YYYY.MM.DD'
+                            message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
+                        },
+                        callback: {
+                            message: 'A helyettesítés vége nem lehet korábban a helyettesítés kezdténél',
+                            callback: function(input) {
+                                if (input.value === '') {
+                                    return true;
+                                }
+
+                                return input.value >= $('#delegation_start_date').val();
+                            }
                         }
                     }
                 }
@@ -187,7 +206,9 @@ function validateDelegations() {
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
             },
         }
-    );
-
-    return fv;
+    ).on('core.field.invalid', function(field) {
+        $(`#${field}`).next().addClass('is-invalid');
+    }).on('core.field.valid', function(field) {
+        $(`#${field}`).next().removeClass('is-invalid');
+    });
 }

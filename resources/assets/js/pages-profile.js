@@ -5,8 +5,6 @@ import { is } from 'immutable';
 'use strict';
 
 $(function () {
-    var fv; // FormValidation instance
-
     $("#delegation_start_date, #delegation_end_date").datepicker({
         format: "yyyy.mm.dd",
         startDate: new Date()
@@ -79,7 +77,7 @@ $(function () {
     $('#save_delegation').on('click', function() {
         $('.invalid-feedback').remove();
 
-        fv = validateDelegations();
+        let fv = validateDelegation();
 
         // Revalidate fields when their values change
         $('#delegation_type, #delegated_user, #delegation_start_date, #delegation_end_date').on('change', function() {
@@ -110,8 +108,6 @@ $(function () {
                         console.log(textStatus, errorThrown);
                     }
                 });
-            } else {
-                // TODO: Handle the case when the fields are not valid
             }
         });
     });
@@ -150,7 +146,7 @@ $(function () {
     });
 });
 
-function validateDelegations() {
+function validateDelegation() {
     return FormValidation.formValidation(
         document.getElementById('navs-pills-delegations'),
         {

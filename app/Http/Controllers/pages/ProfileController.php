@@ -17,8 +17,6 @@ class ProfileController extends Controller
         $delegations = $service->getAllDelegations(Auth::user());
         $users = User::where('deleted', 0)->get();
 
-        Log::info($delegations);
-
         return view('content.pages.profile', compact('delegations', 'users'));
     }
 
@@ -49,12 +47,28 @@ class ProfileController extends Controller
 
     public function create()
     {
+        $validatedData = request()->validate([
+            'type' => 'required',
+            'delegated_user' => 'required',
+            'start_date' => 'required|date_format:Y.m.d|before_or_equal:end_date',
+            'end_date' => 'required|date_format:Y.m.d|after_or_equal:start_date',
+        ], [
+            'type.required' => 'Kérjük válassz helyettesített funkciót',
+            'delegated_user.required' => 'Kérjük válassz helyettesítőt',
+            'start_date.required' => 'Kérjük add meg a helyettesítés kezdetét',
+            'start_date.date' => 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD',
+            'start_date.before_or_equal' => 'The start date must be earlier than the end date',
+            'end_date.required' => 'Kérjük add meg a helyettesítés végét',
+            'end_date.date' => 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD',
+            'end_date.after_or_equal' => 'A helyettesítés vége nem lehet korábban a helyettesítés kezdténél',
+        ]);
+
         $delegation = new Delegation();
-        $delegation->type = request('type');
+        $delegation->type = $validatedData['type'];
         $delegation->original_user_id = Auth::id();
-        $delegation->delegate_user_id = request('delegated_user');
-        $delegation->start_date = str_replace('.', '-', request('start_date'));
-        $delegation->end_date = str_replace('.', '-', request('end_date'));
+        $delegation->delegate_user_id = $validatedData['delegated_user'];
+        $delegation->start_date = str_replace('.', '-', $validatedData['start_date']);
+        $delegation->end_date = str_replace('.', '-', $validatedData['end_date']);
         $delegation->created_by = Auth::id();
         $delegation->updated_by = Auth::id();
         $delegation->save();

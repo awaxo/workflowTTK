@@ -5,6 +5,7 @@ namespace App\Http\Controllers\pages;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Workgroup;
+use Closure;
 use Illuminate\Support\Facades\Auth;
 
 class WorkgroupController extends Controller
@@ -60,11 +61,38 @@ class WorkgroupController extends Controller
 
     public function update($id)
     {
+        $labor_administrators = User::where('deleted', 0)
+            ->whereHas('workgroup', function ($query) {
+                $query->where('workgroup_number', 908);
+            })
+            ->get()
+            ->pluck('id');
+
+        $validatedData = request()->validate([
+            'name' => 'required',
+            'workgroup_number' => 'required|numeric',
+            'leader_id' => 'required|numeric',
+            'labor_administrator' => [
+                'required',
+                function (string $attribute, mixed $value, Closure $fail) use ($labor_administrators) {
+                    if (!in_array($value, $labor_administrators->toArray())) {
+                        $fail("Munkaügyi ügyintéző csak ilyen jogú felhasználó lehet");
+                    }
+                }],
+        ], [
+            'name.required' => 'A név kötelező',
+            'workgroup_number.required' => 'A csoportszám kötelező',
+            'workgroup_number.numeric' => 'A csoportszám csak szám érték lehet',
+            'leader_id.required' => 'A csoportvezető kötelező',
+            'leader_id.numeric' => 'A csoportvezető id megadása kötelező',
+            'labor_administrator.required' => 'A munkaügyi ügyintéző kötelező',
+        ]);
+
         $workgroup = Workgroup::find($id);
-        $workgroup->name = request('name');
-        $workgroup->workgroup_number = request('workgroup_number');
-        $workgroup->leader_id = request('leader_id');
-        $workgroup->labor_administrator = request('labor_administrator');
+        $workgroup->name = $validatedData['name'];
+        $workgroup->workgroup_number = $validatedData['workgroup_number'];
+        $workgroup->leader_id = $validatedData['leader_id'];
+        $workgroup->labor_administrator = $validatedData['labor_administrator'];
         $workgroup->updated_by = Auth::id();
         $workgroup->save();
         return response()->json(['success' => 'Workgroup updated successfully']);
@@ -72,11 +100,38 @@ class WorkgroupController extends Controller
 
     public function create()
     {
+        $labor_administrators = User::where('deleted', 0)
+            ->whereHas('workgroup', function ($query) {
+                $query->where('workgroup_number', 908);
+            })
+            ->get()
+            ->pluck('id');
+
+        $validatedData = request()->validate([
+            'name' => 'required',
+            'workgroup_number' => 'required|numeric',
+            'leader_id' => 'required|numeric',
+            'labor_administrator' => [
+                'required',
+                function (string $attribute, mixed $value, Closure $fail) use ($labor_administrators) {
+                    if (!in_array($value, $labor_administrators->toArray())) {
+                        $fail("Munkaügyi ügyintéző csak ilyen jogú felhasználó lehet");
+                    }
+                }],
+        ], [
+            'name.required' => 'A név kötelező',
+            'workgroup_number.required' => 'A csoportszám kötelező',
+            'workgroup_number.numeric' => 'A csoportszám csak szám érték lehet',
+            'leader_id.required' => 'A csoportvezető kötelező',
+            'leader_id.numeric' => 'A csoportvezető id megadása kötelező',
+            'labor_administrator.required' => 'A munkaügyi ügyintéző kötelező',
+        ]);
+
         $workgroup = new Workgroup();
-        $workgroup->name = request('name');
-        $workgroup->workgroup_number = request('workgroup_number');
-        $workgroup->leader_id = request('leader_id');
-        $workgroup->labor_administrator = request('labor_administrator');
+        $workgroup->name = $validatedData['name'];
+        $workgroup->workgroup_number = $validatedData['workgroup_number'];
+        $workgroup->leader_id = $validatedData['leader_id'];
+        $workgroup->labor_administrator = $validatedData['labor_administrator'];
         $workgroup->created_by = Auth::id();
         $workgroup->updated_by = Auth::id();
         $workgroup->save();

@@ -70,17 +70,10 @@ class InstituteController extends Controller
 
     public function update($id)
     {
-        $validatedData = request()->validate([
-            'name' => 'required',
-            'group_level' => 'required',
-        ], [
-            'name.required' => 'Intézet név kötelező',
-            'group_level.required' => 'Intézet szám kötelező',
-        ]);
+        $validatedData = $this->validateRequest();
 
         $institute = Institute::find($id);
-        $institute->name = $validatedData['name'];
-        $institute->group_level = $validatedData['group_level'];
+        $institute->fill($validatedData);
         $institute->updated_by = Auth::id();
         $institute->save();
 
@@ -89,21 +82,25 @@ class InstituteController extends Controller
 
     public function create()
     {
-        $validatedData = request()->validate([
+        $validatedData = $this->validateRequest();
+
+        $institute = new Institute();
+        $institute->fill($validatedData);
+        $institute->created_by = Auth::id();
+        $institute->updated_by = Auth::id();
+        $institute->save();
+        
+        return response()->json(['message' => 'Institute created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
             'name' => 'required',
             'group_level' => 'required',
         ], [
             'name.required' => 'Intézet név kötelező',
             'group_level.required' => 'Intézet szám kötelező',
         ]);
-
-        $institute = new Institute();
-        $institute->name = $validatedData['name'];
-        $institute->group_level = $validatedData['group_level'];
-        $institute->created_by = Auth::id();
-        $institute->updated_by = Auth::id();
-        $institute->save();
-        
-        return response()->json(['message' => 'Institute created successfully']);
     }
 }

@@ -76,7 +76,6 @@ $(function () {
 
     $('#save_delegation').on('click', function() {
         $('.invalid-feedback').remove();
-
         let fv = validateDelegation();
 
         // Revalidate fields when their values change

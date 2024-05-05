@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Delegation;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class ProfileController extends Controller
@@ -64,9 +63,8 @@ class ProfileController extends Controller
         ]);
 
         $delegation = new Delegation();
-        $delegation->type = $validatedData['type'];
+        $delegation->fill($validatedData);
         $delegation->original_user_id = Auth::id();
-        $delegation->delegate_user_id = $validatedData['delegated_user'];
         $delegation->start_date = str_replace('.', '-', $validatedData['start_date']);
         $delegation->end_date = str_replace('.', '-', $validatedData['end_date']);
         $delegation->created_by = Auth::id();

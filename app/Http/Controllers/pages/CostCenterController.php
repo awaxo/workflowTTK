@@ -62,35 +62,10 @@ class CostCenterController extends Controller
 
     public function update($id)
     {
-        $validatedData = request()->validate([
-            'cost_center_code' => 'required',
-            'name' => 'required',
-            'type_id' => 'required',
-            'lead_user_id' => 'required',
-            'project_coordinator_user_id' => 'required',
-            'due_date' => 'required|date_format:Y.m.d|after:yesterday',
-            'minimal_order_limit' => 'required|numeric',
-        ],
-        [
-            'cost_center_code.required' => 'Költséghely kód kötelező',
-            'name.required' => 'Megnevezés kötelező',
-            'type_id.required' => 'Típus kötelező',
-            'lead_user_id.required' => 'Témavezető kötelező',
-            'project_coordinator_user_id.required' => 'Projektkoordinátor kötelező',
-            'due_date.required' => 'Lejárati dátum kötelező',
-            'due_date.date' => 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD',
-            'minimal_order_limit.required' => 'Minimális rendelési limit kötelező',
-            'minimal_order_limit.numeric' => 'Minimum rendelési limit csak szám lehet',
-        ]);
+        $validatedData = $this->validateRequest();
 
         $costCenter = CostCenter::find($id);
-        $costCenter->cost_center_code = $validatedData['cost_center_code'];
-        $costCenter->name = $validatedData['name'];
-        $costCenter->type_id = $validatedData['type_id'];
-        $costCenter->lead_user_id = $validatedData['lead_user_id'];
-        $costCenter->project_coordinator_user_id = $validatedData['project_coordinator_user_id'];
-        $costCenter->due_date = $validatedData['due_date'];
-        $costCenter->minimal_order_limit = $validatedData['minimal_order_limit'];
+        $costCenter->fill($validatedData);
         $costCenter->valid_employee_recruitment = request('valid_employee_recruitment') == 'true' ? 1 : 0;
         $costCenter->updated_by = Auth::id();
         $costCenter->save();
@@ -100,7 +75,21 @@ class CostCenterController extends Controller
 
     public function create()
     {
-        $validatedData = request()->validate([
+        $validatedData = $this->validateRequest();
+
+        $costCenter = new CostCenter();
+        $costCenter->fill($validatedData);
+        $costCenter->valid_employee_recruitment = request('valid_employee_recruitment') == 'true' ? 1 : 0;
+        $costCenter->created_by = Auth::id();
+        $costCenter->updated_by = Auth::id();
+        $costCenter->save();
+
+        return response()->json(['message' => 'Cost center created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
             'cost_center_code' => 'required',
             'name' => 'required',
             'type_id' => 'required',
@@ -120,20 +109,5 @@ class CostCenterController extends Controller
             'minimal_order_limit.required' => 'Minimális rendelési limit kötelező',
             'minimal_order_limit.numeric' => 'Minimum rendelési limit csak szám lehet',
         ]);
-
-        $costCenter = new CostCenter();
-        $costCenter->cost_center_code = $validatedData['cost_center_code'];
-        $costCenter->name = $validatedData['name'];
-        $costCenter->type_id = $validatedData['type_id'];
-        $costCenter->lead_user_id = $validatedData['lead_user_id'];
-        $costCenter->project_coordinator_user_id = $validatedData['project_coordinator_user_id'];
-        $costCenter->due_date = $validatedData['due_date'];
-        $costCenter->minimal_order_limit = $validatedData['minimal_order_limit'];
-        $costCenter->valid_employee_recruitment = request('valid_employee_recruitment') == 'true' ? 1 : 0;
-        $costCenter->created_by = Auth::id();
-        $costCenter->updated_by = Auth::id();
-        $costCenter->save();
-
-        return response()->json(['message' => 'Cost center created successfully']);
     }
 }

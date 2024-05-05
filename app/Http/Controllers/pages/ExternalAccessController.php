@@ -52,25 +52,30 @@ class ExternalAccessController extends Controller
 
     public function update($id)
     {
-        $validatedData = request()->validate([
-            'external_system' => 'required',
-            'admin_group_number' => 'required|numeric',
-        ], [
-            'external_system.required' => 'Külső rendszer név kötelező',
-            'admin_group_number.required' => 'Admin csoport kötelező',
-            'admin_group_number.numeric' => 'Admin csoport id csak szám lehet',
-        ]);
+        $validatedData = $this->validateRequest();
 
         $externalAccess = ExternalAccessRight::find($id);
-        $externalAccess->external_system = $validatedData['external_system'];
-        $externalAccess->admin_group_number = $validatedData['admin_group_number'];
+        $externalAccess->fill($validatedData);
         $externalAccess->save();
         return response()->json(['success' => 'External access right updated successfully']);
     }
 
     public function create()
     {
-        $validatedData = request()->validate([
+        $validatedData = $this->validateRequest();
+    
+        $externalAccess = new ExternalAccessRight();
+        $externalAccess->fill($validatedData);
+        $externalAccess->created_by = Auth::id();
+        $externalAccess->updated_by = Auth::id();
+        $externalAccess->save();
+
+        return response()->json(['success' => 'External access right created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
             'external_system' => 'required',
             'admin_group_number' => 'required|numeric',
         ], [
@@ -78,14 +83,5 @@ class ExternalAccessController extends Controller
             'admin_group_number.required' => 'Admin csoport kötelező',
             'admin_group_number.numeric' => 'Admin csoport id csak szám lehet',
         ]);
-    
-        $externalAccess = new ExternalAccessRight();
-        $externalAccess->external_system = $validatedData['external_system'];
-        $externalAccess->admin_group_number = $validatedData['admin_group_number'];
-        $externalAccess->created_by = Auth::id();
-        $externalAccess->updated_by = Auth::id();
-        $externalAccess->save();
-
-        return response()->json(['success' => 'External access right created successfully']);
     }
 }

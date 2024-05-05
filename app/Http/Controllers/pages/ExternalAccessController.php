@@ -76,12 +76,14 @@ class ExternalAccessController extends Controller
     private function validateRequest()
     {
         return request()->validate([
-            'external_system' => 'required',
-            'admin_group_number' => 'required|numeric',
+            'external_system' => 'required|max:255',
+            'admin_group_number' => 'required|numeric|exists:wf_workgroup,id',
         ], [
             'external_system.required' => 'Külső rendszer név kötelező',
+            'external_system.max' => 'Külső rendszer név maximum 255 karakter lehet',
             'admin_group_number.required' => 'Admin csoport kötelező',
             'admin_group_number.numeric' => 'Admin csoport id csak szám lehet',
+            'admin_group_number.exists' => 'Admin csoport nem létezik',
         ]);
     }
 }

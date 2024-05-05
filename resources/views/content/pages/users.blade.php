@@ -85,14 +85,14 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="name">Név</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="text" id="name" class="form-control" />
+                        <input type="text" id="name" class="form-control" name="name" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="email">Email</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="text" id="email" class="form-control" />
+                        <input type="text" id="email" class="form-control" name="email" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>

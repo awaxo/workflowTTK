@@ -96,10 +96,11 @@ class InstituteController extends Controller
     private function validateRequest()
     {
         return request()->validate([
-            'name' => 'required',
+            'name' => 'required|max:255',
             'group_level' => 'required',
         ], [
             'name.required' => 'Intézet név kötelező',
+            'name.max' => 'Intézet név maximum 255 karakter lehet',
             'group_level.required' => 'Intézet szám kötelező',
         ]);
     }

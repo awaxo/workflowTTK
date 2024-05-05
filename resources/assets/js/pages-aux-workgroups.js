@@ -287,6 +287,13 @@ function validateWorkgroup() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a csoportszámot'
+                        },
+                        numeric: {
+                            message: 'A csoportszám csak szám lehet'
+                        },
+                        stringLength: {
+                            max: 5,
+                            message: 'A csoportszám maximum 5 karakter hosszú lehet'
                         }
                     }
                 },
@@ -294,7 +301,11 @@ function validateWorkgroup() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a csoport nevét'
-                        }
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A csoport neve maximum 255 karakter hosszú lehet'
+                        },
                     }
                 }
             },

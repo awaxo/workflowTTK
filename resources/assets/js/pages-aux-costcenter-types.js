@@ -288,6 +288,10 @@ function validateCostCenterType() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a költséghely típus nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A költséghely típus neve maximum 255 karakter lehet'
                         }
                     }
                 }

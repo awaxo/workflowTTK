@@ -278,6 +278,10 @@ function validateExternalAccess() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük add meg a külső rendszert'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A külső rendszer megnevezése maximum 255 karakter lehet'
                         }
                     }
                 }

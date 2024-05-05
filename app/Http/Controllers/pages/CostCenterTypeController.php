@@ -79,10 +79,11 @@ class CostCenterTypeController extends Controller
     private function validateRequest()
     {
         return request()->validate([
-            'name' => 'required'
+            'name' => 'required|max:255',
         ],
         [
-            'name.required' => 'Költséghely típus név kötelező'
+            'name.required' => 'Költséghely típus név kötelező',
+            'name.max' => 'Költséghely típus név maximum 255 karakter lehet',
         ]);
     }
 }

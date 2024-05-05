@@ -276,6 +276,10 @@ function validatePosition() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a munkakör nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A munkakör neve maximum 255 karakter hosszú lehet'
                         }
                     }
                 }

@@ -76,10 +76,11 @@ class PositionController extends Controller
     private function validateRequest()
     {
         return request()->validate([
-            'name' => 'required'
+            'name' => 'required|max:255',
         ],
         [
-            'name.required' => 'Munkakör név kötelező'
+            'name.required' => 'Munkakör név kötelező',
+            'name.max' => 'Munkakör név maximum 255 karakter lehet',
         ]);
     }
 }

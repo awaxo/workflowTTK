@@ -94,11 +94,11 @@ class WorkgroupController extends Controller
             ->pluck('id');
 
         return request()->validate([
-            'name' => 'required',
-            'workgroup_number' => 'required|numeric',
-            'leader_id' => 'required|numeric',
+            'name' => 'required|max:255',
+            'workgroup_number' => 'required|numeric|unique:wf_workgroup,workgroup_number',
+            'leader_id' => 'required|numeric|exists:wf_user,id',
             'labor_administrator' => [
-                'required',
+                'required|numeric|exists:wf_user,id',
                 function (string $attribute, mixed $value, Closure $fail) use ($labor_administrators) {
                     if (!in_array($value, $labor_administrators->toArray())) {
                         $fail("Munkaügyi ügyintéző csak ilyen jogú felhasználó lehet");
@@ -108,11 +108,16 @@ class WorkgroupController extends Controller
         ],
         [
             'name.required' => 'A név kötelező',
+            'name.max' => 'A név maximum 255 karakter lehet',
             'workgroup_number.required' => 'A csoportszám kötelező',
             'workgroup_number.numeric' => 'A csoportszám csak szám lehet',
+            'workgroup_number.unique' => 'A csoportszám már foglalt',
             'leader_id.required' => 'A csoportvezető kötelező',
             'leader_id.numeric' => 'A csoportvezető id csak szám lehet',
+            'leader_id.exists' => 'A csoportvezető nem létezik',
             'labor_administrator.required' => 'A munkaügyi ügyintéző kötelező',
+            'labor_administrator.numeric' => 'A munkaügyi ügyintéző id csak szám lehet',
+            'labor_administrator.exists' => 'A munkaügyi ügyintéző nem létezik',
         ]);
     }
 }

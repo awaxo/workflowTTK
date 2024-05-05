@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\WorkflowType;
 use App\Services\WorkflowService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class WorkflowController extends Controller
 {

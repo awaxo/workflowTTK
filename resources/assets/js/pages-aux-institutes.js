@@ -291,6 +291,10 @@ function validateInstitute() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg az intézet nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'Az intézet neve legfeljebb 255 karakter hosszú lehet'
                         }
                     }
                 }

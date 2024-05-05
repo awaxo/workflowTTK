@@ -316,6 +316,10 @@ function validateCostCenter() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a költséghelyet'
+                        },
+                        stringLength: {
+                            max: 50,
+                            message: 'A költséghely maximum 50 karakter lehet'
                         }
                     }
                 },
@@ -323,6 +327,10 @@ function validateCostCenter() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a megnevezést'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A megnevezés maximum 255 karakter lehet'
                         }
                     }
                 },

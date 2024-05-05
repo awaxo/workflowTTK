@@ -265,7 +265,12 @@ $(function() {
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_institute')).hide();
-                        $('#errorAlertMessage').text('Hiba történt a mentés során!');
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
                         $('#errorAlert').removeClass('d-none');
                         console.log(textStatus, errorThrown);
                     }

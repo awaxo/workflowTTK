@@ -52,17 +52,17 @@ class DropzoneManager {
         });
 
         dropzoneUpload.on("success", function(file, response) {
-            const $contractFileInput = $(`#${elementId}_file`);
-            $contractFileInput.val(response.fileName);
-            $contractFileInput.attr('data-original-name', file.name);
+            const $fileInput = $(`#${elementId}_file`);
+            $fileInput.val(response.fileName);
+            $fileInput.attr('data-original-name', file.name);
+            $fileInput.trigger('change');
         });
 
         dropzoneUpload.on("removedfile", function(file) {
-            const $contractFileInput = $(`#${elementId}_file`);
-            if (file.name === $contractFileInput.data('original-name')) {
-                $contractFileInput.val('');
-                $contractFileInput.attr('data-original-name', '');
-            }
+            const $fileInput = $(`#${elementId}_file`);            
+            $fileInput.val('');
+            $fileInput.attr('data-original-name', '');
+            $fileInput.trigger('change');
         });
     }
 }

@@ -306,7 +306,7 @@ function validateUser() {
                         },
                         stringLength: {
                             max: 255,
-                            message: 'A név nem lehet hosszabb 255 karakternél'
+                            message: 'Az email nem lehet hosszabb 255 karakternél'
                         }
                     }
                 },

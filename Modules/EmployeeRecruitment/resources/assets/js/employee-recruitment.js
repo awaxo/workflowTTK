@@ -1,5 +1,6 @@
 import moment from 'moment';
 import DropzoneManager from '/resources/js/dropzone-manager';
+import { min } from 'lodash';
 
 $(function () {
     // set numeral mask to number fields
@@ -25,8 +26,11 @@ $(function () {
     });
 
     $("#citizenship").on('change', function() {
-        var startDate = $(this).val() === 'Harmadik országbeli' ? '+3M' : '+21D';
+        $("#employment_start_date, #employment_end_date").val('');
+
+        var startDate = $(this).val() == 'Harmadik országbeli' ? '+3M' : '+21D';
         $("#employment_start_date").datepicker('setStartDate', startDate);
+        $("#employment_end_date").datepicker('setStartDate', '+6M');
     });
     
     // set datepicker date fields
@@ -35,19 +39,17 @@ $(function () {
         startDate: '+21D',
         endDate: '+30Y',
     });
-    $("#employment_start_date").on('change', function() {
-        var startDate = $(this).datepicker('getDate');
-        if (startDate) {
-            startDate.setMonth(startDate.getMonth() + 6);
-            startDate.setDate(startDate.getDate() + 20);
-    
-            $("#employment_end_date").datepicker('setStartDate', startDate);
-        }
-    });
     $("#employment_end_date").datepicker({
         format: "yyyy.mm.dd",
         startDate: '+200D',
         endDate: '+30Y',
+    });
+    $("#employment_start_date").on('change', function() {
+        var startDate = $("#employment_start_date").datepicker('getDate');
+        if (startDate) {
+            var endDate = moment(startDate).add(6, 'months').toDate();
+            $("#employment_end_date").datepicker('setStartDate', endDate);
+        }
     });
     // set datepicker date fields
 
@@ -123,30 +125,62 @@ $(function () {
     filterByPosition();
 
 
+    // Submit employee recruitment form
     $('.btn-submit').on('click', function (event) {
         event.preventDefault();
 
-        var formData = {};
-        $('#new-recruitment :input').each(function() {
-            var id = $(this).attr('id');
-            var value = $(this).is(':checkbox') ? $(this).is(':checked') : $(this).val();
-            formData[id] = value;
+        $('.invalid-feedback').remove();
+        let fv = validateEmployeeRecruitment();
+
+        $('#name, #applicants_female_count, #applicants_male_count, #job_description_file, #task, #employment_start_date, #citizenship, ' +
+          '#employment_end_date, #email').on('change', function() {
+            fv.revalidateField('name');
+            fv.revalidateField('applicants_female_count');
+            fv.revalidateField('applicants_male_count');
+            fv.revalidateField('job_description_file');
+            fv.revalidateField('employment_start_date');
+            fv.revalidateField('employment_end_date');
+            fv.revalidateField('email');
         });
 
-        $.ajax({
-            url: '/employee-recruitment',
-            type: 'POST',
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (data) {
-                // redirect needed on the server side
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('#errorAlertMessage').text('Hiba történt az ügy rögzítése során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('#employment_type').on('change', function() {
+            $('#employment_type').val() == 'Határozott' ? fv.enableValidator('task') : fv.disableValidator('task');
+            $('#employment_type').val() == 'Határozott' ? fv.enableValidator('employment_end_date') : fv.disableValidator('employment_end_date');
+            
+            fv.revalidateField('task');
+            fv.revalidateField('employment_end_date');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                var formData = {};
+                $('#new-recruitment :input').each(function() {
+                    var id = $(this).attr('id');
+                    var value = $(this).is(':checkbox') ? $(this).is(':checked') : $(this).val();
+                    formData[id] = value;
+                });
+
+                $.ajax({
+                    url: '/employee-recruitment',
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data) {
+                        // redirect happens on the server side
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
             }
         });
     });
@@ -457,11 +491,139 @@ function filterByPosition()
 }
 function filterStudentStatus() {
     let selectedPositionName = $('#position_id option:selected').text();
-    console.log(selectedPositionName);
 
     if (selectedPositionName === 'egyetemi hallgató' || selectedPositionName === 'tudományos segédmunkatárs') {
         $('#student_status_verification').prop('disabled', false).parent('div').show();
     } else {
         $('#student_status_verification').prop('disabled', true).parent('div').hide();
     }
+}
+
+
+function validateEmployeeRecruitment()
+{
+    return FormValidation.formValidation(
+        document.getElementById('new-recruitment'),
+        {
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a nevet'
+                        },
+                        stringLength: {
+                            max: 100,
+                            message: 'A név nem lehet hosszabb 100 karakternél'
+                        }
+                    }
+                },
+                applicants_female_count: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a női jelentkezők számát'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak számot adj meg'
+                        },
+                        between: {
+                            min: 0,
+                            max: 1000,
+                            message: 'Az érték 0 és 1000 között lehet'
+                        }
+                    }
+                },
+                applicants_male_count: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a férfi jelentkezők számát'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak számot adj meg'
+                        },
+                        between: {
+                            min: 0,
+                            max: 1000,
+                            message: 'Az érték 0 és 1000 között lehet'
+                        }
+                    }
+                },
+                job_description_file: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, töltsd fel a munkaköri leírást'
+                        }
+                    }
+                },
+                task: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a feladat leírást'
+                        },
+                        stringLength: {
+                            min: 50,
+                            max: 1000,
+                            message: 'A feladat leírásának 50 és 1000 karakter között kell lennie'
+                        }
+                    }
+                },
+                employment_start_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a jogviszony kezdetét'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
+                        },
+                        callback: {
+                            message: 'A dátum nem lehet korábbi, mint +3 hét vagy +3 hónap, függően az állampolgárságtól',
+                            callback: function(value, validator, $field) {
+                                var citizenship = $('#citizenship').val();
+                                var minDate = citizenship != 'Harmadik országbeli' ? moment().add(3, 'weeks') : moment().add(3, 'months');
+                
+                                return value.isSameOrAfter(minDate);
+                            }
+                        }
+                    }
+                },
+                employment_end_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a jogviszony végét'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
+                        },
+                        callback: {
+                            message: 'A jogviszony vége nem lehet korábban, mint a jogviszony kezdete + 3 hét vagy 3 hónap, függően az állampolgárságtól',
+                            callback: function(value, validator, $field) {
+                                var citizenship = $('#citizenship').val();
+                                var minDate = citizenship != 'Harmadik országbeli' ? moment().add(3, 'weeks').subtract(1, 'day') : moment().add(3, 'months').subtract(1, 'day');
+                                
+                                return value.isSameOrAfter(minDate);
+                            }
+                        }
+                    }
+                },
+                email: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az email címet'
+                        },
+                        emailAddress: {
+                            message: 'Kérjük, valós email címet adj meg'
+                        },
+                        stringLength: {
+                            max: 100,
+                            message: 'Az email nem lehet hosszabb 100 karakternél'
+                        }
+                    }
+                },
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
 }

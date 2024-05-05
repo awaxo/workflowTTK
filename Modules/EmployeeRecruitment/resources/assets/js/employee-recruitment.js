@@ -6,7 +6,8 @@ $(function () {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
-            numeral: true
+            numeral: true,
+            numeralThousandsGroupStyle: 'none'
         });
     });
 
@@ -132,23 +133,70 @@ $(function () {
         $('.invalid-feedback').remove();
         let fv = validateEmployeeRecruitment();
 
-        $('#name, #applicants_female_count, #applicants_male_count, #job_description_file, #task, #employment_start_date, #citizenship, ' +
-          '#employment_end_date, #email').on('change', function() {
-            fv.revalidateField('name');
-            fv.revalidateField('applicants_female_count');
-            fv.revalidateField('applicants_male_count');
-            fv.revalidateField('job_description_file');
-            fv.revalidateField('employment_start_date');
-            fv.revalidateField('employment_end_date');
-            fv.revalidateField('email');
-        });
+        // revalidate fields when their values change
+        revalidateOnChange(fv, 'name');
+        revalidateOnChange(fv, 'applicants_female_count');
+        revalidateOnChange(fv, 'applicants_male_count');
+        revalidateOnChange(fv, 'job_description_file');
+        revalidateOnChange(fv, 'task');
+        revalidateOnChange(fv, 'employment_start_date');
+        revalidateOnChange(fv, 'employment_end_date');
+        revalidateOnChange(fv, 'base_salary_monthly_gross_1');
+        revalidateOnChange(fv, 'base_salary_cost_center_2');
+        revalidateOnChange(fv, 'base_salary_monthly_gross_2');
+        revalidateOnChange(fv, 'base_salary_cost_center_3');
+        revalidateOnChange(fv, 'base_salary_monthly_gross_3');
+        revalidateOnChange(fv, 'health_allowance_cost_center_4');
+        revalidateOnChange(fv, 'health_allowance_monthly_gross_4');
+        revalidateOnChange(fv, 'management_allowance_cost_center_5');
+        revalidateOnChange(fv, 'management_allowance_monthly_gross_5');
+        revalidateOnChange(fv, 'management_allowance_end_date');
+        revalidateOnChange(fv, 'extra_pay_1_cost_center_6');
+        revalidateOnChange(fv, 'extra_pay_1_monthly_gross_6');
+        revalidateOnChange(fv, 'extra_pay_1_end_date');
+        revalidateOnChange(fv, 'extra_pay_2_cost_center_7');
+        revalidateOnChange(fv, 'extra_pay_2_monthly_gross_7');
+        revalidateOnChange(fv, 'extra_pay_2_end_date');
+        revalidateOnChange(fv, 'email');
+        revalidateOnChange(fv, 'entry_permissions');
+        revalidateOnChange(fv, 'license_plate');
 
-        $('#employment_type').on('change', function() {
-            $('#employment_type').val() == 'Határozott' ? fv.enableValidator('task') : fv.disableValidator('task');
-            $('#employment_type').val() == 'Határozott' ? fv.enableValidator('employment_end_date') : fv.disableValidator('employment_end_date');
-            
-            fv.revalidateField('task');
-            fv.revalidateField('employment_end_date');
+        // enable/disable validators based on other field values
+        enableOnChange(fv, 'task', 'employment_type', function() { return $('#employment_type').val() == 'Határozott'});
+        enableOnChange(fv, 'employment_end_date', 'employment_type', function() { return $('#employment_type').val() == 'Határozott'});
+        enableOnChange(fv, 'base_salary_cost_center_2', 'base_salary_monthly_gross_2', function() { 
+            return $('#base_salary_monthly_gross_2').val() != "" && $('#base_salary_monthly_gross_2').val() > 0
+        });
+        enableOnChange(fv, 'base_salary_monthly_gross_2', 'base_salary_cost_center_2', function() { return $('#base_salary_cost_center_2').val() != ""});
+        enableOnChange(fv, 'base_salary_cost_center_3', 'base_salary_monthly_gross_3', function() { 
+            return $('#base_salary_monthly_gross_3').val() != "" && $('#base_salary_monthly_gross_3').val() > 0
+        });
+        enableOnChange(fv, 'base_salary_monthly_gross_3', 'base_salary_cost_center_3', function() { return $('#base_salary_cost_center_3').val() != ""});
+        enableOnChange(fv, 'health_allowance_cost_center_4', 'health_allowance_monthly_gross_4', function() { 
+            return $('#health_allowance_monthly_gross_4').val() != "" && $('#health_allowance_monthly_gross_4').val() > 0
+        });
+        enableOnChange(fv, 'health_allowance_monthly_gross_4', 'health_allowance_cost_center_4', function() { return $('#health_allowance_cost_center_4').val() != ""});
+        
+        enableOnChange(fv, 'management_allowance_cost_center_5', 'management_allowance_monthly_gross_5', function() { 
+            return $('#management_allowance_monthly_gross_5').val() != "" && $('#management_allowance_monthly_gross_5').val() > 0
+        });
+        enableOnChange(fv, 'management_allowance_monthly_gross_5', 'management_allowance_cost_center_5', function() { return $('#management_allowance_cost_center_5').val() != ""});
+        enableOnChange(fv, 'management_allowance_end_date', 'management_allowance_cost_center_5', function() { return $('#management_allowance_cost_center_5').val() != ""});
+        
+        enableOnChange(fv, 'extra_pay_1_cost_center_6', 'extra_pay_1_monthly_gross_6', function() { 
+            return $('#extra_pay_1_monthly_gross_6').val() != "" && $('#extra_pay_1_monthly_gross_6').val() > 0
+        });
+        enableOnChange(fv, 'extra_pay_1_monthly_gross_6', 'extra_pay_1_cost_center_6', function() { return $('#extra_pay_1_cost_center_6').val() != ""});
+        enableOnChange(fv, 'extra_pay_1_end_date', 'extra_pay_1_cost_center_6', function() { return $('#extra_pay_1_cost_center_6').val() != ""});
+
+        enableOnChange(fv, 'extra_pay_2_cost_center_7', 'extra_pay_2_monthly_gross_7', function() { 
+            return $('#extra_pay_2_monthly_gross_7').val() != "" && $('#extra_pay_2_monthly_gross_7').val() > 0
+        });
+        enableOnChange(fv, 'extra_pay_2_monthly_gross_7', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
+        enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
+        enableOnChange(fv, 'license_plate', 'entry_permissions', function() { 
+            var values = $('#entry_permissions').val();
+            return values.includes('auto')
         });
 
         fv.validate().then(function(status) {
@@ -499,9 +547,23 @@ function filterStudentStatus() {
     }
 }
 
+function revalidateOnChange(fv, targetId) {
+    $('#' + targetId).on('change', function() {
+        fv.revalidateField(targetId);
+    });
+}
 
-function validateEmployeeRecruitment()
-{
+function enableOnChange(fv, targetId, changerId, condition) {
+    condition() ? fv.enableValidator(targetId) : fv.disableValidator(targetId);
+
+    $('#' + changerId).on('change', function() {
+        condition() ? fv.enableValidator(targetId) : fv.disableValidator(targetId);
+        fv.revalidateField(targetId);
+    });
+}
+
+
+function validateEmployeeRecruitment() {
     return FormValidation.formValidation(
         document.getElementById('new-recruitment'),
         {
@@ -523,7 +585,7 @@ function validateEmployeeRecruitment()
                             message: 'Kérjük, add meg a női jelentkezők számát'
                         },
                         integer: {
-                            message: 'Kérjük, csak számot adj meg'
+                            message: 'Kérjük, csak egész számot adj meg'
                         },
                         between: {
                             min: 0,
@@ -538,7 +600,7 @@ function validateEmployeeRecruitment()
                             message: 'Kérjük, add meg a férfi jelentkezők számát'
                         },
                         integer: {
-                            message: 'Kérjük, csak számot adj meg'
+                            message: 'Kérjük, csak egész számot adj meg'
                         },
                         between: {
                             min: 0,
@@ -574,15 +636,6 @@ function validateEmployeeRecruitment()
                         date: {
                             format: 'YYYY.MM.DD',
                             message: 'Kérjük, valós dátumot adj meg',
-                        },
-                        callback: {
-                            message: 'A dátum nem lehet korábbi, mint +3 hét vagy +3 hónap, függően az állampolgárságtól',
-                            callback: function(value, validator, $field) {
-                                var citizenship = $('#citizenship').val();
-                                var minDate = citizenship != 'Harmadik országbeli' ? moment().add(3, 'weeks') : moment().add(3, 'months');
-                
-                                return value.isSameOrAfter(minDate);
-                            }
                         }
                     }
                 },
@@ -594,14 +647,272 @@ function validateEmployeeRecruitment()
                         date: {
                             format: 'YYYY.MM.DD',
                             message: 'Kérjük, valós dátumot adj meg',
+                        }
+                    }
+                },
+                base_salary_monthly_gross_1: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg havi bruttó bér összegét'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
+                        },
+                        between: {
+                            min: 1000,
+                            max: 3000000,
+                            message: 'Az érték 1000 és 3 000 000 között lehet'
+                        }
+                    }
+                },
+                base_salary_cost_center_2: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
+                        }
+                    }
+                },
+                base_salary_monthly_gross_2: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg havi bruttó bér összegét'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
                         },
                         callback: {
-                            message: 'A jogviszony vége nem lehet korábban, mint a jogviszony kezdete + 3 hét vagy 3 hónap, függően az állampolgárságtól',
-                            callback: function(value, validator, $field) {
-                                var citizenship = $('#citizenship').val();
-                                var minDate = citizenship != 'Harmadik országbeli' ? moment().add(3, 'weeks').subtract(1, 'day') : moment().add(3, 'months').subtract(1, 'day');
-                                
-                                return value.isSameOrAfter(minDate);
+                            callback: function(input) {
+                                if ($('#base_salary_cost_center_2').val() != "") {
+                                    return {
+                                        valid: input.value >= 1000 && input.value <= 3000000,
+                                        message: 'Az érték 1000 és 3 000 000 között lehet'
+                                    };
+                                } else {
+                                    return {
+                                        valid: input.value == 0,
+                                        message: 'Az érték 0 lehet'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                base_salary_cost_center_3: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
+                        }
+                    }
+                },
+                base_salary_monthly_gross_3: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg havi bruttó bér összegét'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
+                        },
+                        callback: {
+                            callback: function(input) {
+                                if ($('#base_salary_cost_center_3').val() != "") {
+                                    return {
+                                        valid: input.value >= 1000 && input.value <= 3000000,
+                                        message: 'Az érték 1000 és 3 000 000 között lehet'
+                                    };
+                                } else {
+                                    return {
+                                        valid: input.value == 0,
+                                        message: 'Az érték 0 lehet'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                health_allowance_cost_center_4: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
+                        }
+                    }
+                },
+                health_allowance_monthly_gross_4: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg havi bruttó bér összegét'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
+                        },
+                        callback: {
+                            callback: function(input) {
+                                if ($('#health_allowance_cost_center_4').val() != "") {
+                                    return {
+                                        valid: input.value >= 1000 && input.value <= 20000,
+                                        message: 'Az érték 1000 és 20 000 között lehet'
+                                    };
+                                } else {
+                                    return {
+                                        valid: input.value == 0,
+                                        message: 'Az érték 0 lehet'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                management_allowance_cost_center_5: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
+                        }
+                    }
+                },
+                management_allowance_monthly_gross_5: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg havi bruttó bér összegét'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
+                        },
+                        callback: {
+                            callback: function(input) {
+                                if ($('#management_allowance_cost_center_5').val() != "") {
+                                    return {
+                                        valid: input.value >= 1000 && input.value <= 300000,
+                                        message: 'Az érték 1000 és 300 000 között lehet'
+                                    };
+                                } else {
+                                    return {
+                                        valid: input.value == 0,
+                                        message: 'Az érték 0 lehet'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                management_allowance_end_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az időtartam végét'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
+                        },
+                        callback: {
+                            message: 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
+                            callback: function(input) {
+                                var endDate = moment(input.value, 'YYYY.MM.DD');
+                                var maxDate = moment().add(4, 'years');
+                
+                                return endDate.isSameOrBefore(maxDate);
+                            }
+                        }
+                    }
+                },
+                extra_pay_1_cost_center_6: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
+                        }
+                    }
+                },
+                extra_pay_1_monthly_gross_6: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg havi bruttó bér összegét'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
+                        },
+                        callback: {
+                            callback: function(input) {
+                                if ($('#extra_pay_1_cost_center_6').val() != "") {
+                                    return {
+                                        valid: input.value >= 1000 && input.value <= 300000,
+                                        message: 'Az érték 1000 és 300 000 között lehet'
+                                    };
+                                } else {
+                                    return {
+                                        valid: input.value == 0,
+                                        message: 'Az érték 0 lehet'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                extra_pay_1_end_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az időtartam végét'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
+                        },
+                        callback: {
+                            message: 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
+                            callback: function(input) {
+                                var endDate = moment(input.value, 'YYYY.MM.DD');
+                                var maxDate = moment().add(4, 'years');
+                
+                                return endDate.isSameOrBefore(maxDate);
+                            }
+                        }
+                    }
+                },
+                extra_pay_2_cost_center_7: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
+                        }
+                    }
+                },
+                extra_pay_2_monthly_gross_7: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg havi bruttó bér összegét'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
+                        },
+                        callback: {
+                            callback: function(input) {
+                                if ($('#extra_pay_2_cost_center_7').val() != "") {
+                                    return {
+                                        valid: input.value >= 1000 && input.value <= 300000,
+                                        message: 'Az érték 1000 és 300 000 között lehet'
+                                    };
+                                } else {
+                                    return {
+                                        valid: input.value == 0,
+                                        message: 'Az érték 0 lehet'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                extra_pay_2_end_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az időtartam végét'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
+                        },
+                        callback: {
+                            message: 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
+                            callback: function(input) {
+                                var endDate = moment(input.value, 'YYYY.MM.DD');
+                                var maxDate = moment().add(4, 'years');
+                
+                                return endDate.isSameOrBefore(maxDate);
                             }
                         }
                     }
@@ -620,10 +931,33 @@ function validateEmployeeRecruitment()
                         }
                     }
                 },
+                entry_permissions: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válaszd ki a szükséges belépési jogosultságokat'
+                        }
+                    }
+                },
+                license_plate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a rendszámot'
+                        },
+                        stringLength: {
+                            max: 9,
+                            message: 'A rendszám nem lehet hosszabb 9 karakternél'
+                        }
+                    }
+                
+                },
             },
             plugins: {
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
             },
         }
-    );
+    ).on('core.field.invalid', function(field) {
+        $(`#${field}`).next().addClass('is-invalid');
+    }).on('core.field.valid', function(field) {
+        $(`#${field}`).next().removeClass('is-invalid');
+    });
 }

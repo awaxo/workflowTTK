@@ -218,6 +218,33 @@ $(function () {
         enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() });
 
+        if (!validateCostCenterSum()) {
+            $('#errorAlertMessage').text('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
+            $('#errorAlert').removeClass('d-none');
+            
+            return;
+        } else {
+            $('#errorAlert').addClass('d-none');
+        }
+
+        if (!validateWorkdayTimes()) {
+            $('#errorAlertMessage').text('Munkanapok munkaideje kezdetének korábbinak kell lennie, mint a végének!');
+            $('#errorAlert').removeClass('d-none');
+            
+            return;
+        } else {
+            $('#errorAlert').addClass('d-none');
+        }
+
+        if (!validateWorkingHours()) {
+            $('#errorAlertMessage').text('Munkanapok munkaidejének összege nem egyezik a heti munkaóraszámmal!');
+            $('#errorAlert').removeClass('d-none');
+            
+            return;
+        } else {
+            $('#errorAlert').addClass('d-none');
+        }
+
         fv.validate().then(function(status) {
             if(status === 'Valid') {
                 var formData = {};
@@ -439,7 +466,7 @@ function setWorkingHours(startId, endId, durationId) {
     
     if ($('#weekly_working_hours').val() === '40') {
         defaultStart = '08:00';
-        defaultEnd = '16:30';
+        defaultEnd = '16:00';
     } else if ($('#weekly_working_hours').val() === '30') {
         defaultStart = '09:00';
         defaultEnd = '15:00';
@@ -477,7 +504,12 @@ function calculateDuration(startId, endId, durationId) {
 
     let hoursValue = isNaN(hours) ? '' : hours;
     let minutesValue = isNaN(paddedMinutes) ? '' : paddedMinutes;
-    let finalValue = (hoursValue === '' && minutesValue === '') ? '' : `${hoursValue}:${minutesValue}`;
+    let finalValue = '';
+    if (hoursValue < 0 || minutesValue < 0) {
+        finalValue = (hoursValue === '' && minutesValue === '') ? '' : `-${Math.abs(hoursValue)}:${String(Math.abs(minutesValue)).padStart(2, '0')}`;
+    } else {
+        finalValue = (hoursValue === '' && minutesValue === '') ? '' : `${hoursValue}:${minutesValue}`;
+    }
 
     $(durationId).val(finalValue);
 }
@@ -585,6 +617,46 @@ function enableOnChange(fv, targetId, changerId, condition) {
     });
 }
 
+
+// before submit validation functions
+function validateCostCenterSum() {
+    let sum = 0;
+    let fields = ['base_salary_monthly_gross_1', 'base_salary_monthly_gross_2', 'base_salary_monthly_gross_3', 'health_allowance_monthly_gross_4', 'management_allowance_monthly_gross_5', 'extra_pay_1_monthly_gross_6', 'extra_pay_2_monthly_gross_7'];
+
+    fields.forEach(function(field) {
+        sum += parseInt($('#' + field).val()) || 0;
+    });
+
+    return sum % 1000 === 0;
+}
+
+function validateWorkdayTimes() {
+    let workdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    let isValid = true;
+
+    workdays.forEach(function(day) {
+        let start = moment($('#work_start_' + day).val(), 'HH:mm');
+        let end = moment($('#work_end_' + day).val(), 'HH:mm');
+
+        if (start.isAfter(end)) {
+            isValid = false;
+        }
+    });
+
+    return isValid;
+}
+
+function validateWorkingHours() {
+    let sum = 0;
+    let fields = ['monday_duration', 'tuesday_duration', 'wednesday_duration', 'thursday_duration', 'friday_duration'];
+
+    fields.forEach(function(field) {
+        let duration = $('#' + field).val().split(':');
+        sum += parseInt(duration[0]) + parseInt(duration[1]) / 60;
+    });
+
+    return sum === parseInt($('#weekly_working_hours').val());
+}
 
 function validateEmployeeRecruitment() {
     return FormValidation.formValidation(

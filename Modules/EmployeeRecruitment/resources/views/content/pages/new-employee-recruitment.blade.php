@@ -669,7 +669,7 @@
                                         Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
                                 </form>
-                                <input type="hidden" id="personal_data_sheet_file" data-original-name="" />
+                                <input type="hidden" id="personal_data_sheet_file" data-original-name="" name="personal_data_sheet_file" />
                             </div>
                             <div class="col-sm-6">
                                 <label for="student_status_verification" class="form-label">Hallgatói jogviszony igazolás</label>
@@ -679,7 +679,7 @@
                                         Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
                                 </form>
-                                <input type="hidden" id="student_status_verification_file" data-original-name="" />
+                                <input type="hidden" id="student_status_verification_file" data-original-name="" name="student_status_verification_file" />
                             </div>
                             <div class="col-sm-12">
                                 <label for="certificates" class="form-label">Bizonyítványok</label>
@@ -689,7 +689,7 @@
                                         Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
                                 </form>
-                                <input type="hidden" id="certificates_file" data-original-name="" />
+                                <input type="hidden" id="certificates_file" data-original-name="" name="certificates_file" />
                             </div>
                             <div class="col-sm-12">
                                 <div class="form-check form-switch">
@@ -705,7 +705,7 @@
                                         Húzd ide a fájlt, vagy kattints a feltöltéshez.
                                     </div>
                                 </form>
-                                <input type="hidden" id="commute_support_form_file" data-original-name="" />
+                                <input type="hidden" id="commute_support_form_file" data-original-name="" name="commute_support_form_file" />
                             </div>
                         
                             <div class="col-12 d-flex justify-content-between">

@@ -160,6 +160,24 @@ $(function () {
         revalidateOnChange(fv, 'email');
         revalidateOnChange(fv, 'entry_permissions');
         revalidateOnChange(fv, 'license_plate');
+        revalidateOnChange(fv, 'phone_extension');
+        revalidateOnChange(fv, 'available_tools');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_asztal');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_szek');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_asztali_szamitogep');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_laptop');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_laptop_taska');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_monitor');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_billentyuzet');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_eger');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_dokkolo');
+        revalidateOnChange(fv, 'inventory_numbers_of_available_tools_mobiltelefon');
+        revalidateOnChange(fv, 'planned_carcinogenic_materials_use');
+        revalidateOnChange(fv, 'personal_data_sheet_file');
+        revalidateOnChange(fv, 'student_status_verification_file');
+        revalidateOnChange(fv, 'certificates_file');
+        revalidateOnChange(fv, 'commute_support_form_file');
+        
 
         // enable/disable validators based on other field values
         enableOnChange(fv, 'task', 'employment_type', function() { return $('#employment_type').val() == 'Határozott'});
@@ -194,10 +212,11 @@ $(function () {
         });
         enableOnChange(fv, 'extra_pay_2_monthly_gross_7', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
         enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
-        enableOnChange(fv, 'license_plate', 'entry_permissions', function() { 
-            var values = $('#entry_permissions').val();
-            return values.includes('auto')
-        });
+        
+        enableOnChange(fv, 'license_plate', 'entry_permissions', function() { return $('#entry_permissions').val().includes('auto') });
+        enableOnChange(fv, 'planned_carcinogenic_materials_use', 'work_with_carcinogenic_materials', function() { return $('#work_with_carcinogenic_materials').val() });
+        enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
+        enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() });
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
@@ -521,7 +540,7 @@ function updateInventoryNumbersOfAvailableTools() {
                 if (selectedOptionValue && !$('#' + inputId).length) {
                     let inputHtml = '<div class="form-group" id="group_' + inputId + '">' +
                                         '<label class="form-label" for="' + inputId + '">' + selectedOptionText + ' leltári száma</label>' +
-                                        '<input type="text" id="' + inputId + '" class="form-control" placeholder="Leltári szám" />' +
+                                        '<input type="text" id="' + inputId + '" class="form-control" placeholder="Leltári szám" name="' + inputId + '" />' +
                                     '</div>';
                     $('.dynamic-tools-container').append(inputHtml);
                 }
@@ -554,6 +573,10 @@ function revalidateOnChange(fv, targetId) {
 }
 
 function enableOnChange(fv, targetId, changerId, condition) {
+    if ($('#' + targetId).length === 0) {
+        return;
+    }
+
     condition() ? fv.enableValidator(targetId) : fv.disableValidator(targetId);
 
     $('#' + changerId).on('change', function() {
@@ -949,6 +972,210 @@ function validateEmployeeRecruitment() {
                         }
                     }
                 
+                },
+                phone_extension: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a telefonszámot'
+                        },
+                        integer: {
+                            message: 'Kérjük, csak egész számot adj meg'
+                        },
+                        between: {
+                            min: 400,
+                            max: 999,
+                            message: 'Az érték 400 és 999 között kell legyen'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_asztal: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az asztal leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_szek: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a szék leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_asztali_szamitogep: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az asztali számítógép leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_laptop: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a laptop leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_laptop_taska: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a laptop táska leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_monitor: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a monitor leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_billentyuzet: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a billentyűzet leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_eger: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az egér leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_dokkolo: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a dokkoló leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                inventory_numbers_of_available_tools_mobiltelefon: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a mobiltelefon leltári számát'
+                        },
+                        stringLength: {
+                            max: 30,
+                            message: 'A leltári szám nem lehet hosszabb 30 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[0-9 -]+$/,
+                            message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
+                        }
+                    }
+                },
+                planned_carcinogenic_materials_use: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a tervezett rákkeltő anyagok listáját'
+                        }
+                    },
+                    stringLength: {
+                        max: 10000,
+                        message: 'A rákkeltő anyagok listája nem lehet hosszabb 10000 karakternél'
+                    },
+                },
+                personal_data_sheet_file: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, töltsd fel a személyi adatlapot'
+                        }
+                    }
+                },
+                student_status_verification_file: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, töltsd fel a hallgatói jogviszony igazolást'
+                        }
+                    }
+                },
+                certificates_file: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, töltsd fel a bizonyítványokat'
+                        }
+                    }
+                },
+                commute_support_form_file: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, töltsd fel a munkába járási adatlapot'
+                        }
+                    }
                 },
             },
             plugins: {

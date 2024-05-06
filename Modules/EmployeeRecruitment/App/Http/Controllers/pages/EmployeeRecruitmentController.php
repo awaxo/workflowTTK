@@ -98,7 +98,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->position_id = $validatedData['position_id'];
         $recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
         $recruitment->employment_type = $validatedData['employment_type'];
-        $recruitment->task = $validatedData['task'];
+        $recruitment->task = isset($validatedData['task']) ? $validatedData['task'] : '';
         $recruitment->employment_start_date = $validatedData['employment_start_date'];
         $recruitment->employment_end_date = $validatedData['employment_end_date'];
 
@@ -140,9 +140,9 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->license_plate = $validatedData['license_plate'];
         $recruitment->employee_room = implode(',', $validatedData['employee_room']);
         $recruitment->phone_extension = $validatedData['phone_extension'];
-        $recruitment->external_access_rights = implode(',', $validatedData['external_access_rights']);
-        $recruitment->required_tools = implode(',', $validatedData['required_tools']);
-        $recruitment->available_tools = implode(',', $validatedData['available_tools']);
+        $recruitment->external_access_rights = isset($validatedData['external_access_rights']) ? implode(',', $validatedData['external_access_rights']) : null;
+        $recruitment->required_tools = isset($validatedData['required_tools']) ? implode(',', $validatedData['required_tools']) : null;
+        $recruitment->available_tools = isset($validatedData['available_tools']) ? implode(',', $validatedData['available_tools']) : null;
         $inventoryNumbers = [];
         foreach ($validatedData as $key => $value) {
             if (strpos($key, 'inventory_numbers_of_available_tools_') === 0) {
@@ -153,23 +153,22 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->inventory_numbers_of_available_tools = json_encode($inventoryNumbers);
         $recruitment->work_with_radioactive_isotopes = $validatedData['work_with_radioactive_isotopes'];
         $recruitment->work_with_carcinogenic_materials = $validatedData['work_with_carcinogenic_materials'];
-        $recruitment->planned_carcinogenic_materials_use = $validatedData['planned_carcinogenic_materials_use'];
+        $recruitment->planned_carcinogenic_materials_use = isset($validatedData['planned_carcinogenic_materials_use']) ? $validatedData['planned_carcinogenic_materials_use'] : null;
 
         // data section 6
         $recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
         $recruitment->student_status_verification = $this->getNewFileName($validatedData['name'], 'HallgatóiJogviszony', $validatedData['student_status_verification_file']);
         $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);
         $recruitment->requires_commute_support = $validatedData['requires_commute_support'] == 'true' ? 1 : 0;
-        $recruitment->commute_support_form = $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']);
+        $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
 
         try {
             $recruitment->save();
+            return response()->json(['url' => route('workflows-employee-recruitment-opened')]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'An error occurred while saving the recruitment. Please try again later.'], 500);
         }
-
-        return redirect()->route('workflows-employee-recruitment-opened');
     }
 
     public function opened()

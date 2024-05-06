@@ -101,6 +101,13 @@ $(function () {
     // Initially hide the commute support file upload
     $('.commute-support-form').hide();
 
+    // Clear hidden file inputs on page load
+    $('input[type="hidden"]').each(function() {
+        if ($(this).attr('name').endsWith('_file')) {
+            $(this).val('');
+        }
+    });
+
     $('#requires_commute_support').on('change', function() {
         if($(this).is(':checked')) {
             $('.commute-support-form').show();
@@ -137,6 +144,7 @@ $(function () {
         revalidateOnChange(fv, 'name');
         revalidateOnChange(fv, 'applicants_female_count');
         revalidateOnChange(fv, 'applicants_male_count');
+        revalidateOnChange(fv, 'position_id');
         revalidateOnChange(fv, 'job_description_file');
         revalidateOnChange(fv, 'task');
         revalidateOnChange(fv, 'employment_start_date');
@@ -159,6 +167,7 @@ $(function () {
         revalidateOnChange(fv, 'extra_pay_2_end_date');
         revalidateOnChange(fv, 'email');
         revalidateOnChange(fv, 'entry_permissions');
+        revalidateOnChange(fv, 'employee_room');
         revalidateOnChange(fv, 'license_plate');
         revalidateOnChange(fv, 'phone_extension');
         revalidateOnChange(fv, 'available_tools');
@@ -214,9 +223,9 @@ $(function () {
         enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
         
         enableOnChange(fv, 'license_plate', 'entry_permissions', function() { return $('#entry_permissions').val().includes('auto') });
-        enableOnChange(fv, 'planned_carcinogenic_materials_use', 'work_with_carcinogenic_materials', function() { return $('#work_with_carcinogenic_materials').val() });
+        enableOnChange(fv, 'planned_carcinogenic_materials_use', 'work_with_carcinogenic_materials', function() { return $('#work_with_carcinogenic_materials').val() == 1 });
         enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
-        enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() });
+        enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
         if (!validateCostCenterSum()) {
             $('#errorAlertMessage').text('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
@@ -262,7 +271,9 @@ $(function () {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (data) {
-                        // redirect happens on the server side
+                        if (data.url) {
+                            window.location.href = data.url;
+                        }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         var errors = jqXHR.responseJSON.errors;
@@ -274,6 +285,16 @@ $(function () {
                         $('#errorAlert').removeClass('d-none');
                         console.log(textStatus, errorThrown);
                     }
+                });
+            } else if (status === 'Invalid') {
+                var fields = fv.getFields();
+                Object.keys(fields).forEach(function(name) {
+                    fv.validateField(name)
+                        .then(function(status) {
+                            if (status === 'Invalid') {
+                                console.log('Field:', name, 'Status:', status);
+                            }
+                        });
                 });
             }
         });
@@ -704,6 +725,13 @@ function validateEmployeeRecruitment() {
                         }
                     }
                 },
+                position_id: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válaszd ki a munkakört'
+                        }
+                    }
+                },
                 job_description_file: {
                     validators: {
                         notEmpty: {
@@ -1044,6 +1072,13 @@ function validateEmployeeRecruitment() {
                         }
                     }
                 
+                },
+                employee_room: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válaszd ki a dolgozószobát'
+                        }
+                    }
                 },
                 phone_extension: {
                     validators: {

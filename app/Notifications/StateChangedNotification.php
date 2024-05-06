@@ -7,19 +7,24 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
-class StatusChangeNotification extends Notification
+class StateChangedNotification extends Notification
 {
     use Queueable;
 
-    protected $workflow;
+    public $workflow;
+    public $previousState;
+    public $currentState;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(AbstractWorkflow $workflow)
+    public function __construct(AbstractWorkflow $workflow, string $previousState, string $currentState)
     {
         $this->workflow = $workflow;
+        $this->previousState = $previousState;
+        $this->currentState = $currentState;
     }
 
     /**
@@ -37,14 +42,15 @@ class StatusChangeNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/folyamat/megtekintés/' . $this->workflow->id);
+        $url = url('/folyamat/megtekintes/' . $this->workflow->id);
 
         return (new MailMessage)
                     ->subject('Ügy státusz változás')
                     ->greeting('Kedves ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy státusza megváltozott:')
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
-                    ->line('Státusz: ' . $this->workflow->state)
+                    ->line('Korábbi státusz: ' . $this->previousState)
+                    ->line('Jelenlegi státusz: ' . $this->currentState)
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Workflow rendszer');

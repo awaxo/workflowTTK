@@ -126,7 +126,9 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
 
     public function registerClassAliases(): void
     {
-        class_alias(\Carbon\Carbon::class, 'Carbon');
+        if (!class_exists('Carbon')) {
+            class_alias(\Carbon\Carbon::class, 'Carbon');
+        }
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 
+use App\Events\StateChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
@@ -286,6 +287,8 @@ class EmployeeRecruitmentController extends Controller
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if ($service->isAllApproved($recruitment)) {
                 $transition = $service->getNextTransition($recruitment);
+                $previous_state = __('states.' . $recruitment->state);
+                
                 if ($transition) {
                     $this->validateFields($recruitment, $request);
                     $this->storeMetadata($recruitment, $request, 'approvals');
@@ -293,6 +296,7 @@ class EmployeeRecruitmentController extends Controller
                     $recruitment->updated_by = Auth::id();
 
                     $recruitment->save();
+                    event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
                     
                     return response()->json(['redirectUrl' => route('workflows-all-open')]);
                 } else {            

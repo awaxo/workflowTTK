@@ -52,21 +52,38 @@ class ExternalAccessController extends Controller
 
     public function update($id)
     {
+        $validatedData = $this->validateRequest();
+
         $externalAccess = ExternalAccessRight::find($id);
-        $externalAccess->external_system = request('external_system');
-        $externalAccess->admin_group_number = request('admin_group_number');
+        $externalAccess->fill($validatedData);
         $externalAccess->save();
         return response()->json(['success' => 'External access right updated successfully']);
     }
 
     public function create()
     {
+        $validatedData = $this->validateRequest();
+    
         $externalAccess = new ExternalAccessRight();
-        $externalAccess->external_system = request('external_system');
-        $externalAccess->admin_group_number = request('admin_group_number');
+        $externalAccess->fill($validatedData);
         $externalAccess->created_by = Auth::id();
         $externalAccess->updated_by = Auth::id();
         $externalAccess->save();
+
         return response()->json(['success' => 'External access right created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
+            'external_system' => 'required|max:255',
+            'admin_group_number' => 'required|numeric|exists:wf_workgroup,id',
+        ], [
+            'external_system.required' => 'Külső rendszer név kötelező',
+            'external_system.max' => 'Külső rendszer név maximum 255 karakter lehet',
+            'admin_group_number.required' => 'Admin csoport kötelező',
+            'admin_group_number.numeric' => 'Admin csoport id csak szám lehet',
+            'admin_group_number.exists' => 'Admin csoport nem létezik',
+        ]);
     }
 }

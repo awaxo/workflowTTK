@@ -246,24 +246,64 @@ $(function() {
         var costcenterTypeId = $(this).data('costcenter-type-id');
         var url = costcenterTypeId ? '/api/costcenter-type/' + costcenterTypeId + '/update' : '/api/costcenter-type/create';
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                name: $('#name').val(),
-                tender: $('#tender').is(':checked'),
-                clause_template: $('#clause_template').val()
-            },
-            success: function (response) {
-                window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_costcenter_type')).hide();
-                $('#errorAlertMessage').text('Hiba történt a mentés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('.invalid-feedback').remove();
+        let fv = validateCostCenterType();
+
+        $('#name').on('change', function() {
+            fv.revalidateField('name');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        name: $('#name').val(),
+                        tender: $('#tender').is(':checked'),
+                        clause_template: $('#clause_template').val()
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_costcenter_type')).hide();
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
             }
         });
     });
 });
+
+function validateCostCenterType() {
+    return FormValidation.formValidation(
+        document.getElementById('new_costcenter_type'),
+        {
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghely típus nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A költséghely típus neve maximum 255 karakter lehet'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
+}

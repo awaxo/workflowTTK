@@ -48,22 +48,39 @@ class PositionController extends Controller
 
     public function update($id)
     {
+        $validatedData = $this->validateRequest();
+
         $position = Position::find($id);
-        $position->name = request('name');
+        $position->fill($validatedData);
         $position->type = request('type');
         $position->updated_by = Auth::id();
         $position->save();
+
         return response()->json(['message' => 'Position updated successfully']);
     }
 
     public function create()
     {
+        $validatedData = $this->validateRequest();
+
         $position = new Position();
-        $position->name = request('name');
+        $position->fill($validatedData);
         $position->type = request('type');
         $position->created_by = Auth::id();
         $position->updated_by = Auth::id();
         $position->save();
+
         return response()->json(['message' => 'Position created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
+            'name' => 'required|max:255',
+        ],
+        [
+            'name.required' => 'Munkakör név kötelező',
+            'name.max' => 'Munkakör név maximum 255 karakter lehet',
+        ]);
     }
 }

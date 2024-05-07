@@ -7,14 +7,18 @@ use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/**
- * The state of the recruitment process when the IT head has to approve the recruitment.
- */
 class StateProjectCoordinationLeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
         return $workgroup911 && $workgroup911->leader_id === $user->id;
+    }
+
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        $service = new DelegationService();
+        return $service->isDelegate($user, 'project_coordination_lead');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
@@ -41,5 +45,17 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
                 return 'to_registration';
             }
         }
+    }
+
+    public function getDelegations(User $user): array {
+        $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
+        if ($workgroup911 && $workgroup911->leader_id === $user->id) {
+            return [[
+                'type' => 'project_coordination_lead',
+                'readable_name' => 'Projektkoordinációs osztályvezető'
+            ]];
+        }
+
+        return [];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Providers;
 
+use App\Services\ProfileRegistry;
 use App\Services\WorkflowRegistry;
 use Database\Seeders\DatabaseSeeder;
 use Dflydev\DotAccessData\Data;
@@ -125,7 +126,9 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
 
     public function registerClassAliases(): void
     {
-        class_alias(\Carbon\Carbon::class, 'Carbon');
+        if (!class_exists('Carbon')) {
+            class_alias(\Carbon\Carbon::class, 'Carbon');
+        }
     }
 
     /**

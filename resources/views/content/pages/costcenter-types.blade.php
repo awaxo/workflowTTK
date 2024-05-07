@@ -79,7 +79,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="name">Költséghely típus</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="text" id="name" class="form-control" />
+                        <input type="text" id="name" class="form-control" name="name" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
@@ -93,7 +93,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="clause_template">Záradák sablon</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="text" id="clause_template" class="form-control" />
+                        <input type="text" id="clause_template" class="form-control" name="clause_template" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>

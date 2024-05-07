@@ -105,9 +105,9 @@ $navbarDetached = ($navbarDetached ?? '');
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <a class="dropdown-item" href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">
+              <a class="dropdown-item" href="{{ route('profile') }}">
                 <i class="bx bx-user me-2"></i>
-                <span class="align-middle">My Profile</span>
+                <span class="align-middle">Profil</span>
               </a>
             </li>
             <li>
@@ -117,7 +117,7 @@ $navbarDetached = ($navbarDetached ?? '');
             <li>
               <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class='bx bx-power-off me-2'></i>
-                <span class="align-middle">Logout</span>
+                <span class="align-middle">Kilépés</span>
               </a>
             </li>
             <form method="POST" id="logout-form" action="{{ route('logout') }}">

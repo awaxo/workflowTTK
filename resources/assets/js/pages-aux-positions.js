@@ -235,23 +235,63 @@ $(function() {
         var positionId = $(this).data('position-id');
         var url = positionId ? '/api/position/' + positionId + '/update' : '/api/position/create';
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                name: $('#name').val(),
-                type: $('#type').val(),
-            },
-            success: function (response) {
-                window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_position')).hide();
-                $('#errorAlertMessage').text('Hiba történt a mentés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('.invalid-feedback').remove();
+        let fv = validatePosition();
+
+        $('#name').on('change', function() {
+            fv.revalidateField('name');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        name: $('#name').val(),
+                        type: $('#type').val(),
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_position')).hide();
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
             }
         });
     });
 });
+
+function validatePosition() {
+    return FormValidation.formValidation(
+        document.getElementById('new_position'),
+        {
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a munkakör nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A munkakör neve maximum 255 karakter hosszú lehet'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
+}

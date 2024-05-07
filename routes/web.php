@@ -11,6 +11,7 @@ use App\Http\Controllers\pages\ExternalAccessController;
 use App\Http\Controllers\pages\InstituteController;
 use App\Http\Controllers\pages\PermissionController;
 use App\Http\Controllers\pages\PositionController;
+use App\Http\Controllers\pages\ProfileController;
 use App\Http\Controllers\pages\RoleController;
 use App\Http\Controllers\pages\SettingsController;
 use App\Http\Controllers\pages\UserController;
@@ -28,7 +29,6 @@ use App\Http\Controllers\pages\WorkgroupController;
 |
 */
 
-
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
 Route::get('/szerepkorok', [RoleController::class, 'index'])->middleware(['auth'])->name('authorizations-roles');
@@ -44,6 +44,7 @@ Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->midd
 Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-users');
 Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['auth'])->name('pages-users-role');
 Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['auth'])->name('settings');
+Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth'])->name('profile');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
@@ -58,13 +59,11 @@ Route::get('/szerepkorok/jogosultsag/{permission}', [RoleController::class, 'ind
 // Display the login form
 Route::get('/login', [LoginBasic::class, 'index'])->name('login');
 
-// Handle login submission
+// Handle authentication
 Route::post('/login', [LoginBasic::class, 'authenticate']);
 
 // Define the logout route
 Route::post('/logout', [LoginBasic::class, 'logout'])->name('logout');
-
-//Route::get('/auth/register-basic', [RegisterBasic::class, 'index'])->name('auth-register-basic');
 
 
 // API routes
@@ -118,4 +117,8 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/user/{id}/restore', [UserController::class, 'restore']);
     Route::post('/user/{id}/update', [UserController::class, 'update']);
     Route::post('/user/create', [UserController::class, 'create']);
+
+    Route::get('/delegations', [ProfileController::class, 'getAllDelegations']);
+    Route::post('/delegation/create', [ProfileController::class, 'create']);
+    Route::post('/delegation/{id}/delete', [ProfileController::class, 'delete']);
 });

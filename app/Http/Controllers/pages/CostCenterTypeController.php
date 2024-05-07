@@ -49,24 +49,41 @@ class CostCenterTypeController extends Controller
 
     public function update($id)
     {
+        $validatedData = $this->validateRequest();
+
         $costcenterType = CostCenterType::find($id);
-        $costcenterType->name = request('name');
+        $costcenterType->fill($validatedData);
         $costcenterType->tender = request('tender') == 'true' ? 1 : 0;
         $costcenterType->clause_template = request('clause_template') ?? '';
         $costcenterType->updated_by = Auth::id();
         $costcenterType->save();
+
         return response()->json(['message' => 'Cost center type updated successfully']);
     }
 
     public function create()
     {
+        $validatedData = $this->validateRequest();
+
         $costcenterType = new CostCenterType();
-        $costcenterType->name = request('name');
+        $costcenterType->fill($validatedData);
         $costcenterType->tender = request('tender') == 'true' ? 1 : 0;
         $costcenterType->clause_template = request('clause_template') ?? '';
         $costcenterType->created_by = Auth::id();
         $costcenterType->updated_by = Auth::id();
         $costcenterType->save();
+
         return response()->json(['message' => 'Cost center type created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
+            'name' => 'required|max:255',
+        ],
+        [
+            'name.required' => 'Költséghely típus név kötelező',
+            'name.max' => 'Költséghely típus név maximum 255 karakter lehet',
+        ]);
     }
 }

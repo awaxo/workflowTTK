@@ -105,27 +105,49 @@ class UserController extends Controller
 
     public function update($id)
     {
+        $validatedData = $this->validateRequest();
+
         $user = User::find($id);
-        $user->name = request('name');
-        $user->email = request('email');
+        $user->fill($validatedData);
         $user->workgroup_id = request('workgroup_id');
         $user->syncRoles(request('roles'));
         $user->updated_by = Auth::id();
         $user->save();
+
         return response()->json(['message' => 'User updated successfully']);
     }
 
     public function create()
     {
+        $validatedData = $this->validateRequest();
+
         $user = new User();
-        $user->name = request('name');
-        $user->email = request('email');
-        $user->workgroup_id = request('workgroup_id');
+        $user->fill($validatedData);
         $user->syncRoles(request('roles'));
         $user->password = bcrypt('password');
         $user->created_by = Auth::id();
         $user->updated_by = Auth::id();
         $user->save();
+
         return response()->json(['message' => 'User created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:wf_user,email',
+            'workgroup_id' => 'required|exists:wf_workgroup,id',
+        ],
+        [
+            'name.required' => 'Név kötelező',
+            'name.max' => 'Név maximum 255 karakter lehet',
+            'email.required' => 'Email kötelező',
+            'email.email' => 'Valós email címet adj meg',
+            'email.unique' => 'Ez az email cím már foglalt',
+            'email.max' => 'Email maximum 255 karakter lehet',
+            'workgroup_id.required' => 'Csoport kötelező',
+            'workgroup_id.exists' => 'A megadott csoport nem létezik',
+        ]);
     }
 }

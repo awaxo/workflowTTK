@@ -70,22 +70,38 @@ class InstituteController extends Controller
 
     public function update($id)
     {
+        $validatedData = $this->validateRequest();
+
         $institute = Institute::find($id);
-        $institute->name = request('name');
-        $institute->group_level = request('group_level');
+        $institute->fill($validatedData);
         $institute->updated_by = Auth::id();
         $institute->save();
+
         return response()->json(['message' => 'Institute updated successfully']);
     }
 
     public function create()
     {
+        $validatedData = $this->validateRequest();
+
         $institute = new Institute();
-        $institute->name = request('name');
-        $institute->group_level = request('group_level');
+        $institute->fill($validatedData);
         $institute->created_by = Auth::id();
         $institute->updated_by = Auth::id();
         $institute->save();
+        
         return response()->json(['message' => 'Institute created successfully']);
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
+            'name' => 'required|max:255',
+            'group_level' => 'required',
+        ], [
+            'name.required' => 'Intézet név kötelező',
+            'name.max' => 'Intézet név maximum 255 karakter lehet',
+            'group_level.required' => 'Intézet szám kötelező',
+        ]);
     }
 }

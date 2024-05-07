@@ -6,10 +6,8 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/**
- * The state of the recruitment process when the IT head has to approve the recruitment.
- */
 class StateEmployeeSignature implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
@@ -24,11 +22,49 @@ class StateEmployeeSignature implements IStateResponsibility {
         }
     }
 
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $initiator_group_level = $workflow->initiatorInstitute?->group_level;
+            $service = new DelegationService();
+            $role_to_check = '';
+    
+            if ($initiator_group_level < 9) {
+                $role_to_check = 'secretary_' . $initiator_group_level;
+            } else {
+                $role_to_check = $workflow->initiatorInstitute?->name === 'Főigazgatóság' ? 'secretary_9_fi' : 'secretary_9_gi';
+            }
+    
+            return $service->isDelegate($user, $role_to_check);
+        } else {
+            return false;
+        }
+    }
+
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return true;
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
         return 'to_request_to_complete';
+    }
+
+    public function getDelegations(User $user): array {
+        $roles = $user->roles->pluck('name')->toArray();
+        $delegations = [];
+        
+        for ($i = 1; $i <= 9; $i++) {
+            if (in_array('titkar_' . $i, $roles)) {
+                $delegations[] = ['type' => 'secretary_' . $i, 'readable_name' => 'Titkár (intézet: ' . $i . ')'];
+            }
+        }
+
+        if (in_array('titkar_9_fi', $roles)) {
+            $delegations[] = ['type' => 'secretary_9_fi', 'readable_name' => 'Főigazgatósági titkárságvezető'];
+        }
+        if (in_array('titkar_9_gi', $roles)) {
+            $delegations[] = ['type' => 'secretary_9_gi', 'readable_name' => 'Gazdasági titkárságvezető'];
+        }
+
+        return empty($delegations) ? [] : [$delegations];
     }
 }

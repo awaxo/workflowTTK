@@ -3,6 +3,8 @@
   return [
     "creatorName" => "HUN-REN TTK",
     "creatorUrl" => "https://www.ttk.hun-ren.hu/",
+    "appVersion" => "0.2.0",
+
     "templateName" => "Workflow",
     "templateSuffix" => "Bootstrap 5 HTML Admin Template - Pro",
     "templateVersion" => "2.2.0",
@@ -24,5 +26,5 @@
     "twitterUrl" => "https://twitter.com/Theme_Selection",
     "githubUrl" => "https://github.com/themeselection",
     "dribbbleUrl" => "https://dribbble.com/themeselection",
-    "instagramUrl" => "https://www.instagram.com/themeselection/"
+    "instagramUrl" => "https://www.instagram.com/themeselection/",
   ];

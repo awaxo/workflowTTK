@@ -85,4 +85,14 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
     {
         return $this->state;
     }
+
+    public function isApprovedBy(User $user): bool
+    {
+        $metaData = json_decode($this->meta_data, true);
+        if (isset($metaData['approvals'][$this->state]['approval_user_ids']) && 
+            in_array($user->id, $metaData['approvals'][$this->state]['approval_user_ids'])) {
+                return true;
+        }
+        return false;
+    }
 }

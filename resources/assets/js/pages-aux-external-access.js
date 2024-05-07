@@ -237,23 +237,63 @@ $(function() {
         var externalAccessId = $(this).data('external-access-id');
         var url = externalAccessId ? '/api/external-access/' + externalAccessId + '/update' : '/api/external-access/create';
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                external_system: $('#external_system').val(),
-                admin_group_number: $('#admin_group_number').val()
-            },
-            success: function (response) {
-                window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_external_access')).hide();
-                $('#errorAlertMessage').text('Hiba történt a mentés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('.invalid-feedback').remove();
+        let fv = validateExternalAccess();
+
+        $('#external_system').on('change', function() {
+            fv.revalidateField('external_system');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        external_system: $('#external_system').val(),
+                        admin_group_number: $('#admin_group_number').val()
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_external_access')).hide();
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
             }
         });
     });
 });
+
+function validateExternalAccess() {
+    return FormValidation.formValidation(
+        document.getElementById('new_external_access'),
+        {
+            fields: {
+                external_system: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük add meg a külső rendszert'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A külső rendszer megnevezése maximum 255 karakter lehet'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
+}

@@ -25,7 +25,7 @@
     'resources/assets/vendor/libs/moment/moment.js',
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/select2/select2.js',
-    'node_modules/select2/dist/js/i18n/hu.js',
+    'resources/assets/vendor/libs/select2/i18n/hu.js',
     'resources/assets/vendor/libs/flatpickr/flatpickr.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
@@ -84,13 +84,13 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="external_system">Külső rendszer</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input class="form-control numeral-mask" type="text" id="external_system" />
+                        <input class="form-control numeral-mask" type="text" id="external_system" name="external_system" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="admin_group_number">Admin csoport</label>
-                    <select class="form-select select2" id="admin_group_number">
+                    <select class="form-select select2" id="admin_group_number" name="admin_group_number">
                         @foreach($workgroups as $workgroup)
                             <option value="{{ $workgroup->id }}">{{ $workgroup->workgroup_number }} - {{ $workgroup->name }}</option>
                         @endforeach

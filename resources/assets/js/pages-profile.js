@@ -1,201 +1,218 @@
-/**
- *  Pages User Profile (jquery)
- */
+import moment from 'moment';
+import GLOBALS from '../../js/globals.js';
+import { is } from 'immutable';
 
 'use strict';
 
 $(function () {
-  //  Projects table
-  var dt_projects_table = $('.datatables-projects');
-
-  if (dt_projects_table.length) {
-    var dt_project = dt_projects_table.DataTable({
-      ajax: assetsPath + 'json/user-profile.json',
-      columns: [
-        { data: '' },
-        { data: 'id' },
-        { data: 'project_name' },
-        { data: 'project_leader' },
-        { data: '' },
-        { data: 'status' },
-        { data: '' }
-      ],
-      columnDefs: [
-        {
-          // For Responsive
-          className: 'control',
-          searchable: false,
-          orderable: false,
-          responsivePriority: 2,
-          targets: 0,
-          render: function (data, type, full, meta) {
-            return '';
-          }
-        },
-        {
-          // For Checkboxes
-          targets: 1,
-          orderable: false,
-          searchable: false,
-          responsivePriority: 3,
-          checkboxes: true,
-          render: function () {
-            return '<input type="checkbox" class="dt-checkboxes form-check-input">';
-          },
-          checkboxes: {
-            selectAllRender: '<input type="checkbox" class="form-check-input">'
-          }
-        },
-        {
-          // Avatar image/badge, Name and post
-          targets: 2,
-          responsivePriority: 4,
-          render: function (data, type, full, meta) {
-            var $user_img = full['project_img'],
-              $name = full['project_name'],
-              $date = full['date'];
-            if ($user_img) {
-              // For Avatar image
-              var $output =
-                '<img src="' + assetsPath + 'img/icons/brands/' + $user_img + '" alt="Avatar" class="rounded-circle">';
-            } else {
-              // For Avatar badge
-              var stateNum = Math.floor(Math.random() * 6);
-              var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-              var $state = states[stateNum],
-                $name = full['project_name'],
-                $initials = $name.match(/\b\w/g) || [];
-              $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-              $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
-            }
-            // Creates full output for row
-            var $row_output =
-              '<div class="d-flex justify-content-left align-items-center">' +
-              '<div class="avatar-wrapper">' +
-              '<div class="avatar me-2">' +
-              $output +
-              '</div>' +
-              '</div>' +
-              '<div class="d-flex flex-column">' +
-              '<span class="text-truncate fw-bold">' +
-              $name +
-              '</span>' +
-              '<small class="text-truncate text-muted">' +
-              $date +
-              '</small>' +
-              '</div>' +
-              '</div>';
-            return $row_output;
-          }
-        },
-        {
-          // Teams
-          targets: 4,
-          orderable: false,
-          searchable: false,
-          render: function (data, type, full, meta) {
-            var $team = full['team'],
-              $output;
-            $output = '<div class="d-flex align-items-center avatar-group">';
-            for (var i = 0; i < $team.length; i++) {
-              $output +=
-                '<div class="avatar avatar-xs">' +
-                '<img src="' +
-                assetsPath +
-                'img/avatars/' +
-                $team[i] +
-                '" alt="Avatar" class="rounded-circle pull-up">' +
-                '</div>';
-            }
-            $output += '</div>';
-            return $output;
-          }
-        },
-        {
-          // Label
-          targets: -2,
-          render: function (data, type, full, meta) {
-            var $status_number = full['status'];
-            return (
-              '<div class="d-flex align-items-center">' +
-              '<div class="progress w-100 me-3" style="height: 6px;">' +
-              '<div class="progress-bar" style="width: ' +
-              $status_number +
-              '" aria-valuenow="' +
-              $status_number +
-              '" aria-valuemin="0" aria-valuemax="100"></div>' +
-              '</div>' +
-              '<span>' +
-              $status_number +
-              '</span></div>'
-            );
-          }
-        },
-        {
-          // Actions
-          targets: -1,
-          searchable: false,
-          title: 'Actions',
-          orderable: false,
-          render: function (data, type, full, meta) {
-            return (
-              '<div class="d-inline-block">' +
-              '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
-              '<div class="dropdown-menu dropdown-menu-end m-0">' +
-              '<a href="javascript:;" class="dropdown-item">Details</a>' +
-              '<a href="javascript:;" class="dropdown-item">Archive</a>' +
-              '<div class="dropdown-divider"></div>' +
-              '<a href="javascript:;" class="dropdown-item text-danger delete-record">Delete</a>' +
-              '</div>' +
-              '</div>'
-            );
-          }
-        }
-      ],
-      order: [[2, 'desc']],
-      dom: '<"card-header pb-0 pt-sm-0"<"head-label text-center"><"d-flex justify-content-center justify-content-md-end"f>>t<"row mx-2"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-      displayLength: 7,
-      lengthMenu: [7, 10, 25, 50, 75, 100],
-      responsive: {
-        details: {
-          display: $.fn.dataTable.Responsive.display.modal({
-            header: function (row) {
-              var data = row.data();
-              return 'Details of "' + data['project_name'] + '" Project';
-            }
-          }),
-          type: 'column',
-          renderer: function (api, rowIdx, columns) {
-            var data = $.map(columns, function (col, i) {
-              return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
-                ? '<tr data-dt-row="' +
-                    col.rowIndex +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td>' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td>' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
-                : '';
-            }).join('');
-
-            return data ? $('<table class="table"/><tbody />').append(data) : false;
-          }
-        }
-      }
+    // set numeral mask to number fields
+    $('.numeral-mask').toArray().forEach(function(field){
+        new Cleave(field, {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            delimiter: ' ',
+        });
     });
-    $('div.head-label').html('<h5 class="card-title mb-0">Projects</h5>');
-  }
 
-  // Filter form control to default size
-  // ? setTimeout used for multilingual table initialization
-  setTimeout(() => {
-    $('.dataTables_filter .form-control').removeClass('form-control-sm');
-    $('.dataTables_length .form-select').removeClass('form-select-sm');
-  }, 300);
+    $("#delegation_start_date, #delegation_end_date").datepicker({
+        format: "yyyy.mm.dd",
+        startDate: new Date()
+    });
+
+    $('.datatables-delegates').DataTable({
+        ajax: '/api/delegations',
+        autoWidth: false,
+        dom: 'rtip',
+        columns: [
+            { data: 'id', visible: false, searchable: false },
+            { data: 'delegate_name' },
+            { data: 'readable_type' },
+            { 
+                data: 'start_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            {
+                data: 'end_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            { data: '' }
+        ],
+        columnDefs: [
+            {
+                // For Responsive
+                targets: 0,
+                className: 'control',
+                orderable: false,
+                responsivePriority: 2,
+                searchable: false,
+                render: function(data, type, full, meta) {
+                    return '';
+                }
+            },
+            {
+                // Actions
+                targets: -1,
+                title: 'Törlés',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, full, meta) {
+                    return (
+                        '<div class="d-inline-block">' +
+                        '<a href="javascript:;" class="btn btn-sm text-danger btn-icon delete-delegation"><i class="bx bx-trash"></i></a>' +
+                        '</div>'
+                    );
+                }
+            }
+        ],
+        order: [[1, 'asc']],
+        buttons: [],
+        displayLength: 10,
+        lengthMenu: [5, 10, 25],
+
+        language: GLOBALS.DATATABLE_TRANSLATION,
+    });
+
+    // Filter form control to default size
+    // ? setTimeout used for multilingual table initialization
+    setTimeout(() => {
+        $('.dataTables_filter .form-control').removeClass('form-control-sm');
+        $('.dataTables_length .form-select').removeClass('form-select-sm');
+    }, 300);
+
+    $('#save_delegation').on('click', function() {
+        $('.invalid-feedback').remove();
+        let fv = validateDelegation();
+
+        // Revalidate fields when their values change
+        $('#delegation_type, #delegated_user, #delegation_start_date, #delegation_end_date').on('change', function() {
+            fv.revalidateField('delegation_type');
+            fv.revalidateField('delegated_user');
+            fv.revalidateField('delegation_start_date');
+            fv.revalidateField('delegation_end_date');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: 'api/delegation/create',
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        type: $('#delegation_type').val(),
+                        delegated_user: $('#delegated_user').val(),
+                        start_date: $('#delegation_start_date').val(),
+                        end_date: $('#delegation_end_date').val()
+                    },
+                    success: function() {
+                        $('.datatables-delegates').DataTable().ajax.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $('#errorAlertMessage').text('Hiba történt a helyettes kijelölése során!');
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-delegation', function() {
+        var row = $(this).closest('tr');
+        var delegationId = $('.datatables-delegates').DataTable().row(row).data().id;
+
+        $('#confirm_delete').attr('data-delegation-id', delegationId);
+        $('#confirm_delete').data('row', row);
+        $('#deleteConfirmation').modal('show');
+    });
+
+    // confirm cancel workflow
+    $('#confirm_delete').on('click', function() {
+        let delegationId = $(this).data('delegation-id');
+        let row = $(this).data('row');
+
+        $.ajax({
+            url: '/api/delegation/' + delegationId + '/delete',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                $('#deleteConfirmation').modal('hide');
+                $('.datatables-delegates').DataTable().row(row).remove().draw();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#deleteConfirmation').modal('hide');
+                $('#errorAlertMessage').text('Hiba történt a törlés során!');
+                $('#errorAlert').removeClass('d-none');
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
 });
+
+function validateDelegation() {
+    return FormValidation.formValidation(
+        document.getElementById('navs-pills-delegations'),
+        {
+            fields: {
+                delegation_type: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük válassz helyettesített funkciót'
+                        }
+                    }
+                },
+                delegated_user: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük válassz helyettesítőt'
+                        }
+                    }
+                },
+                delegation_start_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük add meg a helyettesítés kezdetét'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
+                        }
+                    }
+                },
+                delegation_end_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük add meg a helyettesítés végét'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
+                        },
+                        callback: {
+                            message: 'A helyettesítés vége nem lehet korábban a helyettesítés kezdténél',
+                            callback: function(input) {
+                                if (input.value === '') {
+                                    return true;
+                                }
+
+                                return input.value >= $('#delegation_start_date').val();
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    ).on('core.field.invalid', function(field) {
+        $(`#${field}`).next().addClass('is-invalid');
+    }).on('core.field.valid', function(field) {
+        $(`#${field}`).next().removeClass('is-invalid');
+    });
+}

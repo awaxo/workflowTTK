@@ -6,14 +6,18 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/**
- * The state of the recruitment process when the IT head has to approve the recruitment.
- */
 class StateFinancialCounterpartyApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup903 = Workgroup::where('workgroup_number', 903)->first();
         return $workgroup903 && $workgroup903->leader_id === $user->id;
+    }
+
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        $service = new DelegationService();
+        return $service->isDelegate($user, 'financial_counterparty_approver');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
@@ -22,5 +26,17 @@ class StateFinancialCounterpartyApproval implements IStateResponsibility {
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
         return 'to_obligee_approval';
+    }
+
+    public function getDelegations(User $user): array {
+        $workgroup903 = Workgroup::where('workgroup_number', 903)->first();
+        if ($workgroup903 && $workgroup903->leader_id === $user->id) {
+            return [[
+                'type' => 'financial_counterparty_approver',
+                'readable_name' => 'Gazdasági igazgató'
+            ]];
+        }
+
+        return [];
     }
 }

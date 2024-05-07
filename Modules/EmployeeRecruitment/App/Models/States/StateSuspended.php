@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
  * The state of the recruitment process when the IT head has to approve the recruitment.
  */
 class StateSuspended implements IStateResponsibility {
+    private $stateClass = null;
+
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workflow_meta = json_decode($workflow->meta_data);
 
@@ -24,11 +26,16 @@ class StateSuspended implements IStateResponsibility {
             $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $lastEntry->status)));
             $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
             if (class_exists($stateClassName)) {
-                $stateClass = new $stateClassName();
+                $this->stateClass = new $stateClassName();
             }
 
-            return $stateClass && $stateClass->isUserResponsible($user, $workflow);
+            return $this->stateClass && $this->stateClass->isUserResponsible($user, $workflow);
         }
+    }
+
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        return $this->stateClass && $this->stateClass->isUserResponsibleAsDelegate($user, $workflow);
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
@@ -38,5 +45,9 @@ class StateSuspended implements IStateResponsibility {
     public function getNextTransition(IGenericWorkflow $workflow): string {
         // next transition depends on from where we get suspended
         return '';
+    }
+
+    public function getDelegations(User $user): array {
+        return [];
     }
 }

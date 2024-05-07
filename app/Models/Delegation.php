@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RoleSubstitute extends Model
+class Delegation extends Model
 {
     use HasFactory;
 
-    protected $table = 'wf_role_substitute';
+    protected $table = 'wf_delegation';
 
     protected $fillable = [
         'original_user_id',
-        'substitute_user_id',
-        'role_id',
+        'delegate_user_id',
+        'type',
         'start_date',
         'end_date'
     ];
@@ -22,6 +22,11 @@ class RoleSubstitute extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'deleted' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'deleted' => 0,
     ];
 
     public function originalUser()
@@ -29,14 +34,9 @@ class RoleSubstitute extends Model
         return $this->belongsTo(User::class, 'original_user_id');
     }
 
-    public function substituteUser()
+    public function delegateUser()
     {
-        return $this->belongsTo(User::class, 'substitute_user_id');
-    }
-
-    public function role()
-    {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(User::class, 'delegate_user_id');
     }
 
     public function createdBy()

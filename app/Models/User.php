@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -25,6 +26,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'notification_preferences',
         'workgroup_id',
         'email_verified_at',
         'password',
@@ -60,6 +62,7 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'deleted' => 0,
+        'notification_preferences' => '{"email":{"recruitment":{"approval_notification":true}}}'
     ];
 
     /**
@@ -94,44 +97,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Determine if the user has the given ability.
+     * Route notifications for the mail channel.
      *
-     * @param  string|array  $ability
-     * @param  array|mixed  $arguments
-     * @return bool
+     * @return  array<string, string>|string
      */
-    public function can($ability, $arguments = [])
+    public function routeNotificationForMail(Notification $notification): array|string
     {
-        // First, check if the user has the ability directly.
-        if (parent::can($ability, $arguments)) {
-            return true;
-        }
-
-        // Next, check for the ability through substitutions.
-        return $this->hasPermissionThroughSubstitution($ability, $arguments);
-    }
-
-    /**
-     * Check if the user has the given permission through substitution.
-     *
-     * @param  string  $permission
-     * @param  array  $arguments
-     * @return bool
-     */
-    protected function hasPermissionThroughSubstitution($permission, $arguments = [])
-    {
-        // Check for active substitutions
-        $substitutes = RoleSubstitute::where('substitute_user_id', $this->id)
-                                       ->whereDate('start_date', '<=', now())
-                                       ->whereDate('end_date', '>=', now())
-                                       ->get();
-
-        foreach ($substitutes as $substitute) {
-            if ($substitute->role->hasPermissionTo($permission)) {
-                return true;
-            }
-        }
-    
-        return false;
+        return [$this->email => $this->name];
     }
 }

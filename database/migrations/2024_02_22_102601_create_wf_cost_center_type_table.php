@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('tender');
-            $table->text('clause_template');
+            $table->text('clause_template')->nullable();
             $table->unsignedTinyInteger('deleted')->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');

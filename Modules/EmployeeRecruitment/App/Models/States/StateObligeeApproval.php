@@ -6,14 +6,18 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/**
- * The state of the recruitment process when the IT head has to approve the recruitment.
- */
 class StateObligeeApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup901 = Workgroup::where('workgroup_number', 901)->first();
         return $workgroup901 && $workgroup901->leader_id === $user->id;
+    }
+
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        $service = new DelegationService();
+        return $service->isDelegate($user, 'obligee_approver');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
@@ -22,5 +26,17 @@ class StateObligeeApproval implements IStateResponsibility {
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
         return 'to_draft_contract_pending';
+    }
+
+    public function getDelegations(User $user): array {
+        $workgroup901 = Workgroup::where('workgroup_number', 901)->first();
+        if ($workgroup901 && $workgroup901->leader_id === $user->id) {
+            return [[
+                'type' => 'obligee_approver',
+                'readable_name' => 'Főigazgató'
+            ]];
+        }
+
+        return [];
     }
 }

@@ -2,7 +2,11 @@ import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
 $(function() {
-    'use strict';
+    $('.numeral-mask').toArray().forEach(function(field){
+        new Cleave(field, {
+            numeral: true
+        });
+    });
   
     $('.datatables-workgroups').DataTable({
         ajax: '/api/workgroups',
@@ -239,25 +243,80 @@ $(function() {
         var workgroupId = $(this).data('workgroup-id');
         var url = workgroupId ? '/api/workgroup/' + workgroupId + '/update' : '/api/workgroup/create';
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                workgroup_number: $('#workgroup_number').val(),
-                name: $('#name').val(),
-                leader_id: $('#leader_id').val(),
-                labor_administrator: $('#labor_administrator').val(),
-            },
-            success: function (response) {
-                window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_workgroup')).hide();
-                $('#errorAlertMessage').text('Hiba történt a mentés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('.invalid-feedback').remove();
+        let fv = validateWorkgroup();
+
+        $('#workgroup_number, #name').on('change', function() {
+            fv.revalidateField('workgroup_number');
+            fv.revalidateField('name');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        workgroup_number: $('#workgroup_number').val(),
+                        name: $('#name').val(),
+                        leader_id: $('#leader_id').val(),
+                        labor_administrator: $('#labor_administrator').val(),
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_workgroup')).hide();
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
             }
         });
     });
 });
+
+function validateWorkgroup() {
+    return FormValidation.formValidation(
+        document.getElementById('new_workgroup'),
+        {
+            fields: {
+                workgroup_number: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a csoportszámot'
+                        },
+                        numeric: {
+                            message: 'A csoportszám csak szám lehet'
+                        },
+                        stringLength: {
+                            max: 5,
+                            message: 'A csoportszám maximum 5 karakter hosszú lehet'
+                        }
+                    }
+                },
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a csoport nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A csoport neve maximum 255 karakter hosszú lehet'
+                        },
+                    }
+                }
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
+}

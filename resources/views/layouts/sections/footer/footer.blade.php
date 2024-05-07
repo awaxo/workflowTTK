@@ -9,7 +9,7 @@ $containerFooter = (isset($configData['contentLayout']) && $configData['contentL
       © <script>document.write(new Date().getFullYear())</script>, <a href="{{ (!empty(config('variables.creatorUrl')) ? config('variables.creatorUrl') : '') }}" target="_blank" class="footer-link fw-medium">{{ (!empty(config('variables.creatorName')) ? config('variables.creatorName') : '') }}</a>
     </div>
     <div  class="d-none d-lg-inline-block">
-      <!-- Bottom right links -->
+      Verzió: {{ (!empty(config('variables.appVersion')) ? config('variables.appVersion') : '-') }}
     </div>
   </div>
 </footer>

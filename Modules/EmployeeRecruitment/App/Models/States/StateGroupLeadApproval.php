@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\Room;
@@ -10,6 +11,7 @@ use App\Models\Workgroup;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateGroupLeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
@@ -33,15 +35,47 @@ class StateGroupLeadApproval implements IStateResponsibility {
                 }
             }
 
-            // Check if user has already approved the workflow
-            $metaData = json_decode($workflow->meta_data, true);
-            $already_approved_by_user = false;
-            if (isset($metaData['approvals'][$workflow->state]['approval_user_ids']) && 
-                in_array($user->id, $metaData['approvals'][$workflow->state]['approval_user_ids'])) {
-                    $already_approved_by_user = true;
+            return $workgroup_lead && !$workflow->isApprovedBy($user);
+        } else {
+            return false;
+        }
+    }
+
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $workgroups = [];
+            if ($workflow->workgroup1) {
+                $workgroups[] = 'grouplead_' . $workflow->workgroup1;
+            }
+            if ($workflow->workgroup2) {
+                $workgroups[] = 'grouplead_' . $workflow->workgroup2;
             }
 
-            return $workgroup_lead && !$already_approved_by_user;
+            $room_numbers = explode(',', $workflow->entry_permissions);
+            foreach ($room_numbers as $room_number) {
+                $room = Room::where('room_number', $room_number)->first();
+
+                if ($room) {
+                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
+
+                    if ($workgroup) {
+                        $workgroups[] = 'grouplead_' . $workgroup;
+                    }
+                }
+            }
+            $workgroups = array_unique($workgroups);
+
+            $service = new DelegationService();
+            $isDelegate = false;
+            foreach ($workgroups as $workgroup) {
+                if ($service->isDelegate($user, $workgroup)) {
+                    $isDelegate = true;
+                    break;
+                }
+            }
+
+            return $isDelegate && !$workflow->isApprovedBy($user);
         } else {
             return false;
         }
@@ -85,7 +119,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
             $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
             $workflow->meta_data = json_encode($metaData);
 
-            $workgroup_lead = [
+            $workgroup_leads = [
                 optional($workflow->workgroup1)->leader_id,
                 optional($workflow->workgroup2)->leader_id
             ];
@@ -98,16 +132,30 @@ class StateGroupLeadApproval implements IStateResponsibility {
                     $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
 
                     if ($workgroup) {
-                        $workgroup_lead[] = $workgroup->leader_id;
+                        $workgroup_leads[] = $workgroup->leader_id;
                     }
                 }
             }
-            $workgroup_lead = array_filter($workgroup_lead);
+            $workgroup_leads = array_filter($workgroup_leads);
+
+            foreach ($workgroup_leads as $key => $userId) {
+                $delegation = Delegation::where('original_user_id', $userId)
+                    ->where('delegate_user_id', Auth::id())
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now())
+                    ->where('deleted', 0)
+                    ->where('type', 'like', 'grouplead_%') // Check for any supervisor delegations
+                    ->first();
+
+                if ($delegation) {
+                    $workgroup_leads[$key] = Auth::id();
+                }
+            }
 
             $workflow->updated_by = Auth::id();
             $workflow->save();
 
-            return count(array_diff($workgroup_lead, $approval_user_ids)) === 0;
+            return count(array_diff($workgroup_leads, $approval_user_ids)) === 0;
         } else {
             return false;
         }
@@ -141,5 +189,19 @@ class StateGroupLeadApproval implements IStateResponsibility {
         else {
             return 'to_director_approval';
         }
+    }
+
+    public function getDelegations(User $user): array {
+        $workgroups = Workgroup::where('leader_id', $user->id)->get();
+        if ($workgroups->count() > 0) {
+            return $workgroups->map(function ($workgroup) {
+                return [
+                    'type' => 'grouplead_' . $workgroup->workgroup_number,
+                    'readable_name' => 'Témavezető (csoport: ' . $workgroup->workgroup_number . ')'
+                ];
+            })->toArray();
+        }
+
+        return [];
     }
 }

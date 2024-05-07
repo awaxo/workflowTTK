@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->json('notification_preferences')->default('{"email":{"recruitment":{"approval_notification":true}}}');
             $table->unsignedBigInteger('workgroup_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

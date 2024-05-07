@@ -266,29 +266,97 @@ $(function() {
         var costcenterId = $(this).data('costcenter-id');
         var url = costcenterId ? '/api/costcenter/' + costcenterId + '/update' : '/api/costcenter/create';
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                cost_center_code: $('#cost_center_code').val(),
-                name: $('#name').val(),
-                type_id: $('#type_id').val(),
-                lead_user_id: $('#lead_user_id').val(),
-                project_coordinator_user_id: $('#project_coordinator_user_id').val(),
-                due_date: $('#due_date').val(),
-                minimal_order_limit: $('#minimal_order_limit').val(),
-                valid_employee_recruitment: $('#valid_employee_recruitment').is(':checked'),
-            },
-            success: function (response) {
-                window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_costcenter')).hide();
-                $('#errorAlertMessage').text('Hiba történt a mentés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('.invalid-feedback').remove();
+        let fv = validateCostCenter();
+
+        $('#cost_center_code, #name, #due_date, #minimal_order_limit').on('change', function() {
+            fv.revalidateField('cost_center_code');
+            fv.revalidateField('name');
+            fv.revalidateField('due_date');
+            fv.revalidateField('minimal_order_limit');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        cost_center_code: $('#cost_center_code').val(),
+                        name: $('#name').val(),
+                        type_id: $('#type_id').val(),
+                        lead_user_id: $('#lead_user_id').val(),
+                        project_coordinator_user_id: $('#project_coordinator_user_id').val(),
+                        due_date: $('#due_date').val(),
+                        minimal_order_limit: $('#minimal_order_limit').val(),
+                        valid_employee_recruitment: $('#valid_employee_recruitment').is(':checked'),
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_costcenter')).hide();
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, errorThrown);
+                    }
+                });
             }
         });
     });
 });
+
+function validateCostCenter() {
+    return FormValidation.formValidation(
+        document.getElementById('new_costcenter'),
+        {
+            fields: {
+                cost_center_code: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
+                        },
+                        stringLength: {
+                            max: 50,
+                            message: 'A költséghely maximum 50 karakter lehet'
+                        }
+                    }
+                },
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a megnevezést'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A megnevezés maximum 255 karakter lehet'
+                        }
+                    }
+                },
+                due_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a lejárat dátumát'
+                        }
+                    }
+                },
+                minimal_order_limit: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a minimális rendelési limitet'
+                        }
+                    }
+                },
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
+}

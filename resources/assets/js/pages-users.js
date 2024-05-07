@@ -59,7 +59,6 @@ $(function() {
                 orderable: false,
                 searchable: false,
                 render: function(data, type, full, meta) {
-                    // 'visszaállítás' should be visible only if deleted is true
                     return (
                         '<div class="d-inline-block">' +
                         '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
@@ -241,25 +240,80 @@ $(function() {
         var userId = $(this).data('user-id');
         var url = userId ? '/api/user/' + userId + '/update' : '/api/user/create';
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                name: $('#name').val(),
-                email: $('#email').val(),
-                workgroup_id: $('#workgroup_id').val(),
-                roles: $('#roles').val()
-            },
-            success: function (response) {
-                window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                bootstrap.Offcanvas.getInstance(document.getElementById('new_user')).hide();
-                $('#errorAlertMessage').text('Hiba történt a mentés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+        $('.invalid-feedback').remove();
+        let fv = validateUser();
+
+        $('#name, #email').on('change', function() {
+            fv.revalidateField('name');
+            fv.revalidateField('email');
+        });
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        name: $('#name').val(),
+                        email: $('#email').val(),
+                        workgroup_id: $('#workgroup_id').val(),
+                        roles: $('#roles').val()
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_user')).hide();                        
+                        var errors = jqXHR.responseJSON.errors;
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                            }
+                        }
+                        $('#errorAlert').removeClass('d-none');
+                        console.log(textStatus, jqXHR.responseJSON.errors);
+                    }
+                });
             }
         });
     });
 });
+
+function validateUser() {
+    return FormValidation.formValidation(
+        document.getElementById('new_user'),
+        {
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a felhasználó nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A név nem lehet hosszabb 255 karakternél'
+                        }
+                    }
+                },
+                email: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a felhasználó email címét'
+                        },
+                        emailAddress: {
+                            message: 'Kérjük, valós email címet adj meg'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'Az email nem lehet hosszabb 255 karakternél'
+                        }
+                    }
+                },
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    );
+}

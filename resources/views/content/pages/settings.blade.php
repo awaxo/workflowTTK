@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Folyamatok')
+@section('title', 'Beállítások')
 
 <!-- Vendor Styles -->
 @section('vendor-style')
@@ -58,19 +58,19 @@
             <div class="tab-pane fade show active" id="navs-pills-generic-settings" role="tabpanel">
                 <div class="row g-3">
                     <div class="col-12">
-                        <div class="col-4">
+                        <div class="col-3">
                             <label for="suspension_thresold" class="form-label">Törlési küszöb felfüggesztett státuszban</label>
                             <div class="d-flex align-items-center">
-                                <input class="form-control numeral-mask" type="text" id="suspension_thresold" value="96" />
+                                <input class="form-control numeral-mask" type="text" id="suspension_thresold" value="96" name="suspension_thresold" />
                                 <span class="ms-2">Óra</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="col-4">
+                        <div class="col-3">
                             <label for="director_approval_thresold" class="form-label">Igazgatói jóváhagyás alsó határa</label>
                             <div class="d-flex align-items-center">
-                                <input class="form-control numeral-mask" type="text" id="director_approval_thresold" value="5000000" />
+                                <input class="form-control numeral-mask" type="text" id="director_approval_thresold" value="5000000" name="director_approval_thresold" />
                                 <span class="ms-2">Ft</span>
                             </div>
                         </div>

@@ -30,22 +30,22 @@
             },
             {
                 "url": "/",
-                "name": "Felvételi kérelem",
+                "name": "HR Osztály",
                 "slug": "workflows-employee-recruitment",
                 "submenu":[
                     {
                         "url": "/felveteli-kerelem/uj",
-                        "name": "Új felvételi kérelem",
+                        "name": "Új",
                         "slug": "workflows-employee-recruitment-new"
                     },
                     {
                         "url": "/felveteli-kerelem/nyitott",
-                        "name": "Nyitott felvételi kérelmek",
+                        "name": "Nyitott",
                         "slug": "workflows-employee-recruitment-opened"
                     },
                     {
                         "url": "/felveteli-kerelem/lezart",
-                        "name": "Lezárt felvételi kérelmek",
+                        "name": "Lezárt",
                         "slug": "workflows-employee-recruitment-closed"
                     }
                 ]

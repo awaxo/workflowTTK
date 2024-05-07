@@ -320,11 +320,13 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('message')) > 0) {
+                $previous_state = __('states.' . $recruitment->state);
                 $this->storeMetadata($recruitment, $request, 'rejections');
                 $recruitment->workflow_apply('to_request_review');
                 $recruitment->updated_by = Auth::id();
 
                 $recruitment->save();
+                event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
 
                 return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {
@@ -343,6 +345,7 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment) || $request->input('is_cancel')) {
             if (strlen($request->input('message')) > 0) {
+                $previous_state = __('states.' . $recruitment->state);
                 $this->storeMetadata($recruitment, $request, 'suspensions');
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->updated_by = Auth::id();
@@ -351,6 +354,7 @@ class EmployeeRecruitmentController extends Controller
                 }
                 
                 $recruitment->save();
+                event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
 
                 return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {

@@ -32,6 +32,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerSeeders();
         $this->registerWorkflow();
+        $this->registerEventServciceProvider();
         $this->registerClassAliases();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/migrations'));
     }
@@ -122,6 +123,11 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
     public function registerWorkflow(): void
     {
         WorkflowRegistry::register(RecruitmentWorkflow::class);
+    }
+
+    public function registerEventServciceProvider(): void
+    {
+        $this->app->register(EventServiceProvider::class);
     }
 
     public function registerClassAliases(): void

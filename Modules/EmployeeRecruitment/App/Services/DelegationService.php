@@ -57,6 +57,27 @@ class DelegationService
     {
         return Delegation::where('delegate_user_id', $user->id)
             ->where('type', $delegationType)
+            ->where('deleted', 0)
+            ->where(function ($query) {
+                $query->where(function ($subquery) {
+                    $subquery->whereNotNull('end_date')
+                    ->whereDate('end_date', '>=', now());
+                })->orWhere(function ($subquery) {
+                    $subquery->whereNull('end_date')
+                    ->whereDate('start_date', '<=', now());
+                });
+            })
+            ->count() > 0;
+    }
+
+    /**
+     * Get delegate users for the given user and delegation type.
+     */
+    public function getDelegateUsers(User $user, string $delegationType)
+    {
+        return Delegation::where('original_user_id', $user->id)
+            ->where('type', $delegationType)
+            ->where('deleted', 0)
             ->where(function ($query) {
                 $query->where(function ($subquery) {
                     $subquery->whereNotNull('end_date')
@@ -66,6 +87,10 @@ class DelegationService
                         ->whereDate('start_date', '<=', now());
                 });
             })
-            ->count() > 0;
+            ->get()
+            ->pluck('delegate_user_id')
+            ->map(function ($delegateUserId) {
+                return User::find($delegateUserId);
+            });
     }
 }

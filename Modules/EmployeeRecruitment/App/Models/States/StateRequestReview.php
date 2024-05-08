@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -42,7 +43,36 @@ class StateRequestReview implements IStateResponsibility {
         } else {
             return false;
         }
-    }    
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        $role = 'titkar_' . $workflow->initiatorInstitute->group_level;
+
+        if ($workflow->initiatorInstitute->group_level == 9) {
+            $createdBy = User::find($workflow->created_by);
+            $role .= $createdBy->hasRole('titkar_foigazgatosag') ? '_fi' : '_gi';
+        }
+
+        $usersWithRole = User::role($role)->get();
+        $service = new DelegationService();
+        $delegateUsers = collect();
+
+        foreach ($usersWithRole as $user) {
+            $delegates = $service->getDelegates($user, str_replace('titkar_', 'secretary_', $role));
+            $delegateUsers = $delegateUsers->concat($delegates);
+        }
+
+        $responsibleUsers = $usersWithRole->concat($delegateUsers);
+
+        if ($notApprovedOnly) {
+            $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                return !$workflow->isApprovedBy($user);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
+    }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return true;

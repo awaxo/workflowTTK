@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
@@ -98,6 +99,56 @@ class StateDirectorApproval implements IStateResponsibility {
             return $delegated && !$workflow->isApprovedBy($user);
         } else {
             return false;
+        }
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $cost_center_codes = array_filter([
+                optional($workflow->base_salary_cc1)->cost_center_code,
+                optional($workflow->base_salary_cc2)->cost_center_code,
+                optional($workflow->base_salary_cc3)->cost_center_code,
+                optional($workflow->health_allowance_cc)->cost_center_code,
+                optional($workflow->management_allowance_cc)->cost_center_code,
+                optional($workflow->extra_pay_1_cc)->cost_center_code,
+                optional($workflow->extra_pay_2_cc)->cost_center_code,
+            ]);
+    
+            // Get the workgroup numbers
+            $workgroup_numbers = [];
+            foreach ($cost_center_codes as $cost_center_code) {
+                $workgroup_number = substr($cost_center_code, -3);
+                if (in_array(substr($workgroup_number, 0, 1), ['1', '3', '4', '5', '6', '7', '8'])) {
+                    $workgroup_numbers[] = substr($workgroup_number, 0, 1) . '00';
+                } elseif (in_array($workgroup_number, ['900', '901', '905', '908'])) {
+                    $workgroup_numbers[] = '901';
+                } elseif (in_array($workgroup_number, ['903', '907', '910', '911', '912', '914', '915'])) {
+                    $workgroup_numbers[] = '903';
+                }
+            }
+    
+            // Get the leaders of the workgroups
+            $workgroups = Workgroup::whereIn('workgroup_number', $workgroup_numbers)->get();
+            $responsibleUsers = [];
+            $service = new DelegationService();
+            foreach ($workgroups as $workgroup) {
+                $user = $workgroup->leader;
+                if ($user && (!$notApprovedOnly || !$workflow->isApprovedBy($user))) {
+                    $responsibleUsers[] = $user;
+                }
+
+                // Check for delegates
+                $delegates = $service->getDelegates($user, 'director_' . $workgroup->workgroup_number);
+                foreach ($delegates as $delegate) {
+                    if (!$notApprovedOnly || !$workflow->isApprovedBy($delegate)) {
+                        $responsibleUsers[] = $delegate;
+                    }
+                }
+            }
+    
+            return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
+        } else {
+            return [];
         }
     }
 

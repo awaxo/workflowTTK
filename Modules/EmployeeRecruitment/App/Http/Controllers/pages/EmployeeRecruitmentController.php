@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 
+use App\Events\ApproverAssignedEvent;
 use App\Events\StateChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\CostCenter;
@@ -57,7 +58,7 @@ class EmployeeRecruitmentController extends Controller
         $costCenters = CostCenter::where('deleted', 0)->get();
         $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
-        
+
         return view('employeerecruitment::content.pages.new-employee-recruitment', [
             'workgroups1' => $workgroups1,
             'workgroups2' => $workgroups2,
@@ -297,6 +298,7 @@ class EmployeeRecruitmentController extends Controller
 
                     $recruitment->save();
                     event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
+                    event(new ApproverAssignedEvent($recruitment));
                     
                     return response()->json(['redirectUrl' => route('workflows-all-open')]);
                 } else {            

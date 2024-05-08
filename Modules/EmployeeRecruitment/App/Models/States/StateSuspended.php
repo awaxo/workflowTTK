@@ -38,6 +38,29 @@ class StateSuspended implements IStateResponsibility {
         return $this->stateClass && $this->stateClass->isUserResponsibleAsDelegate($user, $workflow);
     }
 
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        $workflow_meta = json_decode($workflow->meta_data);
+
+        // get user by id of last entry in 'history' of meta_value
+        $lastEntry = end($workflow_meta->history);
+        $lastUser = User::find($lastEntry->user_id);
+
+        if (!$lastUser->deleted) {
+            $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $lastEntry->status)));
+            $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
+            if (class_exists($stateClassName)) {
+                $this->stateClass = new $stateClassName();
+            }
+
+            if ($this->stateClass) {
+                return $this->stateClass->getResponsibleUsers($workflow, $notApprovedOnly);
+            }
+        }
+
+        return [];
+    }
+
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return true;
     }

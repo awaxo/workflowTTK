@@ -19,6 +19,11 @@ class StateCompleted implements IStateResponsibility {
         return false;
     }
 
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        return [];
+    }
+
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return false;
     }

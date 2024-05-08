@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
@@ -46,10 +47,10 @@ class StateGroupLeadApproval implements IStateResponsibility {
         if ($workflow instanceof RecruitmentWorkflow) {
             $workgroups = [];
             if ($workflow->workgroup1) {
-                $workgroups[] = 'grouplead_' . $workflow->workgroup1;
+                $workgroups[] = 'grouplead_' . $workflow->workgroup1->workgroup_number;
             }
             if ($workflow->workgroup2) {
-                $workgroups[] = 'grouplead_' . $workflow->workgroup2;
+                $workgroups[] = 'grouplead_' . $workflow->workgroup2->workgroup_number;
             }
 
             $room_numbers = explode(',', $workflow->entry_permissions);
@@ -60,7 +61,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
                     $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
 
                     if ($workgroup) {
-                        $workgroups[] = 'grouplead_' . $workgroup;
+                        $workgroups[] = 'grouplead_' . $workgroup->workgroup_number;
                     }
                 }
             }
@@ -106,6 +107,58 @@ class StateGroupLeadApproval implements IStateResponsibility {
             return $workgroup_lead;
         } else {
             return false;
+        }
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $service = new DelegationService();
+
+            $room_numbers = explode(',', $workflow->entry_permissions);
+
+            $leaders = [];
+            $workgroups = [];
+            foreach ($room_numbers as $room_number) {
+                $room = Room::where('room_number', $room_number)->first();
+                if ($room) {
+                    $workgroup = Workgroup::with('leader')->where('workgroup_number', $room->workgroup_number)->first();
+                    if ($workgroup) {
+                        $leaders[] = $workgroup->leader;
+                        $workgroups[] = $workgroup;
+                    }
+                }
+            }
+
+            // Get the leaders of the workgroups directly associated with the workflow
+            if ($workflow->workgroup1) {
+                $leaders[] = $workflow->workgroup1->leader;
+                $workgroups[] = $workflow->workgroup1;
+            }
+            if ($workflow->workgroup2) {
+                $leaders[] = $workflow->workgroup2->leader;
+                $workgroups[] = $workflow->workgroup2;
+            }
+
+            // Get all delegate users
+            $delegateUsers = collect();
+            foreach ($workgroups as $workgroup) {
+                $delegates = $service->getDelegates($workgroup->leader, 'grouplead_' . $workgroup->workgroup_number);
+                $delegateUsers = $delegateUsers->concat($delegates);
+            }
+
+            // Merge the leaders and delegate users
+            $responsibleUsers = collect($leaders)->concat($delegateUsers);
+
+            if ($notApprovedOnly) {
+                $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                    return !$workflow->isApprovedBy($user);
+                });
+            }
+
+            return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
+        } else {
+            return [];
         }
     }
 

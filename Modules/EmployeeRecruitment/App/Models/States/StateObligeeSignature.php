@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -16,6 +17,27 @@ class StateObligeeSignature implements IStateResponsibility {
     {
         $service = new DelegationService();
         return $service->isDelegate($user, 'obligee_signer');
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        $service = new DelegationService();
+        $users = User::role('titkar_9_fi')->get();
+        $delegateUsers = collect();
+        foreach ($users as $user) {
+            $delegates = $service->getDelegates($user, 'obligee_signer');
+            $delegateUsers = $delegateUsers->concat($delegates);
+        }
+
+        $responsibleUsers = $users->concat($delegateUsers);
+
+        if ($notApprovedOnly) {
+            $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                return !$workflow->isApprovedBy($user);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

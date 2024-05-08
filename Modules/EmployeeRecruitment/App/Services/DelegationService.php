@@ -73,7 +73,7 @@ class DelegationService
     /**
      * Get delegate users for the given user and delegation type.
      */
-    public function getDelegateUsers(User $user, string $delegationType)
+    public function getDelegates(User $user, string $delegationType)
     {
         return Delegation::where('original_user_id', $user->id)
             ->where('type', $delegationType)

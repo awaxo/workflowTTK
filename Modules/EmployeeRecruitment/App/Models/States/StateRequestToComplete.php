@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -18,6 +19,27 @@ class StateRequestToComplete implements IStateResponsibility {
     {
         $service = new DelegationService();
         return $service->isDelegate($user, 'hr_labor_administrator');
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        $service = new DelegationService();
+        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
+        if (!$workgroup908) {
+            return [];
+        }
+        $leader = $workgroup908->leader;
+
+        $delegateUsers = $service->getDelegates($leader, 'hr_labor_administrator');
+        $responsibleUsers = array_merge([$leader], $delegateUsers->toArray());
+
+        if ($notApprovedOnly) {
+            $responsibleUsers = array_filter($responsibleUsers, function ($user) use ($workflow) {
+                return !$workflow->isApprovedBy($user);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

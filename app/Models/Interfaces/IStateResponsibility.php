@@ -3,7 +3,6 @@
 namespace App\Models\Interfaces;
 
 use App\Models\User;
-use Illuminate\Support\Collection;
 
 /**
  * Interface for defining state responsibility.
@@ -18,6 +17,11 @@ interface IStateResponsibility {
      * Checks if a user is responsible for the state as a delegate.
      */
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool;
+
+    /**
+     * Gets the responsible users for the state.
+     */
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array;
     
     /**
      * Checks if all the necessary approvals are given.

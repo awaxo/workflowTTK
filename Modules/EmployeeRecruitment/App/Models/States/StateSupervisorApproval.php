@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\CostCenter;
 use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
@@ -63,6 +64,48 @@ class StateSupervisorApproval implements IStateResponsibility {
             return $isDelegate && !$workflow->isApprovedBy($user);
         } else {
             return false;
+        }
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $costCenters = [
+                $workflow->base_salary_cc1,
+                $workflow->base_salary_cc2,
+                $workflow->base_salary_cc3,
+                $workflow->health_allowance_cc,
+                $workflow->management_allowance_cc,
+                $workflow->extra_pay_1_cc,
+                $workflow->extra_pay_2_cc
+            ];
+    
+            $responsibleUsers = collect();
+            $service = new DelegationService();
+    
+            foreach ($costCenters as $costCenter) {
+                if ($costCenter && $costCenter->lead_user_id) {
+                    $user = User::find($costCenter->lead_user_id);
+                    if ($user) {
+                        $responsibleUsers->push($user);
+                    }
+    
+                    // Get delegate users
+                    $workgroup = 'supervisor_workgroup_' . substr($costCenter->cost_center_code, -3);
+                    $delegates = $service->getDelegates($user, $workgroup);
+                    $responsibleUsers = $responsibleUsers->concat($delegates);
+                }
+            }
+    
+            if ($notApprovedOnly) {
+                $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                    return !$workflow->isApprovedBy($user);
+                });
+            }
+    
+            return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
+        } else {
+            return [];
         }
     }
 

@@ -152,6 +152,25 @@ $(function () {
             }
         });
     });
+
+    $('.btn-submit').on('click', function() {
+        $.ajax({
+            url: '/api/notification-settings/update',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                approval_notification: $('#approval_notification').is(':checked') ? 'true' : 'false',
+            },
+            success: function() {
+                //
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#errorAlertMessage').text('Hiba történt a mentés során!');
+                $('#errorAlert').removeClass('d-none');
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
 });
 
 function validateDelegation() {

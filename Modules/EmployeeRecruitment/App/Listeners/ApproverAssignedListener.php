@@ -4,7 +4,6 @@ namespace Modules\EmployeeRecruitment\App\Listeners;
 
 use App\Events\ApproverAssignedEvent;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Notifications\ApproverAssignedNotification;
 
 class ApproverAssignedListener

@@ -83,4 +83,24 @@ class ProfileController extends Controller
         $delegation->save();
         return response()->json(['message' => 'Delegation deleted successfully']);
     }
+
+    public function notificationUpdate()
+    {
+        $notification_preferences = json_decode(Auth::user()?->notification_preferences);
+        if ($notification_preferences === null) {
+            $notification_preferences = (object) [
+                'email' => (object) [
+                    'recruitment' => (object) [
+                        'approval_notification' => null
+                    ]
+                ]
+            ];
+        }
+        $notification_preferences->email->recruitment->approval_notification = request('approval_notification');
+        $user = User::find(Auth::id());
+        $user->notification_preferences = json_encode($notification_preferences);
+        $user->save();
+
+        return response()->json(['message' => 'Notification settings updated successfully']);
+    }
 }

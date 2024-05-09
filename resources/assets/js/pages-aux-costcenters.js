@@ -252,6 +252,8 @@ $(function() {
         var row = $(this).closest('tr');
         var costcenter = $('.datatables-costcenters').DataTable().row(row).data();
 
+        $('#new_costcenter_label').text('Költséghely módosítás');
+
         $('#cost_center_code').val(costcenter.cost_center_code);
         $('#name').val(costcenter.name);
         $('#type_id').val(costcenter.type_id).trigger('change');
@@ -314,6 +316,7 @@ $(function() {
     });
 
     $('.create-new').on('click', function() {
+        $('#new_costcenter_label').text('Új költséghely');
         $('#cost_center_code').val('');
         $('#name').val('');
         $('#due_date').val('');

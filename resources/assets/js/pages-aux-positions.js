@@ -226,6 +226,8 @@ $(function() {
         var row = $(this).closest('tr');
         var position = $('.datatables-positions').DataTable().row(row).data();
 
+        $('#new_position_label').text('Munkakör módosítás');
+
         $('#name').val(position.name);
         $('#type').val(position.type);
         $('.data-submit').attr('data-position-id', position.id);
@@ -273,7 +275,9 @@ $(function() {
     });
 
     $('.create-new').on('click', function() {
+        $('#new_position_label').text('Új munkakör');
         $('#name').val('');
+
         fv?.resetForm(true);
     });
 });

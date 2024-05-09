@@ -234,6 +234,8 @@ $(function() {
         var row = $(this).closest('tr');
         var workgroup = $('.datatables-workgroups').DataTable().row(row).data();
 
+        $('#new_workgroup_label').text('Csoport módosítás');
+
         $('#new_workgroup #workgroup_number').val(workgroup.workgroup_number);
         $('#new_workgroup #name').val(workgroup.name);
         $('#new_workgroup #leader_id').val(workgroup.leader_id).trigger('change');
@@ -287,6 +289,7 @@ $(function() {
     });
 
     $('.create-new').on('click', function() {
+        $('#new_workgroup_label').text('Új csoport');
         $('#workgroup_number').val('');
         $('#name').val('');
 

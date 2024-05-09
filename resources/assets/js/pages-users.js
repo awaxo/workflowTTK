@@ -229,6 +229,8 @@ $(function() {
         var row = $(this).closest('tr');
         var user = $('.datatables-users').DataTable().row(row).data();
 
+        $('#new_user_label').text('Felhasználó módosítás');
+
         $('#name').val(user.name);
         $('#email').val(user.email);
         $('#workgroup_id').val(user.workgroup_id).trigger('change');
@@ -282,6 +284,7 @@ $(function() {
     });
 
     $('.create-new').on('click', function() {
+        $('#new_user_label').text('Új felhasználó');
         $('#name').val('');
         $('#email').val('');
         $('#roles').val(null).trigger('change');

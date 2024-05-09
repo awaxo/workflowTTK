@@ -233,6 +233,8 @@ $(function() {
         var row = $(this).closest('tr');
         var institute = $('.datatables-institutes').DataTable().row(row).data();
 
+        $('#new_institute_label').text('Intézet módosítás');
+
         $('#group_level').val(institute.group_level);
         $('#name').val(institute.name);
         $('.data-submit').attr('data-institute-id', institute.id);
@@ -281,6 +283,7 @@ $(function() {
     });
 
     $('.create-new').on('click', function() {
+        $('#new_institute_label').text('Új intézet');
         $('#group_level').val('');
         $('#name').val('');
 

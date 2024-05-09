@@ -236,6 +236,8 @@ $(function() {
         var row = $(this).closest('tr');
         var costcenterType = $('.datatables-costcenter-types').DataTable().row(row).data();
 
+        $('#new_costcenter_type_label').text('Költséghely típus módosítás');
+
         $('#name').val(costcenterType.name);
         $('#tender').val(costcenterType.tender);
         $('#clause_template').val(costcenterType.clause_template);
@@ -285,6 +287,7 @@ $(function() {
     });
 
     $('.create-new').on('click', function() {
+        $('#new_costcenter_type_label').text('Új költséghely típus');
         $('#name').val('');
         $('#clause_template').val('');
         $('#tender').prop('checked', false);

@@ -292,6 +292,8 @@ $(function() {
         $('#new_workgroup_label').text('Új csoport');
         $('#workgroup_number').val('');
         $('#name').val('');
+        $('#leader_id').val($('#leader_id option:first').val()).trigger('change');
+        $('#labor_administrator').val($('#labor_administrator option:first').val()).trigger('change');
 
         fv?.resetForm(true);
     });

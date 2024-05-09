@@ -279,6 +279,7 @@ $(function() {
     $('.create-new').on('click', function() {
         $('#new_external_access_label').text('Új hozzáférési jogosultság');
         $('#external_system').val('');
+        $('#admin_group_number').val($('#admin_group_number option:first').val()).trigger('change');
 
         fv?.resetForm(true);
     });

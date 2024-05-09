@@ -288,6 +288,7 @@ $(function() {
         $('#name').val('');
         $('#email').val('');
         $('#roles').val(null).trigger('change');
+        $('#workgroup_id').val($('#workgroup_id option:first').val()).trigger('change');
         
         fv?.resetForm(true);
     });

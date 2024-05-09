@@ -19,10 +19,10 @@ $(function() {
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
-                    if (!data) {
-                        return '<i class="fas fa-check text-success"></i>';
+                    if (type === 'display') {
+                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
                     } else {
-                        return '<i class="fas fa-times text-danger"></i>';
+                        return data;
                     }
                 }
             },
@@ -76,8 +76,8 @@ $(function() {
             }
         ],
         order: [[1, 'asc']],
-        displayLength: 7,
-        lengthMenu: [7, 10, 25, 50, 75, 100],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {

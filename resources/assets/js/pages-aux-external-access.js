@@ -2,9 +2,12 @@ import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
 $(function() {
-    'use strict';
-  
-    $('.datatables-external-access').DataTable({
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+    
+    let dataTable = $('.datatables-external-access').DataTable({
         ajax: '/api/external-access',
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -131,25 +134,21 @@ $(function() {
             $('#show_inactive').on('change', function() {
                 $('.datatables-external-access').DataTable().draw();
             });
-        },
-        drawCallback: function() {
-            var table = this.api();
-            var showInactive = $('#show_inactive').is(':checked');
-
-            table.rows().every(function() {
-                var data = this.data();
-                if (showInactive) {
-                    $(this.node()).show();
-                } else {
-                    if (!data.deleted) {
-                        $(this.node()).show();
-                    } else {
-                        $(this.node()).hide();
-                    }
-                }
-            });
         }
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

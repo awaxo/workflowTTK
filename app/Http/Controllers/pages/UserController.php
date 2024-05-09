@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -136,7 +137,12 @@ class UserController extends Controller
     {
         return request()->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:wf_user,email',
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('wf_user', 'email')->ignore(request()->input('userId')),
+            ],
             'workgroup_id' => 'required|exists:wf_workgroup,id',
         ],
         [

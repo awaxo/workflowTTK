@@ -1,6 +1,8 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     // Set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
@@ -242,7 +244,7 @@ $(function() {
         var url = instituteId ? '/api/institute/' + instituteId + '/update' : '/api/institute/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateInstitute();
+        fv = validateInstitute();
 
         $('#group_level, #name').on('change', function() {
             fv.revalidateField('group_level');
@@ -276,6 +278,13 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#group_level').val('');
+        $('#name').val('');
+
+        fv?.resetForm(true);
     });
 });
 

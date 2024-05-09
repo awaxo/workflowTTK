@@ -1,6 +1,8 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     let apiEndpoint = $('.datatables-users').data('api-endpoint');
   
@@ -240,7 +242,7 @@ $(function() {
         var url = userId ? '/api/user/' + userId + '/update' : '/api/user/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateUser();
+        fv = validateUser();
 
         $('#name, #email').on('change', function() {
             fv.revalidateField('name');
@@ -257,7 +259,8 @@ $(function() {
                         name: $('#name').val(),
                         email: $('#email').val(),
                         workgroup_id: $('#workgroup_id').val(),
-                        roles: $('#roles').val()
+                        roles: $('#roles').val(),
+                        userId: userId
                     },
                     success: function (response) {
                         window.location.reload();
@@ -276,6 +279,14 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#name').val('');
+        $('#email').val('');
+        $('#roles').val(null).trigger('change');
+        
+        fv?.resetForm(true);
     });
 });
 

@@ -1,6 +1,8 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     // set locale for sorting
     $.fn.dataTable.ext.order.intl('hu', {
@@ -246,7 +248,7 @@ $(function() {
         var url = costcenterTypeId ? '/api/costcenter-type/' + costcenterTypeId + '/update' : '/api/costcenter-type/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateCostCenterType();
+        fv = validateCostCenterType();
 
         $('#name').on('change', function() {
             fv.revalidateField('name');
@@ -280,6 +282,14 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#name').val('');
+        $('#clause_template').val('');
+        $('#tender').prop('checked', false);
+
+        fv?.resetForm(true);
     });
 });
 

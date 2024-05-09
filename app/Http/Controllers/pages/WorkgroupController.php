@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class WorkgroupController extends Controller
 {
@@ -48,6 +49,7 @@ class WorkgroupController extends Controller
         $workgroup = Workgroup::find($id);
         $workgroup->deleted = 1;
         $workgroup->save();
+
         return response()->json(['success' => 'Workgroup deleted successfully']);
     }
 
@@ -56,6 +58,7 @@ class WorkgroupController extends Controller
         $workgroup = Workgroup::find($id);
         $workgroup->deleted = 0;
         $workgroup->save();
+
         return response()->json(['success' => 'Workgroup restored successfully']);
     }
 
@@ -95,10 +98,16 @@ class WorkgroupController extends Controller
 
         return request()->validate([
             'name' => 'required|max:255',
-            'workgroup_number' => 'required|numeric|unique:wf_workgroup,workgroup_number',
+            'workgroup_number' => [
+                'required',
+                'numeric',
+                Rule::unique('wf_workgroup', 'workgroup_number')->ignore(request()->input('workgroupId')),
+            ],
             'leader_id' => 'required|numeric|exists:wf_user,id',
             'labor_administrator' => [
-                'required|numeric|exists:wf_user,id',
+                'required',
+                'numeric',
+                Rule::exists('wf_user', 'id')->whereIn('id', $labor_administrators->toArray()),
                 function (string $attribute, mixed $value, Closure $fail) use ($labor_administrators) {
                     if (!in_array($value, $labor_administrators->toArray())) {
                         $fail("Munkaügyi ügyintéző csak ilyen jogú felhasználó lehet");

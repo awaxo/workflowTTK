@@ -1,6 +1,8 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
@@ -245,7 +247,7 @@ $(function() {
         var url = workgroupId ? '/api/workgroup/' + workgroupId + '/update' : '/api/workgroup/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateWorkgroup();
+        fv = validateWorkgroup();
 
         $('#workgroup_number, #name').on('change', function() {
             fv.revalidateField('workgroup_number');
@@ -263,6 +265,7 @@ $(function() {
                         name: $('#name').val(),
                         leader_id: $('#leader_id').val(),
                         labor_administrator: $('#labor_administrator').val(),
+                        workgroupId: workgroupId
                     },
                     success: function (response) {
                         window.location.reload();
@@ -281,6 +284,13 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#workgroup_number').val('');
+        $('#name').val('');
+
+        fv?.resetForm(true);
     });
 });
 

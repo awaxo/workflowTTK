@@ -1,6 +1,8 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     // set locale for sorting
     $.fn.dataTable.ext.order.intl('hu', {
@@ -235,7 +237,7 @@ $(function() {
         var url = positionId ? '/api/position/' + positionId + '/update' : '/api/position/create';
 
         $('.invalid-feedback').remove();
-        let fv = validatePosition();
+        fv = validatePosition();
 
         $('#name').on('change', function() {
             fv.revalidateField('name');
@@ -268,6 +270,11 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#name').val('');
+        fv?.resetForm(true);
     });
 });
 

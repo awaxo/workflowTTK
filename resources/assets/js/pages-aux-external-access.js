@@ -1,6 +1,8 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     // set locale for sorting
     $.fn.dataTable.ext.order.intl('hu', {
@@ -237,7 +239,7 @@ $(function() {
         var url = externalAccessId ? '/api/external-access/' + externalAccessId + '/update' : '/api/external-access/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateExternalAccess();
+        fv = validateExternalAccess();
 
         $('#external_system').on('change', function() {
             fv.revalidateField('external_system');
@@ -270,6 +272,12 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#external_system').val('');
+
+        fv?.resetForm(true);
     });
 });
 

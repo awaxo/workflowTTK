@@ -1,6 +1,8 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
@@ -267,7 +269,7 @@ $(function() {
         var url = costcenterId ? '/api/costcenter/' + costcenterId + '/update' : '/api/costcenter/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateCostCenter();
+        fv = validateCostCenter();
 
         $('#cost_center_code, #name, #due_date, #minimal_order_limit').on('change', function() {
             fv.revalidateField('cost_center_code');
@@ -310,6 +312,16 @@ $(function() {
             }
         });
     });
+
+    $('.create-new').on('click', function() {
+        $('#cost_center_code').val('');
+        $('#name').val('');
+        $('#due_date').val('');
+        $('#minimal_order_limit').val('0');
+        $('#valid_employee_recruitment').prop('checked', false);
+
+        fv?.resetForm(true);
+    });
 });
 
 function validateCostCenter() {
@@ -343,6 +355,10 @@ function validateCostCenter() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a lejárat dátumát'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
                         }
                     }
                 },

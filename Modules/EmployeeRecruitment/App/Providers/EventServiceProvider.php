@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Providers;
+namespace Modules\EmployeeRecruitment\App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use App\Events\ApproverAssignedEvent;
+use Modules\EmployeeRecruitment\App\Listeners\ApproverAssignedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,8 +14,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        ApproverAssignedEvent::class => [
+            ApproverAssignedListener::class,
         ],
     ];
 
@@ -25,14 +24,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-    }
-
-    /**
-     * Determine if events and listeners should be automatically discovered.
-     */
-    public function shouldDiscoverEvents(): bool
-    {
-        return true;
+        parent::boot();
     }
 }

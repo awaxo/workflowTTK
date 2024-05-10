@@ -22,6 +22,7 @@
 @section('vendor-script')
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
+    'resources/assets/vendor/libs/datatables-bs5/intl.js',
     'resources/assets/vendor/libs/moment/moment.js',
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/select2/select2.js',
@@ -131,7 +132,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Biztosan szeretnéd törölni ezt a csoportot?</p>
+                    <p>Biztosan szeretnéd törölni ezt a felhasználót?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
@@ -150,7 +151,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Biztosan szeretnéd visszaállítani ezt a csoportot?</p>
+                    <p>Biztosan szeretnéd visszaállítani ezt a felhasználót?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>

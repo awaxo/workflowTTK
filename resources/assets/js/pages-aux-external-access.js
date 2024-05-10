@@ -1,10 +1,15 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
-    'use strict';
-  
-    $('.datatables-external-access').DataTable({
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+    
+    let dataTable = $('.datatables-external-access').DataTable({
         ajax: '/api/external-access',
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -13,10 +18,10 @@ $(function() {
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
-                    if (!data) {
-                        return '<i class="fas fa-check text-success"></i>';
+                    if (type === 'display') {
+                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
                     } else {
-                        return '<i class="fas fa-times text-danger"></i>';
+                        return data;
                     }
                 }
             },
@@ -70,8 +75,8 @@ $(function() {
             }
         ],
         order: [[1, 'asc']],
-        displayLength: 7,
-        lengthMenu: [7, 10, 25, 50, 75, 100],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
@@ -131,25 +136,21 @@ $(function() {
             $('#show_inactive').on('change', function() {
                 $('.datatables-external-access').DataTable().draw();
             });
-        },
-        drawCallback: function() {
-            var table = this.api();
-            var showInactive = $('#show_inactive').is(':checked');
-
-            table.rows().every(function() {
-                var data = this.data();
-                if (showInactive) {
-                    $(this.node()).show();
-                } else {
-                    if (!data.deleted) {
-                        $(this.node()).show();
-                    } else {
-                        $(this.node()).hide();
-                    }
-                }
-            });
         }
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization
@@ -225,6 +226,8 @@ $(function() {
         var row = $(this).closest('tr');
         var externalAccess = $('.datatables-external-access').DataTable().row(row).data();
 
+        $('#new_external_access_label').text('Hozzáférési jogosultság módosítás');
+
         $('#external_system').val(externalAccess.external_system);
         $('#admin_group_number').val(externalAccess.admin_group_number).trigger('change');
         $('#admin_group_number').trigger('change');
@@ -238,7 +241,7 @@ $(function() {
         var url = externalAccessId ? '/api/external-access/' + externalAccessId + '/update' : '/api/external-access/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateExternalAccess();
+        fv = validateExternalAccess();
 
         $('#external_system').on('change', function() {
             fv.revalidateField('external_system');
@@ -271,6 +274,14 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#new_external_access_label').text('Új hozzáférési jogosultság');
+        $('#external_system').val('');
+        $('#admin_group_number').val($('#admin_group_number option:first').val()).trigger('change');
+
+        fv?.resetForm(true);
     });
 });
 

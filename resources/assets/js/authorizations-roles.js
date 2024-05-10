@@ -1,11 +1,16 @@
 import moment from 'moment';
+import GLOBALS from '../../js/globals.js';
+
 
 $(function() {
-    'use strict';
-
     let apiEndpoint = $('.datatables-roles').data('api-endpoint');
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
   
-    $('.datatables-roles').DataTable({
+    let dataTable = $('.datatables-roles').DataTable({
         ajax: apiEndpoint,
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -50,8 +55,8 @@ $(function() {
             },
         ],
         order: [[1, 'asc']],
-        displayLength: 7,
-        lengthMenu: [7, 10, 25, 50, 75, 100],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
         buttons: [],
         responsive: {
             details: {
@@ -85,10 +90,21 @@ $(function() {
                 }
             }
         },
-        language: {
-            url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hungarian.json'
-        },
+        language: GLOBALS.DATATABLE_TRANSLATION,
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

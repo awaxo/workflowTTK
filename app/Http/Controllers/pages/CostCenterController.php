@@ -95,7 +95,7 @@ class CostCenterController extends Controller
             'type_id' => 'required|exists:wf_cost_center_type,id',
             'lead_user_id' => 'required|exists:wf_user,id',
             'project_coordinator_user_id' => 'required|exists:wf_user,id',
-            'due_date' => 'required|date_format:Y.m.d|after:yesterday',
+            'due_date' => 'required|date_format:Y.m.d',
             'minimal_order_limit' => 'required|numeric',
         ],
         [

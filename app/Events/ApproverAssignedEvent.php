@@ -7,21 +7,17 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class StateChangedEvent
+class ApproverAssignedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public AbstractWorkflow $workflow;
-    public string $previousState;
-    public string $currentState;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(AbstractWorkflow $workflow, string $previousState, string $currentState)
+    public function __construct(AbstractWorkflow $workflow)
     {
         $this->workflow = $workflow;
-        $this->previousState = $previousState;
-        $this->currentState = $currentState;
     }
 }

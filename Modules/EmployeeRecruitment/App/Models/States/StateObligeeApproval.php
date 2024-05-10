@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -18,6 +19,27 @@ class StateObligeeApproval implements IStateResponsibility {
     {
         $service = new DelegationService();
         return $service->isDelegate($user, 'obligee_approver');
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        $service = new DelegationService();
+        $workgroup901 = Workgroup::where('workgroup_number', 901)->first();
+        if (!$workgroup901) {
+            return [];
+        }
+        $leader = $workgroup901->leader;
+
+        $delegateUsers = $service->getDelegates($leader, 'obligee_approver');
+        $responsibleUsers = array_merge([$leader], $delegateUsers->toArray());
+
+        if ($notApprovedOnly) {
+            $responsibleUsers = array_filter($responsibleUsers, function ($user) use ($workflow) {
+                return !$workflow->isApprovedBy($user);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

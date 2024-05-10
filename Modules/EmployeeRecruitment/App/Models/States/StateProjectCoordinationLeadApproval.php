@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -19,6 +20,27 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
     {
         $service = new DelegationService();
         return $service->isDelegate($user, 'project_coordination_lead');
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        $service = new DelegationService();
+        $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
+        if (!$workgroup911) {
+            return [];
+        }
+        $leader = $workgroup911->leader;
+
+        $delegateUsers = $service->getDelegates($leader, 'project_coordination_lead');
+        $responsibleUsers = array_merge([$leader], $delegateUsers->toArray());
+
+        if ($notApprovedOnly) {
+            $responsibleUsers = array_filter($responsibleUsers, function ($user) use ($workflow) {
+                return !$workflow->isApprovedBy($user);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
     }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {

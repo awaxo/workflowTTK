@@ -2,12 +2,14 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\CostCenter;
 use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
@@ -52,7 +54,45 @@ class StateProofOfCoverage implements IStateResponsibility {
         } else {
             return false;
         }
-    }    
+    }
+
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $cost_center_keys = [
+                'base_salary_cc1', 'base_salary_cc2', 'base_salary_cc3',
+                'health_allowance_cc', 'management_allowance_cc', 
+                'extra_pay_1_cc', 'extra_pay_2_cc'
+            ];
+    
+            $service = new DelegationService();
+            $responsibleUsers = collect();
+    
+            foreach ($cost_center_keys as $key) {
+                $cc = $workflow->$key;
+                if ($cc && $cc->project_coordinator_user_id) {
+                    $user = User::find($cc->project_coordinator_user_id);
+                    if ($user) {
+                        $responsibleUsers->push($user);
+                    }
+    
+                    // Get delegate users
+                    $delegates = $service->getDelegates($user, 'project_coordinator_workgroup_' . substr($cc->cost_center_code, -3));
+                    $responsibleUsers = $responsibleUsers->concat($delegates);
+                }
+            }
+    
+            if ($notApprovedOnly) {
+                $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                    return !$workflow->isApprovedBy($user);
+                });
+            }
+
+            return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
+        } else {
+            return [];
+        }
+    }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {

@@ -2,9 +2,12 @@ import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
 $(function() {
-    'use strict';
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
   
-    $('.datatables-workflows').DataTable({
+    let dataTable = $('.datatables-workflows').DataTable({
         ajax: '/api/workflows',
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -74,8 +77,8 @@ $(function() {
             },
         ],
         order: [[1, 'asc']],
-        displayLength: 7,
-        lengthMenu: [7, 10, 25, 50, 75, 100],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
         buttons: [],
         responsive: {
             details: {
@@ -125,20 +128,22 @@ $(function() {
             $('#show_only_own').on('change', function() {
                 $('.datatables-workflows').DataTable().draw();
             });
-        },
-        drawCallback: function() {
-            var table = this.api();
-            var showOnlyOwn = $('#show_only_own').is(':checked');
-            table.rows().every(function() {
-                var data = this.data();
-                if (showOnlyOwn && !data.is_user_responsible) {
-                    $(this.node()).hide();
-                } else {
-                    $(this.node()).show();
-                }
-            });
         }
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            var showOnlyOwn = $('#show_only_own').prop('checked');
+            var rowData = dataTable.row(dataIndex).data();
+            
+            if (showOnlyOwn) {
+                return rowData.is_user_responsible;
+            } else {
+                return true;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

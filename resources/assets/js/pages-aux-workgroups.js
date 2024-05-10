@@ -1,14 +1,21 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
+var fv;
+
 $(function() {
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
             numeral: true
         });
     });
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
   
-    $('.datatables-workgroups').DataTable({
+    let dataTable = $('.datatables-workgroups').DataTable({
         ajax: '/api/workgroups',
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -19,10 +26,10 @@ $(function() {
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
-                    if (!data) {
-                        return '<i class="fas fa-check text-success"></i>';
+                    if (type === 'display') {
+                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
                     } else {
-                        return '<i class="fas fa-times text-danger"></i>';
+                        return data;
                     }
                 }
             },
@@ -76,8 +83,8 @@ $(function() {
             }
         ],
         order: [[1, 'asc']],
-        displayLength: 7,
-        lengthMenu: [7, 10, 25, 50, 75, 100],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
@@ -137,25 +144,21 @@ $(function() {
             $('#show_inactive').on('change', function() {
                 $('.datatables-workgroups').DataTable().draw();
             });
-        },
-        drawCallback: function() {
-            var table = this.api();
-            var showInactive = $('#show_inactive').is(':checked');
-
-            table.rows().every(function() {
-                var data = this.data();
-                if (showInactive) {
-                    $(this.node()).show();
-                } else {
-                    if (!data.deleted) {
-                        $(this.node()).show();
-                    } else {
-                        $(this.node()).hide();
-                    }
-                }
-            });
         }
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization
@@ -231,6 +234,8 @@ $(function() {
         var row = $(this).closest('tr');
         var workgroup = $('.datatables-workgroups').DataTable().row(row).data();
 
+        $('#new_workgroup_label').text('Csoport módosítás');
+
         $('#new_workgroup #workgroup_number').val(workgroup.workgroup_number);
         $('#new_workgroup #name').val(workgroup.name);
         $('#new_workgroup #leader_id').val(workgroup.leader_id).trigger('change');
@@ -244,7 +249,7 @@ $(function() {
         var url = workgroupId ? '/api/workgroup/' + workgroupId + '/update' : '/api/workgroup/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateWorkgroup();
+        fv = validateWorkgroup();
 
         $('#workgroup_number, #name').on('change', function() {
             fv.revalidateField('workgroup_number');
@@ -262,6 +267,7 @@ $(function() {
                         name: $('#name').val(),
                         leader_id: $('#leader_id').val(),
                         labor_administrator: $('#labor_administrator').val(),
+                        workgroupId: workgroupId
                     },
                     success: function (response) {
                         window.location.reload();
@@ -280,6 +286,16 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#new_workgroup_label').text('Új csoport');
+        $('#workgroup_number').val('');
+        $('#name').val('');
+        $('#leader_id').val($('#leader_id option:first').val()).trigger('change');
+        $('#labor_administrator').val($('#labor_administrator option:first').val()).trigger('change');
+
+        fv?.resetForm(true);
     });
 });
 

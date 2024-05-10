@@ -2,6 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Models\States;
 
+use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
@@ -28,15 +29,41 @@ class StateDraftContractPending implements IStateResponsibility {
             $service = new DelegationService();
     
             if ($workflow->workgroup2) {
-                return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup2->id);
+                return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup2->workgroup_number);
             } else if ($workflow->workgroup1) {
-                return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup1->id);
+                return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup1->workgroup_number);
             }    
         } else {
             return false;
         }
     }
     
+    public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
+    {
+        if ($workflow instanceof RecruitmentWorkflow) {
+            $service = new DelegationService();
+    
+            // Get the labor administrator for the workflow
+            $laborAdminId = $workflow->workgroup2 ? $workflow->workgroup2->labor_administrator : $workflow->workgroup1->labor_administrator;
+            $laborAdmin = User::find($laborAdminId);
+    
+            // Get the delegate users
+            $delegateType = 'draft_contract_labor_administrator_' . ($workflow->workgroup2 ? $workflow->workgroup2->workgroup_number : $workflow->workgroup1->workgroup_number);
+            $delegateUsers = $service->getDelegates($laborAdmin, $delegateType);
+    
+            $responsibleUsers = array_merge([$laborAdmin], $delegateUsers->toArray());
+    
+            if ($notApprovedOnly) {
+                $responsibleUsers = array_filter($responsibleUsers, function ($user) use ($workflow) {
+                    return !$workflow->isApprovedBy($user);
+                });
+            }
+    
+            return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
+        } else {
+            return [];
+        }
+    }
 
     public function isAllApproved(IGenericWorkflow $workflow): bool {
         return true;

@@ -121,4 +121,5 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/delegations', [ProfileController::class, 'getAllDelegations']);
     Route::post('/delegation/create', [ProfileController::class, 'create']);
     Route::post('/delegation/{id}/delete', [ProfileController::class, 'delete']);
+    Route::post('/notification-settings/update', [ProfileController::class, 'notificationUpdate']);
 });

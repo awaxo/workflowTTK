@@ -1,12 +1,17 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
-$(function() {
-    'use strict';
+var fv;
 
+$(function() {
     let apiEndpoint = $('.datatables-users').data('api-endpoint');
   
-    $('.datatables-users').DataTable({
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+
+    let dataTable = $('.datatables-users').DataTable({
         ajax: apiEndpoint,
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -17,10 +22,10 @@ $(function() {
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
-                    if (!data) {
-                        return '<i class="fas fa-check text-success"></i>';
+                    if (type === 'display') {
+                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
                     } else {
-                        return '<i class="fas fa-times text-danger"></i>';
+                        return data;
                     }
                 }
             },
@@ -73,8 +78,8 @@ $(function() {
             }
         ],
         order: [[1, 'asc']],
-        displayLength: 7,
-        lengthMenu: [7, 10, 25, 50, 75, 100],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
@@ -134,25 +139,21 @@ $(function() {
             $('#show_inactive').on('change', function() {
                 $('.datatables-users').DataTable().draw();
             });
-        },
-        drawCallback: function() {
-            var table = this.api();
-            var showInactive = $('#show_inactive').is(':checked');
-
-            table.rows().every(function() {
-                var data = this.data();
-                if (showInactive) {
-                    $(this.node()).show();
-                } else {
-                    if (!data.deleted) {
-                        $(this.node()).show();
-                    } else {
-                        $(this.node()).hide();
-                    }
-                }
-            });
         }
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization
@@ -228,6 +229,8 @@ $(function() {
         var row = $(this).closest('tr');
         var user = $('.datatables-users').DataTable().row(row).data();
 
+        $('#new_user_label').text('Felhasználó módosítás');
+
         $('#name').val(user.name);
         $('#email').val(user.email);
         $('#workgroup_id').val(user.workgroup_id).trigger('change');
@@ -241,7 +244,7 @@ $(function() {
         var url = userId ? '/api/user/' + userId + '/update' : '/api/user/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateUser();
+        fv = validateUser();
 
         $('#name, #email').on('change', function() {
             fv.revalidateField('name');
@@ -258,7 +261,8 @@ $(function() {
                         name: $('#name').val(),
                         email: $('#email').val(),
                         workgroup_id: $('#workgroup_id').val(),
-                        roles: $('#roles').val()
+                        roles: $('#roles').val(),
+                        userId: userId
                     },
                     success: function (response) {
                         window.location.reload();
@@ -277,6 +281,16 @@ $(function() {
                 });
             }
         });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#new_user_label').text('Új felhasználó');
+        $('#name').val('');
+        $('#email').val('');
+        $('#roles').val(null).trigger('change');
+        $('#workgroup_id').val($('#workgroup_id option:first').val()).trigger('change');
+        
+        fv?.resetForm(true);
     });
 });
 

@@ -2,9 +2,12 @@ import moment from 'moment';
 import GLOBALS from '/resources/js/globals.js';
 
 $(function() {
-    'use strict';
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
   
-    $('.datatables-recruitments').DataTable({
+    let dataTable = $('.datatables-recruitments').DataTable({
         ajax: '/employee-recruitment/closed',
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -100,6 +103,19 @@ $(function() {
         },
         language: GLOBALS.DATATABLE_TRANSLATION
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

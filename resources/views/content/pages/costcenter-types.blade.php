@@ -20,6 +20,7 @@
 @section('vendor-script')
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
+    'resources/assets/vendor/libs/datatables-bs5/intl.js',
     'resources/assets/vendor/libs/moment/moment.js',
     'resources/assets/vendor/libs/flatpickr/flatpickr.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
@@ -71,7 +72,7 @@
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="new_costcenter_type" aria-labelledby="new_costcenter_type_label">
         <div class="offcanvas-header border-bottom">
-            <h5 id="new_costcenter_type_label" class="offcanvas-title">Új csoport</h5>
+            <h5 id="new_costcenter_type_label" class="offcanvas-title">Új költséghely típus</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body mx-0 flex-grow-1">

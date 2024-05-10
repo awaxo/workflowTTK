@@ -1,20 +1,26 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
-$(function() {
-    'use strict';
+var fv;
 
+$(function() {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
             numeral: true
         });
     });
+
     $('#due_date').datepicker({
         format: "yyyy.mm.dd"
     });
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
   
-    $('.datatables-costcenters').DataTable({
+    let dataTable = $('.datatables-costcenters').DataTable({
         ajax: '/api/costcenters',
         columns: [
             { data: 'id', visible: false, searchable: false },
@@ -28,20 +34,20 @@ $(function() {
             { 
                 data: 'valid_employee_recruitment',
                 render: function(data, type, row) {
-                    if (data) {
-                        return '<i class="fas fa-check text-success"></i>';
+                    if (type === 'display') {
+                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
                     } else {
-                        return '<i class="fas fa-times text-danger"></i>';
+                        return data;
                     }
                 }
             },
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
-                    if (!data) {
-                        return '<i class="fas fa-check text-success"></i>';
+                    if (type === 'display') {
+                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
                     } else {
-                        return '<i class="fas fa-times text-danger"></i>';
+                        return data;
                     }
                 }
             },
@@ -95,8 +101,8 @@ $(function() {
             }
         ],
         order: [[1, 'asc']],
-        displayLength: 7,
-        lengthMenu: [7, 10, 25, 50, 75, 100],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
         dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
@@ -156,25 +162,21 @@ $(function() {
             $('#show_inactive').on('change', function() {
                 $('.datatables-costcenters').DataTable().draw();
             });
-        },
-        drawCallback: function() {
-            var table = this.api();
-            var showInactive = $('#show_inactive').is(':checked');
-
-            table.rows().every(function() {
-                var data = this.data();
-                if (showInactive) {
-                    $(this.node()).show();
-                } else {
-                    if (!data.deleted) {
-                        $(this.node()).show();
-                    } else {
-                        $(this.node()).hide();
-                    }
-                }
-            });
         }
     });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization
@@ -250,6 +252,8 @@ $(function() {
         var row = $(this).closest('tr');
         var costcenter = $('.datatables-costcenters').DataTable().row(row).data();
 
+        $('#new_costcenter_label').text('Költséghely módosítás');
+
         $('#cost_center_code').val(costcenter.cost_center_code);
         $('#name').val(costcenter.name);
         $('#type_id').val(costcenter.type_id).trigger('change');
@@ -267,7 +271,7 @@ $(function() {
         var url = costcenterId ? '/api/costcenter/' + costcenterId + '/update' : '/api/costcenter/create';
 
         $('.invalid-feedback').remove();
-        let fv = validateCostCenter();
+        fv = validateCostCenter();
 
         $('#cost_center_code, #name, #due_date, #minimal_order_limit').on('change', function() {
             fv.revalidateField('cost_center_code');
@@ -310,6 +314,20 @@ $(function() {
             }
         });
     });
+
+    $('.create-new').on('click', function() {
+        $('#new_costcenter_label').text('Új költséghely');
+        $('#cost_center_code').val('');
+        $('#name').val('');
+        $('#due_date').val('');
+        $('#minimal_order_limit').val('0');
+        $('#valid_employee_recruitment').prop('checked', false);
+        $('#type_id').val($('#type_id option:first').val()).trigger('change');
+        $('#lead_user_id').val($('#lead_user_id option:first').val()).trigger('change');
+        $('#project_coordinator_user_id').val($('#project_coordinator_user_id option:first').val()).trigger('change');
+
+        fv?.resetForm(true);
+    });
 });
 
 function validateCostCenter() {
@@ -343,6 +361,10 @@ function validateCostCenter() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a lejárat dátumát'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
                         }
                     }
                 },

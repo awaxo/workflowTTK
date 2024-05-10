@@ -2,11 +2,6 @@ import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
 $(function() {
-    // set locale for sorting
-    $.fn.dataTable.ext.order.intl('hu', {
-        sensitivity: 'base'
-    });
-  
     let dataTable = $('.datatables-workflows').DataTable({
         ajax: '/api/workflows/closed',
         columns: [
@@ -92,7 +87,13 @@ $(function() {
                 }
             }
         },
-        language: GLOBALS.DATATABLE_TRANSLATION
+        language: GLOBALS.DATATABLE_TRANSLATION,
+        initComplete: function() {
+            // set locale for sorting
+            $.fn.dataTable.ext.order.intl('hu', {
+                sensitivity: 'base'
+            });
+        }
     });
 
     // refresh number of rows on show inactive checkbox change

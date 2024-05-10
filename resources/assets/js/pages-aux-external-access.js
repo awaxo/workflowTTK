@@ -3,12 +3,7 @@ import GLOBALS from '../../js/globals.js';
 
 var fv;
 
-$(function() {
-    // set locale for sorting
-    $.fn.dataTable.ext.order.intl('hu', {
-        sensitivity: 'base'
-    });
-    
+$(function() {  
     let dataTable = $('.datatables-external-access').DataTable({
         ajax: '/api/external-access',
         columns: [
@@ -151,6 +146,11 @@ $(function() {
             }
         }
     );
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

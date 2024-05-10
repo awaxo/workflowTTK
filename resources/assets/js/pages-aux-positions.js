@@ -4,11 +4,6 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
-    // set locale for sorting
-    $.fn.dataTable.ext.order.intl('hu', {
-        sensitivity: 'base'
-    });
-
     let dataTable = $('.datatables-positions').DataTable({
         ajax: '/api/positions',
         columns: [
@@ -151,6 +146,11 @@ $(function() {
             }
         }
     );
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

@@ -5,11 +5,6 @@ var fv;
 
 $(function() {
     let apiEndpoint = $('.datatables-users').data('api-endpoint');
-  
-    // set locale for sorting
-    $.fn.dataTable.ext.order.intl('hu', {
-        sensitivity: 'base'
-    });
 
     let dataTable = $('.datatables-users').DataTable({
         ajax: apiEndpoint,
@@ -154,6 +149,11 @@ $(function() {
             }
         }
     );
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

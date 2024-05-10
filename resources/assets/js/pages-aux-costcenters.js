@@ -157,6 +157,11 @@ $(function() {
             $('#show_inactive').on('change', function() {
                 $('.datatables-costcenters').DataTable().draw();
             });
+
+            // set locale for sorting
+            $.fn.dataTable.ext.order.intl('hu', {
+                sensitivity: 'base'
+            });
         }
     });
 
@@ -172,11 +177,6 @@ $(function() {
             }
         }
     );
-
-    // set locale for sorting
-    $.fn.dataTable.ext.order.intl('hu', {
-        sensitivity: 'base'
-    });
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

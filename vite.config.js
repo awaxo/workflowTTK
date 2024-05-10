@@ -20,6 +20,7 @@ const pageJsFiles = GetFilesArray('resources/assets/js/*.js');
 
 // Processing Vendor JS Files
 const vendorJsFiles = GetFilesArray('resources/assets/vendor/js/*.js');
+const resourcesJS = GetFilesArray('resources/js/*.js');
 
 // Processing Libs JS Files
 const LibsJsFiles = GetFilesArray('resources/assets/vendor/libs/**/*.js');
@@ -59,6 +60,7 @@ async function getConfig() {
     'resources/js/app.js',
     ...pageJsFiles,
     ...vendorJsFiles,
+    ...resourcesJS,
     ...LibsJsFiles,
     'resources/js/laravel-user-management.js',
     ...CoreScssFiles,

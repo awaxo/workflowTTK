@@ -9,11 +9,6 @@ $(function() {
             numeral: true
         });
     });
-
-    // set locale for sorting
-    $.fn.dataTable.ext.order.intl('hu', {
-        sensitivity: 'base'
-    });
   
     let dataTable = $('.datatables-workgroups').DataTable({
         ajax: '/api/workgroups',
@@ -159,6 +154,11 @@ $(function() {
             }
         }
     );
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
 
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization

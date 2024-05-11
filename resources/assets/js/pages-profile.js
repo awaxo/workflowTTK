@@ -19,6 +19,11 @@ $(function () {
         startDate: new Date()
     });
 
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+
     $('.datatables-delegates').DataTable({
         ajax: '/api/delegations',
         autoWidth: false,
@@ -72,13 +77,7 @@ $(function () {
         buttons: [],
         displayLength: 10,
         lengthMenu: [5, 10, 25],
-        language: GLOBALS.DATATABLE_TRANSLATION,
-        initComplete: function() {
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
-            });
-        }
+        language: GLOBALS.DATATABLE_TRANSLATION
     });
 
     // Filter form control to default size

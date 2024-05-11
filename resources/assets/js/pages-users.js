@@ -6,6 +6,11 @@ var fv;
 $(function() {
     let apiEndpoint = $('.datatables-users').data('api-endpoint');
 
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+
     let dataTable = $('.datatables-users').DataTable({
         ajax: apiEndpoint,
         columns: [
@@ -133,11 +138,6 @@ $(function() {
 
             $('#show_inactive').on('change', function() {
                 $('.datatables-users').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

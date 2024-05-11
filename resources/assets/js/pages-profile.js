@@ -107,7 +107,7 @@ $(function () {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
                         type: $('#delegation_type').val(),
-                        delegated_user: $('#delegated_user').val(),
+                        delegate_user_id: $('#delegated_user').val(),
                         start_date: $('#delegation_start_date').val(),
                         end_date: $('#delegation_end_date').val()
                     },

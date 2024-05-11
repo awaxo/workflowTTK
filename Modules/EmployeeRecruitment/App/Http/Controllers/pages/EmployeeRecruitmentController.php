@@ -101,6 +101,8 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
         $recruitment->employment_type = $validatedData['employment_type'];
         $recruitment->task = isset($validatedData['task']) ? $validatedData['task'] : '';
+        $validatedData['employment_start_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_start_date'])));
+        $validatedData['employment_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_end_date'])));
         $recruitment->employment_start_date = $validatedData['employment_start_date'];
         $recruitment->employment_end_date = $validatedData['employment_end_date'];
 
@@ -115,12 +117,15 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->health_allowance_monthly_gross_4 = $validatedData['health_allowance_monthly_gross_4'];
         $recruitment->management_allowance_cost_center_5 = $validatedData['management_allowance_cost_center_5'];
         $recruitment->management_allowance_monthly_gross_5 = $validatedData['management_allowance_monthly_gross_5'];
+        $validatedData['management_allowance_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['management_allowance_end_date'])));
         $recruitment->management_allowance_end_date = $validatedData['management_allowance_end_date'];
         $recruitment->extra_pay_1_cost_center_6 = $validatedData['extra_pay_1_cost_center_6'];
         $recruitment->extra_pay_1_monthly_gross_6 = $validatedData['extra_pay_1_monthly_gross_6'];
+        $validatedData['extra_pay_1_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_1_end_date'])));
         $recruitment->extra_pay_1_end_date = $validatedData['extra_pay_1_end_date'];
         $recruitment->extra_pay_2_cost_center_7 = $validatedData['extra_pay_2_cost_center_7'];
         $recruitment->extra_pay_2_monthly_gross_7 = $validatedData['extra_pay_2_monthly_gross_7'];
+        $validatedData['extra_pay_2_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_2_end_date'])));
         $recruitment->extra_pay_2_end_date = $validatedData['extra_pay_2_end_date'];
 
         // data section 4

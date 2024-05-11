@@ -7,7 +7,8 @@ $(function () {
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
             numeral: true,
-            numeralThousandsGroupStyle: 'none'
+            numeralThousandsGroupStyle: 'thousand',
+            delimiter: ' ',
         });
     });
 

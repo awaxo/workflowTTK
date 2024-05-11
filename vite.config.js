@@ -70,7 +70,7 @@ async function getConfig() {
   ];
 
   // Collect paths from enabled modules
-  const modulePaths = await collectModuleAssetsPaths(paths, './modules');
+  const modulePaths = await collectModuleAssetsPaths(paths, './Modules');
 
   return defineConfig({
     plugins: [

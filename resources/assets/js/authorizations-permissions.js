@@ -1,4 +1,5 @@
 import moment from 'moment';
+import GLOBALS from '../../js/globals.js';
 
 $(function() {
     'use strict';
@@ -83,9 +84,13 @@ $(function() {
                 }
             }
         },
-        language: {
-            url: '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Hungarian.json'
-        },
+        language: GLOBALS.DATATABLE_TRANSLATION,
+        initComplete: function() {
+            // set locale for sorting
+            $.fn.dataTable.ext.order.intl('hu', {
+                sensitivity: 'base'
+            });
+        }
     });
 
     // Filter form control to default size

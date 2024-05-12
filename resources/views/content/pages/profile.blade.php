@@ -39,6 +39,7 @@
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'resources/assets/js/forms-selects.js',
         'resources/assets/js/pages-profile.js'
     ])

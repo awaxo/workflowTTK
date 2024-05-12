@@ -3,7 +3,12 @@ import GLOBALS from '../../js/globals.js';
 
 var fv;
 
-$(function() {  
+$(function() {
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+    
     let dataTable = $('.datatables-external-access').DataTable({
         ajax: '/api/external-access',
         columns: [
@@ -130,11 +135,6 @@ $(function() {
 
             $('#show_inactive').on('change', function() {
                 $('.datatables-external-access').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

@@ -4,6 +4,11 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+    
     let dataTable = $('.datatables-costcenter-types').DataTable({
         ajax: '/api/costcenter-types',
         columns: [
@@ -140,11 +145,6 @@ $(function() {
 
             $('#show_inactive').on('change', function() {
                 $('.datatables-costcenter-types').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

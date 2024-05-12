@@ -1,7 +1,12 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
-$(function() { 
+$(function() {
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+    
     let dataTable = $('.datatables-workflows').DataTable({
         ajax: '/api/workflows',
         columns: [
@@ -122,11 +127,6 @@ $(function() {
 
             $('#show_only_own').on('change', function() {
                 $('.datatables-workflows').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

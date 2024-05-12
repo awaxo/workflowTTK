@@ -9,6 +9,19 @@ $(function() {
             numeral: true
         });
     });
+
+    function waitForIntl(callback) {
+        if (typeof $.fn.dataTable.ext.order.intl === 'function') {
+            callback();
+        } else {
+            setTimeout(() => waitForIntl(callback), 150);
+        }
+    }
+    waitForIntl(() => {
+        $.fn.dataTable.ext.order.intl('hu', {
+            sensitivity: 'base'
+        });
+    });
   
     let dataTable = $('.datatables-workgroups').DataTable({
         ajax: '/api/workgroups',
@@ -138,11 +151,6 @@ $(function() {
 
             $('#show_inactive').on('change', function() {
                 $('.datatables-workgroups').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

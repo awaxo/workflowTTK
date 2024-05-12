@@ -19,7 +19,6 @@
 @section('vendor-script')
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
-    'resources/assets/vendor/libs/datatables-bs5/intl.js',
     'resources/assets/vendor/libs/moment/moment.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
@@ -29,6 +28,7 @@
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'Modules/EmployeeRecruitment/resources/assets/js/recruitment-opened.js'
     ])
 @endsection

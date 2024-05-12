@@ -30,6 +30,7 @@
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'resources/assets/js/authorizations-permissions.js'
     ])
 @endsection

@@ -11,6 +11,11 @@ $(function() {
         });
     });
 
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+
     let dataTable = $('.datatables-institutes').DataTable({
         ajax: '/api/institutes',
         columns: [
@@ -137,11 +142,6 @@ $(function() {
 
             $('#show_inactive').on('change', function() {
                 $('.datatables-institutes').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

@@ -22,7 +22,6 @@
 @section('vendor-script')
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
-    'resources/assets/vendor/libs/datatables-bs5/intl.js',
     'resources/assets/vendor/libs/moment/moment.js',
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/select2/select2.js',
@@ -36,6 +35,7 @@
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'resources/assets/js/forms-selects.js',
         'resources/assets/js/form-basic-inputs.js',
         'resources/assets/js/pages-users.js'

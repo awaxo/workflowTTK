@@ -15,6 +15,11 @@ $(function() {
         format: "yyyy.mm.dd"
     });
 
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+
     let dataTable = $('.datatables-costcenters').DataTable({
         ajax: '/api/costcenters',
         columns: [
@@ -156,11 +161,6 @@ $(function() {
 
             $('#show_inactive').on('change', function() {
                 $('.datatables-costcenters').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

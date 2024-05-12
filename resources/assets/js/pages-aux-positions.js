@@ -4,6 +4,11 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+    
     let dataTable = $('.datatables-positions').DataTable({
         ajax: '/api/positions',
         columns: [
@@ -130,11 +135,6 @@ $(function() {
 
             $('#show_inactive').on('change', function() {
                 $('.datatables-positions').DataTable().draw();
-            });
-
-            // set locale for sorting
-            $.fn.dataTable.ext.order.intl('hu', {
-                sensitivity: 'base'
             });
         }
     });

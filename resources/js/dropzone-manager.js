@@ -36,6 +36,11 @@ class DropzoneManager {
     };
 
     static init(elementId, options = {}) {
+        if (!document.getElementById(elementId)) {
+            console.warn(`Element #${elementId} not found`);
+            return;
+        }
+
         const uploadContainer = $(`#${elementId}.dropzone`);
         if (uploadContainer.length === 0) {
             console.error(`Dropzone container not found for element #${elementId}`);

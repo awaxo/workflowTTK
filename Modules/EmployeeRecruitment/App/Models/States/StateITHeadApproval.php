@@ -12,7 +12,7 @@ use Modules\EmployeeRecruitment\App\Services\DelegationService;
 /**
  * The state of the recruitment process when the IT head has to approve the recruitment.
  */
-class StateITHeadApproval implements IStateResponsibility {
+class StateItHeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
         return $workgroup915 && $workgroup915->leader_id === $user->id;

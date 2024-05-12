@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-class StateHRLeadApproval implements IStateResponsibility {
+class StateHrLeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
         return $workgroup908 && $workgroup908->leader_id === $user->id;

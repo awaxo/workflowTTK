@@ -34,9 +34,10 @@ class ProfileController extends Controller
                             $key = false;
                             foreach ($allDelegations as $delegationGroup) {
                                 foreach ($delegationGroup as $delegationItem) {
-                                    if ($delegationItem['type'] === $delegation->type) {
+                                    if (isset($delegationItem['type'])) {
                                         $key = $delegationItem['readable_name'];
-                                        break 2;
+                                    } else {
+                                        $key = $delegationGroup['readable_name'];
                                     }
                                 }
                             }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -124,15 +125,11 @@ class User extends Authenticatable
         }
 
         if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900, 903, 905, 908])->where('leader_id', $this->id)->exists()) {
-            return User::whereHas('workgroup', function ($query) {
-                $query->where('workgroup_number', 901);
-            })->first();
+            return User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
         }
 
         if (Workgroup::whereIn('workgroup_number', [907, 910, 911, 912, 914, 915])->where('leader_id', $this->id)->exists()) {
-            return User::whereHas('workgroup', function ($query) {
-                $query->where('workgroup_number', 903);
-            })->first();
+            return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
         }
 
         if (Workgroup::where('leader_id', $this->id)
@@ -147,56 +144,54 @@ class User extends Authenticatable
 
                 $first_digit = substr($workgroup_number, 0, 1);
 
-                return User::whereHas('workgroup', function ($query) use ($first_digit) {
-                    $query->where('workgroup_number', $first_digit . '00');
-                })->first()->leader;
+                return User::find(Workgroup::where('workgroup_number', $first_digit . '00')->first()->leader_id);
         }
 
         return $this->workgroup->leader;
     }
 
-    public function getDelegates(string $delegationType = null): array
+    public function getDelegates(string $delegationType = null)
     {
         if ($this->id == Workgroup::where('workgroup_number', 903)->first()->leader_id && $delegationType === 'financial_countersign_approval') {
-            return User::find(Workgroup::where('workgroup_number', 910)->first()->leader_id)->toArray();
+            return User::find(Workgroup::where('workgroup_number', 910)->first()->leader_id);
         }
 
         if ($this->id == Workgroup::where('workgroup_number', 910)->first()->leader_id && $delegationType === 'financial_countersign_approval') {
-            return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id)->toArray();
+            return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
         }
 
         if ($this->id == Workgroup::where('workgroup_number', 911)->first()->leader_id && $delegationType === 'financial_countersign_approval') {
-            return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id)->toArray();
+            return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
         }
 
         if ($this->id == Workgroup::where('workgroup_number', 901)->first()->leader_id && $delegationType === 'obligee_approval') {
             $workgroups = Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900])->get();
-            $leaderIds = $workgroups->pluck('leader_id')->toArray();
-            return User::whereIn('id', $leaderIds)->get()->toArray();
+            $leaderIds = $workgroups->pluck('leader_id');
+            return User::whereIn('id', $leaderIds)->get();
         }
 
         if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900, 903])->where('leader_id', $this->id)->exists() && $delegationType === 'obligee_approval') {
-            return User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id)->toArray();
+            return User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
         }
 
         if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900])->where('leader_id', $this->id)->exists()) {
-            $users = $this->getUsersFromSameWorkgroup()->toArray();
+            $users = $this->getUsersFromSameWorkgroup();
 
             $leaderOf901 = User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
 
             if ($leaderOf901) {
-                $users[] = $leaderOf901->toArray();
+                $users->push($leaderOf901);
             }
 
             $firstCharOfWorkgroup = substr($this->workgroup->workgroup_number, 0, 1);
 
             $leaders = User::whereHas('workgroup', function ($query) use ($firstCharOfWorkgroup) {
                 $query->whereRaw('LEFT(workgroup_number, 1) = ?', [$firstCharOfWorkgroup])->where('leader_id', $this->id);
-            })->get()->toArray();
+            })->get();
 
-            return array_merge($users, $leaders);
+            return $users->push($leaders);
         }
 
-        return array_merge($this->getUsersFromSameWorkgroup(), $this->getSupervisor());
+        return $this->getUsersFromSameWorkgroup()->push($this->getSupervisor());
     }
 }

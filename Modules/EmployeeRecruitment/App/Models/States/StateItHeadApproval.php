@@ -9,28 +9,31 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-class StateHRLeadApproval implements IStateResponsibility {
+/**
+ * The state of the recruitment process when the IT head has to approve the recruitment.
+ */
+class StateItHeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
-        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
-        return $workgroup908 && $workgroup908->leader_id === $user->id;
+        $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+        return $workgroup915 && $workgroup915->leader_id === $user->id;
     }
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
         $service = new DelegationService();
-        return $service->isDelegate($user, 'hr_head');
+        return $service->isDelegate($user, 'it_head');
     }
 
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         $service = new DelegationService();
-        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
-        if (!$workgroup908) {
+        $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+        if (!$workgroup915) {
             return [];
         }
-        $leader = $workgroup908->leader;
+        $leader = $workgroup915->leader;
 
-        $delegateUsers = $service->getDelegates($leader, 'hr_head');
+        $delegateUsers = $service->getDelegates($leader, 'it_head');
         $responsibleUsers = array_merge([$leader], $delegateUsers->toArray());
 
         if ($notApprovedOnly) {
@@ -47,18 +50,18 @@ class StateHRLeadApproval implements IStateResponsibility {
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
-        return 'to_proof_of_coverage';
+        return 'to_supervisor_approval';
     }
 
     public function getDelegations(User $user): array {
-        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
-        if ($workgroup908 && $workgroup908->leader_id === $user->id) {
+        $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+        if ($workgroup915 && $workgroup915->leader_id === $user->id) {
             return [[
-                'type' => 'hr_head',
-                'readable_name' => 'Humámpolitikai osztályvezető'
+                'type' => 'it_head',
+                'readable_name' => 'Informatikai osztályvezető'
             ]];
         }
-        
+
         return [];
     }
 }

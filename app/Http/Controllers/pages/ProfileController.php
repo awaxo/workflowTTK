@@ -28,20 +28,28 @@ class ProfileController extends Controller
                         ->with('delegateUser')
                         ->get()
                         ->map(function ($delegation) {
-            $service = new DelegationService();
-            $allDelegations = $service->getAllDelegations(Auth::user());
+                            $service = new DelegationService();
+                            $allDelegations = $service->getAllDelegations(Auth::user());
 
-            $key = array_search($delegation->type, array_column($allDelegations, 'type'));
-            $readable_type = $key !== false ? $allDelegations[$key]['readable_name'] : $delegation->type;
+                            $key = false;
+                            foreach ($allDelegations as $delegationGroup) {
+                                foreach ($delegationGroup as $delegationItem) {
+                                    if ($delegationItem['type'] === $delegation->type) {
+                                        $key = $delegationItem['readable_name'];
+                                        break 2;
+                                    }
+                                }
+                            }
+                            $readable_type = $key !== false ? $key : $delegation->type;
 
-            return [
-                'id' => $delegation->id,
-                'readable_type' => $readable_type,
-                'delegate_name' => $delegation->delegateUser->name,
-                'start_date' => $delegation->start_date,
-                'end_date' => $delegation->end_date,
-            ];
-        });
+                            return [
+                                'id' => $delegation->id,
+                                'readable_type' => $readable_type,
+                                'delegate_name' => $delegation->delegateUser->name,
+                                'start_date' => $delegation->start_date,
+                                'end_date' => $delegation->end_date,
+                            ];
+                        });
 
         return response()->json(['data' => $delegations]);
     }

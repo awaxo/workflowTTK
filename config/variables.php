@@ -3,7 +3,7 @@
   return [
     "creatorName" => "HUN-REN TTK",
     "creatorUrl" => "https://www.ttk.hun-ren.hu/",
-    "appVersion" => "0.3.3",
+    "appVersion" => "0.3.4",
 
     "templateName" => "Workflow",
     "templateSuffix" => "Bootstrap 5 HTML Admin Template - Pro",

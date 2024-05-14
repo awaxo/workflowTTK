@@ -14,10 +14,9 @@ use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\WorkflowService;
 use Barryvdh\DomPDF\Facade\PDF;
+use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +28,6 @@ class EmployeeRecruitmentController extends Controller
     public function index()
     {
         // if not 'titkar*' role, return not authorized
-        // TODO: this should be handled in auth middleware
         $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
         $user = User::find(Auth::id());
         if (!$user->hasAnyRole($roles)) {
@@ -55,7 +53,10 @@ class EmployeeRecruitmentController extends Controller
             return $workgroup;
         });
         $positions = Position::where('deleted', 0)->get();
-        $costCenters = CostCenter::where('deleted', 0)->get();
+        $costCenters = CostCenter::where('deleted', 0)
+            ->where('valid_employee_recruitment', 1)
+            ->where('due_date', '>', Carbon::today())
+            ->get();
         $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
 

@@ -29,13 +29,18 @@ $(function() {
             { data: 'type_name' },
             { data: 'lead_user_name' },
             { data: 'project_coordinator_user_name' },
-            { data: 'due_date' },
+            { 
+                data: 'due_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
             { data: 'minimal_order_limit' },
             { 
                 data: 'valid_employee_recruitment',
                 render: function(data, type, row) {
                     if (type === 'display') {
-                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
+                        return data ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
                     } else {
                         return data;
                     }
@@ -259,9 +264,14 @@ $(function() {
         $('#type_id').val(costcenter.type_id).trigger('change');
         $('#lead_user_id').val(costcenter.lead_user_id).trigger('change');
         $('#project_coordinator_user_id').val(costcenter.project_coordinator_user_id).trigger('change');
-        $('#due_date').val(costcenter.due_date);
+        $('#due_date').val(moment(costcenter.due_date).format('YYYY.MM.DD'));
         $('#minimal_order_limit').val(costcenter.minimal_order_limit);
         $('#valid_employee_recruitment').val(costcenter.valid_employee_recruitment);
+        if (costcenter.valid_employee_recruitment) {
+            $('#valid_employee_recruitment').prop('checked', true);
+        } else {
+            $('#valid_employee_recruitment').prop('checked', false);
+        }
         $('.data-submit').attr('data-costcenter-id', costcenter.id);
     });
 

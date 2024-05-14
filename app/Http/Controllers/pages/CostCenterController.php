@@ -32,7 +32,7 @@ class CostCenterController extends Controller
                 'project_coordinator_user_id' => $costCenter->project_coordinator_user_id,
                 'project_coordinator_user_name' => $costCenter->projectCoordinatorUser->name,
                 'due_date' => $costCenter->due_date,
-                'minimal_order_limit' => number_format($costCenter->minimal_order_limit, 0),
+                'minimal_order_limit' => number_format($costCenter->minimal_order_limit, 0, '.', ' '),
                 'valid_employee_recruitment' => $costCenter->valid_employee_recruitment,
                 'deleted' => $costCenter->deleted,
                 'created_at' => $costCenter->created_at,
@@ -89,8 +89,14 @@ class CostCenterController extends Controller
 
     private function validateRequest()
     {
+        $input = request()->all();
+        if (isset($input['minimal_order_limit'])) {
+            $input['minimal_order_limit'] = str_replace(' ', '', $input['minimal_order_limit']);
+            request()->replace($input);
+        }
+
         return request()->validate([
-            'cost_center_code' => 'required|max:50',
+            'cost_center_code' => 'required|max:50|unique:wf_cost_center,cost_center_code',
             'name' => 'required|max:255',
             'type_id' => 'required|exists:wf_cost_center_type,id',
             'lead_user_id' => 'required|exists:wf_user,id',
@@ -101,6 +107,7 @@ class CostCenterController extends Controller
         [
             'cost_center_code.required' => 'Költséghely kód kötelező',
             'cost_center_code.max' => 'Költséghely kód maximum 50 karakter lehet',
+            'cost_center_code.unique' => 'A megadott költséghely (' . $input['cost_center_code'] . ') már létezik',
             'name.required' => 'Megnevezés kötelező',
             'name.max' => 'Megnevezés maximum 255 karakter lehet',
             'type_id.required' => 'Típus kötelező',

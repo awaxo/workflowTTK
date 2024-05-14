@@ -1,5 +1,6 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
+import { transform } from 'lodash';
 
 var fv;
 
@@ -7,7 +8,9 @@ $(function() {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
-            numeral: true
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            delimiter: ' '
         });
     });
 
@@ -35,7 +38,12 @@ $(function() {
                     return moment(data).format('YYYY.MM.DD');
                 }
             },
-            { data: 'minimal_order_limit' },
+            { 
+                data: 'minimal_order_limit',
+                render: function(data, type, row) {
+                    return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                }
+            },
             { 
                 data: 'valid_employee_recruitment',
                 render: function(data, type, row) {
@@ -387,6 +395,13 @@ function validateCostCenter() {
                 },
             },
             plugins: {
+                transformer: new FormValidation.plugins.Transformer({
+                    minimal_order_limit: {
+                        integer: function(field, element, validator) {
+                            return element.value.replace(/\s+/g, '');
+                        }
+                    }
+                }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
             },
         }

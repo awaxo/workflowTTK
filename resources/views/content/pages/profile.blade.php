@@ -105,10 +105,7 @@
                             <div class="col-sm-12 mb-3">
                                 <label for="delegated_user" class="form-label">Helyettesítő</label>
                                 <select class="form-select select2" id="delegated_user" name="delegated_user">
-                                    <option value="" selected>Válassz helyettesítőt</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endforeach
+                                    <!-- filled dinamically -->
                                 </select>
                             </div>
                             <div class="col-sm-4">

@@ -15,7 +15,7 @@ class Helpers
         // default data array
         $DefaultData = [
         'myLayout' => 'vertical',
-        'myTheme' => 'theme-default',
+        'myTheme' => 'theme-semi-dark',
         'myStyle' => 'light',
         'myRTLSupport' => true,
         'myRTLMode' => true,

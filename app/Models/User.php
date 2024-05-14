@@ -152,25 +152,25 @@ class User extends Authenticatable
 
     public function getDelegates(string $delegationType = null)
     {
-        if ($this->id == Workgroup::where('workgroup_number', 903)->first()->leader_id && $delegationType === 'financial_countersign_approval') {
+        if ($this->id == Workgroup::where('workgroup_number', 903)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
             return User::find(Workgroup::where('workgroup_number', 910)->first()->leader_id);
         }
 
-        if ($this->id == Workgroup::where('workgroup_number', 910)->first()->leader_id && $delegationType === 'financial_countersign_approval') {
+        if ($this->id == Workgroup::where('workgroup_number', 910)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
             return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
         }
 
-        if ($this->id == Workgroup::where('workgroup_number', 911)->first()->leader_id && $delegationType === 'financial_countersign_approval') {
+        if ($this->id == Workgroup::where('workgroup_number', 911)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
             return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
         }
 
-        if ($this->id == Workgroup::where('workgroup_number', 901)->first()->leader_id && $delegationType === 'obligee_approval') {
+        if ($this->id == Workgroup::where('workgroup_number', 901)->first()->leader_id && $delegationType === 'obligee_approver') {
             $workgroups = Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900])->get();
             $leaderIds = $workgroups->pluck('leader_id');
-            return User::whereIn('id', $leaderIds)->get();
+            return User::whereIn('id', $leaderIds)->orderBy('name')->get();
         }
 
-        if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900, 903])->where('leader_id', $this->id)->exists() && $delegationType === 'obligee_approval') {
+        if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900, 903])->where('leader_id', $this->id)->exists() && $delegationType === 'obligee_approver') {
             return User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
         }
 
@@ -189,9 +189,9 @@ class User extends Authenticatable
                 $query->whereRaw('LEFT(workgroup_number, 1) = ?', [$firstCharOfWorkgroup])->where('leader_id', $this->id);
             })->get();
 
-            return $users->push($leaders);
+            return $users->concat($leaders)->unique('name')->sortBy('name')->values();
         }
 
-        return $this->getUsersFromSameWorkgroup()->push($this->getSupervisor());
+        return $this->getUsersFromSameWorkgroup()->push($this->getSupervisor())->unique('name')->sortBy('name')->values();
     }
 }

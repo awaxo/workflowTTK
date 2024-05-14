@@ -39,6 +39,11 @@
 @section('content')
     <h4 class="py-3 mb-4">Beállítások</h4>
 
+    <div class="alert alert-success alert-dismissible d-none" role="alert" id="successAlert">
+        <span id="successAlertMessage"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
     <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
         <span id="errorAlertMessage"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -59,18 +64,18 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="col-3">
-                            <label for="suspension_thresold" class="form-label">Törlési küszöb felfüggesztett státuszban</label>
+                            <label for="recruitment_auto_suspend_threshold" class="form-label">Törlési küszöb felfüggesztett státuszban</label>
                             <div class="d-flex align-items-center">
-                                <input class="form-control numeral-mask" type="text" id="suspension_thresold" value="96" name="suspension_thresold" />
+                                <input class="form-control numeral-mask" type="text" id="recruitment_auto_suspend_threshold" value="{{ $options['recruitment_auto_suspend_threshold'] }}" name="recruitment_auto_suspend_threshold" />
                                 <span class="ms-2">Óra</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="col-3">
-                            <label for="director_approval_thresold" class="form-label">Igazgatói jóváhagyás alsó határa</label>
+                            <label for="recruitment_director_approve_salary_threshold" class="form-label">Igazgatói jóváhagyás alsó határa</label>
                             <div class="d-flex align-items-center">
-                                <input class="form-control numeral-mask" type="text" id="director_approval_thresold" value="5000000" name="director_approval_thresold" />
+                                <input class="form-control numeral-mask" type="text" id="recruitment_director_approve_salary_threshold" value="{{ $options['recruitment_director_approve_salary_threshold'] }}" name="recruitment_director_approve_salary_threshold" />
                                 <span class="ms-2">Ft</span>
                             </div>
                         </div>

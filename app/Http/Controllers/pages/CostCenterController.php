@@ -62,7 +62,7 @@ class CostCenterController extends Controller
 
     public function update($id)
     {
-        $validatedData = $this->validateRequest();
+        $validatedData = $this->validateRequest($id, request('cost_center_code'));
 
         $costCenter = CostCenter::find($id);
         $costCenter->fill($validatedData);
@@ -87,7 +87,7 @@ class CostCenterController extends Controller
         return response()->json(['message' => 'Cost center created successfully']);
     }
 
-    private function validateRequest()
+    private function validateRequest($id = null, $costCenterCode = null)
     {
         $input = request()->all();
         if (isset($input['minimal_order_limit'])) {
@@ -95,8 +95,16 @@ class CostCenterController extends Controller
             request()->replace($input);
         }
 
+        $checkUnique = true;
+        if ($id && $costCenterCode) {
+            $costCenter = CostCenter::find($id);
+            if ($costCenter->cost_center_code == $costCenterCode) {
+                $checkUnique = false;
+            }
+        }
+
         return request()->validate([
-            'cost_center_code' => 'required|max:50|unique:wf_cost_center,cost_center_code',
+            'cost_center_code' => $checkUnique ? 'required|max:50|unique:wf_cost_center,cost_center_code' : 'required|max:50',
             'name' => 'required|max:255',
             'type_id' => 'required|exists:wf_cost_center_type,id',
             'lead_user_id' => 'required|exists:wf_user,id',

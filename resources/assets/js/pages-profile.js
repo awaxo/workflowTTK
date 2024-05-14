@@ -87,6 +87,35 @@ $(function () {
         $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
 
+    $('#delegation_type').on('change', function() {
+        let type = $(this).val();
+        $.ajax({
+            url: '/api/delegates/' + type,
+            type: 'GET',
+            success: function(response) {
+                let options = '';
+                if (response) {
+                    if (Array.isArray(response)) {
+                        response.forEach(function(user) {
+                            options += `<option value="${user.id}">${user.name}</option>`;
+                        });
+                    } else {
+                        options += `<option value="${response.id}">${response.name}</option>`;
+                    }
+                }
+                $('#delegated_user').empty().html(options);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('#errorAlertMessage').text('Hiba történt a helyettesítők betöltése során!');
+                $('#errorAlert').removeClass('d-none');
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
+    if ($('#delegation_type').val()) {
+        $('#delegation_type').trigger('change');
+    }
+
     $('#save_delegation').on('click', function() {
         $('.invalid-feedback').remove();
         let fv = validateDelegation();

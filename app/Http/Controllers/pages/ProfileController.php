@@ -15,10 +15,9 @@ class ProfileController extends Controller
     {
         $service = new DelegationService();
         $delegations = $service->getAllDelegations(Auth::user());
-        $users = User::where('deleted', 0)->get();
         $approval_notification = json_decode(Auth::user()->notification_preferences)->email?->recruitment->approval_notification;
-
-        return view('content.pages.profile', compact('delegations', 'users', 'approval_notification'));
+Log::info($delegations);
+        return view('content.pages.profile', compact('delegations', 'approval_notification'));
     }
 
     public function getAllDelegations()
@@ -34,9 +33,10 @@ class ProfileController extends Controller
                             $key = false;
                             foreach ($allDelegations as $delegationGroup) {
                                 foreach ($delegationGroup as $delegationItem) {
-                                    if ($delegationItem['type'] === $delegation->type) {
+                                    if (isset($delegationItem['type'])) {
                                         $key = $delegationItem['readable_name'];
-                                        break 2;
+                                    } else {
+                                        $key = $delegationGroup['readable_name'];
                                     }
                                 }
                             }
@@ -114,5 +114,10 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Notification settings updated successfully']);
+    }
+
+    public function getDelegates($type)
+    {
+        return User::find(Auth::id())->getDelegates($type);
     }
 }

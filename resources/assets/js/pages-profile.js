@@ -16,7 +16,9 @@ $(function () {
 
     $("#delegation_start_date, #delegation_end_date").datepicker({
         format: "yyyy.mm.dd",
-        startDate: new Date()
+        startDate: new Date(),
+        language: 'hu',
+        weekStart: 1,
     });
 
     // set locale for sorting

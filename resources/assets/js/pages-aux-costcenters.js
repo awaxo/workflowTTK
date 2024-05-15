@@ -15,7 +15,9 @@ $(function() {
     });
 
     $('#due_date').datepicker({
-        format: "yyyy.mm.dd"
+        format: "yyyy.mm.dd",
+        language: 'hu',
+        weekStart: 1,
     });
 
     // set locale for sorting

@@ -32,6 +32,7 @@
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
     'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js',
+    'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.hu.min.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
     'resources/assets/vendor/libs/cleavejs/cleave-phone.js'
 ])

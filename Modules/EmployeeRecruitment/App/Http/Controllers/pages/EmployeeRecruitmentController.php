@@ -38,6 +38,7 @@ class EmployeeRecruitmentController extends Controller
         foreach ($roles as $role) {
             if ($user->hasRole($role)) {
                 $workgroupNumber = substr($role, -1);
+                $workgroupNumber = $workgroupNumber == 'i' ? 9 : $workgroupNumber;
                 $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
                 $workgroups = $workgroups->concat($workgroupsForRole);
             }

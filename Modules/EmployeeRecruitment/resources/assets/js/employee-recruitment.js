@@ -17,6 +17,8 @@ $(function () {
         format: "yyyy.mm.dd",
         startDate: new Date(),
         endDate: '+4Y',
+        language: 'hu',
+        weekStart: 1,
     });
 
     $('#job_ad_exists').on('change', function() {
@@ -31,8 +33,19 @@ $(function () {
         $("#employment_start_date, #employment_end_date").val('');
 
         var startDate = $(this).val() == 'Harmadik országbeli' ? '+3M' : '+21D';
-        $("#employment_start_date").datepicker('setStartDate', startDate);
-        $("#employment_end_date").datepicker('setStartDate', '+6M');
+        $("#employment_start_date").datepicker({
+            format: "yyyy.mm.dd",
+            startDate: startDate,
+            language: 'hu',
+            weekStart: 1
+        });
+        
+        $("#employment_end_date").datepicker({
+            format: "yyyy.mm.dd",
+            startDate: '+6M',
+            language: 'hu',
+            weekStart: 1
+        });
     });
     
     // set datepicker date fields
@@ -40,17 +53,26 @@ $(function () {
         format: "yyyy.mm.dd",
         startDate: '+21D',
         endDate: '+30Y',
+        language: 'hu',
+        weekStart: 1,
     });
     $("#employment_end_date").datepicker({
         format: "yyyy.mm.dd",
         startDate: '+200D',
         endDate: '+30Y',
+        language: 'hu',
+        weekStart: 1,
     });
     $("#employment_start_date").on('change', function() {
         var startDate = $("#employment_start_date").datepicker('getDate');
         if (startDate) {
             var endDate = moment(startDate).add(6, 'months').toDate();
-            $("#employment_end_date").datepicker('setStartDate', endDate);
+            $("#employment_end_date").datepicker({
+                format: "yyyy.mm.dd",
+                startDate: endDate,
+                language: 'hu',
+                weekStart: 1
+            });
         }
     });
     // set datepicker date fields
@@ -1073,6 +1095,10 @@ function validateEmployeeRecruitment() {
                         stringLength: {
                             max: 100,
                             message: 'Az email nem lehet hosszabb 100 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9._%+-]+@ttk\.hu$/,
+                            message: 'Csak @ttk.hu-ra végződő email cím adható meg'
                         }
                     }
                 },

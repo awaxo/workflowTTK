@@ -20,6 +20,7 @@ class CostCenterTypeController extends Controller
                 'id' => $costcenterType->id,
                 'name' => $costcenterType->name,
                 'tender' => $costcenterType->tender,
+                'financial_countersign' => $costcenterType->financial_countersign,
                 'clause_template' => $costcenterType->clause_template,
                 'deleted' => $costcenterType->deleted,
                 'created_at' => $costcenterType->created_at,
@@ -80,10 +81,13 @@ class CostCenterTypeController extends Controller
     {
         return request()->validate([
             'name' => 'required|max:255',
+            'financial_countersign' => 'required|in:pénzügyi osztályvezető,projektkooridinációs osztályvezető',
         ],
         [
             'name.required' => 'Költséghely típus név kötelező',
             'name.max' => 'Költséghely típus név maximum 255 karakter lehet',
+            'financial_countersign.required' => 'Pénzügyi ellenjegyző kötelező',
+            'financial_countersign.in' => 'Pénzügyi ellenjegyző értéke nem megfelelő',
         ]);
     }
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('type_id');
             $table->unsignedBigInteger('lead_user_id');
             $table->unsignedBigInteger('project_coordinator_user_id');
-            $table->date('due_date');
+            $table->date('due_date')->nullable();
             $table->decimal('minimal_order_limit', 10, 2);
             $table->unsignedTinyInteger('valid_employee_recruitment')->default(1);
             $table->unsignedTinyInteger('deleted')->default(0);

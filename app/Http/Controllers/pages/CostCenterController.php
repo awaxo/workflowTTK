@@ -109,7 +109,7 @@ class CostCenterController extends Controller
             'type_id' => 'required|exists:wf_cost_center_type,id',
             'lead_user_id' => 'required|exists:wf_user,id',
             'project_coordinator_user_id' => 'required|exists:wf_user,id',
-            'due_date' => 'required|date_format:Y.m.d',
+            'due_date' => $input['due_date'] != '' ? 'date_format:Y.m.d' : '',
             'minimal_order_limit' => 'required|numeric',
         ],
         [
@@ -124,7 +124,6 @@ class CostCenterController extends Controller
             'lead_user_id.exists' => 'Témavezető nem létezik',
             'project_coordinator_user_id.required' => 'Projektkoordinátor kötelező',
             'project_coordinator_user_id.exists' => 'Projektkoordinátor nem létezik',
-            'due_date.required' => 'Lejárati dátum kötelező',
             'due_date.date' => 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD',
             'minimal_order_limit.required' => 'Minimális rendelési limit kötelező',
             'minimal_order_limit.numeric' => 'Minimum rendelési limit csak szám lehet',

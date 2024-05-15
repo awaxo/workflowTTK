@@ -32,10 +32,10 @@ $(function() {
             { data: 'type_name' },
             { data: 'lead_user_name' },
             { data: 'project_coordinator_user_name' },
-            { 
+            {
                 data: 'due_date',
                 render: function(data, type, row) {
-                    return moment(data).format('YYYY.MM.DD');
+                    return data ? moment(data).format('YYYY.MM.DD') : '';
                 }
             },
             { 
@@ -272,7 +272,10 @@ $(function() {
         $('#type_id').val(costcenter.type_id).trigger('change');
         $('#lead_user_id').val(costcenter.lead_user_id).trigger('change');
         $('#project_coordinator_user_id').val(costcenter.project_coordinator_user_id).trigger('change');
-        $('#due_date').val(moment(costcenter.due_date).format('YYYY.MM.DD'));
+        console.log(costcenter.due_date);
+        if (costcenter.due_date) {
+            $('#due_date').val(moment(costcenter.due_date).format('YYYY.MM.DD'));
+        }
         $('#minimal_order_limit').val(costcenter.minimal_order_limit);
         $('#valid_employee_recruitment').val(costcenter.valid_employee_recruitment);
         if (costcenter.valid_employee_recruitment) {
@@ -377,9 +380,6 @@ function validateCostCenter() {
                 },
                 due_date: {
                     validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg a lejárat dátumát'
-                        },
                         date: {
                             format: 'YYYY.MM.DD',
                             message: 'Kérjük, valós dátumot adj meg',

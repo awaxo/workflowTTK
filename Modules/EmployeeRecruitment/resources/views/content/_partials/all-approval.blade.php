@@ -6,15 +6,15 @@
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Név</label>
-                <span class="fw-bold ms-1">{{ $recruitment->name }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->name }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Folyamatindító intézet</label>
-                <span class="fw-bold ms-1">{{ $recruitment->initiatorInstitute ? $recruitment->initiatorInstitute->group_level . ' - ' . $recruitment->initiatorInstitute->name : '' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->initiatorInstitute ? $recruitment->initiatorInstitute->group_level . ' - ' . $recruitment->initiatorInstitute->name : '' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Felvétel álláshirdetéssel történt</label>
-                <span class="fw-bold ms-1">
+                <span class="fw-bold ms-1 text-break">
                     @if($recruitment->job_ad_exists)
                         <i class="fas fa-check text-success"></i>
                     @else
@@ -24,15 +24,15 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Álláshirdetésre jelentkezett nők száma</label>
-                <span class="fw-bold ms-1">{{ $recruitment->applicants_female_count }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->applicants_female_count }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Álláshirdetésre jelentkezett férfiak száma</label>
-                <span class="fw-bold ms-1">{{ $recruitment->applicants_male_count }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->applicants_male_count }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Volt már munkajogviszonya a Kutatóközponttal</label>
-                <span class="fw-bold ms-1">
+                <span class="fw-bold ms-1 text-break">
                     @if($recruitment->has_prior_employment)
                         <i class="fas fa-check text-success"></i>
                     @else
@@ -42,7 +42,7 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal</label>
-                <span class="fw-bold ms-1">
+                <span class="fw-bold ms-1 text-break">
                     @if($recruitment->has_current_volunteer_contract)
                         <i class="fas fa-check text-success"></i>
                     @else
@@ -52,15 +52,15 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Állampolgárság</label>
-                <span class="fw-bold ms-1">{{ $recruitment->citizenship }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->citizenship }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Csoport 1</label>
-                <span class="fw-bold ms-1">{{ $recruitment->workgroup1 ? $recruitment->workgroup1->workgroup_number . ' - ' . $recruitment->workgroup1->name : '' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->workgroup1 ? $recruitment->workgroup1->workgroup_number . ' - ' . $recruitment->workgroup1->name : '' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Csoport 2</label>
-                <span class="fw-bold ms-1">{{ $recruitment->workgroup2 ? $recruitment->workgroup2->workgroup_number . ' - ' . $recruitment->workgroup2->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->workgroup2 ? $recruitment->workgroup2->workgroup_number . ' - ' . $recruitment->workgroup2->name : '-' }}</span>
             </div>
         </div>
     </div>
@@ -74,35 +74,35 @@
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkakör típusa</label>
-                <span class="fw-bold ms-1">{{ $recruitment->position ? $recruitment->position->type : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->position ? $recruitment->position->type : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkakör</label>
-                <span class="fw-bold ms-1">{{ $recruitment->position ? $recruitment->position->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->position ? $recruitment->position->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkaköri leírás</label>
                 @if($recruitment->job_description)
-                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->job_description }}" target="_blank">munkaköri leírás megtekintése</a></span>
+                    <span class="fw-bold ms-1 text-break"><a href="/dokumentumok/{{ $recruitment->job_description }}" target="_blank">munkaköri leírás megtekintése</a></span>
                 @else
-                    <span class="fw-bold ms-1">-</span>
+                    <span class="fw-bold ms-1 text-break">-</span>
                 @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Jogviszony típusa</label>
-                <span class="fw-bold ms-1">{{ $recruitment->employment_type }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->employment_type }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Feladat</label>
-                <span class="fw-bold ms-1">{{ $recruitment->task ? $recruitment->task : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->task ? $recruitment->task : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Jogviszony kezdete</label>
-                <span class="fw-bold ms-1">{{ $recruitment->employment_start_date }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->employment_start_date }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Jogviszony vége</label>
-                <span class="fw-bold ms-1">{{ $recruitment->employment_end_date }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->employment_end_date }}</span>
             </div>
         </div>
     </div>
@@ -117,79 +117,79 @@
             <p class="mb-1"><strong>Alapbér</strong></p>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Költséghely 1</label>
-                <span class="fw-bold ms-1">{{ $recruitment->base_salary_cc1 ? $recruitment->base_salary_cc1->cost_center_code . ' - ' . $recruitment->base_salary_cc1->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_cc1 ? $recruitment->base_salary_cc1->cost_center_code . ' - ' . $recruitment->base_salary_cc1->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 1</label>
-                <span class="fw-bold ms-1">{{ $recruitment->base_salary_monthly_gross_1 ? number_format($recruitment->base_salary_monthly_gross_1, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_monthly_gross_1 ? number_format($recruitment->base_salary_monthly_gross_1, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Költséghely 2</label>
-                <span class="fw-bold ms-1">{{ $recruitment->base_salary_cc2 ? $recruitment->base_salary_cc2->cost_center_code . ' - ' . $recruitment->base_salary_cc2->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_cc2 ? $recruitment->base_salary_cc2->cost_center_code . ' - ' . $recruitment->base_salary_cc2->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 2</label>
-                <span class="fw-bold ms-1">{{ $recruitment->base_salary_monthly_gross_2 ? number_format($recruitment->base_salary_monthly_gross_2, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_monthly_gross_2 ? number_format($recruitment->base_salary_monthly_gross_2, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Költséghely 3</label>
-                <span class="fw-bold ms-1">{{ $recruitment->base_salary_cc3 ? $recruitment->base_salary_cc3->cost_center_code . ' - ' . $recruitment->base_salary_cc3->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_cc3 ? $recruitment->base_salary_cc3->cost_center_code . ' - ' . $recruitment->base_salary_cc3->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 3</label>
-                <span class="fw-bold ms-1">{{ $recruitment->base_salary_monthly_gross_3 ? number_format($recruitment->base_salary_monthly_gross_3, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_monthly_gross_3 ? number_format($recruitment->base_salary_monthly_gross_3, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
 
             <p class="mb-1"><strong>Egészségügyi pótlék</strong></p>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Költséghely 4</label>
-                <span class="fw-bold ms-1">{{ $recruitment->health_allowance_cc ? $recruitment->health_allowance_cc->cost_center_code . ' - ' . $recruitment->health_allowance_cc->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->health_allowance_cc ? $recruitment->health_allowance_cc->cost_center_code . ' - ' . $recruitment->health_allowance_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 4</label>
-                <span class="fw-bold ms-1">{{ $recruitment->health_allowance_monthly_gross_4 ? number_format($recruitment->health_allowance_monthly_gross_4, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->health_allowance_monthly_gross_4 ? number_format($recruitment->health_allowance_monthly_gross_4, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
 
             <p class="mb-1"><strong>Vezetői pótlék</strong></p>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Költséghely 5</label>
-                <span class="fw-bold ms-1">{{ $recruitment->management_allowance_cc ? $recruitment->management_allowance_cc->cost_center_code . ' - ' . $recruitment->management_allowance_cc->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->management_allowance_cc ? $recruitment->management_allowance_cc->cost_center_code . ' - ' . $recruitment->management_allowance_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 5</label>
-                <span class="fw-bold ms-1">{{ $recruitment->management_allowance_monthly_gross_5 ? number_format($recruitment->management_allowance_monthly_gross_5, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->management_allowance_monthly_gross_5 ? number_format($recruitment->management_allowance_monthly_gross_5, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Időtartam vége</label>
-                <span class="fw-bold ms-1">{{ $recruitment->management_allowance_end_date }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->management_allowance_end_date }}</span>
             </div>
 
             <p class="mb-1"><strong>Bérpótlék 1</strong></p>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Költséghely 6</label>
-                <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_cc ? $recruitment->extra_pay_1_cc->cost_center_code . ' - ' . $recruitment->extra_pay_1_cc->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_1_cc ? $recruitment->extra_pay_1_cc->cost_center_code . ' - ' . $recruitment->extra_pay_1_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 6</label>
-                <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_monthly_gross_6 ? number_format($recruitment->extra_pay_1_monthly_gross_6, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_1_monthly_gross_6 ? number_format($recruitment->extra_pay_1_monthly_gross_6, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Időtartam vége</label>
-                <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_end_date }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_1_end_date }}</span>
             </div>
 
             <p class="mb-1"><strong>Bérpótlék 2</strong></p>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Költséghely 7</label>
-                <span class="fw-bold ms-1">{{ $recruitment->extra_pay_2_cc ? $recruitment->extra_pay_2_cc->cost_center_code . ' - ' . $recruitment->extra_pay_2_cc->name : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_2_cc ? $recruitment->extra_pay_2_cc->cost_center_code . ' - ' . $recruitment->extra_pay_2_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 7</label>
-                <span class="fw-bold ms-1">{{ $recruitment->extra_pay_1_monthly_gross_7 ? number_format($recruitment->extra_pay_1_monthly_gross_7, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_1_monthly_gross_7 ? number_format($recruitment->extra_pay_1_monthly_gross_7, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Időtartam vége</label>
-                <span class="fw-bold ms-1">{{ $recruitment->extra_pay_2_end_date }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_2_end_date }}</span>
             </div>
         </div>
     </div>
@@ -203,29 +203,29 @@
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Heti munkaóraszám</label>
-                <span class="fw-bold ms-1">{{ $recruitment->weekly_working_hours }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->weekly_working_hours }}</span>
             </div>
 
             <p class="mb-1"><strong>Munkaidő</strong></p>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Hétfő</label>
-                <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</span>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Kedd</label>
-                <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</span>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Szerda</label>
-                <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</span>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Csütörtök</label>
-                <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</span>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Péntek</label>
-                <span class="fw-bold ms-1">{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</span>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</span>
             </div>
         </div>
     </div>
@@ -239,31 +239,31 @@
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Javasolt email cím</label>
-                <span class="fw-bold ms-1">{{ $recruitment->email }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->email }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Belépési jogosultságok</label>
-                <span class="fw-bold ms-1">{{ $recruitment->entry_permissions ? $recruitment->entry_permissions : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->entry_permissions ? $recruitment->entry_permissions : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Rendszám</label>
-                <span class="fw-bold ms-1">{{ $recruitment->license_plate ? $recruitment->license_plate : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->license_plate ? $recruitment->license_plate : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Dolgozószoba</label>
-                <span class="fw-bold ms-1">{{ $recruitment->employee_room ? $recruitment->employee_room : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->employee_room ? $recruitment->employee_room : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Telefon mellék</label>
-                <span class="fw-bold ms-1">{{ $recruitment->phone_extension ? $recruitment->phone_extension : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->phone_extension ? $recruitment->phone_extension : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Hozzáférési jogosultságok</label>
-                <span class="fw-bold ms-1">{{ $recruitment->required_tools ? $recruitment->required_tools : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->required_tools ? $recruitment->required_tools : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkavégzéshez rendelkezésre álló eszközök</label>
-                <span class="fw-bold ms-1">{{ $recruitment->available_tools ? $recruitment->available_tools : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->available_tools ? $recruitment->available_tools : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Rendelkezésre álló eszközök leltári száma</label>
@@ -274,17 +274,17 @@
                         @endphp
                         @foreach($tools as $tool)
                             @foreach($tool as $key => $value)
-                                <span class="fw-bold ms-1">{{ ucfirst($key) . ': ' . $value }}</span><br/>
+                                <span class="fw-bold ms-1 text-break">{{ ucfirst($key) . ': ' . $value }}</span><br/>
                             @endforeach
                         @endforeach
                     @else
-                        <span class="fw-bold ms-1">-</span>
+                        <span class="fw-bold ms-1 text-break">-</span>
                     @endif
                 </div>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Sugárzó izotóppal fog dolgozni</label>
-                <span class="fw-bold ms-1">
+                <span class="fw-bold ms-1 text-break">
                     @if($recruitment->work_with_radioactive_isotopes)
                         <i class="fas fa-check text-success"></i>
                     @else
@@ -294,7 +294,7 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Rákkeltő anyaggal fog dolgozni?</label>
-                <span class="fw-bold ms-1">
+                <span class="fw-bold ms-1 text-break">
                     @if($recruitment->work_with_carcinogenic_materials)
                         <i class="fas fa-check text-success"></i>
                     @else
@@ -304,7 +304,7 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Használni tervezett rákkeltő anyagok felsorolása</label>
-                <span class="fw-bold ms-1">{{ $recruitment->planned_carcinogenic_materials_use ? $recruitment->planned_carcinogenic_materials_use : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->planned_carcinogenic_materials_use ? $recruitment->planned_carcinogenic_materials_use : '-' }}</span>
             </div>
         </div>
     </div>
@@ -319,30 +319,30 @@
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Személyi adatlap</label>
                 @if($recruitment->personal_data_sheet)
-                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->personal_data_sheet }}" target="_blank">személyi adatlap megtekintése</a></span>
+                    <span class="fw-bold ms-1 text-break"><a href="/dokumentumok/{{ $recruitment->personal_data_sheet }}" target="_blank">személyi adatlap megtekintése</a></span>
                 @else
-                    <span class="fw-bold ms-1">-</span>
+                    <span class="fw-bold ms-1 text-break">-</span>
                 @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Hallgatói jogviszony igazolás</label>
                 @if($recruitment->student_status_verification)
-                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->student_status_verification }}" target="_blank">hallgatói jogviszony igazolás megtekintése</a></span>
+                    <span class="fw-bold ms-1 text-break"><a href="/dokumentumok/{{ $recruitment->student_status_verification }}" target="_blank">hallgatói jogviszony igazolás megtekintése</a></span>
                 @else
-                    <span class="fw-bold ms-1">-</span>
+                    <span class="fw-bold ms-1 text-break">-</span>
                 @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Bizonyítványok</label>
                 @if($recruitment->certificates)
-                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->certificates }}" target="_blank">bizonyítványok megtekintése</a></span>
+                    <span class="fw-bold ms-1 text-break"><a href="/dokumentumok/{{ $recruitment->certificates }}" target="_blank">bizonyítványok megtekintése</a></span>
                 @else
-                    <span class="fw-bold ms-1">-</span>
+                    <span class="fw-bold ms-1 text-break">-</span>
                 @endif
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkába járási támogatást igényel</label>
-                <span class="fw-bold ms-1">
+                <span class="fw-bold ms-1 text-break">
                     @if($recruitment->requires_commute_support)
                         <i class="fas fa-check text-success"></i>
                     @else
@@ -353,9 +353,9 @@
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkába járási adatlap</label>
                 @if($recruitment->commute_support_form)
-                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->commute_support_form }}" target="_blank">munkába járási adatlap megtekintése</a></span>
+                    <span class="fw-bold ms-1 text-break"><a href="/dokumentumok/{{ $recruitment->commute_support_form }}" target="_blank">munkába járási adatlap megtekintése</a></span>
                 @else
-                    <span class="fw-bold ms-1">-</span>
+                    <span class="fw-bold ms-1 text-break">-</span>
                 @endif
             </div>
         </div>
@@ -370,14 +370,14 @@
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Próbaidő hossza</label>
-                <span class="fw-bold ms-1">{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Szerződés</label>
                 @if($recruitment->contract)
-                    <span class="fw-bold ms-1"><a href="/dokumentumok/{{ $recruitment->contract }}" target="_blank">szerződés megtekintése</a></span>
+                    <span class="fw-bold ms-1 text-break"><a href="/dokumentumok/{{ $recruitment->contract }}" target="_blank">szerződés megtekintése</a></span>
                 @else
-                    <span class="fw-bold ms-1">-</span>
+                    <span class="fw-bold ms-1 text-break">-</span>
                 @endif
             </div>
         </div>

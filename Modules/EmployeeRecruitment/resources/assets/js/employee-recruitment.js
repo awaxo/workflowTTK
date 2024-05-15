@@ -2,14 +2,17 @@ import moment from 'moment';
 import DropzoneManager from '/resources/js/dropzone-manager';
 import { min } from 'lodash';
 
+var cleaveInstances = {};
 $(function () {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
+        var cleave = new Cleave(field, {
             numeral: true,
             numeralThousandsGroupStyle: 'thousand',
             delimiter: ' ',
         });
+
+        cleaveInstances[field.id] = cleave;
     });
 
     // set datepicker date fields
@@ -216,33 +219,36 @@ $(function () {
         // enable/disable validators based on other field values
         enableOnChange(fv, 'task', 'employment_type', function() { return $('#employment_type').val() == 'Határozott'});
         enableOnChange(fv, 'employment_end_date', 'employment_type', function() { return $('#employment_type').val() == 'Határozott'});
-        enableOnChange(fv, 'base_salary_cost_center_2', 'base_salary_monthly_gross_2', function() { 
-            return $('#base_salary_monthly_gross_2').val() != "" && $('#base_salary_monthly_gross_2').val() > 0
+        
+        enableOnChange(fv, 'base_salary_cost_center_2', 'base_salary_monthly_gross_2', function() {
+            return cleaveInstances['base_salary_monthly_gross_2'].getRawValue() != "" && cleaveInstances['base_salary_monthly_gross_2'].getRawValue() > 0
         });
         enableOnChange(fv, 'base_salary_monthly_gross_2', 'base_salary_cost_center_2', function() { return $('#base_salary_cost_center_2').val() != ""});
+        
         enableOnChange(fv, 'base_salary_cost_center_3', 'base_salary_monthly_gross_3', function() { 
-            return $('#base_salary_monthly_gross_3').val() != "" && $('#base_salary_monthly_gross_3').val() > 0
+            return cleaveInstances['base_salary_monthly_gross_3'].getRawValue() != "" && cleaveInstances['base_salary_monthly_gross_3'].getRawValue() > 0
         });
         enableOnChange(fv, 'base_salary_monthly_gross_3', 'base_salary_cost_center_3', function() { return $('#base_salary_cost_center_3').val() != ""});
-        enableOnChange(fv, 'health_allowance_cost_center_4', 'health_allowance_monthly_gross_4', function() { 
-            return $('#health_allowance_monthly_gross_4').val() != "" && $('#health_allowance_monthly_gross_4').val() > 0
+        
+        enableOnChange(fv, 'health_allowance_cost_center_4', 'health_allowance_monthly_gross_4', function() {
+            return cleaveInstances['health_allowance_monthly_gross_4'].getRawValue() != "" && cleaveInstances['health_allowance_monthly_gross_4'].getRawValue() > 0
         });
         enableOnChange(fv, 'health_allowance_monthly_gross_4', 'health_allowance_cost_center_4', function() { return $('#health_allowance_cost_center_4').val() != ""});
         
         enableOnChange(fv, 'management_allowance_cost_center_5', 'management_allowance_monthly_gross_5', function() { 
-            return $('#management_allowance_monthly_gross_5').val() != "" && $('#management_allowance_monthly_gross_5').val() > 0
+            return cleaveInstances['management_allowance_monthly_gross_5'].getRawValue() != "" && cleaveInstances['management_allowance_monthly_gross_5'].getRawValue() > 0
         });
         enableOnChange(fv, 'management_allowance_monthly_gross_5', 'management_allowance_cost_center_5', function() { return $('#management_allowance_cost_center_5').val() != ""});
         enableOnChange(fv, 'management_allowance_end_date', 'management_allowance_cost_center_5', function() { return $('#management_allowance_cost_center_5').val() != ""});
         
-        enableOnChange(fv, 'extra_pay_1_cost_center_6', 'extra_pay_1_monthly_gross_6', function() { 
-            return $('#extra_pay_1_monthly_gross_6').val() != "" && $('#extra_pay_1_monthly_gross_6').val() > 0
+        enableOnChange(fv, 'extra_pay_1_cost_center_6', 'extra_pay_1_monthly_gross_6', function() {
+            return cleaveInstances['extra_pay_1_monthly_gross_6'].getRawValue() != "" && cleaveInstances['extra_pay_1_monthly_gross_6'].getRawValue() > 0
         });
         enableOnChange(fv, 'extra_pay_1_monthly_gross_6', 'extra_pay_1_cost_center_6', function() { return $('#extra_pay_1_cost_center_6').val() != ""});
         enableOnChange(fv, 'extra_pay_1_end_date', 'extra_pay_1_cost_center_6', function() { return $('#extra_pay_1_cost_center_6').val() != ""});
 
-        enableOnChange(fv, 'extra_pay_2_cost_center_7', 'extra_pay_2_monthly_gross_7', function() { 
-            return $('#extra_pay_2_monthly_gross_7').val() != "" && $('#extra_pay_2_monthly_gross_7').val() > 0
+        enableOnChange(fv, 'extra_pay_2_cost_center_7', 'extra_pay_2_monthly_gross_7', function() {
+            return cleaveInstances['extra_pay_2_monthly_gross_7'].getRawValue() != "" && cleaveInstances['extra_pay_2_monthly_gross_7'].getRawValue() > 0
         });
         enableOnChange(fv, 'extra_pay_2_monthly_gross_7', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
         enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
@@ -849,14 +855,14 @@ function validateEmployeeRecruitment() {
                         },
                         callback: {
                             callback: function(input) {
-                                if ($('#base_salary_cost_center_2').val() != "") {
+                                if ($('#base_salary_cost_center_2').val()) {
                                     return {
-                                        valid: input.value >= 1000 && input.value <= 3000000,
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 3000000,
                                         message: 'Az érték 1000 és 3 000 000 között lehet'
                                     };
                                 } else {
                                     return {
-                                        valid: input.value == 0,
+                                        valid: cleaveInstances[input.field].getRawValue() == 0,
                                         message: 'Az érték 0 lehet'
                                     }
                                 }
@@ -881,14 +887,14 @@ function validateEmployeeRecruitment() {
                         },
                         callback: {
                             callback: function(input) {
-                                if ($('#base_salary_cost_center_3').val() != "") {
+                                if ($('#base_salary_cost_center_3').val()) {
                                     return {
-                                        valid: input.value >= 1000 && input.value <= 3000000,
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 3000000,
                                         message: 'Az érték 1000 és 3 000 000 között lehet'
                                     };
                                 } else {
                                     return {
-                                        valid: input.value == 0,
+                                        valid: cleaveInstances[input.field].getRawValue() == 0,
                                         message: 'Az érték 0 lehet'
                                     }
                                 }
@@ -913,14 +919,14 @@ function validateEmployeeRecruitment() {
                         },
                         callback: {
                             callback: function(input) {
-                                if ($('#health_allowance_cost_center_4').val() != "") {
+                                if ($('#health_allowance_cost_center_4').val()) {
                                     return {
-                                        valid: input.value >= 1000 && input.value <= 20000,
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 20000,
                                         message: 'Az érték 1000 és 20 000 között lehet'
                                     };
                                 } else {
                                     return {
-                                        valid: input.value == 0,
+                                        valid: cleaveInstances[input.field].getRawValue() == 0,
                                         message: 'Az érték 0 lehet'
                                     }
                                 }
@@ -945,14 +951,14 @@ function validateEmployeeRecruitment() {
                         },
                         callback: {
                             callback: function(input) {
-                                if ($('#management_allowance_cost_center_5').val() != "") {
+                                if ($('#management_allowance_cost_center_5').val()) {
                                     return {
-                                        valid: input.value >= 1000 && input.value <= 300000,
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 300000,
                                         message: 'Az érték 1000 és 300 000 között lehet'
                                     };
                                 } else {
                                     return {
-                                        valid: input.value == 0,
+                                        valid: cleaveInstances[input.field].getRawValue() == 0,
                                         message: 'Az érték 0 lehet'
                                     }
                                 }
@@ -999,12 +1005,12 @@ function validateEmployeeRecruitment() {
                             callback: function(input) {
                                 if ($('#extra_pay_1_cost_center_6').val() != "") {
                                     return {
-                                        valid: input.value >= 1000 && input.value <= 300000,
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 300000,
                                         message: 'Az érték 1000 és 300 000 között lehet'
                                     };
                                 } else {
                                     return {
-                                        valid: input.value == 0,
+                                        valid: cleaveInstances[input.field].getRawValue() == 0,
                                         message: 'Az érték 0 lehet'
                                     }
                                 }
@@ -1051,12 +1057,12 @@ function validateEmployeeRecruitment() {
                             callback: function(input) {
                                 if ($('#extra_pay_2_cost_center_7').val() != "") {
                                     return {
-                                        valid: input.value >= 1000 && input.value <= 300000,
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 300000,
                                         message: 'Az érték 1000 és 300 000 között lehet'
                                     };
                                 } else {
                                     return {
-                                        valid: input.value == 0,
+                                        valid: cleaveInstances[input.field].getRawValue() == 0,
                                         message: 'Az érték 0 lehet'
                                     }
                                 }

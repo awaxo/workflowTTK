@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
+use App\Models\Option;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Workgroup;
@@ -215,8 +216,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
-        // TODO: kitenni UI-on módosítható paraméterbe
-        $salary_threshold = 5000000;
+        $salary_threshold = Option::where('option_name', 'recruitment.director_salary_threshold')->first()->option_value;
 
         if ($workflow instanceof RecruitmentWorkflow) {
             $employment_start_date = new DateTime($workflow->employment_start_date);

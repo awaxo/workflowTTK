@@ -14,10 +14,9 @@ use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\WorkflowService;
 use Barryvdh\DomPDF\Facade\PDF;
+use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +28,6 @@ class EmployeeRecruitmentController extends Controller
     public function index()
     {
         // if not 'titkar*' role, return not authorized
-        // TODO: this should be handled in auth middleware
         $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
         $user = User::find(Auth::id());
         if (!$user->hasAnyRole($roles)) {
@@ -55,7 +53,10 @@ class EmployeeRecruitmentController extends Controller
             return $workgroup;
         });
         $positions = Position::where('deleted', 0)->get();
-        $costCenters = CostCenter::where('deleted', 0)->get();
+        $costCenters = CostCenter::where('deleted', 0)
+            ->where('valid_employee_recruitment', 1)
+            ->where('due_date', '>', Carbon::today())
+            ->get();
         $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
 
@@ -90,15 +91,16 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->job_ad_exists = $validatedData['job_ad_exists'] == 'true' ? 1 : 0;
         $recruitment->has_prior_employment = $validatedData['has_prior_employment'] == 'true' ? 1 : 0;
         $recruitment->has_current_volunteer_contract = $validatedData['has_current_volunteer_contract'] == 'true' ? 1 : 0;
-        $recruitment->applicants_female_count = $validatedData['applicants_female_count'];
-        $recruitment->applicants_male_count = $validatedData['applicants_male_count'];
+        $recruitment->applicants_female_count = str_replace(' ', '', $validatedData['applicants_female_count']);
+        $recruitment->applicants_male_count = str_replace(' ', '', $validatedData['applicants_male_count']);
         $recruitment->citizenship = $validatedData['citizenship'];
         $recruitment->workgroup_id_1 = $validatedData['workgroup_id_1'];
         $recruitment->workgroup_id_2 = $validatedData['workgroup_id_2'] == -1 ? null : $validatedData['workgroup_id_2'];
 
         // data section 2
         $recruitment->position_id = $validatedData['position_id'];
-        $recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
+        //$recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
+        $recruitment->job_description = $validatedData['job_description_file'];
         $recruitment->employment_type = $validatedData['employment_type'];
         $recruitment->task = isset($validatedData['task']) ? $validatedData['task'] : '';
         $validatedData['employment_start_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_start_date'])));
@@ -108,23 +110,23 @@ class EmployeeRecruitmentController extends Controller
 
         // data section 3
         $recruitment->base_salary_cost_center_1 = $validatedData['base_salary_cost_center_1'];
-        $recruitment->base_salary_monthly_gross_1 = $validatedData['base_salary_monthly_gross_1'];
+        $recruitment->base_salary_monthly_gross_1 = floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_1']));
         $recruitment->base_salary_cost_center_2 = $validatedData['base_salary_cost_center_2'];
-        $recruitment->base_salary_monthly_gross_2 = $validatedData['base_salary_monthly_gross_2'];
+        $recruitment->base_salary_monthly_gross_2 = floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_2']));
         $recruitment->base_salary_cost_center_3 = $validatedData['base_salary_cost_center_3'];
-        $recruitment->base_salary_monthly_gross_3 = $validatedData['base_salary_monthly_gross_3'];
+        $recruitment->base_salary_monthly_gross_3 = floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_3']));
         $recruitment->health_allowance_cost_center_4 = $validatedData['health_allowance_cost_center_4'];
-        $recruitment->health_allowance_monthly_gross_4 = $validatedData['health_allowance_monthly_gross_4'];
+        $recruitment->health_allowance_monthly_gross_4 = floatval(str_replace(' ', '', $validatedData['health_allowance_monthly_gross_4']));
         $recruitment->management_allowance_cost_center_5 = $validatedData['management_allowance_cost_center_5'];
-        $recruitment->management_allowance_monthly_gross_5 = $validatedData['management_allowance_monthly_gross_5'];
+        $recruitment->management_allowance_monthly_gross_5 = floatval(str_replace(' ', '', $validatedData['management_allowance_monthly_gross_5']));
         $validatedData['management_allowance_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['management_allowance_end_date'])));
         $recruitment->management_allowance_end_date = $validatedData['management_allowance_end_date'];
         $recruitment->extra_pay_1_cost_center_6 = $validatedData['extra_pay_1_cost_center_6'];
-        $recruitment->extra_pay_1_monthly_gross_6 = $validatedData['extra_pay_1_monthly_gross_6'];
+        $recruitment->extra_pay_1_monthly_gross_6 = floatval(str_replace(' ', '', $validatedData['extra_pay_1_monthly_gross_6']));
         $validatedData['extra_pay_1_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_1_end_date'])));
         $recruitment->extra_pay_1_end_date = $validatedData['extra_pay_1_end_date'];
         $recruitment->extra_pay_2_cost_center_7 = $validatedData['extra_pay_2_cost_center_7'];
-        $recruitment->extra_pay_2_monthly_gross_7 = $validatedData['extra_pay_2_monthly_gross_7'];
+        $recruitment->extra_pay_2_monthly_gross_7 = floatval(str_replace(' ', '', $validatedData['extra_pay_2_monthly_gross_7']));
         $validatedData['extra_pay_2_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_2_end_date'])));
         $recruitment->extra_pay_2_end_date = $validatedData['extra_pay_2_end_date'];
 
@@ -163,11 +165,15 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->planned_carcinogenic_materials_use = isset($validatedData['planned_carcinogenic_materials_use']) ? $validatedData['planned_carcinogenic_materials_use'] : null;
 
         // data section 6
-        $recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
+        /*$recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
         $recruitment->student_status_verification = $this->getNewFileName($validatedData['name'], 'HallgatóiJogviszony', $validatedData['student_status_verification_file']);
-        $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);
+        $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);*/
+        $recruitment->personal_data_sheet = $validatedData['personal_data_sheet_file'];
+        $recruitment->student_status_verification = $validatedData['student_status_verification_file'];
+        $recruitment->certificates = $validatedData['certificates_file'];
         $recruitment->requires_commute_support = $validatedData['requires_commute_support'] == 'true' ? 1 : 0;
-        $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
+        //$recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
+        $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $validatedData['commute_support_form_file'] : null;
 
         try {
             $recruitment->save();
@@ -411,8 +417,6 @@ class EmployeeRecruitmentController extends Controller
                 Log::error('Nincs definiált transition az adott státuszból');
                 throw new \Exception('No valid transition found');
             }
-
-            //return redirect()->route('content.pages.workflows');
         } else {
             return view('content.pages.misc-not-authorized');
         }

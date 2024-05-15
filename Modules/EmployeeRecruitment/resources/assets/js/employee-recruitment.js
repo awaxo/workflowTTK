@@ -182,6 +182,8 @@ $(function () {
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_eger');
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_dokkolo');
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_mobiltelefon');
+        revalidateOnChange(fv, 'work_with_radioactive_isotopes');
+        revalidateOnChange(fv, 'work_with_carcinogenic_materials');
         revalidateOnChange(fv, 'planned_carcinogenic_materials_use');
         revalidateOnChange(fv, 'personal_data_sheet_file');
         revalidateOnChange(fv, 'student_status_verification_file');
@@ -294,6 +296,8 @@ $(function () {
                         .then(function(status) {
                             if (status === 'Invalid') {
                                 console.log('Field:', name, 'Status:', status);
+                                $('#errorAlertMessage').text('Hibás adat(ok) vagy hiányzó mező(k) vannak a formon, kérjük ellenőrizd!');
+                                $('#errorAlert').removeClass('d-none');
                             }
                         });
                 });
@@ -646,7 +650,7 @@ function validateCostCenterSum() {
     let fields = ['base_salary_monthly_gross_1', 'base_salary_monthly_gross_2', 'base_salary_monthly_gross_3', 'health_allowance_monthly_gross_4', 'management_allowance_monthly_gross_5', 'extra_pay_1_monthly_gross_6', 'extra_pay_2_monthly_gross_7'];
 
     fields.forEach(function(field) {
-        sum += parseInt($('#' + field).val()) || 0;
+        sum += parseInt($('#' + field).val().replace(/\s/g, '')) || 0;
     });
 
     return sum % 1000 === 0;
@@ -680,6 +684,23 @@ function validateWorkingHours() {
     return sum === parseInt($('#weekly_working_hours').val());
 }
 
+// Fields to use numeric transformer for
+const fields = [
+        'applicants_female_count',
+        'applicants_male_count',
+        'base_salary_monthly_gross_1',
+        'base_salary_monthly_gross_2',
+        'base_salary_monthly_gross_3',
+        'health_allowance_monthly_gross_4',
+        'management_allowance_monthly_gross_5',
+        'extra_pay_1_monthly_gross_6',
+        'extra_pay_2_monthly_gross_7'
+    ];
+const transformers = fields.reduce((acc, fieldName) => {
+    acc[fieldName] = createNumericTransformer(fieldName);
+    return acc;
+}, {});
+
 function validateEmployeeRecruitment() {
     return FormValidation.formValidation(
         document.getElementById('new-recruitment'),
@@ -708,7 +729,7 @@ function validateEmployeeRecruitment() {
                             min: 0,
                             max: 1000,
                             message: 'Az érték 0 és 1000 között lehet'
-                        }
+                        },
                     }
                 },
                 applicants_male_count: {
@@ -1246,6 +1267,20 @@ function validateEmployeeRecruitment() {
                         }
                     }
                 },
+                work_with_radioactive_isotopes: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg, hogy fog-e radioaktív izotópokkal dolgozni'
+                        }
+                    }
+                },
+                work_with_carcinogenic_materials: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg, hogy fog-e rákkeltő anyagokkal dolgozni'
+                        }
+                    }
+                },
                 planned_carcinogenic_materials_use: {
                     validators: {
                         notEmpty: {
@@ -1287,6 +1322,7 @@ function validateEmployeeRecruitment() {
                 },
             },
             plugins: {
+                transformer: new FormValidation.plugins.Transformer(transformers),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
             },
         }
@@ -1295,4 +1331,15 @@ function validateEmployeeRecruitment() {
     }).on('core.field.valid', function(field) {
         $(`#${field}`).next().removeClass('is-invalid');
     });
+}
+
+function createNumericTransformer(fieldName) {
+    return {
+        integer: function(field, element, validator) {
+            return element.value.replace(/\s+/g, '');
+        },
+        between: function(field, element, validator) {
+            return element.value.replace(/\s+/g, '');
+        }
+    };
 }

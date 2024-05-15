@@ -18,12 +18,13 @@ $(function() {
                 data: 'tender',
                 render: function(data, type, row) {
                     if (type === 'display') {
-                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
+                        return data ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
                     } else {
                         return data;
                     }
                 }
             },
+            { data: 'financial_countersign' },
             { data: 'clause_template' },
             { 
                 data: 'deleted',
@@ -239,7 +240,12 @@ $(function() {
         $('#new_costcenter_type_label').text('Költséghely típus módosítás');
 
         $('#name').val(costcenterType.name);
-        $('#tender').val(costcenterType.tender);
+        if (costcenterType.tender) {
+            $('#tender').prop('checked', true);
+        } else {
+            $('#tender').prop('checked', false);
+        }
+        $('#financial_countersign').val(costcenterType.financial_countersign);
         $('#clause_template').val(costcenterType.clause_template);
         $('.data-submit').attr('data-costcenter-type-id', costcenterType.id);
     });
@@ -265,6 +271,7 @@ $(function() {
                         _token: $('meta[name="csrf-token"]').attr('content'),
                         name: $('#name').val(),
                         tender: $('#tender').is(':checked'),
+                        financial_countersign: $('#financial_countersign').val(),
                         clause_template: $('#clause_template').val()
                     },
                     success: function (response) {
@@ -291,6 +298,7 @@ $(function() {
         $('#name').val('');
         $('#clause_template').val('');
         $('#tender').prop('checked', false);
+        $('#financial_countersign').val('pénzügyi osztályvezető');
 
         fv?.resetForm(true);
     });
@@ -311,7 +319,14 @@ function validateCostCenterType() {
                             message: 'A költséghely típus neve maximum 255 karakter lehet'
                         }
                     }
-                }
+                },
+                financial_countersign: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a pénzügyi ellenjegyzőt'
+                        },
+                    }
+                },
             },
             plugins: {
                 bootstrap: new FormValidation.plugins.Bootstrap5(),

@@ -32,7 +32,7 @@ class CostCenterController extends Controller
                 'project_coordinator_user_id' => $costCenter->project_coordinator_user_id,
                 'project_coordinator_user_name' => $costCenter->projectCoordinatorUser->name,
                 'due_date' => $costCenter->due_date,
-                'minimal_order_limit' => number_format($costCenter->minimal_order_limit, 0),
+                'minimal_order_limit' => number_format($costCenter->minimal_order_limit, 0, '.', ' '),
                 'valid_employee_recruitment' => $costCenter->valid_employee_recruitment,
                 'deleted' => $costCenter->deleted,
                 'created_at' => $costCenter->created_at,
@@ -62,7 +62,7 @@ class CostCenterController extends Controller
 
     public function update($id)
     {
-        $validatedData = $this->validateRequest();
+        $validatedData = $this->validateRequest($id, request('cost_center_code'));
 
         $costCenter = CostCenter::find($id);
         $costCenter->fill($validatedData);
@@ -87,20 +87,35 @@ class CostCenterController extends Controller
         return response()->json(['message' => 'Cost center created successfully']);
     }
 
-    private function validateRequest()
+    private function validateRequest($id = null, $costCenterCode = null)
     {
+        $input = request()->all();
+        if (isset($input['minimal_order_limit'])) {
+            $input['minimal_order_limit'] = str_replace(' ', '', $input['minimal_order_limit']);
+            request()->replace($input);
+        }
+
+        $checkUnique = true;
+        if ($id && $costCenterCode) {
+            $costCenter = CostCenter::find($id);
+            if ($costCenter->cost_center_code == $costCenterCode) {
+                $checkUnique = false;
+            }
+        }
+
         return request()->validate([
-            'cost_center_code' => 'required|max:50',
+            'cost_center_code' => $checkUnique ? 'required|max:50|unique:wf_cost_center,cost_center_code' : 'required|max:50',
             'name' => 'required|max:255',
             'type_id' => 'required|exists:wf_cost_center_type,id',
             'lead_user_id' => 'required|exists:wf_user,id',
             'project_coordinator_user_id' => 'required|exists:wf_user,id',
-            'due_date' => 'required|date_format:Y.m.d',
+            'due_date' => $input['due_date'] != '' ? 'date_format:Y.m.d' : '',
             'minimal_order_limit' => 'required|numeric',
         ],
         [
             'cost_center_code.required' => 'Költséghely kód kötelező',
             'cost_center_code.max' => 'Költséghely kód maximum 50 karakter lehet',
+            'cost_center_code.unique' => 'A megadott költséghely (' . $input['cost_center_code'] . ') már létezik',
             'name.required' => 'Megnevezés kötelező',
             'name.max' => 'Megnevezés maximum 255 karakter lehet',
             'type_id.required' => 'Típus kötelező',
@@ -109,7 +124,6 @@ class CostCenterController extends Controller
             'lead_user_id.exists' => 'Témavezető nem létezik',
             'project_coordinator_user_id.required' => 'Projektkoordinátor kötelező',
             'project_coordinator_user_id.exists' => 'Projektkoordinátor nem létezik',
-            'due_date.required' => 'Lejárati dátum kötelező',
             'due_date.date' => 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD',
             'minimal_order_limit.required' => 'Minimális rendelési limit kötelező',
             'minimal_order_limit.numeric' => 'Minimum rendelési limit csak szám lehet',

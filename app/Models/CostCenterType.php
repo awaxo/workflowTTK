@@ -22,6 +22,7 @@ class CostCenterType extends Model
     protected $fillable = [
         'name',
         'tender',
+        'financial_countersign',
         'clause_template',
         'created_by',
         'updated_by',

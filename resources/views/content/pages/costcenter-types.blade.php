@@ -55,6 +55,7 @@
                                 <th></th>
                                 <th>Költséghely típus</th>
                                 <th>Pályázat</th>
+                                <th>Pénzügyi ellenjegyző</th>
                                 <th>Záradák sablon</th>
                                 <th>Aktív</th>
                                 <th>Utolsó módosító</th>
@@ -89,6 +90,14 @@
                     <div class="has-validation">
                         <input type="checkbox" id="tender" class="form-check-input" />
                     </div>
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+                <div class="col-sm-12 fv-plugins-icon-container">
+                    <label class="form-label" for="financial_countersign">Pénzügyi ellenjegyző</label>
+                    <select class="form-select select2" id="financial_countersign" name="financial_countersign">
+                        <option value="pénzügyi osztályvezető">pénzügyi osztályvezető</option>
+                        <option value="projektkooridinációs osztályvezető">projektkooridinációs osztályvezető</option>
+                    </select>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">

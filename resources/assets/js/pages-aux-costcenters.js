@@ -1,5 +1,6 @@
 import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
+import { transform } from 'lodash';
 
 var fv;
 
@@ -7,7 +8,9 @@ $(function() {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
         new Cleave(field, {
-            numeral: true
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            delimiter: ' '
         });
     });
 
@@ -29,13 +32,23 @@ $(function() {
             { data: 'type_name' },
             { data: 'lead_user_name' },
             { data: 'project_coordinator_user_name' },
-            { data: 'due_date' },
-            { data: 'minimal_order_limit' },
+            {
+                data: 'due_date',
+                render: function(data, type, row) {
+                    return data ? moment(data).format('YYYY.MM.DD') : '';
+                }
+            },
+            { 
+                data: 'minimal_order_limit',
+                render: function(data, type, row) {
+                    return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                }
+            },
             { 
                 data: 'valid_employee_recruitment',
                 render: function(data, type, row) {
                     if (type === 'display') {
-                        return data ? '<i class="fas fa-times text-danger"></i>' : '<i class="fas fa-check text-success"></i>';
+                        return data ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
                     } else {
                         return data;
                     }
@@ -259,9 +272,17 @@ $(function() {
         $('#type_id').val(costcenter.type_id).trigger('change');
         $('#lead_user_id').val(costcenter.lead_user_id).trigger('change');
         $('#project_coordinator_user_id').val(costcenter.project_coordinator_user_id).trigger('change');
-        $('#due_date').val(costcenter.due_date);
+        console.log(costcenter.due_date);
+        if (costcenter.due_date) {
+            $('#due_date').val(moment(costcenter.due_date).format('YYYY.MM.DD'));
+        }
         $('#minimal_order_limit').val(costcenter.minimal_order_limit);
         $('#valid_employee_recruitment').val(costcenter.valid_employee_recruitment);
+        if (costcenter.valid_employee_recruitment) {
+            $('#valid_employee_recruitment').prop('checked', true);
+        } else {
+            $('#valid_employee_recruitment').prop('checked', false);
+        }
         $('.data-submit').attr('data-costcenter-id', costcenter.id);
     });
 
@@ -359,9 +380,6 @@ function validateCostCenter() {
                 },
                 due_date: {
                     validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg a lejárat dátumát'
-                        },
                         date: {
                             format: 'YYYY.MM.DD',
                             message: 'Kérjük, valós dátumot adj meg',
@@ -377,6 +395,13 @@ function validateCostCenter() {
                 },
             },
             plugins: {
+                transformer: new FormValidation.plugins.Transformer({
+                    minimal_order_limit: {
+                        integer: function(field, element, validator) {
+                            return element.value.replace(/\s+/g, '');
+                        }
+                    }
+                }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
             },
         }

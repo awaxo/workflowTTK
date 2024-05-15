@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('tender');
+            $table->string('financial_countersign');
             $table->text('clause_template')->nullable();
             $table->unsignedTinyInteger('deleted')->default(0);
             $table->timestamps();

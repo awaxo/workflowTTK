@@ -272,7 +272,6 @@ $(function() {
         $('#type_id').val(costcenter.type_id).trigger('change');
         $('#lead_user_id').val(costcenter.lead_user_id).trigger('change');
         $('#project_coordinator_user_id').val(costcenter.project_coordinator_user_id).trigger('change');
-        console.log(costcenter.due_date);
         if (costcenter.due_date) {
             $('#due_date').val(moment(costcenter.due_date).format('YYYY.MM.DD'));
         }

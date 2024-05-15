@@ -29,7 +29,7 @@
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
-    'resources/assets/vendor/libs/formvalidation/dist/js/plugins/Transformer.js',
+    'resources/assets/vendor/libs/@form-validation/transformer.js',
     'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
     'resources/assets/vendor/libs/cleavejs/cleave-phone.js',

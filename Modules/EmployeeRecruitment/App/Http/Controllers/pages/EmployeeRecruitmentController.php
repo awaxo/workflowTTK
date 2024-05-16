@@ -38,6 +38,7 @@ class EmployeeRecruitmentController extends Controller
         foreach ($roles as $role) {
             if ($user->hasRole($role)) {
                 $workgroupNumber = substr($role, -1);
+                $workgroupNumber = $workgroupNumber == 'i' ? 9 : $workgroupNumber;
                 $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
                 $workgroups = $workgroups->concat($workgroupsForRole);
             }
@@ -104,7 +105,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->employment_type = $validatedData['employment_type'];
         $recruitment->task = isset($validatedData['task']) ? $validatedData['task'] : '';
         $validatedData['employment_start_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_start_date'])));
-        $validatedData['employment_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_end_date'])));
+        if (!empty($validatedData['employment_end_date'])) {
+            $validatedData['employment_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_end_date'])));
+        } else {
+            $validatedData['employment_end_date'] = null;
+        }
         $recruitment->employment_start_date = $validatedData['employment_start_date'];
         $recruitment->employment_end_date = $validatedData['employment_end_date'];
 
@@ -112,22 +117,34 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->base_salary_cost_center_1 = $validatedData['base_salary_cost_center_1'];
         $recruitment->base_salary_monthly_gross_1 = floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_1']));
         $recruitment->base_salary_cost_center_2 = $validatedData['base_salary_cost_center_2'];
-        $recruitment->base_salary_monthly_gross_2 = floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_2']));
+        $recruitment->base_salary_monthly_gross_2 = !empty($validatedData['base_salary_monthly_gross_2']) ? floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_2'])) : null;
         $recruitment->base_salary_cost_center_3 = $validatedData['base_salary_cost_center_3'];
-        $recruitment->base_salary_monthly_gross_3 = floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_3']));
+        $recruitment->base_salary_monthly_gross_3 = !empty($validatedData['base_salary_monthly_gross_3']) ? floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_3'])) : null;
         $recruitment->health_allowance_cost_center_4 = $validatedData['health_allowance_cost_center_4'];
-        $recruitment->health_allowance_monthly_gross_4 = floatval(str_replace(' ', '', $validatedData['health_allowance_monthly_gross_4']));
+        $recruitment->health_allowance_monthly_gross_4 = !empty($validatedData['health_allowance_monthly_gross_4']) ? floatval(str_replace(' ', '', $validatedData['health_allowance_monthly_gross_4'])) : null;
         $recruitment->management_allowance_cost_center_5 = $validatedData['management_allowance_cost_center_5'];
-        $recruitment->management_allowance_monthly_gross_5 = floatval(str_replace(' ', '', $validatedData['management_allowance_monthly_gross_5']));
-        $validatedData['management_allowance_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['management_allowance_end_date'])));
+        $recruitment->management_allowance_monthly_gross_5 = !empty($validatedData['management_allowance_monthly_gross_5']) ? floatval(str_replace(' ', '', $validatedData['management_allowance_monthly_gross_5'])) : null;
+        if (!empty($validatedData['management_allowance_end_date'])) {
+            $validatedData['management_allowance_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['management_allowance_end_date'])));
+        } else {
+            $validatedData['management_allowance_end_date'] = null;
+        }
         $recruitment->management_allowance_end_date = $validatedData['management_allowance_end_date'];
         $recruitment->extra_pay_1_cost_center_6 = $validatedData['extra_pay_1_cost_center_6'];
-        $recruitment->extra_pay_1_monthly_gross_6 = floatval(str_replace(' ', '', $validatedData['extra_pay_1_monthly_gross_6']));
-        $validatedData['extra_pay_1_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_1_end_date'])));
+        $recruitment->extra_pay_1_monthly_gross_6 = !empty($validatedData['management_allowance_monthly_gross_5']) ? floatval(str_replace(' ', '', $validatedData['extra_pay_1_monthly_gross_6'])) : null;
+        if (!empty($validatedData['extra_pay_1_end_date'])) {
+            $validatedData['extra_pay_1_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_1_end_date'])));
+        } else {
+            $validatedData['extra_pay_1_end_date'] = null;
+        }
         $recruitment->extra_pay_1_end_date = $validatedData['extra_pay_1_end_date'];
         $recruitment->extra_pay_2_cost_center_7 = $validatedData['extra_pay_2_cost_center_7'];
-        $recruitment->extra_pay_2_monthly_gross_7 = floatval(str_replace(' ', '', $validatedData['extra_pay_2_monthly_gross_7']));
-        $validatedData['extra_pay_2_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_2_end_date'])));
+        $recruitment->extra_pay_2_monthly_gross_7 = !empty($validatedData['management_allowance_monthly_gross_5']) ? floatval(str_replace(' ', '', $validatedData['extra_pay_2_monthly_gross_7'])) : null;
+        if (!empty($validatedData['extra_pay_2_end_date'])) {
+            $validatedData['extra_pay_2_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_2_end_date'])));
+        } else {
+            $validatedData['extra_pay_2_end_date'] = null;
+        }
         $recruitment->extra_pay_2_end_date = $validatedData['extra_pay_2_end_date'];
 
         // data section 4

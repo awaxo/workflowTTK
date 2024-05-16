@@ -35,6 +35,17 @@ class StateSuspended implements IStateResponsibility {
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
+        if (!$this->stateClass) {
+            $workflow_meta = json_decode($workflow->meta_data);
+            $lastEntry = end($workflow_meta->history);
+            $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $lastEntry->status)));
+            $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
+            
+            if (class_exists($stateClassName)) {
+                $this->stateClass = new $stateClassName();
+            }
+        }
+
         return $this->stateClass && $this->stateClass->isUserResponsibleAsDelegate($user, $workflow);
     }
 

@@ -216,7 +216,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
-        $salary_threshold = Option::where('option_name', 'recruitment.director_salary_threshold')->first()->option_value;
+        $salary_threshold = Option::where('option_name', 'recruitment_director_approve_salary_threshold')->first()->option_value;
 
         if ($workflow instanceof RecruitmentWorkflow) {
             $employment_start_date = new DateTime($workflow->employment_start_date);

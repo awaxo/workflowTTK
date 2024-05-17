@@ -320,7 +320,7 @@ class EmployeeRecruitmentController extends Controller
                 
                 if ($transition) {
                     $this->validateFields($recruitment, $request);
-                    $this->storeMetadata($recruitment, $request, 'approvals');
+                    $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
                     $recruitment->workflow_apply($transition);   
                     $recruitment->updated_by = Auth::id();
 
@@ -334,7 +334,7 @@ class EmployeeRecruitmentController extends Controller
                     throw new \Exception('No valid transition found');
                 }                    
             }
-            $this->storeMetadata($recruitment, $request, 'approvals');
+            $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
             $recruitment->save();
 
             return response()->json(['redirectUrl' => route('workflows-all-open')]);
@@ -351,7 +351,7 @@ class EmployeeRecruitmentController extends Controller
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('message')) > 0) {
                 $previous_state = __('states.' . $recruitment->state);
-                $this->storeMetadata($recruitment, $request, 'rejections');
+                $service->storeMetadata($recruitment, $request->input('message'), 'rejections');
                 $recruitment->workflow_apply('to_request_review');
                 $recruitment->updated_by = Auth::id();
 
@@ -376,7 +376,7 @@ class EmployeeRecruitmentController extends Controller
         if ($service->isUserResponsible(Auth::user(), $recruitment) || $request->input('is_cancel')) {
             if (strlen($request->input('message')) > 0) {
                 $previous_state = __('states.' . $recruitment->state);
-                $this->storeMetadata($recruitment, $request, 'suspensions');
+                $service->storeMetadata($recruitment, $request->input('message'), 'suspensions');
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->updated_by = Auth::id();
                 if ($request->input('is_cancel')) {
@@ -423,7 +423,7 @@ class EmployeeRecruitmentController extends Controller
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {            
             if ($recruitment->workflow_can('restore_from_suspended')) {
-                $this->storeMetadata($recruitment, $request, 'restorations');
+                $service->storeMetadata($recruitment, $request->input('message'), 'restorations');
                 $this->setPreviousStateToRestore($recruitment);
                 $recruitment->updated_by = Auth::id();
 
@@ -475,39 +475,6 @@ class EmployeeRecruitmentController extends Controller
         } elseif ($recruitment->state === 'employee_signature') {
             $recruitment->contract = $request->input('contract_file');
         }
-    }
-
-    private function storeMetadata(RecruitmentWorkflow $recruitment, Request $request, string $decision) 
-    {
-        $detail = [
-            'user_id' => Auth::id(),
-            'datetime' => now()->toDateTimeString(),
-            'message' => $request->input('message'),
-        ];
-        $history = [
-            'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : 'restore')),
-            'status' => $recruitment->state,
-            'user_id' => Auth::id(),
-            'datetime' => now()->toDateTimeString(),
-            'message' => $request->input('message'),
-        ];
-
-        $metaData = json_decode($recruitment->meta_data, true) ?? [];
-        if (!isset($metaData[$decision])) {
-            $metaData[$decision] = [];
-        }
-
-        if (!isset($metaData[$decision][$recruitment->state])) {
-            $metaData[$decision][$recruitment->state] = [
-                'approval_user_ids' => [],
-                'details' => [],
-            ];
-        }
-
-        $metaData[$decision][$recruitment->state]['details'][] = $detail;
-        $metaData['history'][] = $history;
-
-        $recruitment->meta_data = json_encode($metaData);
     }
 
     private function setPreviousStateToRestore(RecruitmentWorkflow $recruitment) {

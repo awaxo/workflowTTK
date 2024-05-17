@@ -7,6 +7,7 @@ use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Nwidart\Modules\Facades\Module;
 
 class WorkflowService
@@ -93,5 +94,50 @@ class WorkflowService
         }
 
         throw new Exception("State handler for {$workflow->getCurrentState()} ({$stateClass}) not found.");
+    }
+
+    /**
+     * Stores metadata about a workflow decision.
+     *
+     * @param AbstractWorkflow $workflow The workflow instance.
+     * @param string $message The message to store.
+     * @param string $decision The decision type (approvals, rejections, suspensions, etc.).
+     * @param int $userId The user ID who made the decision.
+     */
+    public function storeMetadata(AbstractWorkflow $workflow, string $message, string $decision, $userId = null) 
+    {
+        if (!$userId) {
+            $userId = Auth::id();
+        }
+        
+        $detail = [
+            'user_id' => $userId,
+            'datetime' => now()->toDateTimeString(),
+            'message' => $message,
+        ];
+        $history = [
+            'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : 'restore')),
+            'status' => $workflow->state,
+            'user_id' => $userId,
+            'datetime' => now()->toDateTimeString(),
+            'message' => $message,
+        ];
+
+        $metaData = json_decode($workflow->meta_data, true) ?? [];
+        if (!isset($metaData[$decision])) {
+            $metaData[$decision] = [];
+        }
+
+        if (!isset($metaData[$decision][$workflow->state])) {
+            $metaData[$decision][$workflow->state] = [
+                'approval_user_ids' => [],
+                'details' => [],
+            ];
+        }
+
+        $metaData[$decision][$workflow->state]['details'][] = $detail;
+        $metaData['history'][] = $history;
+
+        $workflow->meta_data = json_encode($metaData);
     }
 }

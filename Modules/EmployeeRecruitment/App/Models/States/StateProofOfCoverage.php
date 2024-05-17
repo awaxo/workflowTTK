@@ -128,6 +128,8 @@ class StateProofOfCoverage implements IStateResponsibility {
                 }
             }
 
+            $cost_center_project_coordinator_ids = array_unique($cost_center_project_coordinator_ids);
+
             $workflow->updated_by = Auth::id();
             $workflow->save();
 

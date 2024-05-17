@@ -143,6 +143,8 @@ class StateSupervisorApproval implements IStateResponsibility {
                 }
             }
 
+            $cost_center_lead_user_ids = array_unique($cost_center_lead_user_ids);
+
             $workflow->updated_by = Auth::id();
             $workflow->save();
 

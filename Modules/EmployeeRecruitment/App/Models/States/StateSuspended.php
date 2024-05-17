@@ -16,7 +16,10 @@ class StateSuspended implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         $workflow_meta = json_decode($workflow->meta_data);
 
-        // get user by id of last entry in 'history' of meta_value
+        if (!$workflow_meta || !isset($workflow_meta->history) || empty($workflow_meta->history)) {
+            return false;
+        }
+
         $lastEntry = end($workflow_meta->history);
         $lastUser = User::find($lastEntry->user_id);
 
@@ -35,6 +38,22 @@ class StateSuspended implements IStateResponsibility {
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
+        if (!$this->stateClass) {
+            $workflow_meta = json_decode($workflow->meta_data);
+            
+            if (!$workflow_meta || !isset($workflow_meta->history) || empty($workflow_meta->history)) {
+                return false;
+            }
+
+            $lastEntry = end($workflow_meta->history);
+            $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $lastEntry->status)));
+            $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
+            
+            if (class_exists($stateClassName)) {
+                $this->stateClass = new $stateClassName();
+            }
+        }
+
         return $this->stateClass && $this->stateClass->isUserResponsibleAsDelegate($user, $workflow);
     }
 

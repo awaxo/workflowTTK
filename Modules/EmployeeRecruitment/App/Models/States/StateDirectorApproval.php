@@ -208,6 +208,8 @@ class StateDirectorApproval implements IStateResponsibility {
                 }
             }
 
+            $director_ids = array_unique($director_ids);
+
             $workflow->updated_by = Auth::id();
             $workflow->save();
 

@@ -12,11 +12,13 @@ use App\Models\User;
 use App\Models\Workgroup;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateGroupLeadApproval implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         if ($workflow instanceof RecruitmentWorkflow) {
             // Check if user is a workgroup leader
             $workgroup_lead = 
@@ -87,7 +89,8 @@ class StateGroupLeadApproval implements IStateResponsibility {
      * Check if user is responsible for the workflow, but not a basic workgroup leader
      * Needed for a specific UI requirement
      */
-    public function isUserResponsibleNonBaseWorkgroup(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsibleNonBaseWorkgroup(User $user, IGenericWorkflow $workflow): bool
+    {
         if ($workflow instanceof RecruitmentWorkflow) {
             $workgroup_lead = false;
 
@@ -163,7 +166,8 @@ class StateGroupLeadApproval implements IStateResponsibility {
         }
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow): bool
+    {
         if ($workflow instanceof RecruitmentWorkflow) {
             $metaData = json_decode($workflow->meta_data, true);
 
@@ -206,6 +210,8 @@ class StateGroupLeadApproval implements IStateResponsibility {
                 }
             }
 
+            $workgroup_leads = array_unique($workgroup_leads);
+
             $workflow->updated_by = Auth::id();
             $workflow->save();
 
@@ -215,8 +221,9 @@ class StateGroupLeadApproval implements IStateResponsibility {
         }
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
-        $salary_threshold = Option::where('option_name', 'recruitment.director_salary_threshold')->first()->option_value;
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
+        $salary_threshold = Option::where('option_name', 'recruitment_director_approve_salary_threshold')->first()->option_value;
 
         if ($workflow instanceof RecruitmentWorkflow) {
             $employment_start_date = new DateTime($workflow->employment_start_date);
@@ -244,7 +251,8 @@ class StateGroupLeadApproval implements IStateResponsibility {
         }
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         $workgroups = Workgroup::where('leader_id', $user->id)->get();
         if ($workgroups->count() > 0) {
             return $workgroups->map(function ($workgroup) {

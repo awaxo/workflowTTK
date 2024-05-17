@@ -2,14 +2,14 @@
 
 namespace Modules\EmployeeRecruitment\App\Providers;
 
-use App\Services\ProfileRegistry;
+use App\Console\CommandRegistry;
 use App\Services\WorkflowRegistry;
 use Database\Seeders\DatabaseSeeder;
-use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
+use Modules\EmployeeRecruitment\App\Console\Commands\CheckSuspendedDeadline;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentPermissionSeeder;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentRolePermissionSeeder;
@@ -50,7 +50,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        CommandRegistry::registerCommand(CheckSuspendedDeadline::class, 'everyFifteenMinutes');
     }
 
     /**
@@ -58,10 +58,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+        //
     }
 
     /**

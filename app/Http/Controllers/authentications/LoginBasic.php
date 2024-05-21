@@ -18,7 +18,7 @@ class LoginBasic extends Controller
     {
         $credentials = $request->only('email-username', 'password');
 
-        if (Auth::attempt(['email' => $request['email-username'], 'password' => $request['password']])) {
+        if (Auth::guard('dynamic')->attempt(['email' => $request['email-username'], 'password' => $request['password']])) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
@@ -30,7 +30,7 @@ class LoginBasic extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('dynamic')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

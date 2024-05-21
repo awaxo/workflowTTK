@@ -43,7 +43,7 @@ Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, '
 Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-position');
 Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-users');
 Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['auth'])->name('pages-users-role');
-Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['auth'])->name('settings');
+Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['check.admin'])->name('settings');
 Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth'])->name('profile');
 
 // locale
@@ -74,6 +74,7 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
 
     Route::get('/workflows', [WorkflowController::class, 'getAllWorkflows']);
     Route::get('/workflows/closed', [WorkflowController::class, 'getClosedWorkflows']);
+    Route::get('/workflow/{configName}/states', [WorkflowController::class, 'getWorkflowStatesByConfigName']);
 
     Route::get('/institutes', [InstituteController::class, 'getAllInstitutes']);
     Route::post('/institute/{id}/delete', [InstituteController::class, 'delete']);
@@ -123,6 +124,11 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/delegation/create', [ProfileController::class, 'create']);
     Route::post('/delegation/{id}/delete', [ProfileController::class, 'delete']);
     Route::post('/notification-settings/update', [ProfileController::class, 'notificationUpdate']);
+});
 
+// admin API routes
+Route::prefix('api')->middleware(['check.admin'])->group(function () {
     Route::post('/settings/update', [SettingsController::class, 'settingsUpdate']);
+    Route::get('/settings/{configName}/state/{state}/deadline', [SettingsController::class, 'getWorkflowStateDeadline']);
+    Route::post('/settings/update-deadline', [SettingsController::class, 'deadlineUpdate']);
 });

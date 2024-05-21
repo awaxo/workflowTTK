@@ -91,12 +91,12 @@ $navbarDetached = ($navbarDetached ?? '');
                   <div class="flex-grow-1">
                     <span class="fw-medium d-block">
                       @if (Auth::check())
-                      {{ Auth::user()->name }}
+                        {{ Auth::user()->name }}
                       @else
-                      John Doe
+                        Nincs név
                       @endif
                     </span>
-                    <small class="text-muted">{{ Auth::user()->email }}</small>
+                    <small class="text-muted">{{ Auth::user() ? Auth::user()->email : '' }}</small>
                   </div>
                 </div>
               </a>
@@ -114,22 +114,22 @@ $navbarDetached = ($navbarDetached ?? '');
               <div class="dropdown-divider"></div>
             </li>
             @if (Auth::check())
-            <li>
-              <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class='bx bx-power-off me-2'></i>
-                <span class="align-middle">Kilépés</span>
-              </a>
-            </li>
-            <form method="POST" id="logout-form" action="{{ route('logout') }}">
-              @csrf
-            </form>
-            @else
-            <li>
-              <a class="dropdown-item" href="{{ Route::has('login') ? route('login') : url('auth/login-basic') }}">
-                <i class='bx bx-log-in me-2'></i>
-                <span class="align-middle">Login</span>
-              </a>
-            </li>
+              <li>
+                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                  <i class='bx bx-power-off me-2'></i>
+                  <span class="align-middle">Kilépés</span>
+                </a>
+              </li>
+              <form method="POST" id="logout-form" action="{{ route('logout') }}">
+                @csrf
+              </form>
+              @else
+              <li>
+                <a class="dropdown-item" href="{{ Route::has('login') ? route('login') : url('auth/login-basic') }}">
+                  <i class='bx bx-log-in me-2'></i>
+                  <span class="align-middle">Login</span>
+                </a>
+              </li>
             @endif
             </ul>
           </li>

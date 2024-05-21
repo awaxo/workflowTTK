@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\pages;
 
 use App\Http\Controllers\Controller;
+use App\Models\Option;
 use App\Models\User;
 use App\Models\WorkflowType;
 use App\Services\WorkflowService;
@@ -66,5 +67,16 @@ class WorkflowController extends Controller
             });
 
         return response()->json(['data' => $workflows]);
+    }
+
+    public function getWorkflowStatesByConfigName($configName)
+    {
+        $workflow_configs = config('workflow');
+        $places = [];
+        foreach ($workflow_configs[$configName]['places'] as $place) {
+            $places[$place] = __('states.' . $place);
+        }
+
+        return response()->json(['data' => $places]);
     }
 }

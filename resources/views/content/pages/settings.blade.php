@@ -44,11 +44,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     
-    <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
-        <span id="errorAlertMessage"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
     <div class="nav-align-top">
         <ul class="nav nav-pills mb-3" role="tablist">
             <li class="nav-item">
@@ -64,7 +59,7 @@
                 <div class="row g-3">
                     <div class="col-12">
                         <div class="col-3">
-                            <label for="recruitment_auto_suspend_threshold" class="form-label">Törlési küszöb felfüggesztett státuszban</label>
+                            <label for="recruitment_auto_suspend_threshold" class="form-label">Elutasítási küszöb felfüggesztett státuszban</label>
                             <div class="d-flex align-items-center">
                                 <input class="form-control numeral-mask" type="text" id="recruitment_auto_suspend_threshold" value="{{ $options['recruitment_auto_suspend_threshold'] }}" name="recruitment_auto_suspend_threshold" />
                                 <span class="ms-2">Óra</span>
@@ -81,14 +76,38 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <button class="btn btn-success btn-submit">Mentés</button>
+                        <button class="btn btn-success btn-submit-generic">Mentés</button>
                     </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="navs-pills-workflow-deadlines" role="tabpanel">
-                <p>
-                    Folyamat határidők beállítása
-                </p>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <label for="workflows" class="form-label">Folyamat</label>
+                        <select class="form-select select2" id="workflows" name="workflows">
+                            <option value="0" selected>Válassz folyamatot</option>
+                            @foreach($workflows as $key => $value)
+                                <option value="{{ $key }}">{{ $value }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="workflow_states" class="form-label">Státusz</label>
+                        <select class="form-select select2" id="workflow_states" name="workflow_states">
+                            <option value="0" selected>Válassz státuszt</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="workflow_state_deadline" class="form-label">Határidő</label>
+                        <div class="d-flex align-items-center">
+                            <input class="form-control numeral-mask" type="text" id="workflow_state_deadline" name="workflow_state_deadline" />
+                            <span class="ms-2">Óra</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-success btn-submit-deadline">Mentés</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -14,8 +14,7 @@ class FileUploadController extends Controller
         if ($file) {
             $extension = $file->getClientOriginalExtension();
             $filename = Str::random(15) . '.' . $extension;
-            $path = $file->storeAs('uploads', $filename, 'public');
-
+            $path = $file->storeAs('uploads', $filename, 'public');            
             $serverFilename = basename($path);
 
             return response()->json(['fileName' => $serverFilename], 201);

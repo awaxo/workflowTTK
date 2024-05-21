@@ -100,8 +100,7 @@ class EmployeeRecruitmentController extends Controller
 
         // data section 2
         $recruitment->position_id = $validatedData['position_id'];
-        //$recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
-        $recruitment->job_description = $validatedData['job_description_file'];
+        $recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
         $recruitment->employment_type = $validatedData['employment_type'];
         $recruitment->task = isset($validatedData['task']) ? $validatedData['task'] : '';
         $validatedData['employment_start_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_start_date'])));
@@ -182,14 +181,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->planned_carcinogenic_materials_use = isset($validatedData['planned_carcinogenic_materials_use']) ? $validatedData['planned_carcinogenic_materials_use'] : null;
 
         // data section 6
-        /*$recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
+        $recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
         $recruitment->student_status_verification = $this->getNewFileName($validatedData['name'], 'HallgatóiJogviszony', $validatedData['student_status_verification_file']);
-        $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);*/
-        $recruitment->personal_data_sheet = $validatedData['personal_data_sheet_file'];
-        $recruitment->student_status_verification = $validatedData['student_status_verification_file'];
-        $recruitment->certificates = $validatedData['certificates_file'];
+        $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);
         $recruitment->requires_commute_support = $validatedData['requires_commute_support'] == 'true' ? 1 : 0;
-        //$recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
+        $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
         $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $validatedData['commute_support_form_file'] : null;
 
         try {
@@ -518,7 +514,7 @@ class EmployeeRecruitmentController extends Controller
         return $history;
     }
 
-    private function getNewFileName($name, $prefix, $originalFileName) : string {
+    private function getNewFileName($name, $prefix, $originalFileName): string {
         $newFileName = str_replace(' ', '', $name) . '_' . $prefix . '_' . $originalFileName;
         Storage::move('uploads/' . $originalFileName, 'uploads/' . $newFileName);
 

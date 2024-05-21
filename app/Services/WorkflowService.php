@@ -60,6 +60,12 @@ class WorkflowService
         return $stateHandler && ($stateHandler->isUserResponsible($user, $workflow) || $stateHandler->isUserResponsibleAsDelegate($user, $workflow));
     }
 
+    public function getResponsibleUsers(AbstractWorkflow $workflow, $notApprovedOnly = false): array
+    {
+        $stateHandler = $this->getStateHandler($workflow);
+        return $stateHandler->getResponsibleUsers($workflow, $notApprovedOnly);
+    }
+
     public function isAllApproved(AbstractWorkflow $workflow): bool
     {
         $stateHandler = $this->getStateHandler($workflow);

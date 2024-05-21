@@ -8,6 +8,7 @@ use App\Services\WorkflowService;
 use Illuminate\Console\Command;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
+// Checks if the suspended workflows have reached the given deadline and reject them
 class CheckSuspendedDeadline extends Command
 {
     protected $signature = 'employeerecruitment:check-suspended-deadline';
@@ -15,7 +16,7 @@ class CheckSuspendedDeadline extends Command
 
     public function handle()
     {
-        $this->info('Automatikusan törlendő felvételi kérelmek ellenőrzése...');
+        $this->info('Lejárt határidejű, felfüggesztett felvételi kérelmek ellenőrzése...');
 
         $suspendThreshold = Option::where('option_name', 'recruitment_auto_suspend_threshold')->first()->option_value;
         
@@ -25,7 +26,7 @@ class CheckSuspendedDeadline extends Command
             ->get();
 
         if ($recruitmentWorkflows->isEmpty()) {
-            $this->info('Nincsen törlendő felvételi kérelem');
+            $this->info('Nincsen lejárt határidejű, felfüggesztett felvételi kérelem');
             return;
         }
 

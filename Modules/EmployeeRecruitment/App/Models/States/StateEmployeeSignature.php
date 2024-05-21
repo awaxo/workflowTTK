@@ -68,6 +68,7 @@ class StateEmployeeSignature implements IStateResponsibility {
     
             if ($notApprovedOnly) {
                 $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                    $user = User::find($user['id']);
                     return !$workflow->isApprovedBy($user);
                 });
             }

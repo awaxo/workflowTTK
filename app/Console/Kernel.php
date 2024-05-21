@@ -31,8 +31,7 @@ class Kernel extends ConsoleKernel
     protected function commands(): void
     {
         $this->commands = array_merge($this->commands, CommandRegistry::getClasses());
-        
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         // Dynamically load commands from all modules
         $modules = app('modules')->all();

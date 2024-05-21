@@ -55,6 +55,7 @@ class StateDraftContractPending implements IStateResponsibility {
     
             if ($notApprovedOnly) {
                 $responsibleUsers = array_filter($responsibleUsers, function ($user) use ($workflow) {
+                    $user = User::find($user['id']);
                     return !$workflow->isApprovedBy($user);
                 });
             }

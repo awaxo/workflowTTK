@@ -39,11 +39,6 @@
 @section('content')
     <h4 class="py-3 mb-4">Beállítások</h4>
 
-    <div class="alert alert-success alert-dismissible d-none" role="alert" id="successAlert">
-        <span id="successAlertMessage"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    
     <div class="nav-align-top">
         <ul class="nav nav-pills mb-3" role="tablist">
             <li class="nav-item">

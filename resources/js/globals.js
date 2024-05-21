@@ -22,6 +22,22 @@ class GLOBALS {
             "sSortDescending": ": aktiválja a csökkenő rendezéshez"
         }
     };
+
+    static AJAX_ERROR = function(message, jqXHR, textStatus, errorThrown) {
+        $('<div class="alert alert-danger alert-dismissible" role="alert">' +
+            '<span>' + message + '</span>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+        '</div>').insertBefore('.nav-align-top');
+                
+        console.log(textStatus, errorThrown);
+    };
+
+    static AJAX_SUCCESS = function(message) {
+        $('<div class="alert alert-success alert-dismissible" role="alert">' +
+            '<span>' + message + '</span>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+        '</div>').insertBefore('.nav-align-top');
+    };
 }
 
 export default GLOBALS;

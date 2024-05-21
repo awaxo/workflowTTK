@@ -189,9 +189,7 @@ $(function() {
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     $('#deleteConfirmation').modal('hide');
-                    $('#errorAlertMessage').text('Hiba történt a sztornózás során!');
-                    $('#errorAlert').removeClass('d-none');
-                    console.log(textStatus, errorThrown);
+                    GLOBALS.AJAX_ERROR('Hiba történt a sztornózás során!', jqXHR, textStatus, errorThrown);
                 }
             });
         }

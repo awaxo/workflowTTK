@@ -199,9 +199,7 @@ $(function() {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#deleteConfirmation').modal('hide');
-                $('#errorAlertMessage').text('Hiba történt a törlés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+                GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
             }
         });
     });
@@ -230,9 +228,7 @@ $(function() {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#restoreConfirmation').modal('hide');
-                $('#errorAlertMessage').text('Hiba történt a visszaállítás során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+                GLOBALS.AJAX_ERROR('Hiba történt a visszaállítás során!', jqXHR, textStatus, errorThrown);
             }
         });
     });
@@ -283,13 +279,13 @@ $(function() {
                     error: function (jqXHR, textStatus, errorThrown) {
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_workgroup')).hide();
                         var errors = jqXHR.responseJSON.errors;
+                        var errorMessages = "";
                         for (var key in errors) {
                             if (errors.hasOwnProperty(key)) {
-                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                                errorMessages += errors[key] + '<br>';
                             }
                         }
-                        $('#errorAlert').removeClass('d-none');
-                        console.log(textStatus, errorThrown);
+                        GLOBALS.AJAX_ERROR(errorMessages, jqXHR, textStatus, errorThrown);
                     }
                 });
             }

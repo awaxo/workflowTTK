@@ -1,3 +1,5 @@
+import GLOBALS from '../../js/globals.js';
+
 $(function() {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
@@ -20,13 +22,10 @@ $(function() {
                 },
             },
             success: function(response) {
-                $('#successAlertMessage').text('Beállítások mentve');
-                $('#successAlert').removeClass('d-none');
+                GLOBALS.AJAX_SUCCESS('Beállítások mentve');
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#errorAlertMessage').text('Hiba történt a beállítások mentése során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+                GLOBALS.AJAX_ERROR('Hiba történt a beállítások mentése során!', jqXHR, textStatus, errorThrown);
             }
         });
     });
@@ -80,10 +79,7 @@ $(function() {
 
     $('.btn-submit-deadline').on('click', function(e) {
         if ($('#workflows').val() == 0 || $('#workflow_states').val() == 0) {
-            $('<div class="alert alert-danger alert-dismissible" role="alert">' +
-                    '<span>Folyamat és státusz kiválasztása kötelező!</span>' +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                '</div>').insertBefore('.nav-align-top');
+            GLOBALS.AJAX_ERROR('Folyamat és státusz kiválasztása kötelező!');
             return;
         }
 
@@ -97,18 +93,10 @@ $(function() {
                 deadline: $('#workflow_state_deadline').val(),
             },
             success: function(response) {
-                $('<div class="alert alert-success alert-dismissible" role="alert">' +
-                    '<span>Határidő mentve</span>' +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                '</div>').insertBefore('.nav-align-top');
+                GLOBALS.AJAX_SUCCESS('Határidő mentve');
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('<div class="alert alert-danger alert-dismissible" role="alert">' +
-                    '<span>Hiba történt a határidő mentése során!</span>' +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                '</div>').insertBefore('.nav-align-top');
-                
-                console.log(textStatus, errorThrown);
+                GLOBALS.AJAX_ERROR('Hiba történt a határidő mentése során!', jqXHR, textStatus, errorThrown);
             }
         });
     });

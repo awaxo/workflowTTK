@@ -272,6 +272,10 @@ class EmployeeRecruitmentController extends Controller
     public function view($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
+        if (!$recruitment) {
+            return view('content.pages.misc-error');
+        }
+
         // IT workgroup
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
         
@@ -286,6 +290,10 @@ class EmployeeRecruitmentController extends Controller
     public function beforeApprove($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
+        if (!$recruitment) {
+            return view('content.pages.misc-error');
+        }
+
         $service = new WorkflowService();
         
         if ($recruitment->state != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
@@ -395,6 +403,10 @@ class EmployeeRecruitmentController extends Controller
     public function beforeRestore($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
+        if (!$recruitment) {
+            return view('content.pages.misc-error');
+        }
+        
         $service = new WorkflowService();
 
         if ($recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
@@ -515,6 +527,10 @@ class EmployeeRecruitmentController extends Controller
     }
 
     private function getNewFileName($name, $prefix, $originalFileName): string {
+        if (!$originalFileName) {
+            return '';
+        }
+
         $newFileName = str_replace(' ', '', $name) . '_' . $prefix . '_' . $originalFileName;
         Storage::move('uploads/' . $originalFileName, 'uploads/' . $newFileName);
 

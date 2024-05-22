@@ -36,7 +36,8 @@
                     {
                         "url": "/felveteli-kerelem/uj",
                         "name": "Új",
-                        "slug": "workflows-employee-recruitment-new"
+                        "slug": "workflows-employee-recruitment-new",
+                        "authorizable": "true"
                     },
                     {
                         "url": "/felveteli-kerelem/nyitott",
@@ -68,7 +69,8 @@
         "url": "/beallitasok",
         "name": "Beállítások",
         "icon": "menu-icon tf-icons bx bx-cog",
-        "slug": "settings"
+        "slug": "settings",
+        "authorizable": "true"
     },
     {
         "url": "/",

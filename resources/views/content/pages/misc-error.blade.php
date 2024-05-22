@@ -1,11 +1,11 @@
 @php
-$customizerHidden = 'customizer-hide';
-$configData = Helper::appClasses();
+  $customizerHidden = 'customizer-hide';
+  $configData = Helper::appClasses();
 @endphp
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Error - Pages')
+@section('title', 'Hiba - Oldal nem elérhető')
 
 @section('page-style')
 <!-- Page -->
@@ -17,9 +17,9 @@ $configData = Helper::appClasses();
 <!-- Error -->
 <div class="container-xxl container-p-y">
   <div class="misc-wrapper">
-    <h2 class="mb-2 mx-2">Page Not Found :(</h2>
-    <p class="mb-4 mx-2">Oops! 😖 The requested URL was not found on this server.</p>
-    <a href="{{url('/')}}" class="btn btn-primary">Back to home</a>
+    <h2 class="mb-2 mx-2">Az oldal nem található :(</h2>
+    <p class="mb-4 mx-2">Ajaj! 😖 A kért URL nem elérhető a szerveren.</p>
+    <a href="{{url('/dashboard')}}" class="btn btn-primary">Vissza a főoldalra</a>
     <div class="mt-3">
       <img src="{{asset('assets/img/illustrations/page-misc-error-'.$configData['style'].'.png')}}" alt="page-misc-error-light" width="500" class="img-fluid" data-app-dark-img="illustrations/page-misc-error-dark.png" data-app-light-img="illustrations/page-misc-error-light.png">
     </div>

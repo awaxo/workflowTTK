@@ -110,7 +110,7 @@ class WorkflowService
      * @param string $decision The decision type (approvals, rejections, suspensions, etc.).
      * @param int $userId The user ID who made the decision.
      */
-    public function storeMetadata(AbstractWorkflow $workflow, string $message, string $decision, $userId = null) 
+    public function storeMetadata(AbstractWorkflow $workflow, ?string $message, string $decision, $userId = null) 
     {
         if (!$userId) {
             $userId = Auth::id();
@@ -119,14 +119,14 @@ class WorkflowService
         $detail = [
             'user_id' => $userId,
             'datetime' => now()->toDateTimeString(),
-            'message' => $message,
+            'message' => $message ? $message : '',
         ];
         $history = [
             'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : 'restore')),
             'status' => $workflow->state,
             'user_id' => $userId,
             'datetime' => now()->toDateTimeString(),
-            'message' => $message,
+            'message' => $message ? $message : '',
         ];
 
         $metaData = json_decode($workflow->meta_data, true) ?? [];

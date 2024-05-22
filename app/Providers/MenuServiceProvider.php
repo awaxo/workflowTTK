@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Http\Composers\MenuComposer;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,5 +29,8 @@ class MenuServiceProvider extends ServiceProvider
 
         // Share all menuData to all the views
         View::share('menuData', [$verticalMenuData]);
+        
+        // Register the view composer
+        //View::composer('*', MenuComposer::class);
     }
 }

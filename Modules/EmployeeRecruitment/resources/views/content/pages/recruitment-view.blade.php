@@ -78,6 +78,9 @@
                     </table>
                 </div>
             </div>
+            @role('adminisztrator')
+                <div class="fst-italic">Szükséges jóváhagyók (a lista a jóváhagyókat és az esetleges helyetteseiket is tartalmazza): <b>{{ $usersToApprove ? $usersToApprove : '' }}</b></div>
+            @endrole
         </div>
     </div>
 </div>

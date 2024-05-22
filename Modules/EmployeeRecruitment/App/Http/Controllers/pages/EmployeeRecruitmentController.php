@@ -276,6 +276,14 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-error');
         }
 
+        // administrators to see, who else need to approve
+        $service = new WorkflowService();
+        $usersToApprove = $service->getResponsibleUsers($recruitment, true);
+        $usersToApproveName = [];
+        foreach ($usersToApprove as $user) {
+            $usersToApproveName[] = User::find($user['id'])->name;
+        }
+
         // IT workgroup
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
         
@@ -284,6 +292,7 @@ class EmployeeRecruitmentController extends Controller
             'history' => $this->getHistory($recruitment),
             'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
             'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
+            'usersToApprove' => implode(', ', $usersToApproveName)
         ]);
     }
 
@@ -406,7 +415,7 @@ class EmployeeRecruitmentController extends Controller
         if (!$recruitment) {
             return view('content.pages.misc-error');
         }
-        
+
         $service = new WorkflowService();
 
         if ($recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {

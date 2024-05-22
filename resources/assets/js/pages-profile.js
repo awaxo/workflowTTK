@@ -108,9 +108,7 @@ $(function () {
                 $('#delegated_user').empty().html(options);
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#errorAlertMessage').text('Hiba történt a helyettesítők betöltése során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+                GLOBALS.AJAX_ERROR('Hiba történt a helyettesítők betöltése során!', jqXHR, textStatus, errorThrown);
             }
         });
     });
@@ -146,9 +144,7 @@ $(function () {
                         $('.datatables-delegates').DataTable().ajax.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        $('#errorAlertMessage').text('Hiba történt a helyettes kijelölése során!');
-                        $('#errorAlert').removeClass('d-none');
-                        console.log(textStatus, errorThrown);
+                        GLOBALS.AJAX_ERROR('Hiba történt a helyettesítés mentése során!', jqXHR, textStatus, errorThrown);
                     }
                 });
             }
@@ -181,9 +177,7 @@ $(function () {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $('#deleteConfirmation').modal('hide');
-                $('#errorAlertMessage').text('Hiba történt a törlés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+                GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
             }
         });
     });
@@ -200,9 +194,7 @@ $(function () {
                 //
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#errorAlertMessage').text('Hiba történt a mentés során!');
-                $('#errorAlert').removeClass('d-none');
-                console.log(textStatus, errorThrown);
+                GLOBALS.AJAX_ERROR('Hiba történt a mentés során!', jqXHR, textStatus, errorThrown);
             }
         });
     });

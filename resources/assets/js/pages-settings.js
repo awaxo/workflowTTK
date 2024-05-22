@@ -1,3 +1,5 @@
+import GLOBALS from '../../js/globals.js';
+
 $(function() {
     // set numeral mask to number fields
     $('.numeral-mask').toArray().forEach(function(field){
@@ -8,7 +10,7 @@ $(function() {
         });
     });
 
-    $('.btn-submit').on('click', function(e) {
+    $('.btn-submit-generic').on('click', function(e) {
         $.ajax({
             url: '/api/settings/update',
             type: 'POST',
@@ -20,13 +22,81 @@ $(function() {
                 },
             },
             success: function(response) {
-                $('#successAlertMessage').text('Beállítások mentve');
-                $('#successAlert').removeClass('d-none');
+                GLOBALS.AJAX_SUCCESS('Beállítások mentve');
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#errorAlertMessage').text('Hiba történt a beállítások mentése során!');
-                $('#errorAlert').removeClass('d-none');
+                GLOBALS.AJAX_ERROR('Hiba történt a beállítások mentése során!', jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('#workflows').on('change', function() {
+        if ($(this).val() == 0) {
+            $('#workflow_states').empty();
+            $('#workflow_states').append('<option value="0" selected>Válassz státuszt</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '/api/workflow/' + $(this).val() + '/states',
+            type: 'GET',
+            success: function(response) {
+                $('#workflow_states').empty();
+
+                $('#workflow_states').append('<option value="0" selected>Válassz státuszt</option>');
+                Object.entries(response.data).forEach(function([key, state]) {
+                    // filter out states that cannot be deadlined
+                    if (key == 'new_request' || key == 'completed' || key == 'rejected' || key == 'suspended') {
+                        return;
+                    }
+
+                    $('#workflow_states').append('<option value="' + key + '">' + state + '</option>');
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('#workflow_states').on('change', function() {
+        if ($(this).val() == 0) {
+            $('#workflow_state_deadline').val('');
+            return;
+        }
+
+        $.ajax({
+            url: '/api/settings/' + $('#workflows').val() + '/state/' + $(this).val() + '/deadline',
+            type: 'GET',
+            success: function(response) {
+                $('#workflow_state_deadline').val(response.data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('.btn-submit-deadline').on('click', function(e) {
+        if ($('#workflows').val() == 0 || $('#workflow_states').val() == 0) {
+            GLOBALS.AJAX_ERROR('Folyamat és státusz kiválasztása kötelező!');
+            return;
+        }
+
+        $.ajax({
+            url: '/api/settings/update-deadline',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                workflow: $('#workflows').val(),
+                state: $('#workflow_states').val(),
+                deadline: $('#workflow_state_deadline').val(),
+            },
+            success: function(response) {
+                GLOBALS.AJAX_SUCCESS('Határidő mentve');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                GLOBALS.AJAX_ERROR('Hiba történt a határidő mentése során!', jqXHR, textStatus, errorThrown);
             }
         });
     });

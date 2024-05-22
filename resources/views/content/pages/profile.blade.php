@@ -49,11 +49,6 @@
 @section('content')
     <h4 class="py-3 mb-4">Profil beállítások</h4>
 
-    <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
-        <span id="errorAlertMessage"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
     <div class="nav-align-top">
         <ul class="nav nav-pills mb-3" role="tablist">
             <li class="nav-item">

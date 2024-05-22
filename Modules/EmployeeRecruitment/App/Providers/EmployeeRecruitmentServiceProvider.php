@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
+use Modules\EmployeeRecruitment\App\Console\Commands\CheckStateDeadlines;
 use Modules\EmployeeRecruitment\App\Console\Commands\CheckSuspendedDeadline;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentPermissionSeeder;
@@ -51,6 +52,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         CommandRegistry::registerCommand(CheckSuspendedDeadline::class, 'everyFifteenMinutes');
+        CommandRegistry::registerCommand(CheckStateDeadlines::class, 'everyFifteenMinutes');
     }
 
     /**

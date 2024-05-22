@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "nwidart/laravel-modules": "^10.0",
         "spatie/laravel-permission": "^6.4",
+        "webklex/laravel-imap": "^4.1",
         "zerodahero/laravel-workflow": "^4.2"
     },
     "require-dev": {

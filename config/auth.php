@@ -2,6 +2,8 @@
 
 return [
 
+    'use_imap_authentication' => env('USE_IMAP_AUTHENTICATION', false),
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -40,6 +42,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+    
+        'imap' => [
+            'driver' => 'session',
+            'provider' => 'imap_users',
+        ],
+    
+        'dynamic' => [
+            'driver' => 'dynamic',
+        ],
     ],
 
     /*
@@ -64,11 +75,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    
+        'imap_users' => [
+            'driver' => 'imap',
+            'model' => App\Models\User::class,
+        ],
     ],
 
     /*

@@ -10,7 +10,7 @@ $(function() {
     let dataTable = $('.datatables-workflows').DataTable({
         ajax: '/api/workflows',
         columns: [
-            { data: 'id', visible: false, searchable: false },
+            { data: 'id', searchable: false },
             { data: 'workflow_type_name' },
             { data: 'state' },
             { data: 'initiator_institute_group_level' },
@@ -38,17 +38,6 @@ $(function() {
             },
         ],
         columnDefs: [
-            {
-                // For Responsive
-                targets: 0,
-                className: 'control',
-                orderable: false,
-                responsivePriority: 2,
-                searchable: false,
-                render: function(data, type, full, meta) {
-                    return '';
-                }
-            },
             {
                 // State
                 targets: 2,

@@ -43,7 +43,7 @@
                     <table class="datatables-recruitments table border-top">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>ID</th>
                                 <th>Létrehozás</th>
                                 <th>Csoport 1</th>
                                 <th>Csoport 2</th>

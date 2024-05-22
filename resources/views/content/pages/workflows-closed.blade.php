@@ -45,7 +45,7 @@
                     <table class="datatables-workflows table border-top">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>ID</th>
                                 <th>Típus</th>
                                 <th>Státusz</th>
                                 <th>Folyamatindító</th>

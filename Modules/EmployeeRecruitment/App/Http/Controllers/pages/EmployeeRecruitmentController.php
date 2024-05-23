@@ -56,7 +56,6 @@ class EmployeeRecruitmentController extends Controller
         $positions = Position::where('deleted', 0)->get();
         $costCenters = CostCenter::where('deleted', 0)
             ->where('valid_employee_recruitment', 1)
-            ->where('due_date', '>', Carbon::today())
             ->get();
         $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();

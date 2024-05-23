@@ -194,4 +194,29 @@ class User extends Authenticatable
 
         return $this->getUsersFromSameWorkgroup()->push($this->getSupervisor())->unique('name')->sortBy('name')->values();
     }
+
+    public function canViewMenuItem(string $menuItem)
+    {
+        if ($menuItem == 'settings') {
+            return $this->hasRole('adminisztrator');
+        }
+
+        /*if ($this->hasRole('titkar_' . $this->workgroup_id)) {
+            return true;
+        }
+
+        if ($this->hasRole('vezeto_' . $this->workgroup_id)) {
+            return true;
+        }
+
+        if ($this->hasRole('vezeto_' . $this->workgroup->parent_id)) {
+            return true;
+        }
+
+        if ($this->hasRole('vezeto_' . $this->workgroup->parent->parent_id)) {
+            return true;
+        }*/
+
+        return false;
+    }
 }

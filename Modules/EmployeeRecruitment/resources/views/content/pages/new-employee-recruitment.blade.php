@@ -580,7 +580,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="employee_room" class="form-label">Dolgozószoba</label>
-                                <select class="form-select select2" id="employee_room" name="employee_room" multiple>
+                                <select class="form-select select2" id="employee_room" name="employee_room">
                                     @foreach($rooms as $room)
                                         <option value="{{ $room->room_number }}" data-workgroup="{{ $room->workgroup_number }}">{{ $room->room_number }}</option>
                                     @endforeach

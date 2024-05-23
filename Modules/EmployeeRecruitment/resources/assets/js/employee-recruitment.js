@@ -461,17 +461,13 @@ function filterCostCenters() {
 function filterRoomOptions() {
     let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
     let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
-    let instituteCode1 = String(selectedWorkgroup1).charAt(0);
-    let instituteCode2 = String(selectedWorkgroup2).charAt(0);
 
     $('#entry_permissions').html(originalEntryPermissionsOptions);
     $('#employee_room').html(originalEmployeeRoomOptions);
 
     $('#entry_permissions option').filter(function() {
         let optionWorkgroup = $(this).data('workgroup');
-        let optionInstituteCode = String(optionWorkgroup).charAt(0);
-
-        return $(this).val() !== 'auto' && $(this).val() !== 'kerekpar' && optionInstituteCode !== instituteCode1 && optionInstituteCode !== instituteCode2;
+        return $(this).val() !== 'auto' && $(this).val() !== 'kerekpar' && optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
     }).remove();
 
     $('#employee_room option').filter(function() {

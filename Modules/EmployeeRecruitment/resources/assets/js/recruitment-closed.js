@@ -10,7 +10,7 @@ $(function() {
     let dataTable = $('.datatables-recruitments').DataTable({
         ajax: '/employee-recruitment/closed',
         columns: [
-            { data: 'id', visible: false, searchable: false },
+            { data: 'id', searchable: false },
             { 
                 data: 'created_at',
                 render: function(data, type, row) {
@@ -28,17 +28,6 @@ $(function() {
             { data: 'state' }
         ],
         columnDefs: [
-            {
-                // For Responsive
-                targets: 0,
-                className: 'control',
-                orderable: false,
-                responsivePriority: 2,
-                searchable: false,
-                render: function(data, type, full, meta) {
-                    return '';
-                }
-            },
             {
                 targets: 2,
                 render: function(data, type, full, meta) {

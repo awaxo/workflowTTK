@@ -11,3 +11,8 @@
 .light-style .bootstrap-select .filter-option-inner-inner {
     color: #697a8d;
 }
+
+.help-icon {
+    color: #5f61e6;
+    cursor: pointer;
+}

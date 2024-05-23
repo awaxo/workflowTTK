@@ -161,13 +161,13 @@ class EmployeeRecruitmentController extends Controller
 
         // data section 5
         $recruitment->email = $validatedData['email'];
-        $recruitment->entry_permissions = implode(',', $validatedData['entry_permissions']);
+        $recruitment->entry_permissions = is_array($validatedData['entry_permissions']) ? implode(',', $validatedData['entry_permissions']) : $validatedData['entry_permissions'];
         $recruitment->license_plate = $validatedData['license_plate'];
-        $recruitment->employee_room = implode(',', $validatedData['employee_room']);
+        $recruitment->employee_room = is_array($validatedData['employee_room']) ? implode(',', $validatedData['employee_room']) : null;
         $recruitment->phone_extension = $validatedData['phone_extension'];
-        $recruitment->external_access_rights = isset($validatedData['external_access_rights']) ? implode(',', $validatedData['external_access_rights']) : null;
-        $recruitment->required_tools = isset($validatedData['required_tools']) ? implode(',', $validatedData['required_tools']) : null;
-        $recruitment->available_tools = isset($validatedData['available_tools']) ? implode(',', $validatedData['available_tools']) : null;
+        $recruitment->external_access_rights = isset($validatedData['external_access_rights']) && is_array($validatedData['external_access_rights']) ? implode(',', $validatedData['external_access_rights']) : null;
+        $recruitment->required_tools = isset($validatedData['required_tools']) && is_array($validatedData['required_tools']) ? implode(',', $validatedData['required_tools']) : null;
+        $recruitment->available_tools = isset($validatedData['available_tools']) && is_array($validatedData['available_tools']) ? implode(',', $validatedData['available_tools']) : null;
         $inventoryNumbers = [];
         foreach ($validatedData as $key => $value) {
             if (strpos($key, 'inventory_numbers_of_available_tools_') === 0) {
@@ -541,7 +541,7 @@ class EmployeeRecruitmentController extends Controller
         }
 
         $newFileName = str_replace(' ', '', $name) . '_' . $prefix . '_' . $originalFileName;
-        Storage::move('uploads/' . $originalFileName, 'uploads/' . $newFileName);
+        Storage::move('public/uploads/' . $originalFileName, 'public/uploads/' . $newFileName);
 
         return $newFileName;
     }

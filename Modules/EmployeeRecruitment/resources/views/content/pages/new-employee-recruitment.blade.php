@@ -130,9 +130,12 @@
 
                     <!-- Data section 1 -->
                     <div id="data-section-1" class="content">
-                        <div class="content-header mb-3">
-                            <h5 class="mb-0">Alapadatok</h5>
-                            <small>Add meg az alapadatokat</small>
+                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">Alapadatok</h5>
+                                <small>Add meg az alapadatokat</small>
+                            </div>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal1" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
@@ -208,9 +211,12 @@
 
                     <!-- Data section 2 -->
                     <div id="data-section-2" class="content">
-                        <div class="content-header mb-3">
-                            <h5 class="mb-0">Jogviszony</h5>
-                            <small>Add meg az jogviszony adatokat</small>
+                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">Jogviszony</h5>
+                                <small>Add meg az jogviszony adatokat</small>
+                            </div>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal2" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
@@ -273,9 +279,12 @@
 
                     <!-- Data section 3 -->
                     <div id="data-section-3" class="content">
-                        <div class="content-header mb-3">
-                            <h5 class="mb-0">Bérelemek</h5>
-                            <small>Add meg a bérelemeket</small>
+                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">Bérelemek</h5>
+                                <small>Add meg a bérelemeket</small>
+                            </div>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal3" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <p class="mb-0"><strong>Alapbér</strong></p>
@@ -435,9 +444,12 @@
 
                     <!-- Data section 4 -->
                     <div id="data-section-4" class="content">
-                        <div class="content-header mb-3">
-                            <h5 class="mb-0">Munkaidő</h5>
-                            <small>Add meg a munkaidő adatokat</small>
+                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">Munkaidő</h5>
+                                <small>Add meg a munkaidő adatokat</small>
+                            </div>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal4" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
@@ -551,9 +563,12 @@
 
                     <!-- Data section 5 -->
                     <div id="data-section-5" class="content">
-                        <div class="content-header mb-3">
-                            <h5 class="mb-0">Egyéb adatok</h5>
-                            <small>Add meg a jogosultságokat, használandó eszközöket</small>
+                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">Egyéb adatok</h5>
+                                <small>Add meg a jogosultságokat, használandó eszközöket</small>
+                            </div>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal5" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
@@ -658,9 +673,12 @@
 
                     <!-- Data section 6 -->
                     <div id="data-section-6" class="content">
-                        <div class="content-header mb-3">
-                            <h5 class="mb-0">Dokumentumok</h5>
-                            <small>Töltsd fel a szükséges dokumentumokat</small>
+                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">Dokumentumok</h5>
+                                <small>Töltsd fel a szükséges dokumentumokat</small>
+                            </div>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal6" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-6">
@@ -719,6 +737,121 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal 1 -->
+    <div class="modal fade" id="helpModal1" tabindex="-1" aria-labelledby="helpModal1Label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leírás</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Ezen a lapon tudsz megadni néhány alapadatot a felvételi kérelemhez kapcsolódóan.</p>
+                    <p>Az <i>'Álláshirdetésre jelentkezett nők száma'</i> és <i>'Álláshirdetésre jelentkezett férfiak száma'</i> mező csak szám értéket fogad el.</p>
+                    <p>A <i>'Csoport 1'</i> és <i>'Csoport 2'</i> legördülő listáknál, kattintás után a lista tetején látható szövegdobozba írva keresni lehet a lista elemei között.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal 2 -->
+    <div class="modal fade" id="helpModal2" tabindex="-1" aria-labelledby="helpModal2Label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leírás</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Ezen a lapon a jogviszonyhoz kapcsolódó adatokat adhatod meg.</p>
+                    <p>A <i>'Munkakör'</i> lista annak megfelelően frissül, hogy melyik munkakör típust választottad.</p>
+                    <p>A fájl feltöltésnél 1 db pdf fájl feltöltésére van lehetőség, aminek a mérete maximálisan 20MB lehet.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal 3 -->
+    <div class="modal fade" id="helpModal3" tabindex="-1" aria-labelledby="helpModal3Label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leírás</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Itt adhatod meg az egyes típusok szerinti vérelemeket<./p>
+                    <p>A bér mezőkbe csak szám érték adható meg.</p>
+                    <p>A választható költséghelyek az első lapon megadott csoportszámoktól függenek, amennyiben kiválasztasz egy költséghelyet, akkor összeget (és ahol van, dátumot) is meg kell adnod.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal 4 -->
+    <div class="modal fade" id="helpModal4" tabindex="-1" aria-labelledby="helpModal4Label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leírás</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Ezen a lapon adhatot meg a munkaidőhöz kapcsolódó adatokat hétköznap napi bontásban. A napi munkaidő adatok összegének meg kell egyeznie a kiválasztott heti munkaidő mértékével</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal 5 -->
+    <div class="modal fade" id="helpModal5" tabindex="-1" aria-labelledby="helpModal5Label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leírás</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Ezen a lapon néhány további, fontos adat adható meg. A belépési jogosultságok lista az első lapon kiválasztott csoportoktól függ.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal 6 -->
+    <div class="modal fade" id="helpModal6" tabindex="-1" aria-labelledby="helpModal6Label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leírás</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Ezen a lapon további, szükséges dokumentum feltöltésére van lehetőséged</p>
+                    <p>Mindegyik mezőnél 1 db pdf formátumú fájl tölthető fel és a feltöltött fájlok mérete egyenként maximum 20MB lehet.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
                 </div>
             </div>
         </div>

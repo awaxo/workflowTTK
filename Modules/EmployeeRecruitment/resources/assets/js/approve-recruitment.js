@@ -9,7 +9,7 @@ $(function () {
     });
 
     // file uploads
-    DropzoneManager.init('contract_file');
+    DropzoneManager.init('contract');
 
     $('#approve').on('click', function () {
         if ($('#state').val() === 'hr_lead_approval' && ($('#probation_period').val() < 7 || $('#probation_period').val() > 90)) {

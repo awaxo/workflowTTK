@@ -95,13 +95,13 @@
                 @if($recruitment->state == 'employee_signature')
                     <div class="mb-3">
                         <label class="form-label" for="contract">Szerződés</label>
-                        <form action="/file/upload" class="dropzone needsclick" id="contract">
+                        <form action="/file/upload" class="dropzone needsclick" id="contract" name="contract">
                             @csrf
                             <div class="dz-message needsclick">
                                 Húzd ide a fájlt, vagy kattints a feltöltéshez.
                             </div>
                         </form>
-                        <input type="hidden" id="contract_file" data-original-name="" />
+                        <input type="hidden" id="contract_file" data-original-name="" name="contract_file" />
                     </div>
                 @endif
                 <div class="d-grid mt-4 d-md-block">

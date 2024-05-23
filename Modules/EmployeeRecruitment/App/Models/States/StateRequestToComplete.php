@@ -28,10 +28,10 @@ class StateRequestToComplete implements IStateResponsibility {
         if (!$workgroup908) {
             return [];
         }
-        $leader = $workgroup908->leader;
+        $labor_administrator = $workgroup908?->laborAdministrator;
 
-        $delegateUsers = $service->getDelegates($leader, 'hr_labor_administrator');
-        $responsibleUsers = array_merge([$leader], $delegateUsers->toArray());
+        $delegateUsers = $service->getDelegates($labor_administrator, 'hr_labor_administrator');
+        $responsibleUsers = array_merge([$labor_administrator], $delegateUsers->toArray());
 
         if ($notApprovedOnly) {
             $responsibleUsers = array_filter($responsibleUsers, function ($user) use ($workflow) {

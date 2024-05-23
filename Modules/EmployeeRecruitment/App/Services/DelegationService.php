@@ -55,6 +55,10 @@ class DelegationService
      */
     public function isDelegate(User $user, string $delegationType)
     {
+        if (!$user || !$delegationType) {
+            return false;
+        }
+
         return Delegation::where('delegate_user_id', $user->id)
             ->where('type', $delegationType)
             ->where('deleted', 0)
@@ -75,6 +79,10 @@ class DelegationService
      */
     public function getDelegates(User $user, string $delegationType)
     {
+        if (!$user || !$delegationType) {
+            return null;
+        }
+
         return Delegation::where('original_user_id', $user->id)
             ->where('type', $delegationType)
             ->where('deleted', 0)

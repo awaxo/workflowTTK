@@ -12,12 +12,8 @@ use Modules\EmployeeRecruitment\App\Services\DelegationService;
 class StateEmployeeSignature implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
-            $initiator_group_level = $workflow->initiatorInstitute?->group_level;
-            if ($initiator_group_level < 9) {
-                return $user->hasRole('titkar_' . $initiator_group_level);
-            } else {
-                return $workflow->initiatorInstitute?->name === 'Főigazgatóság' ? $user->hasRole('titkar_9_fi') : $user->hasRole('titkar_9_gi');
-            }
+            $role_to_check = $workflow->createdBy->roles->first()->name;
+            return $user->hasRole($role_to_check);
         } else {
             return false;
         }
@@ -25,15 +21,8 @@ class StateEmployeeSignature implements IStateResponsibility {
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool {
         if ($workflow instanceof RecruitmentWorkflow) {
-            $initiator_group_level = $workflow->initiatorInstitute?->group_level;
             $service = new DelegationService();
-            $role_to_check = '';
-    
-            if ($initiator_group_level < 9) {
-                $role_to_check = 'secretary_' . $initiator_group_level;
-            } else {
-                $role_to_check = $workflow->initiatorInstitute?->name === 'Főigazgatóság' ? 'secretary_9_fi' : 'secretary_9_gi';
-            }
+            $role_to_check = $workflow->createdBy->roles->first()->name;
     
             return $service->isDelegate($user, $role_to_check);
         } else {
@@ -44,31 +33,23 @@ class StateEmployeeSignature implements IStateResponsibility {
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         if ($workflow instanceof RecruitmentWorkflow) {
-            $initiator_group_level = $workflow->initiatorInstitute?->group_level;
-            $role_to_check = '';
             $service = new DelegationService();
-    
-            if ($initiator_group_level < 9) {
-                $role_to_check = 'titkar_' . $initiator_group_level;
-            } else {
-                $role_to_check = $workflow->initiatorInstitute?->name === 'Főigazgatóság' ? 'titkar_9_fi' : 'titkar_9_gi';
-            }
-    
-            // Get all users with the role
+
+            $role_to_check = $workflow->createdBy->roles->first()->name;
             $users = User::role($role_to_check)->get();
-    
+
             // Get all delegate users
             $delegateUsers = collect();
             foreach ($users as $user) {
                 $delegates = $service->getDelegates($user, str_replace('titkar_', 'secretary_', $role_to_check));
                 $delegateUsers = $delegateUsers->concat($delegates);
             }
-    
+
             $responsibleUsers = $users->concat($delegateUsers);
-    
             if ($notApprovedOnly) {
                 $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
                     $user = User::find($user['id']);
+
                     return !$workflow->isApprovedBy($user);
                 });
             }

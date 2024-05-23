@@ -490,7 +490,7 @@ class EmployeeRecruitmentController extends Controller
             $metaData['additional_fields'][] = $additional_fields;
             $recruitment->meta_data = json_encode($metaData);
         } elseif ($recruitment->state === 'employee_signature') {
-            $recruitment->contract = $request->input('contract_file');
+            $recruitment->contract = $this->getNewFileName($recruitment->name, 'AláírtSzerződés', $request->input('contract_file'));
         }
     }
 

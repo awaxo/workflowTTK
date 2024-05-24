@@ -8,6 +8,7 @@ use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
@@ -20,6 +21,7 @@ class StateDraftContractPending implements IStateResponsibility {
                 return $workflow->workgroup1->labor_administrator == Auth::id();
             }
         } else {
+            Log::error('StateDraftContractPending::isUserResponsible called with invalid workflow type');
             return false;
         }
     }
@@ -34,6 +36,7 @@ class StateDraftContractPending implements IStateResponsibility {
                 return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup1->workgroup_number);
             }    
         } else {
+            Log::error('StateDraftContractPending::isUserResponsibleAsDelegate called with invalid workflow type');
             return false;
         }
     }
@@ -62,6 +65,7 @@ class StateDraftContractPending implements IStateResponsibility {
     
             return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
         } else {
+            Log::error('StateDraftContractPending::getResponsibleUsers called with invalid workflow type');
             return [];
         }
     }

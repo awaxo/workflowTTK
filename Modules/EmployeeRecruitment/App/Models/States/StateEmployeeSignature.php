@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
@@ -15,6 +16,7 @@ class StateEmployeeSignature implements IStateResponsibility {
             $role_to_check = $workflow->createdBy->roles->first()->name;
             return $user->hasRole($role_to_check);
         } else {
+            Log::error('StateEmployeeSignature::isUserResponsible called with invalid workflow type');
             return false;
         }
     }
@@ -26,6 +28,7 @@ class StateEmployeeSignature implements IStateResponsibility {
     
             return $service->isDelegate($user, $role_to_check);
         } else {
+            Log::error('StateEmployeeSignature::isUserResponsibleAsDelegate called with invalid workflow type');
             return false;
         }
     }
@@ -56,6 +59,7 @@ class StateEmployeeSignature implements IStateResponsibility {
     
             return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
         } else {
+            Log::error('StateEmployeeSignature::getResponsibleUsers called with invalid workflow type');
             return [];
         }
     }

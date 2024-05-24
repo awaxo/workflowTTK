@@ -27,6 +27,7 @@ class StateProofOfCoverage implements IStateResponsibility {
 
             return $is_project_coordinator && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateProofOfCoverage::isUserResponsible called with invalid workflow type');
             return false;
         }
     }
@@ -52,6 +53,7 @@ class StateProofOfCoverage implements IStateResponsibility {
     
             return $delegated && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateProofOfCoverage::isUserResponsibleAsDelegate called with invalid workflow type');
             return false;
         }
     }
@@ -91,6 +93,7 @@ class StateProofOfCoverage implements IStateResponsibility {
 
             return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
         } else {
+            Log::error('StateProofOfCoverage::getResponsibleUsers called with invalid workflow type');
             return [];
         }
     }
@@ -136,6 +139,7 @@ class StateProofOfCoverage implements IStateResponsibility {
 
             return count(array_diff($cost_center_project_coordinator_ids, $approval_user_ids)) === 0;
         } else {
+            Log::error('StateProofOfCoverage::isAllApproved called with invalid workflow type');
             return false;
         }
     }
@@ -169,6 +173,10 @@ class StateProofOfCoverage implements IStateResponsibility {
                     return 'to_registration';
                 }
             }
+        }
+        else {
+            Log::error('StateProofOfCoverage::getNextTransition called with invalid workflow type');
+            return '';
         }
     }
 

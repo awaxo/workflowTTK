@@ -41,6 +41,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
 
             return $workgroup_lead && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateGroupLeadApproval::isUserResponsible called with invalid workflow type');
             return false;
         }
     }
@@ -81,6 +82,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
 
             return $isDelegate && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateGroupLeadApproval::isUserResponsibleAsDelegate called with invalid workflow type');
             return false;
         }
     }
@@ -110,6 +112,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
 
             return $workgroup_lead;
         } else {
+            Log::error('StateGroupLeadApproval::isUserResponsibleNonBaseWorkgroup called with invalid workflow type');
             return false;
         }
     }
@@ -163,6 +166,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
 
             return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
         } else {
+            Log::error('StateGroupLeadApproval::getResponsibleUsers called with invalid workflow type');
             return [];
         }
     }
@@ -218,6 +222,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
 
             return count(array_diff($workgroup_leads, $approval_user_ids)) === 0;
         } else {
+            Log::error('StateGroupLeadApproval::isAllApproved called with invalid workflow type');
             return false;
         }
     }
@@ -248,7 +253,8 @@ class StateGroupLeadApproval implements IStateResponsibility {
             }
         }
         else {
-            return 'to_director_approval';
+            Log::error('StateGroupLeadApproval::getNextTransition called with invalid workflow type');
+            return '';
         }
     }
 

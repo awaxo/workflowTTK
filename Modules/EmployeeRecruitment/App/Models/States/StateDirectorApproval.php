@@ -9,6 +9,7 @@ use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
@@ -54,6 +55,7 @@ class StateDirectorApproval implements IStateResponsibility {
 
             return $director && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateDirectorApproval::isUserResponsible called with invalid workflow type');
             return false;
         }
     }
@@ -98,6 +100,7 @@ class StateDirectorApproval implements IStateResponsibility {
 
             return $delegated && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateDirectorApproval::isUserResponsibleAsDelegate called with invalid workflow type');
             return false;
         }
     }
@@ -148,6 +151,7 @@ class StateDirectorApproval implements IStateResponsibility {
     
             return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
         } else {
+            Log::error('StateDirectorApproval::getResponsibleUsers called with invalid workflow type');
             return [];
         }
     }
@@ -215,6 +219,7 @@ class StateDirectorApproval implements IStateResponsibility {
 
             return count(array_diff($director_ids, $approval_user_ids)) === 0;
         } else {
+            Log::error('StateDirectorApproval::isAllApproved called with invalid workflow type');
             return false;
         }
     }

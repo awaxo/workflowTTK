@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateRequestReview implements IStateResponsibility {
@@ -25,6 +26,7 @@ class StateRequestReview implements IStateResponsibility {
                 return false;
             }
         } else {
+            Log::error('StateRequestReview::isUserResponsible role is missing');
             return false;
         }
     }
@@ -41,6 +43,7 @@ class StateRequestReview implements IStateResponsibility {
             $service = new DelegationService();
             return $service->isDelegate($user, $role);
         } else {
+            Log::error('StateRequestReview::isUserResponsibleAsDelegate role is missing');
             return false;
         }
     }

@@ -2,7 +2,7 @@
     <h2 class="accordion-header" id="heading_base_data">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_base_data" aria-expanded="false" aria-controls="collapse_base_data">Alapadatok</button>
     </h2>
-    <div id="collapse_base_data" class="accordion-collapse collapse" aria-labelledby="heading_base_data" data-bs-parent="#accordion_process_details">
+    <div id="collapse_base_data" class="accordion-collapse collapse show" aria-labelledby="heading_base_data">
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Név</label>
@@ -70,7 +70,7 @@
     <h2 class="accordion-header" id="heading_legal_relationship">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_legal_relationship" aria-expanded="false" aria-controls="collapse_legal_relationship">Jogviszony</button>
     </h2>
-    <div id="collapse_legal_relationship" class="accordion-collapse collapse" aria-labelledby="heading_legal_relationship" data-bs-parent="#accordion_process_details">
+    <div id="collapse_legal_relationship" class="accordion-collapse collapse show" aria-labelledby="heading_legal_relationship">
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkakör típusa</label>
@@ -112,7 +112,7 @@
     <h2 class="accordion-header" id="heading_salary_elements">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_salary_elements" aria-expanded="false" aria-controls="collapse_salary_elements">Bérelemek</button>
     </h2>
-    <div id="collapse_salary_elements" class="accordion-collapse collapse" aria-labelledby="heading_salary_elements" data-bs-parent="#accordion_process_details">
+    <div id="collapse_salary_elements" class="accordion-collapse collapse show" aria-labelledby="heading_salary_elements">
         <div class="accordion-body">
             <p class="mb-1"><strong>Alapbér</strong></p>
             <div class="d-flex">
@@ -199,7 +199,7 @@
     <h2 class="accordion-header" id="heading_working_hours">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_working_hours" aria-expanded="false" aria-controls="collapse_working_hours">Munkaidő</button>
     </h2>
-    <div id="collapse_working_hours" class="accordion-collapse collapse" aria-labelledby="heading_working_hours" data-bs-parent="#accordion_process_details">
+    <div id="collapse_working_hours" class="accordion-collapse collapse show" aria-labelledby="heading_working_hours">
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Heti munkaóraszám</label>
@@ -235,7 +235,7 @@
     <h2 class="accordion-header" id="heading_other_details">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_other_details" aria-expanded="false" aria-controls="collapse_other_details">Egyéb adatok</button>
     </h2>
-    <div id="collapse_other_details" class="accordion-collapse collapse" aria-labelledby="heading_other_details" data-bs-parent="#accordion_process_details">
+    <div id="collapse_other_details" class="accordion-collapse collapse show" aria-labelledby="heading_other_details">
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Javasolt email cím</label>
@@ -314,7 +314,7 @@
     <h2 class="accordion-header" id="heading_documents">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_documents" aria-expanded="false" aria-controls="collapse_documents">Dokumentumok</button>
     </h2>
-    <div id="collapse_documents" class="accordion-collapse collapse" aria-labelledby="heading_documents" data-bs-parent="#accordion_process_details">
+    <div id="collapse_documents" class="accordion-collapse collapse show" aria-labelledby="heading_documents">
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Személyi adatlap</label>
@@ -366,7 +366,7 @@
     <h2 class="accordion-header" id="heading_documents">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_additional_data" aria-expanded="false" aria-controls="collapse_additional_data">Kiegészítő adatok</button>
     </h2>
-    <div id="collapse_additional_data" class="accordion-collapse collapse" aria-labelledby="heading_additional_data" data-bs-parent="#accordion_process_details">
+    <div id="collapse_additional_data" class="accordion-collapse collapse show" aria-labelledby="heading_additional_data">
         <div class="accordion-body">
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Próbaidő hossza</label>

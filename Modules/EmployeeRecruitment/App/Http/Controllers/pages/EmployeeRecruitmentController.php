@@ -56,7 +56,11 @@ class EmployeeRecruitmentController extends Controller
         $positions = Position::where('deleted', 0)->get();
         $costCenters = CostCenter::where('deleted', 0)
             ->where('valid_employee_recruitment', 1)
-            ->get();
+            ->get()
+            ->map(function ($costCenter) {
+                $costCenter->leader_name = $costCenter->leadUser()->first()?->name;
+                return $costCenter;
+            });
         $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
 

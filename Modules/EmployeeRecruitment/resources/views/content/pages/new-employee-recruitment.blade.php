@@ -293,7 +293,7 @@
                                 <select class="form-select select2" id="base_salary_cost_center_1" name="base_salary_cost_center_1">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
-                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}" title="{{ $costcenter->leader_name }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -309,7 +309,7 @@
                                 <select class="form-select select2" id="base_salary_cost_center_2" name="base_salary_cost_center_2">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
-                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}" title="{{ $costcenter->leader_name }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -325,7 +325,7 @@
                                 <select class="form-select select2" id="base_salary_cost_center_3" name="base_salary_cost_center_3">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
-                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}" title="{{ $costcenter->leader_name }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -345,7 +345,7 @@
                                 <select class="form-select select2" id="health_allowance_cost_center_4" name="health_allowance_cost_center_4">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
-                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}" title="{{ $costcenter->leader_name }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -365,7 +365,7 @@
                                 <select class="form-select select2" id="management_allowance_cost_center_5" name="management_allowance_cost_center_5">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
-                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}" title="{{ $costcenter->leader_name }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -389,7 +389,7 @@
                                 <select class="form-select select2" id="extra_pay_1_cost_center_6" name="extra_pay_1_cost_center_6">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
-                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}" title="{{ $costcenter->leader_name }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -413,7 +413,7 @@
                                 <select class="form-select select2" id="extra_pay_2_cost_center_7" name="extra_pay_2_cost_center_7">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
-                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
+                                        <option value="{{ $costcenter->id }}" data-workgroup="{{ substr($costcenter->cost_center_code, strrpos($costcenter->cost_center_code, ' ') + 1) }}" title="{{ $costcenter->leader_name }}">{{ $costcenter->cost_center_code . " - " . $costcenter->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -16,3 +16,19 @@
     color: #5f61e6;
     cursor: pointer;
 }
+
+/* datatable strip lines */
+/* odd rows */
+.card-datatable table tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+/* even rows */
+.card-datatable table tbody tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+/* hovered rows */
+.card-datatable table tbody tr:hover {
+    background-color: #efefef;
+} 

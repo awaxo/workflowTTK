@@ -6,6 +6,7 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 /**
  * The state of the recruitment process when the IT head has to approve the recruitment.
@@ -61,20 +62,24 @@ class StateSuspended implements IStateResponsibility {
     {
         $workflow_meta = json_decode($workflow->meta_data);
 
+        if (!$workflow_meta || !isset($workflow_meta->history) || empty($workflow_meta->history)) {
+            return [];
+        }
+
         // get user by id of last entry in 'history' of meta_value
         $lastEntry = end($workflow_meta->history);
-        $lastUser = User::find($lastEntry->user_id);
 
-        if (!$lastUser->deleted) {
-            $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $lastEntry->status)));
-            $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
-            if (class_exists($stateClassName)) {
-                $this->stateClass = new $stateClassName();
-            }
+        $stateClassShortName = 'State' . str_replace(' ', '', ucwords(str_replace('_', ' ', $lastEntry->status)));
+        $stateClassName = "Modules\\EmployeeRecruitment\\App\\Models\\States\\{$stateClassShortName}";
+        if (class_exists($stateClassName)) {
+            $this->stateClass = new $stateClassName();
+        } else {
+            Log::error("State class not found: {$stateClassName}");
+            return [];
+        }
 
-            if ($this->stateClass) {
-                return $this->stateClass->getResponsibleUsers($workflow, $notApprovedOnly);
-            }
+        if ($this->stateClass) {
+            return $this->stateClass->getResponsibleUsers($workflow, $notApprovedOnly);
         }
 
         return [];

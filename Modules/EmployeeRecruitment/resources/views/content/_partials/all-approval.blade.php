@@ -185,7 +185,7 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Havi bruttó bér 7</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_1_monthly_gross_7 ? number_format($recruitment->extra_pay_1_monthly_gross_7, 0, ',', ' ') . ' Ft' : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_2_monthly_gross_7 ? number_format($recruitment->extra_pay_2_monthly_gross_7, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Időtartam vége</label>

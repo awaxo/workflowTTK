@@ -144,7 +144,7 @@ class EmployeeRecruitmentController extends Controller
             $validatedData['extra_pay_1_end_date'] = null;
         }
         $recruitment->extra_pay_1_end_date = $validatedData['extra_pay_1_end_date'];
-        
+
         $recruitment->extra_pay_2_cost_center_7 = request('extra_pay_2_cost_center_7');
         $recruitment->extra_pay_2_monthly_gross_7 = !empty($validatedData['extra_pay_2_monthly_gross_7']) ? floatval(str_replace(' ', '', $validatedData['extra_pay_2_monthly_gross_7'])) : null;
         if (!empty($validatedData['extra_pay_2_end_date'])) {
@@ -171,7 +171,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->email = $validatedData['email'];
         $recruitment->entry_permissions = is_array($validatedData['entry_permissions']) ? implode(',', $validatedData['entry_permissions']) : $validatedData['entry_permissions'];
         $recruitment->license_plate = $validatedData['license_plate'];
-        $recruitment->employee_room = is_array($validatedData['employee_room']) ? implode(',', $validatedData['employee_room']) : null;
+        $recruitment->employee_room = $validatedData['employee_room'];
         $recruitment->phone_extension = $validatedData['phone_extension'];
         $recruitment->external_access_rights = request('external_access_rights') && is_array(request('external_access_rights')) ? implode(',', request('external_access_rights')) : null;
         $recruitment->required_tools = request('required_tools') && is_array(request('required_tools')) ? implode(',', request('required_tools')) : null;

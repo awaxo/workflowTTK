@@ -170,11 +170,13 @@ $(function () {
         revalidateOnChange(fv, 'name');
         revalidateOnChange(fv, 'applicants_female_count');
         revalidateOnChange(fv, 'applicants_male_count');
+        revalidateOnChange(fv, 'workgroup_id_1');
         revalidateOnChange(fv, 'position_id');
         revalidateOnChange(fv, 'job_description_file');
         revalidateOnChange(fv, 'task');
         revalidateOnChange(fv, 'employment_start_date');
         revalidateOnChange(fv, 'employment_end_date');
+        revalidateOnChange(fv, 'base_salary_cost_center_1');
         revalidateOnChange(fv, 'base_salary_monthly_gross_1');
         revalidateOnChange(fv, 'base_salary_cost_center_2');
         revalidateOnChange(fv, 'base_salary_monthly_gross_2');
@@ -437,7 +439,7 @@ function filterCostCenters() {
     // Filter and remove options from cc1
     $('#base_salary_cost_center_1 option').filter(function() {
         let optionWorkgroup = $(this).data('workgroup');
-        return optionWorkgroup !== selectedWorkgroup1;
+        return optionWorkgroup !== undefined && optionWorkgroup !== selectedWorkgroup1;
     }).remove();
 
     // Filter and remove options from all cc except cc1
@@ -771,6 +773,13 @@ function validateEmployeeRecruitment() {
                         }
                     }
                 },
+                workgroup_id_1: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a csoportot'
+                        }
+                    }
+                },
                 position_id: {
                     validators: {
                         notEmpty: {
@@ -816,6 +825,13 @@ function validateEmployeeRecruitment() {
                         date: {
                             format: 'YYYY.MM.DD',
                             message: 'Kérjük, valós dátumot adj meg',
+                        }
+                    }
+                },
+                base_salary_cost_center_1: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghelyet'
                         }
                     }
                 },

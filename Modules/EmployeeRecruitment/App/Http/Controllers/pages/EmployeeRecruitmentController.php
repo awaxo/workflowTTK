@@ -31,6 +31,7 @@ class EmployeeRecruitmentController extends Controller
         $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
         $user = User::find(Auth::id());
         if (!$user->hasAnyRole($roles)) {
+            Log::warning('User (' . $user->name . ') not authorized to view new employee recruitment page');
             return view('content.pages.misc-not-authorized');
         }
 
@@ -76,11 +77,13 @@ class EmployeeRecruitmentController extends Controller
 
     public function store(Request $request)
     {
+        $validatedData = $this->validateRequest();
+
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
         $workgroup = User::find(Auth::id())->workgroup;
         $recruitment = new RecruitmentWorkflow();
 
-        $validatedData = $request->all();
+        $recruitment->fill($validatedData);
         
         // generic data
         $recruitment->state = 'it_head_approval';
@@ -92,19 +95,19 @@ class EmployeeRecruitmentController extends Controller
 
         // data section 1
         $recruitment->name = $validatedData['name'];
-        $recruitment->job_ad_exists = $validatedData['job_ad_exists'] == 'true' ? 1 : 0;
-        $recruitment->has_prior_employment = $validatedData['has_prior_employment'] == 'true' ? 1 : 0;
-        $recruitment->has_current_volunteer_contract = $validatedData['has_current_volunteer_contract'] == 'true' ? 1 : 0;
+        $recruitment->job_ad_exists = request('job_ad_exists') == 'true' ? 1 : 0;
+        $recruitment->has_prior_employment = request('has_prior_employment') == 'true' ? 1 : 0;
+        $recruitment->has_current_volunteer_contract = request('has_current_volunteer_contract') == 'true' ? 1 : 0;
         $recruitment->applicants_female_count = str_replace(' ', '', $validatedData['applicants_female_count']);
         $recruitment->applicants_male_count = str_replace(' ', '', $validatedData['applicants_male_count']);
-        $recruitment->citizenship = $validatedData['citizenship'];
+        $recruitment->citizenship = request('citizenship');
         $recruitment->workgroup_id_1 = $validatedData['workgroup_id_1'];
-        $recruitment->workgroup_id_2 = $validatedData['workgroup_id_2'] == -1 ? null : $validatedData['workgroup_id_2'];
+        $recruitment->workgroup_id_2 = request('workgroup_id_2') == -1 ? null : request('workgroup_id_2');
 
         // data section 2
         $recruitment->position_id = $validatedData['position_id'];
         $recruitment->job_description = $this->getNewFileName($validatedData['name'], 'MunkaköriLeírás', $validatedData['job_description_file']);
-        $recruitment->employment_type = $validatedData['employment_type'];
+        $recruitment->employment_type = request('employment_type');
         $recruitment->task = isset($validatedData['task']) ? $validatedData['task'] : '';
         $validatedData['employment_start_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['employment_start_date'])));
         if (!empty($validatedData['employment_end_date'])) {
@@ -118,13 +121,13 @@ class EmployeeRecruitmentController extends Controller
         // data section 3
         $recruitment->base_salary_cost_center_1 = $validatedData['base_salary_cost_center_1'];
         $recruitment->base_salary_monthly_gross_1 = floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_1']));
-        $recruitment->base_salary_cost_center_2 = $validatedData['base_salary_cost_center_2'];
+        $recruitment->base_salary_cost_center_2 = request('base_salary_cost_center_2');
         $recruitment->base_salary_monthly_gross_2 = !empty($validatedData['base_salary_monthly_gross_2']) ? floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_2'])) : null;
-        $recruitment->base_salary_cost_center_3 = $validatedData['base_salary_cost_center_3'];
+        $recruitment->base_salary_cost_center_3 = request('base_salary_cost_center_3');
         $recruitment->base_salary_monthly_gross_3 = !empty($validatedData['base_salary_monthly_gross_3']) ? floatval(str_replace(' ', '', $validatedData['base_salary_monthly_gross_3'])) : null;
-        $recruitment->health_allowance_cost_center_4 = $validatedData['health_allowance_cost_center_4'];
+        $recruitment->health_allowance_cost_center_4 = request('health_allowance_cost_center_4');
         $recruitment->health_allowance_monthly_gross_4 = !empty($validatedData['health_allowance_monthly_gross_4']) ? floatval(str_replace(' ', '', $validatedData['health_allowance_monthly_gross_4'])) : null;
-        $recruitment->management_allowance_cost_center_5 = $validatedData['management_allowance_cost_center_5'];
+        $recruitment->management_allowance_cost_center_5 = request('management_allowance_cost_center_5');
         $recruitment->management_allowance_monthly_gross_5 = !empty($validatedData['management_allowance_monthly_gross_5']) ? floatval(str_replace(' ', '', $validatedData['management_allowance_monthly_gross_5'])) : null;
         if (!empty($validatedData['management_allowance_end_date'])) {
             $validatedData['management_allowance_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['management_allowance_end_date'])));
@@ -132,16 +135,18 @@ class EmployeeRecruitmentController extends Controller
             $validatedData['management_allowance_end_date'] = null;
         }
         $recruitment->management_allowance_end_date = $validatedData['management_allowance_end_date'];
-        $recruitment->extra_pay_1_cost_center_6 = $validatedData['extra_pay_1_cost_center_6'];
-        $recruitment->extra_pay_1_monthly_gross_6 = !empty($validatedData['management_allowance_monthly_gross_5']) ? floatval(str_replace(' ', '', $validatedData['extra_pay_1_monthly_gross_6'])) : null;
+
+        $recruitment->extra_pay_1_cost_center_6 = request('extra_pay_1_cost_center_6');
+        $recruitment->extra_pay_1_monthly_gross_6 = !empty($validatedData['extra_pay_1_monthly_gross_6']) ? floatval(str_replace(' ', '', $validatedData['extra_pay_1_monthly_gross_6'])) : null;
         if (!empty($validatedData['extra_pay_1_end_date'])) {
             $validatedData['extra_pay_1_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_1_end_date'])));
         } else {
             $validatedData['extra_pay_1_end_date'] = null;
         }
         $recruitment->extra_pay_1_end_date = $validatedData['extra_pay_1_end_date'];
-        $recruitment->extra_pay_2_cost_center_7 = $validatedData['extra_pay_2_cost_center_7'];
-        $recruitment->extra_pay_2_monthly_gross_7 = !empty($validatedData['management_allowance_monthly_gross_5']) ? floatval(str_replace(' ', '', $validatedData['extra_pay_2_monthly_gross_7'])) : null;
+
+        $recruitment->extra_pay_2_cost_center_7 = request('extra_pay_2_cost_center_7');
+        $recruitment->extra_pay_2_monthly_gross_7 = !empty($validatedData['extra_pay_2_monthly_gross_7']) ? floatval(str_replace(' ', '', $validatedData['extra_pay_2_monthly_gross_7'])) : null;
         if (!empty($validatedData['extra_pay_2_end_date'])) {
             $validatedData['extra_pay_2_end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['extra_pay_2_end_date'])));
         } else {
@@ -150,27 +155,27 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->extra_pay_2_end_date = $validatedData['extra_pay_2_end_date'];
 
         // data section 4
-        $recruitment->weekly_working_hours = $validatedData['weekly_working_hours'];
-        $recruitment->work_start_monday = $validatedData['work_start_monday'];
-        $recruitment->work_end_monday = $validatedData['work_end_monday'];
-        $recruitment->work_start_tuesday = $validatedData['work_start_tuesday'];
-        $recruitment->work_end_tuesday = $validatedData['work_end_tuesday'];
-        $recruitment->work_start_wednesday = $validatedData['work_start_wednesday'];
-        $recruitment->work_end_wednesday = $validatedData['work_end_wednesday'];
-        $recruitment->work_start_thursday = $validatedData['work_start_thursday'];
-        $recruitment->work_end_thursday = $validatedData['work_end_thursday'];
-        $recruitment->work_start_friday = $validatedData['work_start_friday'];
-        $recruitment->work_end_friday = $validatedData['work_end_friday'];
+        $recruitment->weekly_working_hours = request('weekly_working_hours');
+        $recruitment->work_start_monday = request('work_start_monday');
+        $recruitment->work_end_monday = request('work_end_monday');
+        $recruitment->work_start_tuesday = request('work_start_tuesday');
+        $recruitment->work_end_tuesday = request('work_end_tuesday');
+        $recruitment->work_start_wednesday = request('work_start_wednesday');
+        $recruitment->work_end_wednesday = request('work_end_wednesday');
+        $recruitment->work_start_thursday = request('work_start_thursday');
+        $recruitment->work_end_thursday = request('work_end_thursday');
+        $recruitment->work_start_friday = request('work_start_friday');
+        $recruitment->work_end_friday = request('work_end_friday');
 
         // data section 5
         $recruitment->email = $validatedData['email'];
         $recruitment->entry_permissions = is_array($validatedData['entry_permissions']) ? implode(',', $validatedData['entry_permissions']) : $validatedData['entry_permissions'];
         $recruitment->license_plate = $validatedData['license_plate'];
-        $recruitment->employee_room = is_array($validatedData['employee_room']) ? implode(',', $validatedData['employee_room']) : null;
+        $recruitment->employee_room = $validatedData['employee_room'];
         $recruitment->phone_extension = $validatedData['phone_extension'];
-        $recruitment->external_access_rights = isset($validatedData['external_access_rights']) && is_array($validatedData['external_access_rights']) ? implode(',', $validatedData['external_access_rights']) : null;
-        $recruitment->required_tools = isset($validatedData['required_tools']) && is_array($validatedData['required_tools']) ? implode(',', $validatedData['required_tools']) : null;
-        $recruitment->available_tools = isset($validatedData['available_tools']) && is_array($validatedData['available_tools']) ? implode(',', $validatedData['available_tools']) : null;
+        $recruitment->external_access_rights = request('external_access_rights') && is_array(request('external_access_rights')) ? implode(',', request('external_access_rights')) : null;
+        $recruitment->required_tools = request('required_tools') && is_array(request('required_tools')) ? implode(',', request('required_tools')) : null;
+        $recruitment->available_tools = request('available_tools') && is_array(request('available_tools')) ? implode(',', request('available_tools')) : null;
         $inventoryNumbers = [];
         foreach ($validatedData as $key => $value) {
             if (strpos($key, 'inventory_numbers_of_available_tools_') === 0) {
@@ -187,9 +192,8 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
         $recruitment->student_status_verification = $this->getNewFileName($validatedData['name'], 'HallgatóiJogviszony', $validatedData['student_status_verification_file']);
         $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);
-        $recruitment->requires_commute_support = $validatedData['requires_commute_support'] == 'true' ? 1 : 0;
+        $recruitment->requires_commute_support = request('requires_commute_support') == 'true' ? 1 : 0;
         $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
-        $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $validatedData['commute_support_form_file'] : null;
 
         try {
             $recruitment->save();
@@ -276,6 +280,7 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         if (!$recruitment) {
+            Log::error('Nem található a felvételi kérelem (id: ' . $id . ')');
             return view('content.pages.misc-error');
         }
 
@@ -303,6 +308,7 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         if (!$recruitment) {
+            Log::error('Nem található a felvételi kérelem (id: ' . $id . ')');
             return view('content.pages.misc-error');
         }
 
@@ -355,6 +361,7 @@ class EmployeeRecruitmentController extends Controller
 
             return response()->json(['redirectUrl' => route('workflows-all-open')]);
         } else {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem jóváhagyására');
             return view('content.pages.misc-not-authorized');
         }
     }
@@ -380,6 +387,7 @@ class EmployeeRecruitmentController extends Controller
                 throw new \Exception('No reason given for rejection');
             }
         } else {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem elutasítására');
             return view('content.pages.misc-not-authorized');
         }
     }
@@ -408,6 +416,7 @@ class EmployeeRecruitmentController extends Controller
                 throw new \Exception('No reason given for rejection');
             }
         } else {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésére');
             return view('content.pages.misc-not-authorized');
         }
     }
@@ -432,6 +441,7 @@ class EmployeeRecruitmentController extends Controller
                 'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             ]);
         } else {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésének visszaállítására');
             return view('content.pages.misc-not-authorized');
         }
     }
@@ -455,6 +465,7 @@ class EmployeeRecruitmentController extends Controller
                 throw new \Exception('No valid transition found');
             }
         } else {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésének visszaállítására');
             return view('content.pages.misc-not-authorized');
         }
     }
@@ -540,6 +551,7 @@ class EmployeeRecruitmentController extends Controller
 
     private function getNewFileName($name, $prefix, $originalFileName): string {
         if (!$originalFileName) {
+            Log::warning('A fájl név üres');
             return '';
         }
 
@@ -548,4 +560,264 @@ class EmployeeRecruitmentController extends Controller
 
         return $newFileName;
     }
+
+    private function validateRequest() {
+        return request()->validate([
+            'name' => 'required|string|max:100',
+            'applicants_female_count' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (!is_numeric($value) || intval($value) < 0 || intval($value) > 1000) {
+                        $fail('Az érték 0 és 1000 között lehet, és egész számot kell megadni');
+                    }
+                },
+            ],
+            'applicants_male_count' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (!is_numeric($value) || intval($value) < 0 || intval($value) > 1000) {
+                        $fail('Az érték 0 és 1000 között lehet, és egész számot kell megadni');
+                    }
+                },
+            ],
+            'workgroup_id_1' => 'required',
+            'position_id' => 'required',
+            'job_description_file' => 'required|string',
+            'task' => 'nullable|string|min:50|max:1000',
+            'employment_start_date' => 'required|date_format:Y.m.d',
+            'employment_end_date' => 'nullable|date_format:Y.m.d',
+            'base_salary_cost_center_1' => 'required',
+            'base_salary_monthly_gross_1' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (!is_numeric($value) || intval($value) < 1000 || intval($value) > 3000000) {
+                        $fail('Az érték 1000 és 3000000 között lehet, és egész számot kell megadni');
+                    }
+                },
+            ],
+            'base_salary_monthly_gross_2' => [
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (request('base_salary_cost_center_2')) {
+                        if (!is_numeric($value) || $value < 1000 || $value > 3000000) {
+                            $fail('Az érték 1000 és 3 000 000 között lehet');
+                        }
+                    } else {
+                        if ($value && $value != 0) {
+                            $fail('Az érték 0 vagy null lehet');
+                        }
+                    }
+                },
+            ],
+            'base_salary_monthly_gross_3' => [
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (request('base_salary_cost_center_3')) {
+                        if (!is_numeric($value) || $value < 1000 || $value > 3000000) {
+                            $fail('Az érték 1000 és 3 000 000 között lehet');
+                        }
+                    } else {
+                        if ($value && $value != 0) {
+                            $fail('Az érték 0 lehet');
+                        }
+                    }
+                },
+            ],
+            'health_allowance_monthly_gross_4' => [
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (request('health_allowance_cost_center_4')) {
+                        if (!is_numeric($value) || $value < 1000 || $value > 20000) {
+                            $fail('Az érték 1000 és 20 000 között lehet');
+                        }
+                    } else {
+                        if ($value && $value != 0) {
+                            $fail('Az érték 0 lehet');
+                        }
+                    }
+                },
+            ],
+            'management_allowance_monthly_gross_5' => [
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (request('management_allowance_cost_center_5')) {
+                        if (!is_numeric($value) || $value < 1000 || $value > 300000) {
+                            $fail('Az érték 1000 és 300 000 között lehet');
+                        }
+                    } else {
+                        if ($value && $value != 0) {
+                            $fail('Az érték 0 lehet');
+                        }
+                    }
+                },
+            ],
+            'management_allowance_end_date' => [
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        try {
+                            $endDate = Carbon::createFromFormat('Y.m.d', $value);
+                            $maxDate = now()->addYears(4);
+                            if ($endDate->isAfter($maxDate)) {
+                                $fail('A dátum nem lehet későbbi, mint a mai dátum + 4 év');
+                            }
+                        } catch (\Exception $e) {
+                            $fail('Invalid date format');
+                        }
+                    }
+                },
+            ],
+            'extra_pay_1_monthly_gross_6' => [
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (request('extra_pay_1_cost_center_6')) {
+                        if (!is_numeric($value) || $value < 1000 || $value > 300000) {
+                            $fail('Az érték 1000 és 300 000 között lehet');
+                        }
+                    } else {
+                        if ($value && $value != 0) {
+                            $fail('Az érték 0 lehet');
+                        }
+                    }
+                },
+            ],
+            'extra_pay_1_end_date' => [
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        try {
+                            $endDate = Carbon::createFromFormat('Y.m.d', $value);
+                            $maxDate = now()->addYears(4);
+                            if ($endDate->isAfter($maxDate)) {
+                                $fail('A dátum nem lehet későbbi, mint a mai dátum + 4 év');
+                            }
+                        } catch (\Exception $e) {
+                            $fail('Invalid date format');
+                        }
+                    }
+                },
+            ],
+            'extra_pay_2_monthly_gross_7' => [
+                function ($attribute, $value, $fail) {
+                    $value = str_replace(' ', '', $value);
+                    if (request('extra_pay_2_cost_center_7')) {
+                        if (!is_numeric($value) || $value < 1000 || $value > 300000) {
+                            $fail('Az érték 1000 és 300 000 között lehet');
+                        }
+                    } else {
+                        if ($value && $value != 0) {
+                            $fail('Az érték 0 lehet');
+                        }
+                    }
+                },
+            ],
+            'extra_pay_2_end_date' => [
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        try {
+                            $endDate = Carbon::createFromFormat('Y.m.d', $value);
+                            $maxDate = now()->addYears(4);
+                            if ($endDate->isAfter($maxDate)) {
+                                $fail('A dátum nem lehet későbbi, mint a mai dátum + 4 év');
+                            }
+                        } catch (\Exception $e) {
+                            $fail('Invalid date format');
+                        }
+                    }
+                },
+            ],
+            'email' => 'required|email|max:100|regex:/^[a-zA-Z0-9._%+-]+@ttk\.hu$/',
+            'entry_permissions' => 'required',
+            'license_plate' => 'nullable|string|max:9',
+            'employee_room' => 'required',
+            'phone_extension' => 'required|integer|between:400,999',
+            'inventory_numbers_of_available_tools_asztal' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_szek' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_asztali_szamitogep' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_laptop' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_laptop_taska' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_monitor' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_billentyuzet' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_eger' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_dokkolo' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'inventory_numbers_of_available_tools_mobiltelefon' => 'string|max:30|regex:/^[0-9 -]+$/',
+            'work_with_radioactive_isotopes' => 'required',
+            'work_with_carcinogenic_materials' => 'required',
+            'planned_carcinogenic_materials_use' => 'nullable|string|max:10000',
+            'personal_data_sheet_file' => 'required|string',
+            'student_status_verification_file' => 'nullable|string',
+            'certificates_file' => 'required|string',
+            'commute_support_form_file' => 'nullable|string',
+        ], [
+            'name.required' => 'A név megadása kötelező',
+            'name.string' => 'A név érvénytelen',
+            'name.max' => 'A név nem lehet hosszabb 100 karakternél',
+            'applicants_female_count.required' => 'Kérjük, add meg a női jelentkezők számát',
+            'applicants_male_count.required' => 'Kérjük, add meg a férfi jelentkezők számát',
+            'workgroup_id_1.required' => 'Kérjük, add meg a csoportot',
+            'position_id.required' => 'Kérjük, válaszd ki a munkakört',
+            'job_description_file.required' => 'Kérjük, töltsd fel a munkaköri leírást',
+            'task.string' => 'A feladat leírása érvénytelen',
+            'task.min' => 'A feladat leírásának 50 és 1000 karakter között kell lennie',
+            'task.max' => 'A feladat leírásának 50 és 1000 karakter között kell lennie',
+            'employment_start_date.required' => 'Kérjük, add meg a jogviszony kezdetét',
+            'employment_start_date.date_format' => 'Kérjük, valós dátumot adj meg',
+            'employment_end_date.date_format' => 'Kérjük, valós dátumot adj meg',
+            'base_salary_cost_center_1.required' => 'Kérjük, add meg a költséghelyet',
+            'base_salary_monthly_gross_1.required' => 'Kérjük, add meg havi bruttó bér összegét',
+            'management_allowance_end_date.callback' => 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
+            'extra_pay_1_end_date.callback' => 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
+            'extra_pay_2_end_date.callback' => 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
+            'email.required' => 'Kérjük, add meg az email címet',
+            'email.email' => 'Kérjük, valós email címet adj meg',
+            'email.max' => 'Az email nem lehet hosszabb 100 karakternél',
+            'email.regex' => 'Csak @ttk.hu-ra végződő email cím adható meg',
+            'entry_permissions.required' => 'Kérjük, válaszd ki a szükséges belépési jogosultságokat',
+            'license_plate.string' => 'A rendszám érvénytelen',
+            'license_plate.max' => 'A rendszám nem lehet hosszabb 9 karakternél',
+            'employee_room.required' => 'Kérjük, válaszd ki a dolgozószobát',
+            'phone_extension.required' => 'Kérjük, add meg a telefonszámot',
+            'phone_extension.integer' => 'Kérjük, csak egész számot adj meg',
+            'phone_extension.between' => 'Az érték 400 és 999 között kell legyen',
+            'inventory_numbers_of_available_tools_asztal.string' => 'Az asztal leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_asztal.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_asztal.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_szek.string' => 'A szék leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_szek.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_szek.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_asztali_szamitogep.string' => 'Az asztali számítógép leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_asztali_szamitogep.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_asztali_szamitogep.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_laptop.string' => 'A laptop leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_laptop.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_laptop.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_laptop_taska.string' => 'A laptop táska leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_laptop_taska.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_laptop_taska.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_monitor.string' => 'A monitor leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_monitor.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_monitor.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_billentyuzet.string' => 'A billentyűzet leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_billentyuzet.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_billentyuzet.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_eger.string' => 'Az egér leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_eger.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_eger.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_dokkolo.string' => 'A dokkoló leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_dokkolo.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_dokkolo.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'inventory_numbers_of_available_tools_mobiltelefon.string' => 'A mobiltelefon leltári száma érvénytelen',
+            'inventory_numbers_of_available_tools_mobiltelefon.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
+            'inventory_numbers_of_available_tools_mobiltelefon.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
+            'work_with_radioactive_isotopes.required' => 'Kérjük, add meg, hogy fog-e radioaktív izotópokkal dolgozni',
+            'work_with_carcinogenic_materials.required' => 'Kérjük, add meg, hogy fog-e rákkeltő anyagokkal dolgozni',
+            'planned_carcinogenic_materials_use.string' => 'A rákkeltő anyagok listája érvénytelen',
+            'planned_carcinogenic_materials_use.max' => 'A rákkeltő anyagok listája nem lehet hosszabb 10000 karakternél',
+            'personal_data_sheet_file.required' => 'Kérjük, töltsd fel a személyi adatlapot',
+            'student_status_verification_file.required' => 'Kérjük, töltsd fel a hallgatói jogviszony igazolást',
+            'certificates_file.required' => 'Kérjük, töltsd fel a bizonyítványokat',
+            'commute_support_form_file.required' => 'Kérjük, töltsd fel a munkába járási adatlapot'
+        ]);
+    }    
 }

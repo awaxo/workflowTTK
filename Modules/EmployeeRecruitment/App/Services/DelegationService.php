@@ -56,6 +56,7 @@ class DelegationService
     public function isDelegate(User $user, string $delegationType)
     {
         if (!$user || !$delegationType) {
+            Log::error('DelegationService::isDelegate called with invalid parameters');
             return false;
         }
 
@@ -80,6 +81,7 @@ class DelegationService
     public function getDelegates(User $user, string $delegationType)
     {
         if (!$user || !$delegationType) {
+            Log::error('DelegationService::getDelegates called with invalid parameters');
             return null;
         }
 

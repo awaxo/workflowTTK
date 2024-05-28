@@ -7,6 +7,7 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
@@ -67,6 +68,10 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
             } else {
                 return 'to_registration';
             }
+        }
+        else {
+            Log::error('StateProjectCoordinationLeadApproval::getNextTransition called with invalid workflow type');
+            return '';
         }
     }
 

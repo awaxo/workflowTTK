@@ -9,6 +9,7 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
@@ -26,6 +27,7 @@ class StateSupervisorApproval implements IStateResponsibility {
 
             return $is_supervisor && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateSupervisorApproval::isUserResponsible called with invalid workflow type');
             return false;
         }
     }
@@ -63,6 +65,7 @@ class StateSupervisorApproval implements IStateResponsibility {
 
             return $isDelegate && !$workflow->isApprovedBy($user);
         } else {
+            Log::error('StateSupervisorApproval::isUserResponsibleAsDelegate called with invalid workflow type');
             return false;
         }
     }
@@ -106,6 +109,7 @@ class StateSupervisorApproval implements IStateResponsibility {
     
             return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
         } else {
+            Log::error('StateSupervisorApproval::getResponsibleUsers called with invalid workflow type');
             return [];
         }
     }
@@ -151,6 +155,7 @@ class StateSupervisorApproval implements IStateResponsibility {
 
             return count(array_diff($cost_center_lead_user_ids, $approval_user_ids)) === 0;
         } else {
+            Log::error('StateSupervisorApproval::isAllApproved called with invalid workflow type');
             return false;
         }
     }

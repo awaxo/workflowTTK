@@ -36,7 +36,7 @@ $(function () {
         $("#employment_start_date, #employment_end_date").val('');
 
         var startDate = $(this).val() == 'Harmadik országbeli' ? '+3M' : '+21D';
-        $("#employment_start_date").datepicker({
+        $("#employment_start_date").datepicker('destroy').datepicker({
             format: "yyyy.mm.dd",
             startDate: startDate,
             language: 'hu',

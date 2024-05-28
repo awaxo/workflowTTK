@@ -434,6 +434,9 @@
                                     <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                     <span class="align-middle d-sm-inline-block d-none">Vissza</span>
                                 </button>
+                                <div>
+                                    <span><strong>Összesen: <span id="totalGross">0</span> Ft / hó</strong></span>
+                                </div>
                                 <button class="btn btn-primary btn-next">
                                     <span class="align-middle d-sm-inline-block d-none me-sm-1">Tovább</span>
                                     <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>

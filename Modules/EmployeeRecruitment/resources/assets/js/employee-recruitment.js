@@ -334,6 +334,14 @@ $(function () {
             }
         });
     });
+
+    // calculate monthly gross sallary sum
+    $('#totalGross').text(getGrossSalarySum().toLocaleString('en-US', {maximumFractionDigits: 2}).replace(/,/g, ' '));
+    ['base_salary_monthly_gross_1', 'base_salary_monthly_gross_2', 'base_salary_monthly_gross_3', 'health_allowance_monthly_gross_4', 'management_allowance_monthly_gross_5', 'extra_pay_1_monthly_gross_6', 'extra_pay_2_monthly_gross_7'].forEach(function(field) {
+        $('#' + field).on('change', function() {
+            $('#totalGross').text(getGrossSalarySum().toLocaleString('en-US', {maximumFractionDigits: 2}).replace(/,/g, ' '));
+        });
+    });
 });
 
 function toggleApplicantCountInputs(isChecked) {
@@ -669,9 +677,7 @@ function enableOnChange(fv, targetId, changerId, condition) {
     });
 }
 
-
-// before submit validation functions
-function validateCostCenterSum() {
+function getGrossSalarySum() {
     let sum = 0;
     let fields = ['base_salary_monthly_gross_1', 'base_salary_monthly_gross_2', 'base_salary_monthly_gross_3', 'health_allowance_monthly_gross_4', 'management_allowance_monthly_gross_5', 'extra_pay_1_monthly_gross_6', 'extra_pay_2_monthly_gross_7'];
 
@@ -679,7 +685,13 @@ function validateCostCenterSum() {
         sum += parseInt($('#' + field).val().replace(/\s/g, '')) || 0;
     });
 
-    return sum % 1000 === 0;
+    return sum;
+}
+
+
+// before submit validation functions
+function validateCostCenterSum() {
+    return getGrossSalarySum() % 1000 === 0;
 }
 
 function validateWorkdayTimes() {

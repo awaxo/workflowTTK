@@ -104,6 +104,11 @@
                         <input type="hidden" id="contract_file" data-original-name="" name="contract_file" />
                     </div>
                 @endif
+
+                <div>
+                    Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó
+                </div>
+
                 <div class="d-grid mt-4 d-md-block">
                     <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
                     <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>

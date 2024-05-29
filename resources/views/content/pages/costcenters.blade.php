@@ -52,6 +52,14 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-datatable table-responsive pt-0">
+                    @php
+                        $user = \App\Models\User::find(Auth::id());
+                        $isWg910Or911User = $user && ($user->workgroup->workgroup_number === 910 || $user->workgroup->workgroup_number === 911)
+                    @endphp
+                    <script>
+                        window.isWg910Or911User = @json($isWg910Or911User);
+                    </script>
+                    
                     <table class="datatables-costcenters table border-top">
                         <thead>
                             <tr>
@@ -69,7 +77,7 @@
                                 <th>Utolsó módosítás</th>
                                 <th>Létrehozó</th>
                                 <th>Létrehozás</th>
-                                <th>Művelet</th>
+                                <th>Műveletek</th>
                             </tr>
                         </thead>
                     </table>

@@ -68,5 +68,12 @@ class Kernel extends HttpKernel
 
     protected $routeMiddleware = [
         'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
+        'check.wg908' => \App\Http\Middleware\CheckWorkgroup908::class,
+        'check.wg910' => \App\Http\Middleware\CheckWorkgroup910::class,
+        'check.wg911' => \App\Http\Middleware\CheckWorkgroup911::class,
+        'check.wg912' => \App\Http\Middleware\CheckWorkgroup912::class,
+        'check.wg915' => \App\Http\Middleware\CheckWorkgroup915::class,
+        'check.wg910Users' => \App\Http\Middleware\CheckWorkgroup910Users::class,
+        'check.wg911Users' => \App\Http\Middleware\CheckWorkgroup911Users::class,
     ];
 }

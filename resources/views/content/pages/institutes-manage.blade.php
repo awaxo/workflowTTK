@@ -44,6 +44,14 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-datatable table-responsive pt-0">
+                    @php
+                        $workgroup912 = \App\Models\Workgroup::where('workgroup_number', 912)->first();
+                        $isLeaderOfWg912 = $workgroup912 && $workgroup912->leader_id === Auth::id();
+                    @endphp
+                    <script>
+                        window.isLeaderOfWg912 = @json($isLeaderOfWg912);
+                    </script>
+
                     <table class="datatables-institutes table border-top">
                         <thead>
                             <tr>
@@ -55,7 +63,7 @@
                                 <th>Utolsó módosítás</th>
                                 <th>Létrehozó</th>
                                 <th>Létrehozás</th>
-                                <th>Művelet</th>
+                                <th>Műveletek</th>
                             </tr>
                         </thead>
                     </table>

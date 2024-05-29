@@ -56,21 +56,24 @@ $(function() {
             {
                 // Actions
                 targets: -1,
-                title: 'Műveletek',
+                title: window.isLeaderOfWg915 ? 'Műveletek' : '',
                 orderable: false,
                 searchable: false,
                 render: function(data, type, full, meta) {
-                    // 'visszaállítás' should be visible only if deleted is true
-                    return (
-                        '<div class="d-inline-block">' +
-                        '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
-                        '<ul class="dropdown-menu dropdown-menu-end">' +
-                        (!full.deleted ? '<li><a href="javascript:;" class="dropdown-item modify-external-access" data-bs-toggle="offcanvas" data-bs-target="#new_external_access">Módosítás</a></li>' : '') +
-                        (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-external-access">Visszaállítás</a></li>' : '') +
-                        (!full.deleted ? '<div class="dropdown-divider"></div><li><a href="javascript:;" class="dropdown-item text-danger delete-external-access">Törlés</a></li>' : '') +
-                        '</ul>' +
-                        '</div>'
-                    );
+                    if (window.isLeaderOfWg915) {
+                        return (
+                            '<div class="d-inline-block">' +
+                            '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
+                            '<ul class="dropdown-menu dropdown-menu-end">' +
+                            (!full.deleted ? '<li><a href="javascript:;" class="dropdown-item modify-external-access" data-bs-toggle="offcanvas" data-bs-target="#new_external_access">Módosítás</a></li>' : '') +
+                            (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-external-access">Visszaállítás</a></li>' : '') +
+                            (!full.deleted ? '<div class="dropdown-divider"></div><li><a href="javascript:;" class="dropdown-item text-danger delete-external-access">Törlés</a></li>' : '') +
+                            '</ul>' +
+                            '</div>'
+                        );
+                    } else {
+                        return '';
+                    }
                 }
             }
         ],

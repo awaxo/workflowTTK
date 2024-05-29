@@ -45,6 +45,17 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-datatable table-responsive pt-0">
+                    @php
+                        $workgroup910 = \App\Models\Workgroup::where('workgroup_number', 910)->first();
+                        $workgroup911 = \App\Models\Workgroup::where('workgroup_number', 911)->first();
+                        
+                        $isWg910Or911 = ($workgroup910 && $workgroup910->leader_id === Auth::id()) || 
+                                         ($workgroup911 && $workgroup911->leader_id === Auth::id())
+                    @endphp
+                    <script>
+                        window.isWg910Or911 = @json($isWg910Or911);
+                    </script>
+
                     <table class="datatables-costcenter-types table border-top">
                         <thead>
                             <tr>
@@ -58,7 +69,7 @@
                                 <th>Utolsó módosítás</th>
                                 <th>Létrehozó</th>
                                 <th>Létrehozás</th>
-                                <th>Művelet</th>
+                                <th>Műveletek</th>
                             </tr>
                         </thead>
                     </table>

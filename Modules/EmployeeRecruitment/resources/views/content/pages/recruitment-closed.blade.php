@@ -44,16 +44,16 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Létrehozás</th>
+                                <th>Név</th>
+                                <th>Státusz</th>
                                 <th>Csoport 1</th>
                                 <th>Csoport 2</th>
                                 <th>Költséghely 1</th>
-                                <th>Név</th>
                                 <th>Munkakör típusa</th>
                                 <th>Munkakör</th>
                                 <th>Jogviszony típusa</th>
                                 <th>Jogviszony kezdete</th>
-                                <th>Státusz</th>
+                                <th>Létrehozás</th>
                             </tr>
                         </thead>
                     </table>

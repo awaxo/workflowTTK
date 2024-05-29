@@ -120,7 +120,7 @@ $(function() {
         }
     });
 
-    // refresh number of rows on show inactive checkbox change
+    // refresh number of rows on show only own checkbox change
     $.fn.dataTable.ext.search.push(
         function(settings, data, dataIndex) {
             var showOnlyOwn = $('#show_only_own').prop('checked');

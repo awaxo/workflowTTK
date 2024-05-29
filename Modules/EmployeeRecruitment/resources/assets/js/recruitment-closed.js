@@ -11,44 +11,44 @@ $(function() {
         ajax: '/employee-recruitment/closed',
         columns: [
             { data: 'id', searchable: false },
-            { 
+            { data: 'name' },
+            { data: 'state' },
+            { data: 'workgroup1' },
+            { data: 'workgroup2' },
+            { data: 'base_salary_cost_center_1' },
+            { data: 'position_type' },
+            { data: 'position_name' },
+            { data: 'employment_type' },
+            { data: 'employment_start_date' },
+            {
                 data: 'created_at',
                 render: function(data, type, row) {
                     return moment(data).format('YYYY.MM.DD HH:mm:ss');
                 }
             },
-            { data: 'workgroup1' },
-            { data: 'workgroup2' },
-            { data: 'base_salary_cost_center_1' },
-            { data: 'name' },
-            { data: 'position_type' },
-            { data: 'position_name' },
-            { data: 'employment_type' },
-            { data: 'employment_start_date' },
-            { data: 'state' }
         ],
         columnDefs: [
             {
-                targets: 2,
+                targets: 3,
                 render: function(data, type, full, meta) {
                     return '<span title="' + data + '">' + full['workgroup1_number'] + '</span>';
                 }
             },
             {
-                targets: 3,
+                targets: 4,
                 render: function(data, type, full, meta) {
                     return data ? '<span title="' + data + '">' + full['workgroup2_number'] + '</span>' : '-';
                 }
             },
             {
-                targets: 4,
+                targets: 5,
                 render: function(data, type, full, meta) {
                     return '<span title="' + data + '">' + full['base_salary_cost_center_1_code'] + '</span>';
                 }
             },
             {
                 // State
-                targets: -1,
+                targets: 2,
                 responsivePriority: 3,
                 render: function(data, type, full, meta) {
                     return `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1">${data}</span>`;

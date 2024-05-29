@@ -16,9 +16,9 @@
                 <label class="form-label col-6 col-md-3">Felvétel álláshirdetéssel történt</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->job_ad_exists)
-                        <i class="fas fa-check text-success"></i>
+                        <span class="badge bg-success">Igen</span>
                     @else
-                        <i class="fas fa-times text-danger"></i>
+                        <span class="badge bg-secondary">Nem</span>
                     @endif
                 </span>
             </div>
@@ -34,9 +34,9 @@
                 <label class="form-label col-6 col-md-3">Volt már munkajogviszonya a Kutatóközponttal</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->has_prior_employment)
-                        <i class="fas fa-check text-success"></i>
+                        <span class="badge bg-success">Igen</span>
                     @else
-                        <i class="fas fa-times text-danger"></i>
+                        <span class="badge bg-secondary">Nem</span>
                     @endif
                 </span>
             </div>
@@ -44,9 +44,9 @@
                 <label class="form-label col-6 col-md-3">Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->has_current_volunteer_contract)
-                        <i class="fas fa-check text-success"></i>
+                        <span class="badge bg-success">Igen</span>
                     @else
-                        <i class="fas fa-times text-danger"></i>
+                        <span class="badge bg-secondary">Nincs</span>
                     @endif
                 </span>
             </div>
@@ -286,19 +286,19 @@
                 <label class="form-label col-6 col-md-3">Sugárzó izotóppal fog dolgozni</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->work_with_radioactive_isotopes)
-                        <i class="fas fa-check text-success"></i>
+                        <span class="badge bg-success">Igen</span>
                     @else
-                        <i class="fas fa-times text-danger"></i>
+                        <span class="badge bg-secondary">Nem</span>
                     @endif
                 </span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Rákkeltő anyaggal fog dolgozni?</label>
+                <label class="form-label col-6 col-md-3">Rákkeltő anyaggal fog dolgozni</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->work_with_carcinogenic_materials)
-                        <i class="fas fa-check text-success"></i>
+                        <span class="badge bg-success">Igen</span>
                     @else
-                        <i class="fas fa-times text-danger"></i>
+                        <span class="badge bg-secondary">Nem</span>
                     @endif
                 </span>
             </div>
@@ -344,9 +344,9 @@
                 <label class="form-label col-6 col-md-3">Munkába járási támogatást igényel</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->requires_commute_support)
-                        <i class="fas fa-check text-success"></i>
+                        <span class="badge bg-success">Igen</span>
                     @else
-                        <i class="fas fa-times text-danger"></i>
+                        <span class="badge bg-secondary">Nem</span>
                     @endif
                 </span>
             </div>

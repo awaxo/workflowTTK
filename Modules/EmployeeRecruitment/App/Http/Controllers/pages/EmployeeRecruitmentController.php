@@ -27,13 +27,8 @@ class EmployeeRecruitmentController extends Controller
 {
     public function index()
     {
-        // if not 'titkar*' role, return not authorized
         $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
         $user = User::find(Auth::id());
-        if (!$user->hasAnyRole($roles)) {
-            Log::warning('User (' . $user->name . ') not authorized to view new employee recruitment page');
-            return view('content.pages.misc-not-authorized');
-        }
 
         $workgroups = collect();
         foreach ($roles as $role) {

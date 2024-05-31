@@ -3,6 +3,7 @@
 return [
     'roles' => [
         'adminisztrator' => 'Adminisztrátor',
+        'betekinto' => 'Betekintő',
         'titkar_9_fi' => 'Titkár - Főigazgatóság',
         'titkar_9_gi' => 'Titkár - Gazdasági Igazgatóság',
         'titkar_1' => 'Titkár - SZKI',

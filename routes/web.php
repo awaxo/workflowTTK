@@ -31,18 +31,18 @@ use App\Http\Controllers\pages\WorkgroupController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
-Route::get('/szerepkorok', [RoleController::class, 'index'])->middleware(['auth'])->name('authorizations-roles');
+Route::get('/szerepkorok', [RoleController::class, 'index'])->middleware(['check.admin', 'check.wg915'])->name('authorizations-roles');
 Route::get('/jogosultsagok', [PermissionController::class, 'index'])->middleware(['auth'])->name('authorizations-permissions');
 Route::get('/folyamatok/nyitott', [WorkflowController::class, 'index'])->middleware(['auth'])->name('workflows-all-open');
 Route::get('/folyamatok/lezart', [WorkflowController::class, 'closed'])->middleware(['auth'])->name('workflows-all-closed');
-Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-institute');
-Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-workgroup');
-Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-external-access');
-Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-costcenter');
-Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-costcenter-type');
-Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['auth'])->name('auxiliary-data-position');
-Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['auth'])->name('pages-users');
-Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['auth'])->name('pages-users-role');
+Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['check.admin', 'check.wg912'])->name('auxiliary-data-institute');
+Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['check.admin', 'check.wg912'])->name('auxiliary-data-workgroup');
+Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['check.admin', 'check.wg915'])->name('auxiliary-data-external-access');
+Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['check.admin', 'check.wg910Users', 'check.wg911Users'])->name('auxiliary-data-costcenter');
+Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['check.admin', 'check.wg910', 'check.wg911'])->name('auxiliary-data-costcenter-type');
+Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['check.admin', 'check.wg908'])->name('auxiliary-data-position');
+Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['check.admin', 'check.wg915'])->name('pages-users');
+Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['check.admin', 'check.wg915'])->name('pages-users-role');
 Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['check.admin'])->name('settings');
 Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth'])->name('profile');
 
@@ -68,8 +68,6 @@ Route::post('/logout', [LoginBasic::class, 'logout'])->name('logout');
 
 // API routes
 Route::prefix('api')->middleware(['auth'])->group(function () {
-    Route::get('/roles', [RoleController::class, 'getAllRoles']);
-
     Route::get('/permissions', [PermissionController::class, 'getAllPermissions']);
 
     Route::get('/workflows', [WorkflowController::class, 'getAllWorkflows']);
@@ -81,15 +79,6 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/delegation/create', [ProfileController::class, 'create']);
     Route::post('/delegation/{id}/delete', [ProfileController::class, 'delete']);
     Route::post('/notification-settings/update', [ProfileController::class, 'notificationUpdate']);
-
-    Route::get('/users', [UserController::class, 'getAllUsers']);
-    Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
-    Route::get('/external-access', [ExternalAccessController::class, 'getAllExternalAccess']);
-    Route::get('/workgroups', [WorkgroupController::class, 'getAllWorkgroups']);
-    Route::get('/institutes', [InstituteController::class, 'getAllInstitutes']);
-    Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters']);
-    Route::get('/costcenter-types', [CostCenterTypeController::class, 'getAllCostCenterTypes']);
-    Route::get('/positions', [PositionController::class, 'getAllPositions']);
 });
 
 // admin API routes
@@ -101,6 +90,7 @@ Route::prefix('api')->middleware(['check.admin'])->group(function () {
 
 // workgroup 908 API routes
 Route::prefix('api')->middleware(['check.wg908'])->group(function () {
+    Route::get('/positions', [PositionController::class, 'getAllPositions']);
     Route::post('/position/{id}/delete', [PositionController::class, 'delete']);
     Route::post('/position/{id}/restore', [PositionController::class, 'restore']);
     Route::post('/position/{id}/update', [PositionController::class, 'update']);
@@ -109,6 +99,7 @@ Route::prefix('api')->middleware(['check.wg908'])->group(function () {
 
 // workgroup 910 or 911 users API routes
 Route::prefix('api')->middleware(['check.wg910Users', 'check.wg911Users'])->group(function () {
+    Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters']);
     Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
     Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
     Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
@@ -117,6 +108,7 @@ Route::prefix('api')->middleware(['check.wg910Users', 'check.wg911Users'])->grou
 
 // workgroup 910 or 911 API routes
 Route::prefix('api')->middleware(['check.wg910', 'check.wg911'])->group(function () {
+    Route::get('/costcenter-types', [CostCenterTypeController::class, 'getAllCostCenterTypes']);
     Route::post('/costcenter-type/{id}/delete', [CostCenterTypeController::class, 'delete']);
     Route::post('/costcenter-type/{id}/restore', [CostCenterTypeController::class, 'restore']);
     Route::post('/costcenter-type/{id}/update', [CostCenterTypeController::class, 'update']);
@@ -125,11 +117,13 @@ Route::prefix('api')->middleware(['check.wg910', 'check.wg911'])->group(function
 
 // workgroup 912 API routes
 Route::prefix('api')->middleware(['check.wg912'])->group(function () {
+    Route::get('/workgroups', [WorkgroupController::class, 'getAllWorkgroups']);
     Route::post('/workgroup/{id}/delete', [WorkgroupController::class, 'delete']);
     Route::post('/workgroup/{id}/restore', [WorkgroupController::class, 'restore']);
     Route::post('/workgroup/{id}/update', [WorkgroupController::class, 'update']);
     Route::post('/workgroup/create', [WorkgroupController::class, 'create']);
 
+    Route::get('/institutes', [InstituteController::class, 'getAllInstitutes']);
     Route::post('/institute/{id}/delete', [InstituteController::class, 'delete']);
     Route::post('/institute/{id}/restore', [InstituteController::class, 'restore']);
     Route::post('/institute/{id}/update', [InstituteController::class, 'update']);
@@ -138,11 +132,16 @@ Route::prefix('api')->middleware(['check.wg912'])->group(function () {
 
 // workgroup 915 API routes
 Route::prefix('api')->middleware(['check.wg915'])->group(function () {
+    Route::get('/roles', [RoleController::class, 'getAllRoles']);
+
+    Route::get('/users', [UserController::class, 'getAllUsers']);
+    Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
     Route::post('/user/{id}/delete', [UserController::class, 'delete']);
     Route::post('/user/{id}/restore', [UserController::class, 'restore']);
     Route::post('/user/{id}/update', [UserController::class, 'update']);
     Route::post('/user/create', [UserController::class, 'create']);
 
+    Route::get('/external-access', [ExternalAccessController::class, 'getAllExternalAccess']);
     Route::post('/external-access/{id}/delete', [ExternalAccessController::class, 'delete']);
     Route::post('/external-access/{id}/restore', [ExternalAccessController::class, 'restore']);
     Route::post('/external-access/{id}/update', [ExternalAccessController::class, 'update']);

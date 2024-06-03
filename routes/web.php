@@ -31,18 +31,18 @@ use App\Http\Controllers\pages\WorkgroupController;
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
-Route::get('/szerepkorok', [RoleController::class, 'index'])->middleware(['check.admin', 'check.wg915'])->name('authorizations-roles');
+Route::get('/szerepkorok', [RoleController::class, 'index'])->middleware(['check.wg915'])->name('authorizations-roles');
 Route::get('/jogosultsagok', [PermissionController::class, 'index'])->middleware(['auth'])->name('authorizations-permissions');
 Route::get('/folyamatok/nyitott', [WorkflowController::class, 'index'])->middleware(['auth'])->name('workflows-all-open');
 Route::get('/folyamatok/lezart', [WorkflowController::class, 'closed'])->middleware(['auth'])->name('workflows-all-closed');
-Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['check.admin', 'check.wg912'])->name('auxiliary-data-institute');
-Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['check.admin', 'check.wg912'])->name('auxiliary-data-workgroup');
-Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['check.admin', 'check.wg915'])->name('auxiliary-data-external-access');
-Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['check.admin', 'check.wg910Users', 'check.wg911Users'])->name('auxiliary-data-costcenter');
-Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['check.admin', 'check.wg910', 'check.wg911'])->name('auxiliary-data-costcenter-type');
-Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['check.admin', 'check.wg908'])->name('auxiliary-data-position');
-Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['check.admin', 'check.wg915'])->name('pages-users');
-Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['check.admin', 'check.wg915'])->name('pages-users-role');
+Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-institute');
+Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-workgroup');
+Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['check.wg915'])->name('auxiliary-data-external-access');
+Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['check.wg910Users.wg911Users'])->name('auxiliary-data-costcenter');
+Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['check.wg910.wg911'])->name('auxiliary-data-costcenter-type');
+Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['check.wg908'])->name('auxiliary-data-position');
+Route::get('/felhasznalok', [UserController::class, 'index'])->middleware(['check.wg915'])->name('pages-users');
+Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['check.wg915'])->name('pages-users-role');
 Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['check.admin'])->name('settings');
 Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth'])->name('profile');
 
@@ -98,7 +98,7 @@ Route::prefix('api')->middleware(['check.wg908'])->group(function () {
 });
 
 // workgroup 910 or 911 users API routes
-Route::prefix('api')->middleware(['check.wg910Users', 'check.wg911Users'])->group(function () {
+Route::prefix('api')->middleware(['check.wg910Users.wg911Users'])->group(function () {
     Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters']);
     Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
     Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
@@ -107,7 +107,7 @@ Route::prefix('api')->middleware(['check.wg910Users', 'check.wg911Users'])->grou
 });
 
 // workgroup 910 or 911 API routes
-Route::prefix('api')->middleware(['check.wg910', 'check.wg911'])->group(function () {
+Route::prefix('api')->middleware(['check.wg910.wg911'])->group(function () {
     Route::get('/costcenter-types', [CostCenterTypeController::class, 'getAllCostCenterTypes']);
     Route::post('/costcenter-type/{id}/delete', [CostCenterTypeController::class, 'delete']);
     Route::post('/costcenter-type/{id}/restore', [CostCenterTypeController::class, 'restore']);

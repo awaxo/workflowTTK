@@ -71,9 +71,11 @@ class Kernel extends HttpKernel
         'check.wg908' => \App\Http\Middleware\CheckWorkgroup908::class,
         'check.wg910' => \App\Http\Middleware\CheckWorkgroup910::class,
         'check.wg911' => \App\Http\Middleware\CheckWorkgroup911::class,
+        'check.wg910.wg911' => \App\Http\Middleware\CheckWorkgroup910And911::class,
         'check.wg912' => \App\Http\Middleware\CheckWorkgroup912::class,
         'check.wg915' => \App\Http\Middleware\CheckWorkgroup915::class,
         'check.wg910Users' => \App\Http\Middleware\CheckWorkgroup910Users::class,
         'check.wg911Users' => \App\Http\Middleware\CheckWorkgroup911Users::class,
+        'check.wg910Users.wg911Users' => \App\Http\Middleware\CheckWorkgroup910And911Users::class,
     ];
 }

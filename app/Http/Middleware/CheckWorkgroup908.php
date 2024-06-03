@@ -14,10 +14,17 @@ class CheckWorkgroup908
         $user = User::find(Auth::id());
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
 
-        if (!$workgroup908 || $workgroup908->leader_id !== $user->id) {
-            return response()->view('content.pages.misc-not-authorized');
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        return $next($request);
+        if ($user && $user->hasRole('adminisztrator')) {
+            return $next($request);
+        }
+        if ($workgroup908 && $workgroup908->leader_id === $user->id) {
+            return $next($request);
+        }
+
+        return response()->view('content.pages.misc-not-authorized');
     }
 }

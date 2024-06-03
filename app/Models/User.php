@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -197,25 +198,54 @@ class User extends Authenticatable
 
     public function canViewMenuItem(string $menuItem)
     {
-        if ($menuItem == 'settings') {
-            return $this->hasRole('adminisztrator');
+        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
+        $workgroup910 = Workgroup::where('workgroup_number', 910)->first();
+        $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
+        $workgroup912 = Workgroup::where('workgroup_number', 912)->first();
+        $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+
+        $pagesForAdminOnly = ['settings', 'authorizations-permissions'];
+        $pagesForAdminOrWg915Leader = ['pages-user-list', 'auxiliary-data', 'auxiliary-data-external-access'];
+        $pagesForWg912Leader = ['auxiliary-data', 'auxiliary-data-workgroup', 'auxiliary-data-institute'];
+        $pagesForWg910Wg911Users = ['auxiliary-data', 'auxiliary-data-costcenter'];
+        $pagesForWg910Wg911 = ['auxiliary-data', 'auxiliary-data-costcenter-type'];
+        $pagesForWg908 = ['auxiliary-data', 'auxiliary-data-position'];
+
+        if (in_array($menuItem, $pagesForAdminOnly)) {
+            if ($this->hasRole('adminisztrator')) {
+                return true;
+            }
         }
 
-        /*if ($this->hasRole('titkar_' . $this->workgroup_id)) {
-            return true;
+        if (in_array($menuItem, $pagesForAdminOrWg915Leader)) {
+            if ($this->hasRole('adminisztrator') || ($workgroup915 && $workgroup915->leader_id === $this->id)) {
+                return true;
+            }
         }
 
-        if ($this->hasRole('vezeto_' . $this->workgroup_id)) {
-            return true;
+        if (in_array($menuItem, $pagesForWg912Leader)) {
+            if ($this->hasRole('adminisztrator') || ($workgroup912 && $workgroup912->leader_id === $this->id)) {
+                return true;
+            }
         }
 
-        if ($this->hasRole('vezeto_' . $this->workgroup->parent_id)) {
-            return true;
+        if (in_array($menuItem, $pagesForWg910Wg911Users)) {
+            if ($this->hasRole('adminisztrator') || $this->workgroup->workgroup_number == 910 || $this->workgroup->workgroup_number == 911) {
+                return true;
+            }
         }
 
-        if ($this->hasRole('vezeto_' . $this->workgroup->parent->parent_id)) {
-            return true;
-        }*/
+        if (in_array($menuItem, $pagesForWg910Wg911)) {
+            if ($this->hasRole('adminisztrator') || ($workgroup910 && $workgroup910->leader_id === $this->id) || ($workgroup911 && $workgroup911->leader_id === $this->id)) {
+                return true;
+            }
+        }
+
+        if (in_array($menuItem, $pagesForWg908)) {
+            if ($this->hasRole('adminisztrator') || ($workgroup908 && $workgroup908->leader_id === $this->id)) {
+                return true;
+            }
+        }
 
         return false;
     }

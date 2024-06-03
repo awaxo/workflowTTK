@@ -5,14 +5,12 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\Workgroup;
 
-class CheckWorkgroup912
+class CheckWorkgroup910And911Users
 {
     public function handle($request, Closure $next)
     {
         $user = User::find(Auth::id());
-        $workgroup912 = Workgroup::where('workgroup_number', 912)->first();
 
         if (!$user) {
             return redirect()->route('login');
@@ -21,7 +19,10 @@ class CheckWorkgroup912
         if ($user && $user->hasRole('adminisztrator')) {
             return $next($request);
         }
-        if ($workgroup912 && $workgroup912->leader_id === $user->id) {
+        if ($user && $user->workgroup->workgroup_number == 910) {
+            return $next($request);
+        }
+        if ($user && $user->workgroup->workgroup_number == 911) {
             return $next($request);
         }
 

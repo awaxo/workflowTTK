@@ -50,6 +50,9 @@
                         @include('EmployeeRecruitment::content._partials.all-approval', ['recruitment' => $recruitment])
                     @endif
                 </div>
+                <div>
+                    Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó
+                </div>
             </div>
             <div class="tab-pane fade" id="tab_status_history" role="tabpanel">
                 <div id="status_history">

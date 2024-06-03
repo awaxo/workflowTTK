@@ -27,13 +27,8 @@ class EmployeeRecruitmentController extends Controller
 {
     public function index()
     {
-        // if not 'titkar*' role, return not authorized
         $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
         $user = User::find(Auth::id());
-        if (!$user->hasAnyRole($roles)) {
-            Log::warning('User (' . $user->name . ') not authorized to view new employee recruitment page');
-            return view('content.pages.misc-not-authorized');
-        }
 
         $workgroups = collect();
         foreach ($roles as $role) {
@@ -294,13 +289,14 @@ class EmployeeRecruitmentController extends Controller
 
         // IT workgroup
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
-        
+
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
             'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
             'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
-            'usersToApprove' => implode(', ', $usersToApproveName)
+            'usersToApprove' => implode(', ', $usersToApproveName),
+            'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
         ]);
     }
 
@@ -324,6 +320,7 @@ class EmployeeRecruitmentController extends Controller
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
                 'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
+                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
             ]);
         } else {
             return view('content.pages.misc-not-authorized');
@@ -439,6 +436,7 @@ class EmployeeRecruitmentController extends Controller
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
                 'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
+                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
             ]);
         } else {
             Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésének visszaállítására');
@@ -478,6 +476,24 @@ class EmployeeRecruitmentController extends Controller
         ]);
 
         return $pdf->download('FelveteliKerelem_' . $id . '.pdf');
+    }
+
+    private function getSumOfSallaries($recruitment)
+    {
+        $monthlyGrossSalaries = [
+            $recruitment->base_salary_monthly_gross_1,
+            $recruitment->base_salary_monthly_gross_2,
+            $recruitment->base_salary_monthly_gross_3,
+            $recruitment->health_allowance_monthly_gross_4,
+            $recruitment->management_allowance_monthly_gross_5,
+            $recruitment->extra_pay_1_monthly_gross_6,
+            $recruitment->extra_pay_2_monthly_gross_7
+        ];
+        $monthlyGrossSalariesSum = array_sum(array_filter($monthlyGrossSalaries, function ($value) {
+            return !is_null($value);
+        }));
+        
+        return number_format($monthlyGrossSalariesSum, 0, '', ' ');
     }
 
     private function validateFields(RecruitmentWorkflow $recruitment, Request $request)

@@ -76,54 +76,20 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/workflows/closed', [WorkflowController::class, 'getClosedWorkflows']);
     Route::get('/workflow/{configName}/states', [WorkflowController::class, 'getWorkflowStatesByConfigName']);
 
-    Route::get('/institutes', [InstituteController::class, 'getAllInstitutes']);
-    Route::post('/institute/{id}/delete', [InstituteController::class, 'delete']);
-    Route::post('/institute/{id}/restore', [InstituteController::class, 'restore']);
-    Route::post('/institute/{id}/update', [InstituteController::class, 'update']);
-    Route::post('/institute/create', [InstituteController::class, 'create']);
-
-    Route::get('/workgroups', [WorkgroupController::class, 'getAllWorkgroups']);
-    Route::post('/workgroup/{id}/delete', [WorkgroupController::class, 'delete']);
-    Route::post('/workgroup/{id}/restore', [WorkgroupController::class, 'restore']);
-    Route::post('/workgroup/{id}/update', [WorkgroupController::class, 'update']);
-    Route::post('/workgroup/create', [WorkgroupController::class, 'create']);
-
-    Route::get('/external-access', [ExternalAccessController::class, 'getAllExternalAccess']);
-    Route::post('/external-access/{id}/delete', [ExternalAccessController::class, 'delete']);
-    Route::post('/external-access/{id}/restore', [ExternalAccessController::class, 'restore']);
-    Route::post('/external-access/{id}/update', [ExternalAccessController::class, 'update']);
-    Route::post('/external-access/create', [ExternalAccessController::class, 'create']);
-
-    Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters']);
-    Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
-    Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
-    Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
-    Route::post('/costcenter/create', [CostCenterController::class, 'create']);
-
-    Route::get('/costcenter-types', [CostCenterTypeController::class, 'getAllCostCenterTypes']);
-    Route::post('/costcenter-type/{id}/delete', [CostCenterTypeController::class, 'delete']);
-    Route::post('/costcenter-type/{id}/restore', [CostCenterTypeController::class, 'restore']);
-    Route::post('/costcenter-type/{id}/update', [CostCenterTypeController::class, 'update']);
-    Route::post('/costcenter-type/create', [CostCenterTypeController::class, 'create']);
-
-    Route::get('/positions', [PositionController::class, 'getAllPositions']);
-    Route::post('/position/{id}/delete', [PositionController::class, 'delete']);
-    Route::post('/position/{id}/restore', [PositionController::class, 'restore']);
-    Route::post('/position/{id}/update', [PositionController::class, 'update']);
-    Route::post('/position/create', [PositionController::class, 'create']);
-
-    Route::get('/users', [UserController::class, 'getAllUsers']);
-    Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
-    Route::post('/user/{id}/delete', [UserController::class, 'delete']);
-    Route::post('/user/{id}/restore', [UserController::class, 'restore']);
-    Route::post('/user/{id}/update', [UserController::class, 'update']);
-    Route::post('/user/create', [UserController::class, 'create']);
-
     Route::get('/delegations', [ProfileController::class, 'getAllDelegations']);
     Route::get('/delegates/{type}', [ProfileController::class, 'getDelegates']);
     Route::post('/delegation/create', [ProfileController::class, 'create']);
     Route::post('/delegation/{id}/delete', [ProfileController::class, 'delete']);
     Route::post('/notification-settings/update', [ProfileController::class, 'notificationUpdate']);
+
+    Route::get('/users', [UserController::class, 'getAllUsers']);
+    Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
+    Route::get('/external-access', [ExternalAccessController::class, 'getAllExternalAccess']);
+    Route::get('/workgroups', [WorkgroupController::class, 'getAllWorkgroups']);
+    Route::get('/institutes', [InstituteController::class, 'getAllInstitutes']);
+    Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters']);
+    Route::get('/costcenter-types', [CostCenterTypeController::class, 'getAllCostCenterTypes']);
+    Route::get('/positions', [PositionController::class, 'getAllPositions']);
 });
 
 // admin API routes
@@ -131,4 +97,54 @@ Route::prefix('api')->middleware(['check.admin'])->group(function () {
     Route::post('/settings/update', [SettingsController::class, 'settingsUpdate']);
     Route::get('/settings/{configName}/state/{state}/deadline', [SettingsController::class, 'getWorkflowStateDeadline']);
     Route::post('/settings/update-deadline', [SettingsController::class, 'deadlineUpdate']);
+});
+
+// workgroup 908 API routes
+Route::prefix('api')->middleware(['check.wg908'])->group(function () {
+    Route::post('/position/{id}/delete', [PositionController::class, 'delete']);
+    Route::post('/position/{id}/restore', [PositionController::class, 'restore']);
+    Route::post('/position/{id}/update', [PositionController::class, 'update']);
+    Route::post('/position/create', [PositionController::class, 'create']);
+});
+
+// workgroup 910 or 911 users API routes
+Route::prefix('api')->middleware(['check.wg910Users', 'check.wg911Users'])->group(function () {
+    Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
+    Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
+    Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
+    Route::post('/costcenter/create', [CostCenterController::class, 'create']);
+});
+
+// workgroup 910 or 911 API routes
+Route::prefix('api')->middleware(['check.wg910', 'check.wg911'])->group(function () {
+    Route::post('/costcenter-type/{id}/delete', [CostCenterTypeController::class, 'delete']);
+    Route::post('/costcenter-type/{id}/restore', [CostCenterTypeController::class, 'restore']);
+    Route::post('/costcenter-type/{id}/update', [CostCenterTypeController::class, 'update']);
+    Route::post('/costcenter-type/create', [CostCenterTypeController::class, 'create']);
+});
+
+// workgroup 912 API routes
+Route::prefix('api')->middleware(['check.wg912'])->group(function () {
+    Route::post('/workgroup/{id}/delete', [WorkgroupController::class, 'delete']);
+    Route::post('/workgroup/{id}/restore', [WorkgroupController::class, 'restore']);
+    Route::post('/workgroup/{id}/update', [WorkgroupController::class, 'update']);
+    Route::post('/workgroup/create', [WorkgroupController::class, 'create']);
+
+    Route::post('/institute/{id}/delete', [InstituteController::class, 'delete']);
+    Route::post('/institute/{id}/restore', [InstituteController::class, 'restore']);
+    Route::post('/institute/{id}/update', [InstituteController::class, 'update']);
+    Route::post('/institute/create', [InstituteController::class, 'create']);
+});
+
+// workgroup 915 API routes
+Route::prefix('api')->middleware(['check.wg915'])->group(function () {
+    Route::post('/user/{id}/delete', [UserController::class, 'delete']);
+    Route::post('/user/{id}/restore', [UserController::class, 'restore']);
+    Route::post('/user/{id}/update', [UserController::class, 'update']);
+    Route::post('/user/create', [UserController::class, 'create']);
+
+    Route::post('/external-access/{id}/delete', [ExternalAccessController::class, 'delete']);
+    Route::post('/external-access/{id}/restore', [ExternalAccessController::class, 'restore']);
+    Route::post('/external-access/{id}/update', [ExternalAccessController::class, 'update']);
+    Route::post('/external-access/create', [ExternalAccessController::class, 'create']);
 });

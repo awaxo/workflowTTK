@@ -1,5 +1,5 @@
 import moment from 'moment';
-import GLOBALS from '/resources/js/globals.js';
+import GLOBALS from '../../../../../resources/js/globals.js';
 
 $(function() {
     // set locale for sorting
@@ -11,21 +11,21 @@ $(function() {
         ajax: '/employee-recruitment/opened',
         columns: [
             { data: 'id', searchable: false },
-            { 
+            { data: 'name' },
+            { data: 'state' },
+            { data: 'workgroup1' },
+            { data: 'workgroup2' },
+            { data: 'base_salary_cost_center_1' },
+            { data: 'position_type' },
+            { data: 'position_name' },
+            { data: 'employment_type' },
+            { data: 'employment_start_date' },
+            {
                 data: 'created_at',
                 render: function(data, type, row) {
                     return moment(data).format('YYYY.MM.DD HH:mm:ss');
                 }
             },
-            { data: 'workgroup1' },
-            { data: 'workgroup2' },
-            { data: 'base_salary_cost_center_1' },
-            { data: 'name' },
-            { data: 'position_type' },
-            { data: 'position_name' },
-            { data: 'employment_type' },
-            { data: 'employment_start_date' },
-            { data: 'state' },
             {
                 data: 'is_manager_user', 
                 searchable: false, 
@@ -37,26 +37,26 @@ $(function() {
         ],
         columnDefs: [
             {
-                targets: 2,
+                targets: 3,
                 render: function(data, type, full, meta) {
                     return '<span title="' + data + '">' + full['workgroup1_number'] + '</span>';
                 }
             },
             {
-                targets: 3,
+                targets: 4,
                 render: function(data, type, full, meta) {
                     return data ? '<span title="' + data + '">' + full['workgroup2_number'] + '</span>' : '-';
                 }
             },
             {
-                targets: 4,
+                targets: 5,
                 render: function(data, type, full, meta) {
                     return '<span title="' + data + '">' + full['base_salary_cost_center_1_code'] + '</span>';
                 }
             },
             {
                 // State
-                targets: -2,
+                targets: 2,
                 responsivePriority: 3,
                 render: function(data, type, full, meta) {
                     let $is_user_responsible = full['is_user_responsible'];
@@ -116,18 +116,35 @@ $(function() {
                 }
             }
         },
-        language: GLOBALS.DATATABLE_TRANSLATION
+        language: GLOBALS.DATATABLE_TRANSLATION,
+        initComplete: function() {
+            var checkboxHtml = `
+                <div class="form-check form-switch show-own-cases">
+                    <input class="form-check-input" type="checkbox" role="switch" id="show_only_own">
+                    <label class="form-check-label" for="show_only_own">Csak saját ügyek listázása</label>
+                </div>
+            `;
+            var parent = $(this).closest('.dataTables_wrapper').find('.dataTables_length').parent();
+            parent.css('display', 'flex').css('align-items', 'center');
+            parent.find('.dataTables_length').css('margin-right', '20px');
+            parent.find('.dataTables_length').after(checkboxHtml);
+
+            $('#show_only_own').on('change', function() {
+                $('.datatables-recruitments').DataTable().draw();
+            });
+        }
     });
 
-    // refresh number of rows on show inactive checkbox change
+    // refresh number of rows on show only own checkbox change
     $.fn.dataTable.ext.search.push(
         function(settings, data, dataIndex) {
-            let showInactive = $('#show_inactive').prop('checked');
-            let isInactive = dataTable.row(dataIndex).data().deleted;
-            if (showInactive) {
-                return true;
+            var showOnlyOwn = $('#show_only_own').prop('checked');
+            var rowData = dataTable.row(dataIndex).data();
+            
+            if (showOnlyOwn) {
+                return rowData.is_user_responsible;
             } else {
-                return !isInactive;
+                return true;
             }
         }
     );

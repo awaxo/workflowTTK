@@ -22,7 +22,7 @@ $(function() {
             sensitivity: 'base'
         });
     });
-  
+
     let dataTable = $('.datatables-workgroups').DataTable({
         ajax: '/api/workgroups',
         columns: [
@@ -72,28 +72,33 @@ $(function() {
             {
                 // Actions
                 targets: -1,
-                title: 'Műveletek',
+                title: window.isLeaderOfWg912 ? 'Műveletek' : '',
                 orderable: false,
                 searchable: false,
                 render: function(data, type, full, meta) {
-                    // 'visszaállítás' should be visible only if deleted is true
-                    return (
-                        '<div class="d-inline-block">' +
-                        '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
-                        '<ul class="dropdown-menu dropdown-menu-end">' +
-                        (!full.deleted ? '<li><a href="javascript:;" class="dropdown-item modify-workgroup" data-bs-toggle="offcanvas" data-bs-target="#new_workgroup">Módosítás</a></li>' : '') +
-                        (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-workgroup">Visszaállítás</a></li>' : '') +
-                        (!full.deleted ? '<div class="dropdown-divider"></div><li><a href="javascript:;" class="dropdown-item text-danger delete-workgroup">Törlés</a></li>' : '') +
-                        '</ul>' +
-                        '</div>'
-                    );
+                    if (window.isLeaderOfWg912) {
+                        return (
+                            '<div class="d-inline-block">' +
+                            '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
+                            '<ul class="dropdown-menu dropdown-menu-end">' +
+                            (!full.deleted ? '<li><a href="javascript:;" class="dropdown-item modify-workgroup" data-bs-toggle="offcanvas" data-bs-target="#new_workgroup">Módosítás</a></li>' : '') +
+                            (full.deleted ? '<li><a href="javascript:;" class="dropdown-item restore-workgroup">Visszaállítás</a></li>' : '') +
+                            (!full.deleted ? '<div class="dropdown-divider"></div><li><a href="javascript:;" class="dropdown-item text-danger delete-workgroup">Törlés</a></li>' : '') +
+                            '</ul>' +
+                            '</div>'
+                        );
+                    } else {
+                        return '';
+                    }
                 }
             }
         ],
         order: [[1, 'asc']],
         displayLength: 10,
         lengthMenu: [10, 25, 50, 75, 100],
-        dom: '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+        dom: window.isLeaderOfWg912 
+            ? '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
+            : '<"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
                 text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új csoport</span>',

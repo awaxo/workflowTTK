@@ -47,6 +47,9 @@
                         @include('EmployeeRecruitment::content._partials.all-approval', ['recruitment' => $recruitment])
                     @endif
                 </div>
+                <div>
+                    Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó
+                </div>
 
                 <!-- Restore button -->
                 <div class="d-grid mt-4 d-md-block">

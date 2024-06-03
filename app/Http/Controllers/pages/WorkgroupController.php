@@ -38,7 +38,7 @@ class WorkgroupController extends Controller
                 'created_at' => $workgroup->created_at,
                 'created_by_name' => $workgroup->createdBy->name,
                 'updated_at' => $workgroup->updated_at,
-                'updated_by_name' => $workgroup->updatedBy->name,
+                'updated_by_name' => $workgroup->updatedBy->name
             ];
         });
         return response()->json(['data' => $workgroups]);

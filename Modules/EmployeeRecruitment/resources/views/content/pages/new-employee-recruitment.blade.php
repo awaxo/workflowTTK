@@ -90,8 +90,8 @@
                         <button type="button" class="step-trigger">
                             <span class="bs-stepper-circle">3</span>
                             <span class="bs-stepper-label mt-1">
-                            <span class="bs-stepper-title">Bérelemek</span>
-                            <span class="bs-stepper-subtitle">Bérelemek megadása</span>
+                            <span class="bs-stepper-title">Munkaidő</span>
+                            <span class="bs-stepper-subtitle">Munkaidő megadása</span>
                             </span>
                         </button>
                     </div>
@@ -100,8 +100,8 @@
                         <button type="button" class="step-trigger">
                             <span class="bs-stepper-circle">4</span>
                             <span class="bs-stepper-label mt-1">
-                            <span class="bs-stepper-title">Munkaidő</span>
-                            <span class="bs-stepper-subtitle">Munkaidő megadása</span>
+                            <span class="bs-stepper-title">Bérelemek</span>
+                            <span class="bs-stepper-subtitle">Bérelemek megadása</span>
                             </span>
                         </button>
                     </div>
@@ -281,6 +281,125 @@
                     <div id="data-section-3" class="content">
                         <div class="content-header mb-3 d-flex justify-content-between align-items-center">
                             <div>
+                                <h5 class="mb-0">Munkaidő</h5>
+                                <small>Add meg a munkaidő adatokat</small>
+                            </div>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal4" title="Segítség"></i>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-4">
+                                <label for="weekly_working_hours" class="form-label">Heti munkaóraszám</label>
+                                <select class="form-select" id="weekly_working_hours" name="weekly_working_hours">
+                                    <option value="40" selected>40 óra</option>
+                                    <option value="30">30 óra</option>
+                                    <option value="25">25 óra</option>
+                                    <option value="20">20 óra</option>
+                                    <option value="16">16 óra</option>
+                                    <option value="15">15 óra</option>
+                                    <option value="10">10 óra</option>
+                                    <option value="8">8 óra</option>
+                                    <option value="5">5 óra</option>
+                                </select>
+                            </div>
+
+                            <p class="mb-0 mt-4"><strong>Munkaidő</strong></p>
+                            <div class="col-sm-4">
+                                <label for="work_start_monday" class="form-label">Hétfő - munkaidő kezdete</label>
+                                <input type="text" id="work_start_monday" placeholder="ÓÓ:PP" class="form-control" name="work_start_monday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="work_end_monday" class="form-label">Hétfő - munkaidő vége</label>
+                                <input type="text" id="work_end_monday" placeholder="ÓÓ:PP" class="form-control" name="work_end_monday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="monday_duration" class="form-label">Hétfő - munkaidő hossza</label>
+                                <div class="d-flex align-items-center">
+                                    <input class="form-control" type="text" id="monday_duration" disabled />
+                                    <span class="ms-2">óra</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="work_start_tuesday" class="form-label">Kedd - munkaidő kezdete</label>
+                                <input type="text" id="work_start_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_tuesday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="work_end_tuesday" class="form-label">Kedd - munkaidő vége</label>
+                                <input type="text" id="work_end_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_tuesday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="tuesday_duration" class="form-label">Kedd - munkaidő hossza</label>
+                                <div class="d-flex align-items-center">
+                                    <input class="form-control" type="text" id="tuesday_duration" disabled />
+                                    <span class="ms-2">óra</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="work_start_wednesday" class="form-label">Szerda - munkaidő kezdete</label>
+                                <input type="text" id="work_start_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_wednesday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="work_end_wednesday" class="form-label">Szerda - munkaidő vége</label>
+                                <input type="text" id="work_end_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_wednesday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="wednesday_duration" class="form-label">Szerda - munkaidő hossza</label>
+                                <div class="d-flex align-items-center">
+                                    <input class="form-control" type="text" id="wednesday_duration" disabled />
+                                    <span class="ms-2">óra</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="work_start_thursday" class="form-label">Csütörtök - munkaidő kezdete</label>
+                                <input type="text" id="work_start_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_start_thursday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="work_end_thursday" class="form-label">Csütörtök - munkaidő vége</label>
+                                <input type="text" id="work_end_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_end_thursday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="thursday_duration" class="form-label">Csütörtök - munkaidő hossza</label>
+                                <div class="d-flex align-items-center">
+                                    <input class="form-control" type="text" id="thursday_duration" disabled />
+                                    <span class="ms-2">óra</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <label for="work_start_friday" class="form-label">Péntek - munkaidő kezdete</label>
+                                <input type="text" id="work_start_friday" placeholder="ÓÓ:PP" class="form-control" name="work_start_friday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="work_end_friday" class="form-label">Péntek - munkaidő vége</label>
+                                <input type="text" id="work_end_friday" placeholder="ÓÓ:PP" class="form-control" name="work_end_friday" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label for="friday_duration" class="form-label">Péntek - munkaidő hossza</label>
+                                <div class="d-flex align-items-center">
+                                    <input class="form-control" type="text" id="friday_duration" disabled />
+                                    <span class="ms-2">óra</span>
+                                </div>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-between">
+                                <button class="btn btn-primary btn-prev">
+                                    <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
+                                    <span class="align-middle d-sm-inline-block d-none">Vissza</span>
+                                </button>
+                                <button class="btn btn-primary btn-next">
+                                    <span class="align-middle d-sm-inline-block d-none me-sm-1">Tovább</span>
+                                    <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data section 4 -->
+                    <div id="data-section-4" class="content">
+                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
+                            <div>
                                 <h5 class="mb-0">Bérelemek</h5>
                                 <small>Add meg a bérelemeket</small>
                             </div>
@@ -442,126 +561,7 @@
                                     <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
                                 </button>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Data section 4 -->
-                    <div id="data-section-4" class="content">
-                        <div class="content-header mb-3 d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="mb-0">Munkaidő</h5>
-                                <small>Add meg a munkaidő adatokat</small>
-                            </div>
-                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal4" title="Segítség"></i>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-sm-4">
-                                <label for="weekly_working_hours" class="form-label">Heti munkaóraszám</label>
-                                <select class="form-select" id="weekly_working_hours" name="weekly_working_hours">
-                                    <option value="40" selected>40 óra</option>
-                                    <option value="30">30 óra</option>
-                                    <option value="25">25 óra</option>
-                                    <option value="20">20 óra</option>
-                                    <option value="16">16 óra</option>
-                                    <option value="15">15 óra</option>
-                                    <option value="10">10 óra</option>
-                                    <option value="8">8 óra</option>
-                                    <option value="5">5 óra</option>
-                                </select>
-                            </div>
-
-                            <p class="mb-0 mt-4"><strong>Munkaidő</strong></p>
-                            <div class="col-sm-4">
-                                <label for="work_start_monday" class="form-label">Hétfő - munkaidő kezdete</label>
-                                <input type="text" id="work_start_monday" placeholder="ÓÓ:PP" class="form-control" name="work_start_monday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="work_end_monday" class="form-label">Hétfő - munkaidő vége</label>
-                                <input type="text" id="work_end_monday" placeholder="ÓÓ:PP" class="form-control" name="work_end_monday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="monday_duration" class="form-label">Hétfő - munkaidő hossza</label>
-                                <div class="d-flex align-items-center">
-                                    <input class="form-control" type="text" id="monday_duration" disabled />
-                                    <span class="ms-2">óra</span>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <label for="work_start_tuesday" class="form-label">Kedd - munkaidő kezdete</label>
-                                <input type="text" id="work_start_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_tuesday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="work_end_tuesday" class="form-label">Kedd - munkaidő vége</label>
-                                <input type="text" id="work_end_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_tuesday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="tuesday_duration" class="form-label">Kedd - munkaidő hossza</label>
-                                <div class="d-flex align-items-center">
-                                    <input class="form-control" type="text" id="tuesday_duration" disabled />
-                                    <span class="ms-2">óra</span>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <label for="work_start_wednesday" class="form-label">Szerda - munkaidő kezdete</label>
-                                <input type="text" id="work_start_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_wednesday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="work_end_wednesday" class="form-label">Szerda - munkaidő vége</label>
-                                <input type="text" id="work_end_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_wednesday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="wednesday_duration" class="form-label">Szerda - munkaidő hossza</label>
-                                <div class="d-flex align-items-center">
-                                    <input class="form-control" type="text" id="wednesday_duration" disabled />
-                                    <span class="ms-2">óra</span>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <label for="work_start_thursday" class="form-label">Csütörtök - munkaidő kezdete</label>
-                                <input type="text" id="work_start_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_start_thursday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="work_end_thursday" class="form-label">Csütörtök - munkaidő vége</label>
-                                <input type="text" id="work_end_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_end_thursday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="thursday_duration" class="form-label">Csütörtök - munkaidő hossza</label>
-                                <div class="d-flex align-items-center">
-                                    <input class="form-control" type="text" id="thursday_duration" disabled />
-                                    <span class="ms-2">óra</span>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <label for="work_start_friday" class="form-label">Péntek - munkaidő kezdete</label>
-                                <input type="text" id="work_start_friday" placeholder="ÓÓ:PP" class="form-control" name="work_start_friday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="work_end_friday" class="form-label">Péntek - munkaidő vége</label>
-                                <input type="text" id="work_end_friday" placeholder="ÓÓ:PP" class="form-control" name="work_end_friday" />
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="friday_duration" class="form-label">Péntek - munkaidő hossza</label>
-                                <div class="d-flex align-items-center">
-                                    <input class="form-control" type="text" id="friday_duration" disabled />
-                                    <span class="ms-2">óra</span>
-                                </div>
-                            </div>
-
-                            <div class="col-12 d-flex justify-content-between">
-                                <button class="btn btn-primary btn-prev">
-                                    <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
-                                    <span class="align-middle d-sm-inline-block d-none">Vissza</span>
-                                </button>
-                                <button class="btn btn-primary btn-next">
-                                    <span class="align-middle d-sm-inline-block d-none me-sm-1">Tovább</span>
-                                    <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>
-                                </button>
-                            </div>
-                        </div>
+                        </div>                        
                     </div>
 
                     <!-- Data section 5 -->

@@ -32,6 +32,7 @@ $(function () {
         toggleTaskInput($(this).val());
     });
 
+    // set datepicker date fields start
     $("#citizenship").on('change', function() {
         $("#employment_start_date, #employment_end_date").val('');
 
@@ -51,7 +52,6 @@ $(function () {
         });
     });
     
-    // set datepicker date fields
     var startDate = $("#citizenship").val() == 'Harmadik országbeli' ? '+60D' : '+21D';
     $("#employment_start_date").datepicker({
         format: "yyyy.mm.dd",
@@ -77,10 +77,11 @@ $(function () {
             $("#employment_end_date").datepicker('setStartDate', endDate);
         }
     });
-    // set datepicker date fields
+    // set datepicker date fields end
 
     $('#weekly_working_hours').on('change', function() {
         setWorkingHoursWeekdays();
+        $('#health_allowance_monthly_gross_4').val('');
     });
 
     $('#entry_permissions').on('change', function() {
@@ -942,10 +943,12 @@ function validateEmployeeRecruitment() {
                         },
                         callback: {
                             callback: function(input) {
+                                var weeklyWorkingHours = $('#weekly_working_hours').val();
+                                var maxValue = weeklyWorkingHours * 500;
                                 if ($('#health_allowance_cost_center_4').val()) {
                                     return {
-                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 20000,
-                                        message: 'Az érték 1000 és 20 000 között lehet'
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= maxValue,
+                                        message: 'Az érték 1000 és ' + maxValue + ' között lehet'
                                     };
                                 } else {
                                     return {

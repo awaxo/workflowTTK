@@ -7,6 +7,7 @@ use App\Events\StateChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
+use App\Models\Institute;
 use App\Models\Position;
 use App\Models\Room;
 use App\Models\User;
@@ -84,7 +85,8 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->state = 'it_head_approval';
         $recruitment->workflow_type_id = $workflowType->id;
         $firstLetter = substr($workgroup->workgroup_number, 0, 1);
-        $recruitment->initiator_institute_id = $firstLetter;
+        $recruitment->initiator_institute_id = Institute::where('group_level', $firstLetter)->first()->id;
+        
         $recruitment->created_by = Auth::id();
         $recruitment->updated_by = Auth::id();
 

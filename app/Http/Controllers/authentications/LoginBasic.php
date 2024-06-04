@@ -19,6 +19,13 @@ class LoginBasic extends Controller
         $credentials = $request->only('email-username', 'password');
 
         if (Auth::guard('dynamic')->attempt(['email' => $request['email-username'], 'password' => $request['password']])) {
+            $user = Auth::guard('dynamic')->user();
+            if ($user->roles->isEmpty()) {
+                Auth::guard('dynamic')->logout();
+                return back()->withErrors([
+                    'email-username' => 'Nincs jogosultsága a belépéshez',
+                ])->onlyInput('email-username');
+            }
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }

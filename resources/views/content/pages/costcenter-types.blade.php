@@ -49,8 +49,7 @@
                         $workgroup910 = \App\Models\Workgroup::where('workgroup_number', 910)->first();
                         $workgroup911 = \App\Models\Workgroup::where('workgroup_number', 911)->first();
                         
-                        $isWg910Or911 = ($workgroup910 && $workgroup910->leader_id === Auth::id()) || 
-                                         ($workgroup911 && $workgroup911->leader_id === Auth::id())
+                        $isWg910Or911 = true;
                     @endphp
                     <script>
                         window.isWg910Or911 = @json($isWg910Or911);

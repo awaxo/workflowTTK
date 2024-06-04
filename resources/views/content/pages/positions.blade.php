@@ -44,7 +44,7 @@
                 <div class="card-datatable table-responsive pt-0">
                     @php
                         $workgroup908 = \App\Models\Workgroup::where('workgroup_number', 908)->first();
-                        $isLeaderOfWg908 = $workgroup908 && $workgroup908->leader_id === Auth::id();
+                        $isLeaderOfWg908 = true;
                     @endphp
                     <script>
                         window.isLeaderOfWg908 = @json($isLeaderOfWg908);

@@ -5,7 +5,6 @@ namespace App\Http\Composers;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class MenuComposer
 {
@@ -17,12 +16,12 @@ class MenuComposer
         $verticalMenuData = json_decode($verticalMenuJson);
 
         $user = User::find(Auth::id());
-        $this->logMenuItems($verticalMenuData->menu, $user);
+        $this->updateMenuItems($verticalMenuData->menu, $user);
 
         $view->with('menuData', [$verticalMenuData]);
     }
 
-    private function logMenuItems(&$menuItems, $user) {
+    private function updateMenuItems(&$menuItems, $user) {
         if (!is_array($menuItems)) {
             return;
         }
@@ -36,7 +35,7 @@ class MenuComposer
             }
 
             if (isset($menuItem->submenu)) {
-                $this->logMenuItems($menuItem->submenu, $user);
+                $this->updateMenuItems($menuItem->submenu, $user);
             }
         }
     }

@@ -1,5 +1,6 @@
 import moment from 'moment';
 import DropzoneManager from '/resources/js/dropzone-manager';
+import GLOBALS from '../../../../../resources/js/globals.js';
 import { min } from 'lodash';
 
 var cleaveInstances = {};
@@ -261,30 +262,27 @@ $(function () {
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
         if (!validateCostCenterSum()) {
-            $('#errorAlertMessage').text('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
-            $('#errorAlert').removeClass('d-none');
+            GLOBALS.AJAX_ERROR('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
             
             return;
         } else {
-            $('#errorAlert').addClass('d-none');
+            $('.alert-danger').alert('close');
         }
 
         if (!validateWorkdayTimes()) {
-            $('#errorAlertMessage').text('Munkanapok munkaideje kezdetének korábbinak kell lennie, mint a végének!');
-            $('#errorAlert').removeClass('d-none');
+            GLOBALS.AJAX_ERROR('Munkanapok munkaideje kezdetének korábbinak kell lennie, mint a végének!');
             
             return;
         } else {
-            $('#errorAlert').addClass('d-none');
+            $('.alert-danger').alert('close');
         }
 
         if (!validateWorkingHours()) {
-            $('#errorAlertMessage').text('Munkanapok munkaidejének összege nem egyezik a heti munkaóraszámmal!');
-            $('#errorAlert').removeClass('d-none');
+            GLOBALS.AJAX_ERROR('Munkanapok munkaidejének összege nem egyezik a heti munkaóraszámmal!');
             
             return;
         } else {
-            $('#errorAlert').addClass('d-none');
+            $('.alert-danger').alert('close');
         }
 
         fv.validate().then(function(status) {
@@ -310,13 +308,13 @@ $(function () {
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         var errors = jqXHR.responseJSON.errors;
+                        var errorAlertMessage = '';
                         for (var key in errors) {
                             if (errors.hasOwnProperty(key)) {
-                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                                errorAlertMessage += errors[key] + '<br>';
                             }
                         }
-                        $('#errorAlert').removeClass('d-none');
-                        console.log(textStatus, errorThrown);
+                        GLOBALS.AJAX_ERROR(errorAlertMessage, jqXHR, textStatus, errorThrown);
                     }
                 });
             } else if (status === 'Invalid') {
@@ -326,8 +324,7 @@ $(function () {
                         .then(function(status) {
                             if (status === 'Invalid') {
                                 console.log('Field:', name, 'Status:', status);
-                                $('#errorAlertMessage').text('Hibás adat(ok) vagy hiányzó mező(k) vannak a formon, kérjük ellenőrizd!');
-                                $('#errorAlert').removeClass('d-none');
+                                GLOBALS.AJAX_ERROR('Hibás adat(ok) vagy hiányzó mező(k) vannak a formon, kérjük ellenőrizd!');
                             }
                         });
                 });

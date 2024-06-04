@@ -23,20 +23,24 @@ class GLOBALS {
         }
     };
 
-    static AJAX_ERROR = function(message, jqXHR, textStatus, errorThrown) {
-        $('<div class="alert alert-danger alert-dismissible" role="alert">' +
-            '<span>' + message + '</span>' +
-            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-        '</div>').insertBefore('.nav-align-top');
-                
-        console.log(textStatus, errorThrown);
+    static AJAX_ERROR = function(message, jqXHR = null, textStatus = null, errorThrown = null) {
+        if ($('.alert-danger:visible').length === 0) {
+            $('<div class="alert alert-danger alert-dismissible" role="alert">' +
+                '<span>' + message + '</span>' +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+            '</div>').insertBefore('.nav-align-top');
+            
+            console.log(textStatus, errorThrown);
+        }
     };
 
     static AJAX_SUCCESS = function(message) {
-        $('<div class="alert alert-success alert-dismissible" role="alert">' +
-            '<span>' + message + '</span>' +
-            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-        '</div>').insertBefore('.nav-align-top');
+        if ($('.alert-success:visible').length === 0) {
+            $('<div class="alert alert-success alert-dismissible" role="alert">' +
+                '<span>' + message + '</span>' +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+            '</div>').insertBefore('.nav-align-top');
+        }
     };
 }
 

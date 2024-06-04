@@ -56,11 +56,6 @@
         <span class="text-muted fw-light">Új folyamat /</span> Felvételi kérelem
     </h4>
 
-    <div class="alert alert-danger alert-dismissible d-none" role="alert" id="errorAlert">
-        <span id="errorAlertMessage"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
     <div class="row">
         <!-- Vertical Wizard -->
         <div class="col-12 mb-4">
@@ -731,6 +726,10 @@
                                 <input type="hidden" id="commute_support_form_file" data-original-name="" name="commute_support_form_file" />
                             </div>
                         
+                            <div class="nav-align-top">
+                                <!-- placeholder for error messages -->
+                            </div>
+
                             <div class="col-12 d-flex justify-content-between">
                                 <button class="btn btn-primary btn-prev">
                                     <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>

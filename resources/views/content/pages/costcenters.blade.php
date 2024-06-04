@@ -54,7 +54,7 @@
                 <div class="card-datatable table-responsive pt-0">
                     @php
                         $user = \App\Models\User::find(Auth::id());
-                        $isWg910Or911User = $user && ($user->workgroup->workgroup_number === 910 || $user->workgroup->workgroup_number === 911)
+                        $isWg910Or911User = true;
                     @endphp
                     <script>
                         window.isWg910Or911User = @json($isWg910Or911User);

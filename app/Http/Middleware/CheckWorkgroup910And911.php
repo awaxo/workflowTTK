@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Workgroup;
 
-class CheckWorkgroup912
+class CheckWorkgroup910And911
 {
     public function handle($request, Closure $next)
     {
         $user = User::find(Auth::id());
-        $workgroup912 = Workgroup::where('workgroup_number', 912)->first();
+        $workgroup910 = Workgroup::where('workgroup_number', 910)->first();
+        $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
 
         if (!$user) {
             return redirect()->route('login');
@@ -21,7 +22,10 @@ class CheckWorkgroup912
         if ($user && $user->hasRole('adminisztrator')) {
             return $next($request);
         }
-        if ($workgroup912 && $workgroup912->leader_id === $user->id) {
+        if ($workgroup911 && $workgroup911->leader_id === $user->id) {
+            return $next($request);
+        }
+        if ($workgroup910 && $workgroup910->leader_id === $user->id) {
             return $next($request);
         }
 

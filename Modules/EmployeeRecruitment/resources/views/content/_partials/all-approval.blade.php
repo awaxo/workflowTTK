@@ -191,6 +191,9 @@
                 <label class="form-label col-6 col-md-3">Időtartam vége</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_2_end_date }}</span>
             </div>
+
+            <hr>
+            <p class="mb-1"><strong>Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó</strong></p>
         </div>
     </div>
 </div>

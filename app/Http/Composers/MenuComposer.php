@@ -11,33 +11,33 @@ class MenuComposer
 {
     public function compose(View $view)
     {
-        // TODO: not yet working
-        
-        /*$verticalMenuJson = file_get_contents(base_path('resources/menu/verticalMenu.json'));
-        $verticalMenuData = json_decode($verticalMenuJson); // Decode as objects
+        $view->with('user', Auth::user());
+
+        $verticalMenuJson = file_get_contents(base_path('resources/menu/verticalMenu.json'));
+        $verticalMenuData = json_decode($verticalMenuJson);
 
         $user = User::find(Auth::id());
+        $this->logMenuItems($verticalMenuData->menu, $user);
 
-        // Recursive function to filter menu items
-        $filterMenuItems = function ($menuItems) use ($user, &$filterMenuItems) {
-            foreach ($menuItems as $key => $menuItem) {
-                if (isset($menuItem->authorizable) && $menuItem->authorizable == true && !$user->canViewMenuItem($menuItem->slug)) {
-                    unset($menuItems->$key);
-                } elseif (isset($menuItem->submenu)) {
-                    $menuItem->submenu = $filterMenuItems($menuItem->submenu);
-                    // If the submenu becomes empty after filtering, remove the submenu property
-                    if (empty((array)$menuItem->submenu)) {
-                        unset($menuItem->submenu);
-                    }
-                }
+        $view->with('menuData', [$verticalMenuData]);
+    }
+
+    private function logMenuItems(&$menuItems, $user) {
+        if (!is_array($menuItems)) {
+            return;
+        }
+        if (!$user) {
+            return;
+        }
+
+        foreach ($menuItems as $key => $menuItem) {
+            if (isset($menuItem->authorize) && $menuItem->authorize == 'true' && $user->canViewMenuItem($menuItem->slug) == false) {
+                unset($menuItems[$key]);
             }
 
-            return $menuItems;
-        };
-
-        $verticalMenuData->menu = $filterMenuItems($verticalMenuData->menu);
-
-        // Share filtered menu data to the view
-        $view->with('menuData', $verticalMenuData);*/
+            if (isset($menuItem->submenu)) {
+                $this->logMenuItems($menuItem->submenu, $user);
+            }
+        }
     }
 }

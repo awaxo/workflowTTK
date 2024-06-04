@@ -37,7 +37,7 @@
                         "url": "/felveteli-kerelem/uj",
                         "name": "Új",
                         "slug": "workflows-employee-recruitment-new",
-                        "authorizable": "true"
+                        "authorize": "true"
                     },
                     {
                         "url": "/felveteli-kerelem/nyitott",
@@ -57,56 +57,65 @@
         "url": "/felhasznalok",
         "name": "Felhasználók",
         "icon": "menu-icon tf-icons bx bx-user",
-        "slug": "pages-user-list"
+        "slug": "pages-user-list",
+        "authorize": "true"
     },
     {
         "url": "/szerepkorok",
         "name": "Szerepkörök",
         "icon": "menu-icon tf-icons bx bx-check-shield",
-        "slug": "authorizations-permissions"
+        "slug": "authorizations-permissions",
+        "authorize": "true"
     },
     {
         "url": "/beallitasok",
         "name": "Beállítások",
         "icon": "menu-icon tf-icons bx bx-cog",
         "slug": "settings",
-        "authorizable": "true"
+        "authorize": "true"
     },
     {
         "url": "/",
         "name": "Segédadatok",
         "icon": "menu-icon tf-icons bx bx-data",
         "slug": "auxiliary-data",
+        "authorize": "true",
         "submenu": [
             {
                 "url": "/segedadat/csoportok",
                 "name": "Csoport",
-                "slug": "auxiliary-data-workgroup"
+                "slug": "auxiliary-data-workgroup",
+                "authorize": "true"
             },
             {
                 "url": "/segedadat/hozzaferesi-jogosultsagok",
                 "name": "Hozzáférési jog",
-                "slug": "auxiliary-data-external-access"
+                "slug": "auxiliary-data-external-access",
+                "authorize": "true"
             },
             {
                 "url": "/segedadat/intezetek",
                 "name": "Intézet",
-                "slug": "auxiliary-data-institute"
+                "slug": "auxiliary-data-institute",
+                "authorize": "true"
             },
             {
                 "url": "/segedadat/koltseghelyek",
                 "name": "Költséghely",
-                "slug": "auxiliary-data-costcenter"
+                "slug": "auxiliary-data-costcenter",
+                "authorize": "true"
             },
             {
                 "url": "/segedadat/koltseghely-tipusok",
                 "name": "Költséghely típus",
-                "slug": "auxiliary-data-costcenter-type"
+                "slug": "auxiliary-data-costcenter-type",
+                "authorize": "true"
             },
             {
                 "url": "/segedadat/munkakorok",
                 "name": "Munkakör",
-                "slug": "auxiliary-data-position"
+                "slug": "auxiliary-data-position",
+                "authorize": "true"
             }
         ]
     }

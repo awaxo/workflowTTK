@@ -13,11 +13,18 @@ class CheckWorkgroup915
     {
         $user = User::find(Auth::id());
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
-
-        if (!$workgroup915 || $workgroup915->leader_id !== $user->id) {
-            return response()->view('content.pages.misc-not-authorized');
+        
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        return $next($request);
+        if ($user && $user->hasRole('adminisztrator')) {
+            return $next($request);
+        }
+        if ($workgroup915 && $workgroup915->leader_id === $user->id) {
+            return $next($request);
+        }
+
+        return response()->view('content.pages.misc-not-authorized');
     }
 }

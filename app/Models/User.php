@@ -205,6 +205,7 @@ class User extends Authenticatable
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
 
         $pagesForAdminOnly = ['settings', 'authorizations-permissions'];
+        $pagesForSecretaries = ['workflows-employee-recruitment-new'];
         $pagesForAdminOrWg915Leader = ['pages-user-list', 'auxiliary-data', 'auxiliary-data-external-access'];
         $pagesForWg912Leader = ['auxiliary-data', 'auxiliary-data-workgroup', 'auxiliary-data-institute'];
         $pagesForWg910Wg911Users = ['auxiliary-data', 'auxiliary-data-costcenter'];
@@ -213,6 +214,12 @@ class User extends Authenticatable
 
         if (in_array($menuItem, $pagesForAdminOnly)) {
             if ($this->hasRole('adminisztrator')) {
+                return true;
+            }
+        }
+
+        if (in_array($menuItem, $pagesForSecretaries)) {
+            if ($this->hasAnyRole(['titkar_1', 'titkar_3', 'titkar_4', 'titkar_5', 'titkar_6', 'titkar_7', 'titkar_8', 'titkar_9_fi', 'titkar_9_gi'])) {
                 return true;
             }
         }

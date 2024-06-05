@@ -7,7 +7,6 @@ use App\Models\Delegation;
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\Option;
-use App\Models\Room;
 use App\Models\User;
 use App\Models\Workgroup;
 use DateTime;
@@ -24,20 +23,6 @@ class StateGroupLeadApproval implements IStateResponsibility {
             $workgroup_lead = 
                 ($workflow->workgroup1 && $workflow->workgroup1->leader_id == $user->id) ||
                 ($workflow->workgroup2 && $workflow->workgroup2->leader_id == $user->id);
-
-            $room_numbers = explode(',', $workflow->entry_permissions);
-            foreach ($room_numbers as $room_number) {
-                $room = Room::where('room_number', $room_number)->first();
-
-                if ($room) {
-                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
-
-                    if ($workgroup && $workgroup->leader_id == $user->id) {
-                        $workgroup_lead = true;
-                        break;
-                    }
-                }
-            }
 
             return $workgroup_lead && !$workflow->isApprovedBy($user);
         } else {
@@ -57,18 +42,6 @@ class StateGroupLeadApproval implements IStateResponsibility {
                 $workgroups[] = 'grouplead_' . $workflow->workgroup2->workgroup_number;
             }
 
-            $room_numbers = explode(',', $workflow->entry_permissions);
-            foreach ($room_numbers as $room_number) {
-                $room = Room::where('room_number', $room_number)->first();
-
-                if ($room) {
-                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
-
-                    if ($workgroup) {
-                        $workgroups[] = 'grouplead_' . $workgroup->workgroup_number;
-                    }
-                }
-            }
             $workgroups = array_unique($workgroups);
 
             $service = new DelegationService();
@@ -87,55 +60,13 @@ class StateGroupLeadApproval implements IStateResponsibility {
         }
     }
 
-    /**
-     * Check if user is responsible for the workflow, but not a basic workgroup leader
-     * Needed for a specific UI requirement
-     */
-    public function isUserResponsibleNonBaseWorkgroup(User $user, IGenericWorkflow $workflow): bool
-    {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $workgroup_lead = false;
-
-            $room_numbers = explode(',', $workflow->entry_permissions);
-            foreach ($room_numbers as $room_number) {
-                $room = Room::where('room_number', $room_number)->first();
-
-                if ($room) {
-                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
-
-                    if ($workgroup && $workgroup->leader_id == $user->id) {
-                        $workgroup_lead = true;
-                        break;
-                    }
-                }
-            }
-
-            return $workgroup_lead;
-        } else {
-            Log::error('StateGroupLeadApproval::isUserResponsibleNonBaseWorkgroup called with invalid workflow type');
-            return false;
-        }
-    }
-
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         if ($workflow instanceof RecruitmentWorkflow) {
             $service = new DelegationService();
 
-            $room_numbers = explode(',', $workflow->entry_permissions);
-
             $leaders = [];
             $workgroups = [];
-            foreach ($room_numbers as $room_number) {
-                $room = Room::where('room_number', $room_number)->first();
-                if ($room) {
-                    $workgroup = Workgroup::with('leader')->where('workgroup_number', $room->workgroup_number)->first();
-                    if ($workgroup) {
-                        $leaders[] = $workgroup->leader;
-                        $workgroups[] = $workgroup;
-                    }
-                }
-            }
 
             // Get the leaders of the workgroups directly associated with the workflow
             if ($workflow->workgroup1) {
@@ -187,18 +118,6 @@ class StateGroupLeadApproval implements IStateResponsibility {
                 optional($workflow->workgroup2)->leader_id
             ];
 
-            $room_numbers = explode(',', $workflow->entry_permissions);
-            foreach ($room_numbers as $room_number) {
-                $room = Room::where('room_number', $room_number)->first();
-
-                if ($room) {
-                    $workgroup = Workgroup::where('workgroup_number', $room->workgroup_number)->first();
-
-                    if ($workgroup) {
-                        $workgroup_leads[] = $workgroup->leader_id;
-                    }
-                }
-            }
             $workgroup_leads = array_filter($workgroup_leads);
 
             foreach ($workgroup_leads as $key => $userId) {

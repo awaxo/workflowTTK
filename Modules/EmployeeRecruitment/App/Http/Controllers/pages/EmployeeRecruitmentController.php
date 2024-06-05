@@ -296,7 +296,6 @@ class EmployeeRecruitmentController extends Controller
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
             'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-            'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
         ]);
@@ -321,7 +320,6 @@ class EmployeeRecruitmentController extends Controller
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-                'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
             ]);
         } else {
@@ -437,7 +435,6 @@ class EmployeeRecruitmentController extends Controller
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-                'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
             ]);
         } else {

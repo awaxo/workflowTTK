@@ -1,5 +1,6 @@
 import moment from 'moment';
 import DropzoneManager from '/resources/js/dropzone-manager';
+import GLOBALS from '../../../../../resources/js/globals.js';
 import { min } from 'lodash';
 
 var cleaveInstances = {};
@@ -32,10 +33,11 @@ $(function () {
         toggleTaskInput($(this).val());
     });
 
+    // set datepicker date fields start
     $("#citizenship").on('change', function() {
         $("#employment_start_date, #employment_end_date").val('');
 
-        var startDate = $(this).val() == 'Harmadik országbeli' ? '+3M' : '+21D';
+        var startDate = $(this).val() == 'Harmadik országbeli' ? '+60D' : '+21D';
         $("#employment_start_date").datepicker('destroy').datepicker({
             format: "yyyy.mm.dd",
             startDate: startDate,
@@ -51,13 +53,14 @@ $(function () {
         });
     });
     
-    // set datepicker date fields
+    var startDate = $("#citizenship").val() == 'Harmadik országbeli' ? '+60D' : '+21D';
     $("#employment_start_date").datepicker({
         format: "yyyy.mm.dd",
-        startDate: '+21D',
+        startDate: startDate,
         endDate: '+30Y',
         language: 'hu',
         weekStart: 1,
+        autoclose: true
     });
     $("#employment_end_date").datepicker({
         format: "yyyy.mm.dd",
@@ -65,23 +68,21 @@ $(function () {
         endDate: '+30Y',
         language: 'hu',
         weekStart: 1,
+        autoclose: true
     });
     $("#employment_start_date").on('change', function() {
         var startDate = $("#employment_start_date").datepicker('getDate');
         if (startDate) {
             var endDate = moment(startDate).add(6, 'months').toDate();
-            $("#employment_end_date").datepicker({
-                format: "yyyy.mm.dd",
-                startDate: endDate,
-                language: 'hu',
-                weekStart: 1
-            });
+            $("#employment_end_date").datepicker('setDate', null);
+            $("#employment_end_date").datepicker('setStartDate', endDate);
         }
     });
-    // set datepicker date fields
+    // set datepicker date fields end
 
     $('#weekly_working_hours').on('change', function() {
         setWorkingHoursWeekdays();
+        $('#health_allowance_monthly_gross_4').val('');
     });
 
     $('#entry_permissions').on('change', function() {
@@ -261,30 +262,27 @@ $(function () {
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
         if (!validateCostCenterSum()) {
-            $('#errorAlertMessage').text('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
-            $('#errorAlert').removeClass('d-none');
+            GLOBALS.AJAX_ERROR('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
             
             return;
         } else {
-            $('#errorAlert').addClass('d-none');
+            $('.alert-danger').alert('close');
         }
 
         if (!validateWorkdayTimes()) {
-            $('#errorAlertMessage').text('Munkanapok munkaideje kezdetének korábbinak kell lennie, mint a végének!');
-            $('#errorAlert').removeClass('d-none');
+            GLOBALS.AJAX_ERROR('Munkanapok munkaideje kezdetének korábbinak kell lennie, mint a végének!');
             
             return;
         } else {
-            $('#errorAlert').addClass('d-none');
+            $('.alert-danger').alert('close');
         }
 
         if (!validateWorkingHours()) {
-            $('#errorAlertMessage').text('Munkanapok munkaidejének összege nem egyezik a heti munkaóraszámmal!');
-            $('#errorAlert').removeClass('d-none');
+            GLOBALS.AJAX_ERROR('Munkanapok munkaidejének összege nem egyezik a heti munkaóraszámmal!');
             
             return;
         } else {
-            $('#errorAlert').addClass('d-none');
+            $('.alert-danger').alert('close');
         }
 
         fv.validate().then(function(status) {
@@ -310,13 +308,13 @@ $(function () {
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         var errors = jqXHR.responseJSON.errors;
+                        var errorAlertMessage = '';
                         for (var key in errors) {
                             if (errors.hasOwnProperty(key)) {
-                                $('#errorAlertMessage').append(errors[key] + '<br>');
+                                errorAlertMessage += errors[key] + '<br>';
                             }
                         }
-                        $('#errorAlert').removeClass('d-none');
-                        console.log(textStatus, errorThrown);
+                        GLOBALS.AJAX_ERROR(errorAlertMessage, jqXHR, textStatus, errorThrown);
                     }
                 });
             } else if (status === 'Invalid') {
@@ -326,8 +324,7 @@ $(function () {
                         .then(function(status) {
                             if (status === 'Invalid') {
                                 console.log('Field:', name, 'Status:', status);
-                                $('#errorAlertMessage').text('Hibás adat(ok) vagy hiányzó mező(k) vannak a formon, kérjük ellenőrizd!');
-                                $('#errorAlert').removeClass('d-none');
+                                GLOBALS.AJAX_ERROR('Hibás adat(ok) vagy hiányzó mező(k) vannak a formon, kérjük ellenőrizd!');
                             }
                         });
                 });
@@ -943,10 +940,12 @@ function validateEmployeeRecruitment() {
                         },
                         callback: {
                             callback: function(input) {
+                                var weeklyWorkingHours = $('#weekly_working_hours').val();
+                                var maxValue = weeklyWorkingHours * 500;
                                 if ($('#health_allowance_cost_center_4').val()) {
                                     return {
-                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= 20000,
-                                        message: 'Az érték 1000 és 20 000 között lehet'
+                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= maxValue,
+                                        message: 'Az érték 1000 és ' + maxValue + ' között lehet'
                                     };
                                 } else {
                                     return {

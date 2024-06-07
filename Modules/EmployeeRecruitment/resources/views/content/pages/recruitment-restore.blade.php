@@ -41,8 +41,6 @@
                 <div class="accordion" id="accordion_process_details">
                     @if ($isITHead)
                         @include('EmployeeRecruitment::content._partials.it-head-approval', ['recruitment' => $recruitment])
-                    @elseif ($nonBaseWorkgroupLead)
-                        @include('EmployeeRecruitment::content._partials.nonbase-group-lead-approval', ['recruitment' => $recruitment])
                     @else
                         @include('EmployeeRecruitment::content._partials.all-approval', ['recruitment' => $recruitment])
                     @endif

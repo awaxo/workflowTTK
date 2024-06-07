@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
-use Modules\EmployeeRecruitment\App\Models\States\StateGroupLeadApproval;
 
 class EmployeeRecruitmentController extends Controller
 {
@@ -296,7 +295,6 @@ class EmployeeRecruitmentController extends Controller
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
             'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-            'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
         ]);
@@ -321,7 +319,6 @@ class EmployeeRecruitmentController extends Controller
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-                'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
             ]);
         } else {
@@ -402,7 +399,7 @@ class EmployeeRecruitmentController extends Controller
                 $service->storeMetadata($recruitment, $request->input('message'), 'suspensions');
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->updated_by = Auth::id();
-                if ($request->input('is_cancel')) {
+                if ($request->input('is_cancel') && WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()) {
                     $recruitment->deleted = 1;
                 }
                 
@@ -437,7 +434,6 @@ class EmployeeRecruitmentController extends Controller
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-                'nonBaseWorkgroupLead' => ($recruitment->state == 'group_lead_approval' && (new StateGroupLeadApproval)->isUserResponsibleNonBaseWorkgroup(Auth::user(), $recruitment)),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
             ]);
         } else {

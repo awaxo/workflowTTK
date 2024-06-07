@@ -754,31 +754,51 @@ function validateEmployeeRecruitment() {
                 },
                 applicants_female_count: {
                     validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg a női jelentkezők számát'
-                        },
                         integer: {
                             message: 'Kérjük, csak egész számot adj meg'
                         },
-                        between: {
-                            min: 0,
-                            max: 1000,
-                            message: 'Az érték 0 és 1000 között lehet'
-                        },
+                        callback: {
+                            callback: function(input) {
+                                if ($('#job_ad_exists').is(':checked')) {
+                                    var value = cleaveInstances[input.field].getRawValue();
+                                    if (typeof value === 'number' && value >= 0 && value <= 1000) {
+                                        return {
+                                            valid: true,
+                                            message: 'Az érték 0 és 1000 között lehet'
+                                        };
+                                    } else {
+                                        return {
+                                            valid: false,
+                                            message: 'Kérjük, add meg a női jelentkezők számát'
+                                        };
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 applicants_male_count: {
                     validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg a férfi jelentkezők számát'
-                        },
                         integer: {
                             message: 'Kérjük, csak egész számot adj meg'
                         },
-                        between: {
-                            min: 0,
-                            max: 1000,
-                            message: 'Az érték 0 és 1000 között lehet'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#job_ad_exists').is(':checked')) {
+                                    var value = cleaveInstances[input.field].getRawValue();
+                                    if (typeof value === 'number' && value >= 0 && value <= 1000) {
+                                        return {
+                                            valid: true,
+                                            message: 'Az érték 0 és 1000 között lehet'
+                                        };
+                                    } else {
+                                        return {
+                                            valid: false,
+                                            message: 'Kérjük, add meg a férfi jelentkezők számát'
+                                        };
+                                    }
+                                }
+                            }
                         }
                     }
                 },

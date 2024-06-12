@@ -107,17 +107,6 @@ $(function () {
         updateAvailableTools();
     });
 
-    // Initially hide the carcinogenic materials use textarea
-    $('.planned-carcinogenic-materials').hide();
-
-    $('#work_with_carcinogenic_materials').on('change', function() {
-        if($(this).val() === '1') {
-            $('.planned-carcinogenic-materials').show();
-        } else {
-            $('.planned-carcinogenic-materials').hide();
-        }
-    });
-
     // file uploads
     DropzoneManager.init('job_description');
     DropzoneManager.init('personal_data_sheet');
@@ -169,6 +158,9 @@ $(function () {
 
         // revalidate fields when their values change
         revalidateOnChange(fv, 'name');
+        revalidateOnChange(fv, 'birth_date');
+        revalidateOnChange(fv, 'social_security_number');
+        revalidateOnChange(fv, 'address');
         revalidateOnChange(fv, 'applicants_female_count');
         revalidateOnChange(fv, 'applicants_male_count');
         revalidateOnChange(fv, 'workgroup_id_1');
@@ -210,9 +202,6 @@ $(function () {
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_eger');
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_dokkolo');
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_mobiltelefon');
-        revalidateOnChange(fv, 'work_with_radioactive_isotopes');
-        revalidateOnChange(fv, 'work_with_carcinogenic_materials');
-        revalidateOnChange(fv, 'planned_carcinogenic_materials_use');
         revalidateOnChange(fv, 'personal_data_sheet_file');
         revalidateOnChange(fv, 'student_status_verification_file');
         revalidateOnChange(fv, 'certificates_file');
@@ -257,7 +246,6 @@ $(function () {
         enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
         
         enableOnChange(fv, 'license_plate', 'entry_permissions', function() { return $('#entry_permissions').val().includes('auto') });
-        enableOnChange(fv, 'planned_carcinogenic_materials_use', 'work_with_carcinogenic_materials', function() { return $('#work_with_carcinogenic_materials').val() == 1 });
         enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
@@ -744,6 +732,39 @@ function validateEmployeeRecruitment() {
                         stringLength: {
                             max: 100,
                             message: 'A név nem lehet hosszabb 100 karakternél'
+                        }
+                    }
+                },
+                birth_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a születési dátumot'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
+                        }
+                    }
+                },
+                social_security_number: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a születési dátumot'
+                        },
+                        regexp: {
+                            regexp: /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/,
+                            message: 'Kérjük, pontosan 9 számjegyet adj meg ebben a formában: 123-456-789'
+                        }
+                    }
+                },
+                address: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a lakcímet'
+                        },
+                        stringLength: {
+                            max: 1000,
+                            message: 'A név nem lehet hosszabb 1000 karakternél'
                         }
                     }
                 },
@@ -1336,31 +1357,6 @@ function validateEmployeeRecruitment() {
                             message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
                         }
                     }
-                },
-                work_with_radioactive_isotopes: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg, hogy fog-e radioaktív izotópokkal dolgozni'
-                        }
-                    }
-                },
-                work_with_carcinogenic_materials: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg, hogy fog-e rákkeltő anyagokkal dolgozni'
-                        }
-                    }
-                },
-                planned_carcinogenic_materials_use: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg a tervezett rákkeltő anyagok listáját'
-                        }
-                    },
-                    stringLength: {
-                        max: 10000,
-                        message: 'A rákkeltő anyagok listája nem lehet hosszabb 10000 karakternél'
-                    },
                 },
                 personal_data_sheet_file: {
                     validators: {

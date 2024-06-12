@@ -137,7 +137,19 @@
                                 <label class="form-label" for="name">Név</label>
                                 <input type="text" id="name" class="form-control" name="name" />
                             </div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-4">
+                                <label class="form-label" for="birth_date">Születési dátum</label>
+                                <input type="text" id="birth_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="birth_date" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="form-label" for="social_security_number">TAJ szám</label>
+                                <input type="text" id="social_security_number" class="form-control" name="social_security_number" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label" for="address">Lakcím (irányítószám, település neve, köztér neve és jellege, házszám)</label>
+                                <input type="text" id="address" class="form-control" name="address" />
+                            </div>
+                            <div class="col-sm-6">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch" id="job_ad_exists">
                                     <label class="form-check-label" for="job_ad_exists">Felvétel álláshirdetéssel történt?</label>
@@ -634,26 +646,6 @@
                             </div>
                             <div class="col-sm-4 dynamic-tools-container">
                                 <!-- Dynamic tools will be added here -->
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="work_with_radioactive_isotopes" class="form-label">Sugárzó izotóppal fog dolgozni</label>
-                                <select class="selectpicker w-100" id="work_with_radioactive_isotopes" placeholder="&nbsp;" name="work_with_radioactive_isotopes" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary">
-                                    <option value="" selected disabled></option>
-                                    <option value="1">Igen</option>
-                                    <option value="0">Nem</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="work_with_carcinogenic_materials" class="form-label">Rákkeltő anyaggal fog dolgozni</label>
-                                <select class="selectpicker w-100" id="work_with_carcinogenic_materials" placeholder="&nbsp;" name="work_with_carcinogenic_materials" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary">
-                                    <option value="" selected disabled></option>
-                                    <option value="1">Igen</option>
-                                    <option value="0">Nem</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-8 planned-carcinogenic-materials">
-                                <label for="planned_carcinogenic_materials_use" class="form-label">Használni tervezett rákkeltő anyagok felsorolása</label>
-                                <textarea class="form-control" id="planned_carcinogenic_materials_use" rows="3" name="planned_carcinogenic_materials_use"></textarea>                              
                             </div>
                             
                             <div class="col-12 d-flex justify-content-between">

@@ -17,6 +17,9 @@ return new class extends Migration
 
             // Add the specific fields
             $table->string('name', 100);
+            $table->date('birth_date');
+            $table->string('social_security_number', 11);
+            $table->string('address', 1000);
             $table->unsignedTinyInteger('job_ad_exists')->default(1);
             $table->unsignedInteger('applicants_female_count');
             $table->unsignedInteger('applicants_male_count');
@@ -68,9 +71,6 @@ return new class extends Migration
             $table->string('required_tools')->nullable();
             $table->string('available_tools')->nullable();
             $table->string('inventory_numbers_of_available_tools', 1000)->nullable();
-            $table->unsignedTinyInteger('work_with_radioactive_isotopes')->default(0);
-            $table->unsignedTinyInteger('work_with_carcinogenic_materials')->default(0);
-            $table->text('planned_carcinogenic_materials_use')->nullable();
             $table->string('personal_data_sheet');
             $table->string('student_status_verification')->nullable();
             $table->string('certificates');

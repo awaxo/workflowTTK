@@ -180,9 +180,6 @@ class EmployeeRecruitmentController extends Controller
             }
         }
         $recruitment->inventory_numbers_of_available_tools = json_encode($inventoryNumbers);
-        $recruitment->work_with_radioactive_isotopes = $validatedData['work_with_radioactive_isotopes'];
-        $recruitment->work_with_carcinogenic_materials = $validatedData['work_with_carcinogenic_materials'];
-        $recruitment->planned_carcinogenic_materials_use = isset($validatedData['planned_carcinogenic_materials_use']) ? $validatedData['planned_carcinogenic_materials_use'] : null;
 
         // data section 6
         $recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
@@ -578,6 +575,9 @@ class EmployeeRecruitmentController extends Controller
     private function validateRequest() {
         return request()->validate([
             'name' => 'required|string|max:100',
+            'birth_date' => 'required|date_format:Y.m.d',
+            'social_security_number' => 'required|string|regex:/^[0-9]{3}-[0-9]{3}-[0-9]{3}$/',
+            'address' => 'required|string|max:1000',
             'applicants_female_count' => [
                 'required',
                 function ($attribute, $value, $fail) {
@@ -756,9 +756,6 @@ class EmployeeRecruitmentController extends Controller
             'inventory_numbers_of_available_tools_eger' => 'string|max:30|regex:/^[0-9 -]+$/',
             'inventory_numbers_of_available_tools_dokkolo' => 'string|max:30|regex:/^[0-9 -]+$/',
             'inventory_numbers_of_available_tools_mobiltelefon' => 'string|max:30|regex:/^[0-9 -]+$/',
-            'work_with_radioactive_isotopes' => 'required',
-            'work_with_carcinogenic_materials' => 'required',
-            'planned_carcinogenic_materials_use' => 'nullable|string|max:10000',
             'personal_data_sheet_file' => 'required|string',
             'student_status_verification_file' => 'nullable|string',
             'certificates_file' => 'required|string',
@@ -824,10 +821,6 @@ class EmployeeRecruitmentController extends Controller
             'inventory_numbers_of_available_tools_mobiltelefon.string' => 'A mobiltelefon leltári száma érvénytelen',
             'inventory_numbers_of_available_tools_mobiltelefon.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
             'inventory_numbers_of_available_tools_mobiltelefon.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
-            'work_with_radioactive_isotopes.required' => 'Kérjük, add meg, hogy fog-e radioaktív izotópokkal dolgozni',
-            'work_with_carcinogenic_materials.required' => 'Kérjük, add meg, hogy fog-e rákkeltő anyagokkal dolgozni',
-            'planned_carcinogenic_materials_use.string' => 'A rákkeltő anyagok listája érvénytelen',
-            'planned_carcinogenic_materials_use.max' => 'A rákkeltő anyagok listája nem lehet hosszabb 10000 karakternél',
             'personal_data_sheet_file.required' => 'Kérjük, töltsd fel a személyi adatlapot',
             'student_status_verification_file.required' => 'Kérjük, töltsd fel a hallgatói jogviszony igazolást',
             'certificates_file.required' => 'Kérjük, töltsd fel a bizonyítványokat',

@@ -579,20 +579,24 @@ class EmployeeRecruitmentController extends Controller
             'social_security_number' => 'required|string|regex:/^[0-9]{3}-[0-9]{3}-[0-9]{3}$/',
             'address' => 'required|string|max:1000',
             'applicants_female_count' => [
-                'required',
+                'required_if:job_ad_exists,true',
                 function ($attribute, $value, $fail) {
-                    $value = str_replace(' ', '', $value);
-                    if (!is_numeric($value) || intval($value) < 0 || intval($value) > 1000) {
-                        $fail('Az érték 0 és 1000 között lehet, és egész számot kell megadni');
+                    if (request('job_ad_exists') == 'true') {
+                        $value = str_replace(' ', '', $value);
+                        if (!is_numeric($value) || intval($value) < 0 || intval($value) > 1000) {
+                            $fail('Az érték 0 és 1000 között lehet, és egész számot kell megadni');
+                        }
                     }
                 },
             ],
             'applicants_male_count' => [
-                'required',
+                'required_if:job_ad_exists,true',
                 function ($attribute, $value, $fail) {
-                    $value = str_replace(' ', '', $value);
-                    if (!is_numeric($value) || intval($value) < 0 || intval($value) > 1000) {
-                        $fail('Az érték 0 és 1000 között lehet, és egész számot kell megadni');
+                    if (request('job_ad_exists') == 'true') {
+                        $value = str_replace(' ', '', $value);
+                        if (!is_numeric($value) || intval($value) < 0 || intval($value) > 1000) {
+                            $fail('Az érték 0 és 1000 között lehet, és egész számot kell megadni');
+                        }
                     }
                 },
             ],

@@ -24,11 +24,12 @@
             <hr class="mt-1 mb-1" />
             
             <div class="row align-items-center">
-                <div class="col-12">
+                <div class="col-6">
                     <span>5 kg – 20 kg</span>
                 </div>
-                <div class="col-12">
+                <div class="col-6">
                     <select id="manual_handling_weight_5_20" name="manual_handling_weight_5_20" class="form-select">
+                        <option value="" selected></option>
                         <option value="egesz">A munkaidő egészében</option>
                         <option value="resz">A munkidő egy részében</option>
                     </select>
@@ -38,11 +39,12 @@
             <hr class="mt-1 mb-1" />
             
             <div class="row align-items-center">
-                <div class="col-12">
+                <div class="col-6">
                     <span>20 kg – 50 kg</span>
                 </div>
-                <div class="col-12">
+                <div class="col-6">
                     <select id="manual_handling_weight_20_50" name="manual_handling_weight_20_50" class="form-select">
+                        <option value="" selected></option>
                         <option value="egesz">A munkaidő egészében</option>
                         <option value="resz">A munkidő egy részében</option>
                     </select>
@@ -52,11 +54,12 @@
             <hr class="mt-1 mb-1" />
             
             <div class="row align-items-center">
-                <div class="col-12">
+                <div class="col-6">
                     <span>> 50kg</span>
                 </div>
-                <div class="col-12">
+                <div class="col-6">
                     <select id="manual_handling_weight_over_50" name="manual_handling_weight_over_50" class="form-select">
+                        <option value="" selected></option>
                         <option value="egesz">A munkaidő egészében</option>
                         <option value="resz">A munkaidő egy részében</option>
                     </select>

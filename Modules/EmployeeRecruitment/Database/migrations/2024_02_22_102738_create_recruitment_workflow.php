@@ -76,6 +76,7 @@ return new class extends Migration
             $table->string('certificates');
             $table->unsignedTinyInteger('requires_commute_support')->nullable();
             $table->string('commute_support_form')->nullable();
+            $table->text('medical_eligibility_data')->nullable();
 
             // Additional fields filled later through the process
             $table->unsignedTinyInteger('probation_period')->nullable();

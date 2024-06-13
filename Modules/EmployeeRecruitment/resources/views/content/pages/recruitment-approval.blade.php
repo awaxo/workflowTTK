@@ -51,6 +51,9 @@
 
                 <!-- Approval controls -->
                 <input type="hidden" id="state" value="{{ $recruitment->state }}">
+                @if($recruitment->state == 'group_lead_approval')
+                    @include('EmployeeRecruitment::content._partials.group-lead-approval')
+                @endif
                 @if($recruitment->state == 'hr_lead_approval')
                     <div class="col-sm-2 mb-3">
                         <div class="d-flex align-items-center">

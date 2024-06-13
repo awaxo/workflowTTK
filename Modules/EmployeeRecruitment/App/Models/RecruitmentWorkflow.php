@@ -88,7 +88,8 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'requires_commute_support',
             'commute_support_form',
             'probation_period',
-            'contract'
+            'contract',
+            'medical_eligibility_data'
         ]);
 
         $this->casts = array_merge($this->casts, [

@@ -777,7 +777,7 @@ function validateEmployeeRecruitment() {
                             callback: function(input) {
                                 if ($('#job_ad_exists').is(':checked')) {
                                     var value = cleaveInstances[input.field].getRawValue();
-                                    if (typeof value === 'number' && value >= 0 && value <= 1000) {
+                                    if (value >= 0 && value <= 1000) {
                                         return {
                                             valid: true,
                                             message: 'Az érték 0 és 1000 között lehet'
@@ -802,7 +802,7 @@ function validateEmployeeRecruitment() {
                             callback: function(input) {
                                 if ($('#job_ad_exists').is(':checked')) {
                                     var value = cleaveInstances[input.field].getRawValue();
-                                    if (typeof value === 'number' && value >= 0 && value <= 1000) {
+                                    if (value >= 0 && value <= 1000) {
                                         return {
                                             valid: true,
                                             message: 'Az érték 0 és 1000 között lehet'

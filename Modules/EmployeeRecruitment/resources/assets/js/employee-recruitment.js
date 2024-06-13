@@ -24,6 +24,10 @@ $(function () {
         language: 'hu',
         weekStart: 1,
     });
+    $("#birth_date").datepicker({
+        language: 'hu',
+        weekStart: 1
+    });
 
     $('#job_ad_exists').on('change', function() {
         toggleApplicantCountInputs($(this).is(':checked'));
@@ -749,7 +753,7 @@ function validateEmployeeRecruitment() {
                 social_security_number: {
                     validators: {
                         notEmpty: {
-                            message: 'Kérjük, add meg a születési dátumot'
+                            message: 'Kérjük, add meg a TAJ számot ebben a formában: 123-456-789'
                         },
                         regexp: {
                             regexp: /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/,

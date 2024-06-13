@@ -107,11 +107,19 @@
                     Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó
                 </div>
 
-                <div class="d-grid mt-4 d-md-block">
-                    <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
-                    <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
-                    <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
-                </div>
+                @if($recruitment->state == 'draft_contract_pending')
+                    <div id="action_buttons" class="d-grid mt-4 d-none">
+                        <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
+                        <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
+                        <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
+                    </div>
+                @else
+                    <div class="d-grid mt-4 d-md-block">
+                        <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
+                        <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
+                        <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
+                    </div>
+                @endif    
             </div>
             <div class="tab-pane fade" id="tab_status_history" role="tabpanel">
                 <div id="status_history">

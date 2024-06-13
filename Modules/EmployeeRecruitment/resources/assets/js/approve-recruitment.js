@@ -104,6 +104,6 @@ $(function () {
     });
 
     $('.print-icon').on('click', function() {
-        $('#message_parent').removeClass('d-none');
+        $('#message_parent, #action_buttons').removeClass('d-none').addClass('d-md-block');
     });
 });

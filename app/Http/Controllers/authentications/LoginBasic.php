@@ -20,7 +20,7 @@ class LoginBasic extends Controller
 
         if (Auth::guard('dynamic')->attempt(['email' => $request['email-username'], 'password' => $request['password']])) {
             $user = Auth::guard('dynamic')->user();
-            if ($user->roles->isEmpty()) {
+            if ($user->roles->isEmpty() || $user->deleted) {
                 Auth::guard('dynamic')->logout();
                 return back()->withErrors([
                     'email-username' => 'Nincs jogosultsága a belépéshez',

@@ -482,11 +482,6 @@ function filterRoomOptions() {
         return optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
     }).remove();
 
-    // Select options where data-workgroup is equal to selectedWorkgroup1 or selectedWorkgroup2
-    $('#entry_permissions option').filter(function() {
-        let optionWorkgroup = $(this).data('workgroup');
-        return $(this).val() !== 'auto' && $(this).val() !== 'kerekpar' && (optionWorkgroup === selectedWorkgroup1 || optionWorkgroup === selectedWorkgroup2);
-    }).prop('selected', true);
     $('#entry_permissions').trigger('change');
 }
 

@@ -10,23 +10,21 @@ $(function () {
 
     $('#chemical_hazards_exposure').select2();
 
-    $('#manual_handling').on('change', function () {
-        if ($(this).val() !== '') {
-            $('.manual_handling').removeClass('d-none');
+    // dynamically appeared contols
+    dynamicControls('manual_handling', 'manual_handling');
+    dynamicControls('increased_accident_risk', 'increased_accident_risk');
+    dynamicControls('other_risks', 'other_risks');
+    dynamicControls('stressful_workplace_climate', 'stressful_workplace_climate');
+    dynamicControls('dust_exposure', 'dust_exposure');
+    dynamicControls('chemicals_exposure', 'chemicals_exposure');
+    $('#chemical_hazards_exposure').on('change', function () {
+        if ($(this).val().includes('egyeb')) {
+            $('.chemical_hazards_exposure').removeClass('d-none');
         } else {
-            $('.manual_handling').addClass('d-none');
+            $('.chemical_hazards_exposure').addClass('d-none');
         }
     });
-    $('#manual_handling').trigger('change');
-
-    $('#increased_accident_risk').on('change', function () {
-        if ($(this).val() !== '') {
-            $('.increased_accident_risk').removeClass('d-none');
-        } else {
-            $('.increased_accident_risk').addClass('d-none');
-        }
-    });
-    $('#increased_accident_risk').trigger('change');
+    // end of dynamically appeared contols
 
     // file uploads
     DropzoneManager.init('contract');
@@ -127,3 +125,14 @@ $(function () {
         $('#message_parent, #action_buttons').removeClass('d-none').addClass('d-md-block');
     });
 });
+
+function dynamicControls(source, target) {
+    $('#' + source).on('change', function () {
+        if ($(this).val() !== '') {
+            $('.' + target).removeClass('d-none');
+        } else {
+            $('.' + target).addClass('d-none');
+        }
+    });
+    $('#' + source).trigger('change');
+}

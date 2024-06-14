@@ -10,7 +10,7 @@
 
         <div class="row">
             <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Kézi anyagmozgatás</span>
                     </div>
@@ -70,7 +70,7 @@
             </div>
 
             <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Fokozott baleseti veszély (tűz- és robbanásveszély, feszültség alatti munka, magasban végzett munka, egyéb)</span>
                     </div>
@@ -133,7 +133,8 @@
                 <div class="row align-items-center d-none increased_accident_risk">
                     <div class="col-6">
                         <span>Egyéb</span>
-                        <textarea id="other_risks_description" name="other_risks_description" class="form-control" rows="3"></textarea>
+                        <span class="d-none other_risks"> fokozott baleseti veszéllyel járó kockázati tényező felsorolása</span>
+                        <textarea id="other_risks_description" name="other_risks_description" class="form-control d-none other_risks" rows="3"></textarea>
                     </div>
                     <div class="col-6">
                         <select id="other_risks" name="other_risks" class="form-select">
@@ -146,7 +147,7 @@
             </div>
 
             <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Kényszertesthelyzet (görnyedés, guggolás)</span>
                     </div>
@@ -206,9 +207,11 @@
             </div>
         </div>
 
+        <hr class="mt-3" />
+
         <div class="row">
-            <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+            <div class="col-xl-4">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Terhelő munkahelyi klíma (meleg, hideg, nedves, változó)</span>
                     </div>
@@ -221,9 +224,9 @@
                     </div>
                 </div>
 
-                <hr class="mt-1 mb-1" />
+                <hr class="mt-1 mb-1 d-none stressful_workplace_climate" />
                 
-                <div class="row align-items-center">
+                <div class="row align-items-center d-none stressful_workplace_climate">
                     <div class="col-6">
                         <span>Hőexpozíció (a munkahelyi hőmérséklet meghaladja a 24 °C korrigált effektív hőmérsékletet)</span>
                     </div>
@@ -236,9 +239,9 @@
                     </div>
                 </div>
 
-                <hr class="mt-1 mb-1" />
+                <hr class="mt-1 mb-1 d-none stressful_workplace_climate" />
                 
-                <div class="row align-items-center">
+                <div class="row align-items-center d-none stressful_workplace_climate">
                     <div class="col-6">
                         <span>Hideg expozíció (zárt térben +10 °C alatti munkavégzés)</span>
                     </div>
@@ -282,8 +285,8 @@
                 </div>
             </div>
 
-            <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+            <div class="col-xl-4">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Nem-ionizáló sugárzás</span>
                     </div>
@@ -345,8 +348,9 @@
                 
                 <div class="row align-items-center">
                     <div class="col-6">
-                        <span>Porok</span>
-                        <textarea id="dust_exposure_description" name="dust_exposure_description" class="form-control" rows="3"></textarea>
+                        <span>Porok</span><br />
+                        <span class="d-none dust_exposure">Használni tervezett porok megnevezése</span>
+                        <textarea id="dust_exposure_description" name="dust_exposure_description" class="form-control d-none dust_exposure" rows="3"></textarea>
                     </div>
                     <div class="col-6">
                         <select id="dust_exposure" name="dust_exposure" class="form-select">
@@ -358,8 +362,8 @@
                 </div>
             </div>
 
-            <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+            <div class="col-xl-4">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Vegyi anyagok</span>
                     </div>
@@ -372,32 +376,28 @@
                     </div>
                 </div>
 
-                <hr class="mt-1 mb-1" />
+                <hr class="mt-1 mb-1 d-none chemicals_exposure" />
                 
-                <div class="row align-items-center">
+                <div class="row align-items-center d-none chemicals_exposure">
                     <div class="col-6">
                         <span>Kémiai kóroki tényezők</span>
                     </div>
                     <div class="col-6">
                         <select id="chemical_hazards_exposure" name="chemical_hazards_exposure" class="form-select select2" multiple>
-                            <!-- Options are loaded via AJAX -->
+                            @foreach($chemicalFactors as $factor)
+                                <option value="{{ $factor->id }}">{{ $factor->factor }}</option>
+                            @endforeach
+                            <option value="egyeb">Egyéb</option>
                         </select>
                     </div>
                 </div>
 
-                <hr class="mt-1 mb-1" />
+                <hr class="mt-1 mb-1 d-none chemical_hazards_exposure" />
                 
-                <div class="row align-items-center">
-                    <div class="col-6">
+                <div class="row align-items-center d-none chemical_hazards_exposure">
+                    <div class="col-12">
                         <span>Egyéb vegyi anyagok megnevezése</span>
                         <textarea id="other_chemicals_description" name="other_chemicals_description" class="form-control" rows="3"></textarea>
-                    </div>
-                    <div class="col-6">
-                        <select id="other_chemicals_exposure" name="other_chemicals_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
-                        </select>
                     </div>
                 </div>
 
@@ -434,9 +434,11 @@
             </div>
         </div>
 
+        <hr class="mt-3" />
+
         <div class="row">
-            <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+            <div class="col-xl-4">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Járványügyi érdekből kiemelt munkakör (egészségügyi könyvhöz kötött munkakör)</span>
                     </div>
@@ -495,8 +497,8 @@
                 </div>
             </div>
 
-            <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+            <div class="col-xl-4">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Éjszakai műszakban végzett munka</span>
                     </div>
@@ -555,8 +557,8 @@
                 </div>
             </div>
 
-            <div class="g-3 col-xl-4">
-                <div class="row mt-3 align-items-center">
+            <div class="col-xl-4">
+                <div class="row align-items-center">
                     <div class="col-6">
                         <span>Időskor (nyugdíj melletti munkavégzés)</span>
                     </div>

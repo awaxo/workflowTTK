@@ -5,6 +5,7 @@ namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 use App\Events\ApproverAssignedEvent;
 use App\Events\StateChangedEvent;
 use App\Http\Controllers\Controller;
+use App\Models\ChemicalPathogenicFactor;
 use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
 use App\Models\Institute;
@@ -19,6 +20,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
@@ -310,13 +312,15 @@ class EmployeeRecruitmentController extends Controller
         if ($recruitment->state != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             // IT workgroup
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
-
+            $chemicalFactors = ChemicalPathogenicFactor::where('deleted', 0)->get();
+            
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
+                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment),
+                'chemicalFactors' => $chemicalFactors
             ]);
         } else {
             return view('content.pages.misc-not-authorized');

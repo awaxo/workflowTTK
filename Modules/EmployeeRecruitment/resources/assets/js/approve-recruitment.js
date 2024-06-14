@@ -8,6 +8,26 @@ $(function () {
         });
     });
 
+    $('#chemical_hazards_exposure').select2();
+
+    $('#manual_handling').on('change', function () {
+        if ($(this).val() !== '') {
+            $('.manual_handling').removeClass('d-none');
+        } else {
+            $('.manual_handling').addClass('d-none');
+        }
+    });
+    $('#manual_handling').trigger('change');
+
+    $('#increased_accident_risk').on('change', function () {
+        if ($(this).val() !== '') {
+            $('.increased_accident_risk').removeClass('d-none');
+        } else {
+            $('.increased_accident_risk').addClass('d-none');
+        }
+    });
+    $('#increased_accident_risk').trigger('change');
+
     // file uploads
     DropzoneManager.init('contract');
 

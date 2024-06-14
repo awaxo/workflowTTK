@@ -4,12 +4,17 @@
 
 @section('vendor-style')
     @vite([
+        'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.scss',
+        'resources/assets/vendor/libs/select2/select2.scss',
         'resources/assets/vendor/libs/dropzone/dropzone.scss',
     ])
 @endsection
 
 @section('vendor-script')
     @vite([
+        'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
+        'resources/assets/vendor/libs/select2/select2.js',
+        'resources/assets/vendor/libs/select2/i18n/hu.js',
         'resources/assets/vendor/libs/cleavejs/cleave.js',
         'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
         'resources/assets/vendor/libs/dropzone/dropzone.min.js',

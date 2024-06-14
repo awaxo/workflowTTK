@@ -10,6 +10,10 @@ class CheckAdminRole
 {
     public function handle($request, Closure $next)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        
         $user = User::find(Auth::id());
         if (!$user || !$user->hasRole('adminisztrator')) {
             return response()->view('content.pages.misc-not-authorized');

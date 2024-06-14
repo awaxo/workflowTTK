@@ -10,11 +10,11 @@ class CheckWorkgroup910And911Users
 {
     public function handle($request, Closure $next)
     {
-        $user = User::find(Auth::id());
-
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
+
+        $user = User::find(Auth::id());
 
         if ($user && $user->hasRole('adminisztrator')) {
             return $next($request);

@@ -648,8 +648,9 @@ class EmployeeRecruitmentController extends Controller
                 function ($attribute, $value, $fail) {
                     $value = str_replace(' ', '', $value);
                     if (request('health_allowance_cost_center_4')) {
-                        if (!is_numeric($value) || $value < 1000 || $value > 20000) {
-                            $fail('Az érték 1000 és 20 000 között lehet');
+                        $weeklyWorkingHours = request('weekly_working_hours');
+                        if (!is_numeric($value) || $value != $weeklyWorkingHours * 500) {
+                            $fail('Az érték csak ' . $weeklyWorkingHours . ' lehet');
                         }
                     } else {
                         if ($value && $value != 0) {

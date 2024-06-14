@@ -964,11 +964,11 @@ function validateEmployeeRecruitment() {
                         callback: {
                             callback: function(input) {
                                 var weeklyWorkingHours = $('#weekly_working_hours').val();
-                                var maxValue = weeklyWorkingHours * 500;
+                                var exactValue = weeklyWorkingHours * 500;
                                 if ($('#health_allowance_cost_center_4').val()) {
                                     return {
-                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= maxValue,
-                                        message: 'Az érték 1000 és ' + maxValue + ' között lehet'
+                                        valid: cleaveInstances[input.field].getRawValue() == exactValue,
+                                        message: 'Az érték csak ' + exactValue + ' lehet'
                                     };
                                 } else {
                                     return {

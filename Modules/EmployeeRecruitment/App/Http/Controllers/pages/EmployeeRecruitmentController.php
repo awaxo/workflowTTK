@@ -94,8 +94,8 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->job_ad_exists = request('job_ad_exists') == 'true' ? 1 : 0;
         $recruitment->has_prior_employment = request('has_prior_employment') == 'true' ? 1 : 0;
         $recruitment->has_current_volunteer_contract = request('has_current_volunteer_contract') == 'true' ? 1 : 0;
-        $recruitment->applicants_female_count = str_replace(' ', '', $validatedData['applicants_female_count']);
-        $recruitment->applicants_male_count = str_replace(' ', '', $validatedData['applicants_male_count']);
+        $recruitment->applicants_female_count = str_replace(' ', '', $validatedData['applicants_female_count']) == '' ? null : str_replace(' ', '', $validatedData['applicants_female_count']);
+        $recruitment->applicants_male_count = str_replace(' ', '', $validatedData['applicants_male_count']) == '' ? null : str_replace(' ', '', $validatedData['applicants_male_count']);
         $recruitment->citizenship = request('citizenship');
         $recruitment->workgroup_id_1 = $validatedData['workgroup_id_1'];
         $recruitment->workgroup_id_2 = request('workgroup_id_2') == -1 ? null : request('workgroup_id_2');

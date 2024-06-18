@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body">
+    <div class="card-body" id="health_allowance">
         <div class="content-header mb-3 d-flex justify-content-between align-items-center">
             <div>
                 <h5 class="mb-0">A munkakör (munkahely) főbb egészségkárosító kockázatai</h5>
@@ -401,9 +401,9 @@
                     </div>
                 </div>
 
-                <hr class="mt-1 mb-1" />
+                <hr class="mt-1 mb-1 d-none chemicals_exposure" />
                 
-                <div class="row align-items-center">
+                <div class="row align-items-center d-none chemicals_exposure">
                     <div class="col-6">
                         <span>Rákkeltő anyagok</span>
                     </div>
@@ -416,19 +416,12 @@
                     </div>
                 </div>
 
-                <hr class="mt-1 mb-1" />
+                <hr class="mt-1 mb-1 d-none carcinogenic_substances_exposure" />
                 
-                <div class="row align-items-center">
-                    <div class="col-6">
+                <div class="row align-items-center d-none carcinogenic_substances_exposure">
+                    <div class="col-12">
                         <span>Használni tervezett rákkeltő anyagok felsorolása</span>
                         <textarea id="planned_carcinogenic_substances_list" name="planned_carcinogenic_substances_list" class="form-control" rows="3"></textarea>
-                    </div>
-                    <div class="col-6">
-                        <select id="planned_carcinogenic_substances_exposure" name="planned_carcinogenic_substances_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -563,7 +556,7 @@
                         <span>Időskor (nyugdíj melletti munkavégzés)</span>
                     </div>
                     <div class="col-6">
-                        <select id="night_shift_work" name="night_shift_work" class="form-select">
+                        <select id="working_alongside_pension" name="working_alongside_pension" class="form-select">
                             <option value="" selected>Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
@@ -578,7 +571,7 @@
                         <span>Egyéb</span>
                     </div>
                     <div class="col-6">
-                        <select id="psychosocial_factors" name="psychosocial_factors" class="form-select">
+                        <select id="others" name="others" class="form-select">
                             <option value="" selected>Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
@@ -586,19 +579,12 @@
                     </div>
                 </div>
 
-                <hr class="mt-1 mb-1" />
+                <hr class="mt-1 mb-1 d-none others" />
                 
-                <div class="row align-items-center">
-                    <div class="col-6">
+                <div class="row align-items-center d-none others">
+                    <div class="col-12">
                         <span>Egyéb egészségkárosító kockázatok megnevezése</span>
-                        <textarea id="planned_carcinogenic_substances_list" name="planned_carcinogenic_substances_list" class="form-control" rows="3"></textarea>
-                    </div>
-                    <div class="col-6">
-                        <select id="personal_protective_equipment_stress" name="personal_protective_equipment_stress" class="form-select">
-                            <option value="" selected>Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
-                        </select>
+                        <textarea id="planned_other_health_risk_factors" name="planned_other_health_risk_factors" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
             </div>

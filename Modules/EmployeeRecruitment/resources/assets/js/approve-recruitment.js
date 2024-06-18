@@ -1,3 +1,4 @@
+import GLOBALS from '../../../../../resources/js/globals.js';
 import DropzoneManager from '../../../../../resources/js/dropzone-manager';
 
 $(function () {
@@ -24,6 +25,9 @@ $(function () {
             $('.chemical_hazards_exposure').addClass('d-none');
         }
     });
+    dynamicControls('chemicals_exposure', 'chemicals_exposure');
+    dynamicControls('carcinogenic_substances_exposure', 'carcinogenic_substances_exposure');
+    dynamicControls('others', 'others');
     // end of dynamically appeared contols
 
     // file uploads
@@ -43,22 +47,46 @@ $(function () {
 
     $('#confirm_approve').on('click', function () {
         var recruitmentId = $(this).data('recruitment-id');
+        let fv = validateHealthAllowance();
 
-        $.ajax({
-            url: '/employee-recruitment/' + recruitmentId + '/approve',
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content'),
-                probation_period: $('#probation_period').val(),
-                post_financed_application: $('#post_financed_application').val(),
-                contract_file: $('#contract_file').val(),
-                message: $('#message').val()
-            },
-            success: function (response) {
-                window.location.href = response.redirectUrl;
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown);
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                var formData = {};
+                $('#health_allowance select, #health_allowance textarea').each(function() {
+                    var id = $(this).attr('id');
+                    var value = $(this).val();
+                    formData[id] = value;
+                });
+
+                formData['_token'] = $('meta[name="csrf-token"]').attr('content');
+                formData['probation_period'] = $('#probation_period').val();
+                formData['post_financed_application'] = $('#post_financed_application').val();
+                formData['contract_file'] = $('#contract_file').val();
+                formData['message'] = $('#message').val();
+
+                $.ajax({
+                    url: '/employee-recruitment/' + recruitmentId + '/approve',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        window.location.href = response.redirectUrl;
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus, errorThrown);
+                    }
+                });
+            } else if (status === 'Invalid') {
+                var fields = fv.getFields();
+                Object.keys(fields).forEach(function(name) {
+                    fv.validateField(name)
+                        .then(function(status) {
+                            if (status === 'Invalid') {
+                                console.log('Field:', name, 'Status:', status);
+                                GLOBALS.AJAX_ERROR('Az egészségkárosító kockázati adatoknál hiányzó mező(k) vannak, kérjük ellenőrizd!', null, null, null, '.decision-controls');
+                            }
+                        });
+                });
+                $('#approveConfirmation').modal('hide');
             }
         });
     });
@@ -135,4 +163,28 @@ function dynamicControls(source, target) {
         }
     });
     $('#' + source).trigger('change');
+}
+
+function revalidateOnChange(fv, targetId) {
+    $('#' + targetId).on('change', function() {
+        fv.revalidateField(targetId);
+    });
+}
+
+function validateHealthAllowance() {
+    return FormValidation.formValidation(
+        document.getElementById('health_allowance'),
+        {
+            fields: {
+                //
+            },
+            plugins: {
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            },
+        }
+    ).on('core.field.invalid', function(field) {
+        $(`#${field}`).next().addClass('is-invalid');
+    }).on('core.field.valid', function(field) {
+        $(`#${field}`).next().removeClass('is-invalid');
+    });
 }

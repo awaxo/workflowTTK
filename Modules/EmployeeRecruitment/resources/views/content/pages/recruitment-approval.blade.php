@@ -6,6 +6,7 @@
     @vite([
         'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.scss',
         'resources/assets/vendor/libs/select2/select2.scss',
+        'resources/assets/vendor/libs/@form-validation/form-validation.scss',
         'resources/assets/vendor/libs/dropzone/dropzone.scss',
     ])
 @endsection
@@ -15,6 +16,9 @@
         'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
         'resources/assets/vendor/libs/select2/select2.js',
         'resources/assets/vendor/libs/select2/i18n/hu.js',
+        'resources/assets/vendor/libs/@form-validation/popular.js',
+        'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
+        'resources/assets/vendor/libs/@form-validation/auto-focus.js',
         'resources/assets/vendor/libs/cleavejs/cleave.js',
         'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
         'resources/assets/vendor/libs/dropzone/dropzone.min.js',
@@ -83,7 +87,10 @@
                 @endif
                 @if($recruitment->state == 'draft_contract_pending')
                     <div class="col-sm-2 mb-3 mt-4">
-                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon" target="_blank">
+                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon me-5" target="_blank" title="Felvételi kérelem">
+                            <i class="fa fa-print fs-1"></i>
+                        </a>
+                        <a href="{{ route('generateMedical.pdf', ['id' => $id]) }}" class="print-icon" target="_blank" title="Beutalás munkaköri orvosi alkalmassági vizsgálatra">
                             <i class="fa fa-print fs-1"></i>
                         </a>
                     </div>
@@ -122,7 +129,7 @@
                         <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>
                     </div>
                 @else
-                    <div class="d-grid mt-4 d-md-block">
+                    <div class="d-grid mt-4 d-md-block decision-controls">
                         <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>
                         <button type="button" id="reject" class="btn btn-label-danger me-2">Elutasítás</button>
                         <button type="button" id="suspend" class="btn btn-label-warning">Felfüggesztés</button>

@@ -23,12 +23,12 @@ class GLOBALS {
         }
     };
 
-    static AJAX_ERROR = function(message, jqXHR = null, textStatus = null, errorThrown = null) {
+    static AJAX_ERROR = function(message, jqXHR = null, textStatus = null, errorThrown = null, insertBefore = '.nav-align-top') {
         if ($('.alert-danger:visible').length === 0) {
             $('<div class="alert alert-danger alert-dismissible" role="alert">' +
                 '<span>' + message + '</span>' +
                 '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-            '</div>').insertBefore('.nav-align-top');
+            '</div>').insertBefore(insertBefore);
             
             console.log(textStatus, errorThrown);
         }

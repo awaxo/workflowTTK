@@ -528,6 +528,17 @@ class EmployeeRecruitmentController extends Controller
         return $pdf->download('FelveteliKerelem_' . $id . '.pdf');
     }
 
+    public function generateMedicalPDF($id)
+    {
+        $recruitment = RecruitmentWorkflow::with('position')->find($id);
+        $pdf = PDF::loadView('employeerecruitment::content.pdf.medicalEligibility', [
+            'recruitment' => $recruitment,
+            'medical' => json_decode($recruitment->medical_eligibility_data, true) ?? [],
+        ]);
+
+        return $pdf->download('OrvosiAlkalmassagBeutalo_' . $id . '.pdf');
+    }
+
     private function getSumOfSallaries($recruitment)
     {
         $monthlyGrossSalaries = [

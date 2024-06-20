@@ -52,11 +52,14 @@ $(function () {
         fv.validate().then(function(status) {
             if(status === 'Valid') {
                 var formData = {};
-                $('#health_allowance select, #health_allowance textarea').each(function() {
-                    var id = $(this).attr('id');
-                    var value = $(this).val();
-                    formData[id] = value;
-                });
+                if (id === 'chemical_hazards_exposure') {
+                    value = $(this).select2('data').map(function(option) {
+                        return option.value;
+                    });
+                } else {
+                    value = $(this).val();
+                }
+                formData[id] = value;
 
                 formData['_token'] = $('meta[name="csrf-token"]').attr('content');
                 formData['probation_period'] = $('#probation_period').val();

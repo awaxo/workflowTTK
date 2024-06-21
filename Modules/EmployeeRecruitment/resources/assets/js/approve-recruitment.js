@@ -47,51 +47,68 @@ $(function () {
 
     $('#confirm_approve').on('click', function () {
         var recruitmentId = $(this).data('recruitment-id');
-        let fv = validateHealthAllowance();
 
-        fv.validate().then(function(status) {
-            if(status === 'Valid') {
-                var formData = {};
-                if (id === 'chemical_hazards_exposure') {
-                    value = $(this).select2('data').map(function(option) {
-                        return option.value;
-                    });
-                } else {
-                    value = $(this).val();
-                }
-                formData[id] = value;
-
-                formData['_token'] = $('meta[name="csrf-token"]').attr('content');
-                formData['probation_period'] = $('#probation_period').val();
-                formData['post_financed_application'] = $('#post_financed_application').val();
-                formData['contract_file'] = $('#contract_file').val();
-                formData['message'] = $('#message').val();
-
-                $.ajax({
-                    url: '/employee-recruitment/' + recruitmentId + '/approve',
-                    type: 'POST',
-                    data: formData,
-                    success: function (response) {
-                        window.location.href = response.redirectUrl;
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus, errorThrown);
-                    }
-                });
-            } else if (status === 'Invalid') {
-                var fields = fv.getFields();
-                Object.keys(fields).forEach(function(name) {
-                    fv.validateField(name)
-                        .then(function(status) {
-                            if (status === 'Invalid') {
-                                console.log('Field:', name, 'Status:', status);
-                                GLOBALS.AJAX_ERROR('Az egészségkárosító kockázati adatoknál hiányzó mező(k) vannak, kérjük ellenőrizd!', null, null, null, '.decision-controls');
-                            }
+        if ($('#state').val() === 'group_lead_approval') {
+            let fv = validateHealthAllowance();
+            fv.validate().then(function(status) {
+                if(status === 'Valid') {
+                    var formData = {};
+                    if (id === 'chemical_hazards_exposure') {
+                        value = $(this).select2('data').map(function(option) {
+                            return option.value;
                         });
-                });
-                $('#approveConfirmation').modal('hide');
-            }
-        });
+                    } else {
+                        value = $(this).val();
+                    }
+                    formData[id] = value;
+
+                    formData['_token'] = $('meta[name="csrf-token"]').attr('content');
+                    formData['message'] = $('#message').val();
+
+                    $.ajax({
+                        url: '/employee-recruitment/' + recruitmentId + '/approve',
+                        type: 'POST',
+                        data: formData,
+                        success: function (response) {
+                            window.location.href = response.redirectUrl;
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus, errorThrown);
+                        }
+                    });
+                } else if (status === 'Invalid') {
+                    var fields = fv.getFields();
+                    Object.keys(fields).forEach(function(name) {
+                        fv.validateField(name)
+                            .then(function(status) {
+                                if (status === 'Invalid') {
+                                    console.log('Field:', name, 'Status:', status);
+                                    GLOBALS.AJAX_ERROR('Az egészségkárosító kockázati adatoknál hiányzó mező(k) vannak, kérjük ellenőrizd!', null, null, null, '.decision-controls');
+                                }
+                            });
+                    });
+                    $('#approveConfirmation').modal('hide');
+                }
+            });
+        } else {
+            $.ajax({
+                url: '/employee-recruitment/' + recruitmentId + '/approve',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    probation_period: $('#probation_period').val(),
+                    post_financed_application: $('#post_financed_application').val(),
+                    contract_file: $('#contract_file').val(),
+                    message: $('#message').val()
+                },
+                success: function (response) {
+                    window.location.href = response.redirectUrl;
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+        }
     });
 
     $('#reject').on('click', function () {
@@ -152,8 +169,29 @@ $(function () {
         });
     });
 
-    $('.print-icon').on('click', function() {
-        $('#message_parent, #action_buttons').removeClass('d-none').addClass('d-md-block');
+    // Initialize an object to track clicks
+    const printIconClicked = {
+        'print-icon-1': false,
+        'print-icon-2': false
+    };
+
+    // Function to check if both icons have been clicked
+    function checkIconsAndShow() {
+        if (printIconClicked['print-icon-1'] && printIconClicked['print-icon-2']) {
+            $('#message_parent, #action_buttons').removeClass('d-none').addClass('d-md-block');
+        }
+    }
+
+    // Event listener for print-icon-1
+    $('.print-icon-1').on('click', function() {
+        printIconClicked['print-icon-1'] = true;
+        checkIconsAndShow();
+    });
+
+    // Event listener for print-icon-2
+    $('.print-icon-2').on('click', function() {
+        printIconClicked['print-icon-2'] = true;
+        checkIconsAndShow();
     });
 });
 

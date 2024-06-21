@@ -15,13 +15,23 @@
             padding: 0;
         }
         
-        .header {
+        .header-table {
+            width: 100%;
+        }
+        .header-table td {
+            width: 50%;
+            vertical-align: middle;
+        }
+        .header-logo img {
+            width: auto;
+            height: 60px;
+            max-width: 100%;
+        }
+        .header-text {
             text-align: right;
-            margin-bottom: 15px;
             font-size: 0.5em;
         }
-        
-        .header .title {
+        .header-text .title {
             font-size: 0.8em;
             font-weight: bold;
         }
@@ -93,16 +103,22 @@
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <div class="title">TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
-        <div class="subtitle">GAZDASÁGI IGAZGATÓSÁG</div>
-        <div>1117 BUDAPEST, MAGYAR TUDÓSOK KÖRÚTJA 2.</div>
-        <div>LEVÉLCÍM: 1519 BUDAPEST, PF. 286.</div>
-        <div>TELEFON:</div>
-        <div>E-MAIL:</div>
-        <div>www.ttk.hu</div>
-    </div>
+    <table class="header-table">
+        <tr>
+            <td class="header-logo">
+                <img src="assets/img/logo/logo.jpg" alt="Logo">
+            </td>
+            <td class="header-text">
+                <div class="title">TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
+                <div class="subtitle">GAZDASÁGI IGAZGATÓSÁG</div>
+                <div>1117 BUDAPEST, MAGYAR TUDÓSOK KÖRÚTJA 2.</div>
+                <div>LEVÉLCÍM: 1519 BUDAPEST, PF. 286.</div>
+                <div>TELEFON:</div>
+                <div>E-MAIL:</div>
+                <div>www.ttk.hu</div>
+            </td>
+        </tr>
+    </table>
 
     <div class="section-title">Beutaló munkaköri orvosi alkalmassági vizsgálatra</div>
 

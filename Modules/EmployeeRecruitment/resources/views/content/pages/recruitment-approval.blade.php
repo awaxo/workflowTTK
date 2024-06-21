@@ -87,10 +87,10 @@
                 @endif
                 @if($recruitment->state == 'draft_contract_pending')
                     <div class="col-sm-2 mb-3 mt-4">
-                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon me-5" target="_blank" title="Felvételi kérelem">
+                        <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon-1 me-5" target="_blank" title="Felvételi kérelem">
                             <i class="fa fa-print fs-1"></i>
                         </a>
-                        <a href="{{ route('generateMedical.pdf', ['id' => $id]) }}" class="print-icon" target="_blank" title="Beutalás munkaköri orvosi alkalmassági vizsgálatra">
+                        <a href="{{ route('generateMedical.pdf', ['id' => $id]) }}" class="print-icon-2" target="_blank" title="Beutalás munkaköri orvosi alkalmassági vizsgálatra">
                             <i class="fa fa-print fs-1"></i>
                         </a>
                     </div>

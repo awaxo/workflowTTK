@@ -5,7 +5,7 @@
                 <h5 class="mb-0">A munkakör (munkahely) főbb egészségkárosító kockázatai</h5>
                 <small>33/1998 (VI. 24.) NM rendelet szerint</small>
             </div>
-            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal" title="Segítség"></i>
+            <!--<i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal" title="Segítség"></i>-->
         </div>
 
         <div class="row">
@@ -16,7 +16,8 @@
                     </div>
                     <div class="col-6">
                         <select id="manual_handling" name="manual_handling" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -31,7 +32,8 @@
                     </div>
                     <div class="col-6">
                         <select id="manual_handling_weight_5_20" name="manual_handling_weight_5_20" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -46,7 +48,8 @@
                     </div>
                     <div class="col-6">
                         <select id="manual_handling_weight_20_50" name="manual_handling_weight_20_50" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -61,7 +64,8 @@
                     </div>
                     <div class="col-6">
                         <select id="manual_handling_weight_over_50" name="manual_handling_weight_over_50" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkaidő egy részében</option>
                         </select>
@@ -76,7 +80,8 @@
                     </div>
                     <div class="col-6">
                         <select id="increased_accident_risk" name="increased_accident_risk" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -91,7 +96,8 @@
                     </div>
                     <div class="col-6">
                         <select id="fire_and_explosion_risk" name="fire_and_explosion_risk" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -106,7 +112,8 @@
                     </div>
                     <div class="col-6">
                         <select id="live_electrical_work" name="live_electrical_work" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -121,7 +128,8 @@
                     </div>
                     <div class="col-6">
                         <select id="high_altitude_work" name="high_altitude_work" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkaidő egy részében</option>
                         </select>
@@ -138,7 +146,8 @@
                     </div>
                     <div class="col-6">
                         <select id="other_risks" name="other_risks" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkaidő egy részében</option>
                         </select>
@@ -153,7 +162,8 @@
                     </div>
                     <div class="col-6">
                         <select id="forced_body_position" name="forced_body_position" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -168,7 +178,8 @@
                     </div>
                     <div class="col-6">
                         <select id="sitting" name="sitting" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -183,7 +194,8 @@
                     </div>
                     <div class="col-6">
                         <select id="standing" name="standing" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -198,7 +210,8 @@
                     </div>
                     <div class="col-6">
                         <select id="walking" name="walking" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkaidő egy részében</option>
                         </select>
@@ -217,7 +230,8 @@
                     </div>
                     <div class="col-6">
                         <select id="stressful_workplace_climate" name="stressful_workplace_climate" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -232,7 +246,8 @@
                     </div>
                     <div class="col-6">
                         <select id="heat_exposure" name="heat_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -247,7 +262,8 @@
                     </div>
                     <div class="col-6">
                         <select id="cold_exposure" name="cold_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -262,7 +278,8 @@
                     </div>
                     <div class="col-6">
                         <select id="noise_exposure" name="noise_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -277,7 +294,8 @@
                     </div>
                     <div class="col-6">
                         <select id="ionizing_radiation_exposure" name="ionizing_radiation_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -292,7 +310,8 @@
                     </div>
                     <div class="col-6">
                         <select id="non_ionizing_radiation_exposure" name="non_ionizing_radiation_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -307,7 +326,8 @@
                     </div>
                     <div class="col-6">
                         <select id="local_vibration_exposure" name="local_vibration_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -322,7 +342,8 @@
                     </div>
                     <div class="col-6">
                         <select id="whole_body_vibration_exposure" name="whole_body_vibration_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -337,7 +358,8 @@
                     </div>
                     <div class="col-6">
                         <select id="ergonomic_factors_exposure" name="ergonomic_factors_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -354,7 +376,8 @@
                     </div>
                     <div class="col-6">
                         <select id="dust_exposure" name="dust_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -369,7 +392,8 @@
                     </div>
                     <div class="col-6">
                         <select id="chemicals_exposure" name="chemicals_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -409,7 +433,8 @@
                     </div>
                     <div class="col-6">
                         <select id="carcinogenic_substances_exposure" name="carcinogenic_substances_exposure" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -437,7 +462,8 @@
                     </div>
                     <div class="col-6">
                         <select id="epidemiological_interest_position" name="epidemiological_interest_position" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -452,7 +478,8 @@
                     </div>
                     <div class="col-6">
                         <select id="infection_risk" name="infection_risk" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -467,7 +494,8 @@
                     </div>
                     <div class="col-6">
                         <select id="psychological_stress" name="psychological_stress" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -482,7 +510,8 @@
                     </div>
                     <div class="col-6">
                         <select id="screen_time" name="screen_time" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -497,7 +526,8 @@
                     </div>
                     <div class="col-6">
                         <select id="night_shift_work" name="night_shift_work" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -512,7 +542,8 @@
                     </div>
                     <div class="col-6">
                         <select id="psychosocial_factors" name="psychosocial_factors" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -527,7 +558,8 @@
                     </div>
                     <div class="col-6">
                         <select id="personal_protective_equipment_stress" name="personal_protective_equipment_stress" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -542,7 +574,8 @@
                     </div>
                     <div class="col-6">
                         <select id="work_away_from_family" name="work_away_from_family" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -557,7 +590,8 @@
                     </div>
                     <div class="col-6">
                         <select id="working_alongside_pension" name="working_alongside_pension" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>
@@ -572,7 +606,8 @@
                     </div>
                     <div class="col-6">
                         <select id="others" name="others" class="form-select">
-                            <option value="" selected>Nincs</option>
+                            <option value="" selected></option>
+                            <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
                             <option value="resz">A munkidő egy részében</option>
                         </select>

@@ -8,6 +8,7 @@
         'resources/assets/vendor/libs/select2/select2.scss',
         'resources/assets/vendor/libs/@form-validation/form-validation.scss',
         'resources/assets/vendor/libs/dropzone/dropzone.scss',
+        'resources/css/app.css'
     ])
 @endsection
 
@@ -28,6 +29,7 @@
 
 @section('page-script')
     @vite([
+        'resources/assets/js/form-basic-inputs.js',
         'Modules/EmployeeRecruitment/resources/assets/js/approve-recruitment.js'
     ])
 @endsection

@@ -377,6 +377,9 @@ class EmployeeRecruitmentController extends Controller
                 'others',
                 'planned_other_health_risk_factors'
             ]);
+
+            Log::info($medicalEligibilityData);
+            Log::info(json_encode($medicalEligibilityData));
             
             // Encode as JSON and store in `medical_eligibility_data`
             $recruitment->medical_eligibility_data = json_encode($medicalEligibilityData);

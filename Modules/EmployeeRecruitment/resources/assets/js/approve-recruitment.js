@@ -53,18 +53,31 @@ $(function () {
             fv.validate().then(function(status) {
                 if(status === 'Valid') {
                     var formData = {};
-                    if (id === 'chemical_hazards_exposure') {
-                        value = $(this).select2('data').map(function(option) {
-                            return option.value;
-                        });
-                    } else {
-                        value = $(this).val();
-                    }
-                    formData[id] = value;
+
+                    $('#health_allowance').find('input, select, textarea').each(function() {
+                        var key = $(this).attr('name');
+                        var value;
+                    
+                        if ($(this).is(':checkbox')) {
+                            value = $(this).is(':checked');
+                        } else if ($(this).is(':radio')) {
+                            if ($(this).is(':checked')) {
+                                value = $(this).val();
+                            }
+                        } else if ($(this).is('select[multiple]')) {
+                            value = $(this).val(); // This will be an array of selected values
+                        } else {
+                            value = $(this).val();
+                        }
+                    
+                        if (key && value !== undefined) {
+                            formData[key] = value;
+                        }
+                    });
 
                     formData['_token'] = $('meta[name="csrf-token"]').attr('content');
                     formData['message'] = $('#message').val();
-
+                    
                     $.ajax({
                         url: '/employee-recruitment/' + recruitmentId + '/approve',
                         type: 'POST',
@@ -197,7 +210,7 @@ $(function () {
 
 function dynamicControls(source, target) {
     $('#' + source).on('change', function () {
-        if ($(this).val() !== '') {
+        if ($(this).val() !== '' || $(this).val() !== 'nincs') {
             $('.' + target).removeClass('d-none');
         } else {
             $('.' + target).addClass('d-none');
@@ -217,7 +230,251 @@ function validateHealthAllowance() {
         document.getElementById('health_allowance'),
         {
             fields: {
-                //
+                manual_handling: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                manual_handling_weight_5_20: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                manual_handling_weight_20_50: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                manual_handling_weight_over_50: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                increased_accident_risk: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                fire_and_explosion_risk: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                live_electrical_work: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                high_altitude_work: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                other_risks: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                forced_body_position: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                sitting: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                standing: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                walking: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                stressful_workplace_climate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                heat_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                cold_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                noise_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                ionizing_radiation_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                non_ionizing_radiation_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                local_vibration_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                whole_body_vibration_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                ergonomic_factors_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                dust_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                chemicals_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                carcinogenic_substances_exposure: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                epidemiological_interest_position: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                infection_risk: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                psychological_stress: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                screen_time: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                night_shift_work: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                psychosocial_factors: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                personal_protective_equipment_stress: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                work_away_from_family: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                working_alongside_pension: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                },
+                others: {
+                    validators: {
+                        notEmpty: {
+                            message: 'A mező kitöltése kötelező'
+                        }
+                    }
+                }                
             },
             plugins: {
                 bootstrap: new FormValidation.plugins.Bootstrap5(),

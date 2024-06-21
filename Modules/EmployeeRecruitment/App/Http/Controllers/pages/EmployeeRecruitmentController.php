@@ -333,56 +333,55 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
 
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            // Collect client fields for medical eligibility
-            $medicalEligibilityData = $request->only([
-                'manual_handling',
-                'manual_handling_weight_5_20',
-                'manual_handling_weight_20_50',
-                'manual_handling_weight_over_50',
-                'increased_accident_risk',
-                'fire_and_explosion_risk',
-                'live_electrical_work',
-                'high_altitude_work',
-                'other_risks_description',
-                'other_risks',
-                'forced_body_position',
-                'sitting',
-                'standing',
-                'walking',
-                'stressful_workplace_climate',
-                'heat_exposure',
-                'cold_exposure',
-                'noise_exposure',
-                'ionizing_radiation_exposure',
-                'non_ionizing_radiation_exposure',
-                'local_vibration_exposure',
-                'whole_body_vibration_exposure',
-                'ergonomic_factors_exposure',
-                'dust_exposure_description',
-                'dust_exposure',
-                'chemicals_exposure',
-                'chemical_hazards_exposure',
-                'other_chemicals_description',
-                'carcinogenic_substances_exposure',
-                'planned_carcinogenic_substances_list',
-                'epidemiological_interest_position',
-                'infection_risk',
-                'psychological_stress',
-                'screen_time',
-                'night_shift_work',
-                'psychosocial_factors',
-                'personal_protective_equipment_stress',
-                'work_away_from_family',
-                'working_alongside_pension',
-                'others',
-                'planned_other_health_risk_factors'
-            ]);
-
-            Log::info($medicalEligibilityData);
-            Log::info(json_encode($medicalEligibilityData));
-            
-            // Encode as JSON and store in `medical_eligibility_data`
-            $recruitment->medical_eligibility_data = json_encode($medicalEligibilityData);
+            if ($recruitment->state == 'group_lead_approval') {
+                // Collect client fields for medical eligibility
+                $medicalEligibilityData = $request->only([
+                    'manual_handling',
+                    'manual_handling_weight_5_20',
+                    'manual_handling_weight_20_50',
+                    'manual_handling_weight_over_50',
+                    'increased_accident_risk',
+                    'fire_and_explosion_risk',
+                    'live_electrical_work',
+                    'high_altitude_work',
+                    'other_risks_description',
+                    'other_risks',
+                    'forced_body_position',
+                    'sitting',
+                    'standing',
+                    'walking',
+                    'stressful_workplace_climate',
+                    'heat_exposure',
+                    'cold_exposure',
+                    'noise_exposure',
+                    'ionizing_radiation_exposure',
+                    'non_ionizing_radiation_exposure',
+                    'local_vibration_exposure',
+                    'whole_body_vibration_exposure',
+                    'ergonomic_factors_exposure',
+                    'dust_exposure_description',
+                    'dust_exposure',
+                    'chemicals_exposure',
+                    'chemical_hazards_exposure',
+                    'other_chemicals_description',
+                    'carcinogenic_substances_exposure',
+                    'planned_carcinogenic_substances_list',
+                    'epidemiological_interest_position',
+                    'infection_risk',
+                    'psychological_stress',
+                    'screen_time',
+                    'night_shift_work',
+                    'psychosocial_factors',
+                    'personal_protective_equipment_stress',
+                    'work_away_from_family',
+                    'working_alongside_pension',
+                    'others',
+                    'planned_other_health_risk_factors'
+                ]);
+                
+                // Encode as JSON and store in `medical_eligibility_data`
+                $recruitment->medical_eligibility_data = json_encode($medicalEligibilityData);
+            }
 
             if ($service->isAllApproved($recruitment)) {
                 $transition = $service->getNextTransition($recruitment);
@@ -405,9 +404,7 @@ class EmployeeRecruitmentController extends Controller
                 }                    
             }
             $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
-
-            // Encode as JSON and store in `medical_eligibility_data`
-            $recruitment->medical_eligibility_data = json_encode($medicalEligibilityData);
+            
             $recruitment->save();
 
             return response()->json(['redirectUrl' => route('workflows-all-open')]);

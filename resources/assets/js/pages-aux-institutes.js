@@ -22,6 +22,7 @@ $(function() {
             { data: 'id', visible: false, searchable: false },
             { data: 'group_level' },
             { data: 'name' },
+            { data: 'abbreviation' },
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
@@ -238,6 +239,7 @@ $(function() {
 
         $('#group_level').val(institute.group_level);
         $('#name').val(institute.name);
+        $('#abbreviation').val(institute.abbreviation);
         $('.data-submit').attr('data-institute-id', institute.id);
     });
 
@@ -249,9 +251,10 @@ $(function() {
         $('.invalid-feedback').remove();
         fv = validateInstitute();
 
-        $('#group_level, #name').on('change', function() {
+        $('#group_level, #name, #abbreviation').on('change', function() {
             fv.revalidateField('group_level');
             fv.revalidateField('name');
+            fv.revalidateField('abbreviation');
         });
 
         fv.validate().then(function(status) {
@@ -262,7 +265,8 @@ $(function() {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
                         group_level: $('#group_level').val(),
-                        name: $('#name').val()
+                        name: $('#name').val(),
+                        abbreviation: $('#abbreviation').val()
                     },
                     success: function (response) {
                         window.location.reload();
@@ -287,6 +291,7 @@ $(function() {
         $('#new_institute_label').text('Új intézet');
         $('#group_level').val('');
         $('#name').val('');
+        $('#abbreviation').val('');
 
         fv?.resetForm(true);
     });
@@ -312,6 +317,17 @@ function validateInstitute() {
                         stringLength: {
                             max: 255,
                             message: 'Az intézet neve legfeljebb 255 karakter hosszú lehet'
+                        }
+                    }
+                },
+                abbreviation: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg az intézet rövidítését'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'Az intézet rövidítése legfeljebb 255 karakter hosszú lehet'
                         }
                     }
                 }

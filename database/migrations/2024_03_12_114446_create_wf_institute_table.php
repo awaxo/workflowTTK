@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->tinyInteger('group_level');
             $table->string('name');
+            $table->string('abbreviation');
             $table->tinyInteger('deleted')->unsigned()->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');

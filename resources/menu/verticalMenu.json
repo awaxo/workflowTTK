@@ -1,18 +1,6 @@
 {
     "menu": [
     {
-        "url": "/dashboard",
-        "name": "Dashboard",
-        "icon": "menu-icon tf-icons bx bx-home-circle",
-        "slug": "pages-home"
-    },
-    {
-        "url": "/intezetek",
-        "name": "Intézetek",
-        "icon": "menu-icon tf-icons bx bx-buildings",
-        "slug": "pages-institutes"
-    },
-    {
         "url": "/",
         "name": "Folyamatok",
         "icon": "menu-icon tf-icons bx bx-directions",
@@ -54,20 +42,6 @@
         ]
     },
     {
-        "url": "/felhasznalok",
-        "name": "Felhasználók",
-        "icon": "menu-icon tf-icons bx bx-user",
-        "slug": "pages-user-list",
-        "authorize": "true"
-    },
-    {
-        "url": "/szerepkorok",
-        "name": "Szerepkörök",
-        "icon": "menu-icon tf-icons bx bx-check-shield",
-        "slug": "authorizations-permissions",
-        "authorize": "true"
-    },
-    {
         "url": "/beallitasok",
         "name": "Beállítások",
         "icon": "menu-icon tf-icons bx bx-cog",
@@ -88,6 +62,12 @@
                 "authorize": "true"
             },
             {
+                "url": "/segedadat/felhasznalok",
+                "name": "Felhasználók",
+                "slug": "auxiliary-data-pages-user-list",
+                "authorize": "true"
+            },
+{
                 "url": "/segedadat/hozzaferesi-jogosultsagok",
                 "name": "Hozzáférési jog",
                 "slug": "auxiliary-data-external-access",
@@ -115,6 +95,12 @@
                 "url": "/segedadat/munkakorok",
                 "name": "Munkakör",
                 "slug": "auxiliary-data-position",
+                "authorize": "true"
+            },
+            {
+                "url": "/segedadat/szerepkorok",
+                "name": "Szerepkörök",
+                "slug": "auxiliary-data-authorizations-permissions",
                 "authorize": "true"
             }
         ]

@@ -65,7 +65,7 @@ $(function () {
                                 value = $(this).val();
                             }
                         } else if ($(this).is('select[multiple]')) {
-                            value = $(this).val(); // This will be an array of selected values
+                            value = $(this).val();
                         } else {
                             value = $(this).val();
                         }

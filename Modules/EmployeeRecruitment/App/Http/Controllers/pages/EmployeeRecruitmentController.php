@@ -404,7 +404,7 @@ class EmployeeRecruitmentController extends Controller
                 }                    
             }
             $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
-            
+
             $recruitment->save();
 
             return response()->json(['redirectUrl' => route('workflows-all-open')]);
@@ -521,7 +521,7 @@ class EmployeeRecruitmentController extends Controller
     public function generatePDF($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
-        $pdf = PDF::loadView('employeerecruitment::content.pdf.recruitment', [
+        $pdf = Pdf::loadView('employeerecruitment::content.pdf.recruitment', [
             'recruitment' => $recruitment
         ]);
 
@@ -531,7 +531,7 @@ class EmployeeRecruitmentController extends Controller
     public function generateMedicalPDF($id)
     {
         $recruitment = RecruitmentWorkflow::with('position')->find($id);
-        $pdf = PDF::loadView('employeerecruitment::content.pdf.medicalEligibility', [
+        $pdf = Pdf::loadView('employeerecruitment::content.pdf.medicalEligibility', [
             'recruitment' => $recruitment,
             'medical' => json_decode($recruitment->medical_eligibility_data, true) ?? [],
         ]);

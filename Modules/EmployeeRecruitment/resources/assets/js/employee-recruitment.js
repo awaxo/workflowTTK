@@ -857,9 +857,9 @@ function validateEmployeeRecruitment() {
                             message: 'Kérjük, add meg a feladat leírást'
                         },
                         stringLength: {
-                            min: 50,
+                            min: 25,
                             max: 1000,
-                            message: 'A feladat leírásának 50 és 1000 karakter között kell lennie'
+                            message: 'A feladat leírásának 25 és 1000 karakter között kell lennie'
                         }
                     }
                 },

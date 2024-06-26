@@ -5,6 +5,7 @@ namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 use App\Events\ApproverAssignedEvent;
 use App\Events\StateChangedEvent;
 use App\Http\Controllers\Controller;
+use App\Models\ChemicalPathogenicFactor;
 use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
 use App\Models\Institute;
@@ -14,7 +15,7 @@ use App\Models\User;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\WorkflowService;
-use Barryvdh\DomPDF\Facade\PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -180,9 +181,6 @@ class EmployeeRecruitmentController extends Controller
             }
         }
         $recruitment->inventory_numbers_of_available_tools = json_encode($inventoryNumbers);
-        $recruitment->work_with_radioactive_isotopes = $validatedData['work_with_radioactive_isotopes'];
-        $recruitment->work_with_carcinogenic_materials = $validatedData['work_with_carcinogenic_materials'];
-        $recruitment->planned_carcinogenic_materials_use = isset($validatedData['planned_carcinogenic_materials_use']) ? $validatedData['planned_carcinogenic_materials_use'] : null;
 
         // data section 6
         $recruitment->personal_data_sheet = $this->getNewFileName($validatedData['name'], 'SzemélyiAdatlap', $validatedData['personal_data_sheet_file']);
@@ -313,13 +311,15 @@ class EmployeeRecruitmentController extends Controller
         if ($recruitment->state != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             // IT workgroup
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
-
+            $chemicalFactors = ChemicalPathogenicFactor::where('deleted', 0)->get();
+            
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
+                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment),
+                'chemicalFactors' => $chemicalFactors
             ]);
         } else {
             return view('content.pages.misc-not-authorized');
@@ -330,16 +330,66 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
-        
+
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            if ($recruitment->state == 'group_lead_approval') {
+                // Collect client fields for medical eligibility
+                $medicalEligibilityData = $request->only([
+                    'manual_handling',
+                    'manual_handling_weight_5_20',
+                    'manual_handling_weight_20_50',
+                    'manual_handling_weight_over_50',
+                    'increased_accident_risk',
+                    'fire_and_explosion_risk',
+                    'live_electrical_work',
+                    'high_altitude_work',
+                    'other_risks_description',
+                    'other_risks',
+                    'forced_body_position',
+                    'sitting',
+                    'standing',
+                    'walking',
+                    'stressful_workplace_climate',
+                    'heat_exposure',
+                    'cold_exposure',
+                    'noise_exposure',
+                    'ionizing_radiation_exposure',
+                    'non_ionizing_radiation_exposure',
+                    'local_vibration_exposure',
+                    'whole_body_vibration_exposure',
+                    'ergonomic_factors_exposure',
+                    'dust_exposure_description',
+                    'dust_exposure',
+                    'chemicals_exposure',
+                    'chemical_hazards_exposure',
+                    'other_chemicals_description',
+                    'carcinogenic_substances_exposure',
+                    'planned_carcinogenic_substances_list',
+                    'epidemiological_interest_position',
+                    'infection_risk',
+                    'psychological_stress',
+                    'screen_time',
+                    'night_shift_work',
+                    'psychosocial_factors',
+                    'personal_protective_equipment_stress',
+                    'work_away_from_family',
+                    'working_alongside_pension',
+                    'others',
+                    'planned_other_health_risk_factors'
+                ]);
+                
+                // Encode as JSON and store in `medical_eligibility_data`
+                $recruitment->medical_eligibility_data = json_encode($medicalEligibilityData);
+            }
+
             if ($service->isAllApproved($recruitment)) {
                 $transition = $service->getNextTransition($recruitment);
                 $previous_state = __('states.' . $recruitment->state);
-                
+
                 if ($transition) {
                     $this->validateFields($recruitment, $request);
                     $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
-                    $recruitment->workflow_apply($transition);   
+                    $recruitment->workflow_apply($transition);
                     $recruitment->updated_by = Auth::id();
 
                     $recruitment->save();
@@ -353,6 +403,7 @@ class EmployeeRecruitmentController extends Controller
                 }                    
             }
             $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
+
             $recruitment->save();
 
             return response()->json(['redirectUrl' => route('workflows-all-open')]);
@@ -469,11 +520,22 @@ class EmployeeRecruitmentController extends Controller
     public function generatePDF($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
-        $pdf = PDF::loadView('employeerecruitment::content.pdf.recruitment', [
+        $pdf = Pdf::loadView('employeerecruitment::content.pdf.recruitment', [
             'recruitment' => $recruitment
         ]);
 
         return $pdf->download('FelveteliKerelem_' . $id . '.pdf');
+    }
+
+    public function generateMedicalPDF($id)
+    {
+        $recruitment = RecruitmentWorkflow::with('position')->find($id);
+        $pdf = Pdf::loadView('employeerecruitment::content.pdf.medicalEligibility', [
+            'recruitment' => $recruitment,
+            'medical' => json_decode($recruitment->medical_eligibility_data, true) ?? [],
+        ]);
+
+        return $pdf->download('OrvosiAlkalmassagBeutalo_' . $id . '.pdf');
     }
 
     private function getSumOfSallaries($recruitment)
@@ -578,6 +640,9 @@ class EmployeeRecruitmentController extends Controller
     private function validateRequest() {
         return request()->validate([
             'name' => 'required|string|max:100',
+            'birth_date' => 'required|date_format:Y.m.d',
+            'social_security_number' => 'required|string|regex:/^[0-9]{3}-[0-9]{3}-[0-9]{3}$/',
+            'address' => 'required|string|max:1000',
             'applicants_female_count' => [
                 'required_if:job_ad_exists,true',
                 function ($attribute, $value, $fail) {
@@ -603,7 +668,7 @@ class EmployeeRecruitmentController extends Controller
             'workgroup_id_1' => 'required',
             'position_id' => 'required',
             'job_description_file' => 'required|string',
-            'task' => 'nullable|string|min:50|max:1000',
+            'task' => 'nullable|string|min:25|max:1000',
             'employment_start_date' => 'required|date_format:Y.m.d',
             'employment_end_date' => 'nullable|date_format:Y.m.d',
             'base_salary_cost_center_1' => 'required',
@@ -648,8 +713,9 @@ class EmployeeRecruitmentController extends Controller
                 function ($attribute, $value, $fail) {
                     $value = str_replace(' ', '', $value);
                     if (request('health_allowance_cost_center_4')) {
-                        if (!is_numeric($value) || $value < 1000 || $value > 20000) {
-                            $fail('Az érték 1000 és 20 000 között lehet');
+                        $weeklyWorkingHours = request('weekly_working_hours');
+                        if (!is_numeric($value) || $value != $weeklyWorkingHours * 500) {
+                            $fail('Az érték csak ' . $weeklyWorkingHours . ' lehet');
                         }
                     } else {
                         if ($value && $value != 0) {
@@ -760,9 +826,6 @@ class EmployeeRecruitmentController extends Controller
             'inventory_numbers_of_available_tools_eger' => 'string|max:30|regex:/^[0-9 -]+$/',
             'inventory_numbers_of_available_tools_dokkolo' => 'string|max:30|regex:/^[0-9 -]+$/',
             'inventory_numbers_of_available_tools_mobiltelefon' => 'string|max:30|regex:/^[0-9 -]+$/',
-            'work_with_radioactive_isotopes' => 'required',
-            'work_with_carcinogenic_materials' => 'required',
-            'planned_carcinogenic_materials_use' => 'nullable|string|max:10000',
             'personal_data_sheet_file' => 'required|string',
             'student_status_verification_file' => 'nullable|string',
             'certificates_file' => 'required|string',
@@ -777,8 +840,8 @@ class EmployeeRecruitmentController extends Controller
             'position_id.required' => 'Kérjük, válaszd ki a munkakört',
             'job_description_file.required' => 'Kérjük, töltsd fel a munkaköri leírást',
             'task.string' => 'A feladat leírása érvénytelen',
-            'task.min' => 'A feladat leírásának 50 és 1000 karakter között kell lennie',
-            'task.max' => 'A feladat leírásának 50 és 1000 karakter között kell lennie',
+            'task.min' => 'A feladat leírásának 25 és 1000 karakter között kell lennie',
+            'task.max' => 'A feladat leírásának 25 és 1000 karakter között kell lennie',
             'employment_start_date.required' => 'Kérjük, add meg a jogviszony kezdetét',
             'employment_start_date.date_format' => 'Kérjük, valós dátumot adj meg',
             'employment_end_date.date_format' => 'Kérjük, valós dátumot adj meg',
@@ -828,10 +891,6 @@ class EmployeeRecruitmentController extends Controller
             'inventory_numbers_of_available_tools_mobiltelefon.string' => 'A mobiltelefon leltári száma érvénytelen',
             'inventory_numbers_of_available_tools_mobiltelefon.max' => 'A leltári szám nem lehet hosszabb 30 karakternél',
             'inventory_numbers_of_available_tools_mobiltelefon.regex' => 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat',
-            'work_with_radioactive_isotopes.required' => 'Kérjük, add meg, hogy fog-e radioaktív izotópokkal dolgozni',
-            'work_with_carcinogenic_materials.required' => 'Kérjük, add meg, hogy fog-e rákkeltő anyagokkal dolgozni',
-            'planned_carcinogenic_materials_use.string' => 'A rákkeltő anyagok listája érvénytelen',
-            'planned_carcinogenic_materials_use.max' => 'A rákkeltő anyagok listája nem lehet hosszabb 10000 karakternél',
             'personal_data_sheet_file.required' => 'Kérjük, töltsd fel a személyi adatlapot',
             'student_status_verification_file.required' => 'Kérjük, töltsd fel a hallgatói jogviszony igazolást',
             'certificates_file.required' => 'Kérjük, töltsd fel a bizonyítványokat',

@@ -11,6 +11,10 @@ class CheckWorkgroup910
 {
     public function handle($request, Closure $next)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        
         $user = User::find(Auth::id());
         $workgroup910 = Workgroup::where('workgroup_number', 910)->first();
 

@@ -28,6 +28,9 @@ class RecruitmentWorkflow extends AbstractWorkflow
 
         $this->fillable = array_merge($this->fillable, [
             'name',
+            'birth_date',
+            'social_security_number',
+            'address',
             'job_ad_exists',
             'applicants_female_count',
             'applicants_male_count',
@@ -79,32 +82,26 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'required_tools',
             'available_tools',
             'inventory_numbers_of_available_tools',
-            'work_with_radioactive_isotopes',
-            'work_with_carcinogenic_materials',
-            'planned_carcinogenic_materials_use',
             'personal_data_sheet',
             'student_status_verification',
             'certificates',
             'requires_commute_support',
             'commute_support_form',
             'probation_period',
-            'contract'
+            'contract',
+            'medical_eligibility_data'
         ]);
 
         $this->casts = array_merge($this->casts, [
             'job_ad_exists' => 'boolean',
             'has_prior_employment' => 'boolean',
             'has_current_volunteer_contract' => 'boolean',
-            'work_with_radioactive_isotopes' => 'boolean',
-            'work_with_carcinogenic_materials' => 'boolean',
             'requires_commute_support' => 'boolean',
         ]);
 
         $this->attributes = array_merge($this->attributes, [
             'state' => 'new_request',
             'job_ad_exists' => true,
-            'work_with_radioactive_isotopes' => false,
-            'work_with_carcinogenic_materials' => false,
         ]);
     }
 

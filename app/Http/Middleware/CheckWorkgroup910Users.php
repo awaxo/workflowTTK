@@ -10,6 +10,10 @@ class CheckWorkgroup910Users
 {
     public function handle($request, Closure $next)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        
         $user = User::find(Auth::id());
 
         if (!$user || $user->workgroup->workgroup_number !== 910) {

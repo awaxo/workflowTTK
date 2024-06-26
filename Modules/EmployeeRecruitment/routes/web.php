@@ -36,6 +36,7 @@ Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class
 Route::get('/employee-recruitment/closed', [EmployeeRecruitmentController::class, 'getAllClosed'])->middleware(['auth']);
 
 Route::get('/generate-pdf/{id}', [EmployeeRecruitmentController::class, 'generatePDF'])->middleware(['auth'])->name('generate.pdf');
+Route::get('/generate-medical-pdf/{id}', [EmployeeRecruitmentController::class, 'generateMedicalPDF'])->middleware(['auth'])->name('generateMedical.pdf');
 
 Route::post('/file/upload', [FileUploadController::class, 'upload'])->name('file.upload');
 Route::get('/dokumentumok/{filename}', function ($filename) {

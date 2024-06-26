@@ -24,6 +24,10 @@ $(function () {
         language: 'hu',
         weekStart: 1,
     });
+    $("#birth_date").datepicker({
+        language: 'hu',
+        weekStart: 1
+    });
 
     $('#job_ad_exists').on('change', function() {
         toggleApplicantCountInputs($(this).is(':checked'));
@@ -107,17 +111,6 @@ $(function () {
         updateAvailableTools();
     });
 
-    // Initially hide the carcinogenic materials use textarea
-    $('.planned-carcinogenic-materials').hide();
-
-    $('#work_with_carcinogenic_materials').on('change', function() {
-        if($(this).val() === '1') {
-            $('.planned-carcinogenic-materials').show();
-        } else {
-            $('.planned-carcinogenic-materials').hide();
-        }
-    });
-
     // file uploads
     DropzoneManager.init('job_description');
     DropzoneManager.init('personal_data_sheet');
@@ -169,6 +162,9 @@ $(function () {
 
         // revalidate fields when their values change
         revalidateOnChange(fv, 'name');
+        revalidateOnChange(fv, 'birth_date');
+        revalidateOnChange(fv, 'social_security_number');
+        revalidateOnChange(fv, 'address');
         revalidateOnChange(fv, 'applicants_female_count');
         revalidateOnChange(fv, 'applicants_male_count');
         revalidateOnChange(fv, 'workgroup_id_1');
@@ -210,9 +206,6 @@ $(function () {
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_eger');
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_dokkolo');
         revalidateOnChange(fv, 'inventory_numbers_of_available_tools_mobiltelefon');
-        revalidateOnChange(fv, 'work_with_radioactive_isotopes');
-        revalidateOnChange(fv, 'work_with_carcinogenic_materials');
-        revalidateOnChange(fv, 'planned_carcinogenic_materials_use');
         revalidateOnChange(fv, 'personal_data_sheet_file');
         revalidateOnChange(fv, 'student_status_verification_file');
         revalidateOnChange(fv, 'certificates_file');
@@ -257,7 +250,6 @@ $(function () {
         enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
         
         enableOnChange(fv, 'license_plate', 'entry_permissions', function() { return $('#entry_permissions').val().includes('auto') });
-        enableOnChange(fv, 'planned_carcinogenic_materials_use', 'work_with_carcinogenic_materials', function() { return $('#work_with_carcinogenic_materials').val() == 1 });
         enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
@@ -747,6 +739,39 @@ function validateEmployeeRecruitment() {
                         }
                     }
                 },
+                birth_date: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a születési dátumot'
+                        },
+                        date: {
+                            format: 'YYYY.MM.DD',
+                            message: 'Kérjük, valós dátumot adj meg',
+                        }
+                    }
+                },
+                social_security_number: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a TAJ számot ebben a formában: 123-456-789'
+                        },
+                        regexp: {
+                            regexp: /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/,
+                            message: 'Kérjük, pontosan 9 számjegyet adj meg ebben a formában: 123-456-789'
+                        }
+                    }
+                },
+                address: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a lakcímet'
+                        },
+                        stringLength: {
+                            max: 1000,
+                            message: 'A név nem lehet hosszabb 1000 karakternél'
+                        }
+                    }
+                },
                 applicants_female_count: {
                     validators: {
                         integer: {
@@ -832,9 +857,9 @@ function validateEmployeeRecruitment() {
                             message: 'Kérjük, add meg a feladat leírást'
                         },
                         stringLength: {
-                            min: 50,
+                            min: 25,
                             max: 1000,
-                            message: 'A feladat leírásának 50 és 1000 karakter között kell lennie'
+                            message: 'A feladat leírásának 25 és 1000 karakter között kell lennie'
                         }
                     }
                 },
@@ -964,11 +989,11 @@ function validateEmployeeRecruitment() {
                         callback: {
                             callback: function(input) {
                                 var weeklyWorkingHours = $('#weekly_working_hours').val();
-                                var maxValue = weeklyWorkingHours * 500;
+                                var exactValue = weeklyWorkingHours * 500;
                                 if ($('#health_allowance_cost_center_4').val()) {
                                     return {
-                                        valid: cleaveInstances[input.field].getRawValue() >= 1000 && cleaveInstances[input.field].getRawValue() <= maxValue,
-                                        message: 'Az érték 1000 és ' + maxValue + ' között lehet'
+                                        valid: cleaveInstances[input.field].getRawValue() == exactValue,
+                                        message: 'Az érték csak ' + exactValue + ' lehet'
                                     };
                                 } else {
                                     return {
@@ -1344,31 +1369,6 @@ function validateEmployeeRecruitment() {
                             message: 'A leltári szám csak számokat, szóközöket és kötőjeleket tartalmazhat'
                         }
                     }
-                },
-                work_with_radioactive_isotopes: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg, hogy fog-e radioaktív izotópokkal dolgozni'
-                        }
-                    }
-                },
-                work_with_carcinogenic_materials: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg, hogy fog-e rákkeltő anyagokkal dolgozni'
-                        }
-                    }
-                },
-                planned_carcinogenic_materials_use: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg a tervezett rákkeltő anyagok listáját'
-                        }
-                    },
-                    stringLength: {
-                        max: 10000,
-                        message: 'A rákkeltő anyagok listája nem lehet hosszabb 10000 karakternél'
-                    },
                 },
                 personal_data_sheet_file: {
                     validators: {

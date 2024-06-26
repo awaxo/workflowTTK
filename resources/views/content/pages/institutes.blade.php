@@ -37,10 +37,6 @@
                             <span class="fw-medium me-1">{{ $institute->workgroup_count }}</span>
                             <small class="text-muted">csoport</small>
                         </p>
-                        <p class="mb-0">
-                            <span class="fw-medium me-1">{{ $institute->active_workflow_count }}</span>
-                            <small class="text-muted">aktív folyamat</small>
-                        </p>
                     </div>
                 </div>
                 </a>

@@ -11,12 +11,12 @@ class CheckWorkgroup912
 {
     public function handle($request, Closure $next)
     {
-        $user = User::find(Auth::id());
-        $workgroup912 = Workgroup::where('workgroup_number', 912)->first();
-
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
+
+        $user = User::find(Auth::id());
+        $workgroup912 = Workgroup::where('workgroup_number', 912)->first();
 
         if ($user && $user->hasRole('adminisztrator')) {
             return $next($request);

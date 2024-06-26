@@ -14,6 +14,7 @@ class Institute extends Model
     protected $fillable = [
         'group_level',
         'name',
+        'abbreviation',
         'created_by',
         'updated_by'
     ];

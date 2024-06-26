@@ -109,6 +109,42 @@
 </div>
 
 <div class="card accordion-item">
+    <h2 class="accordion-header" id="heading_working_hours">
+        <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_working_hours" aria-expanded="false" aria-controls="collapse_working_hours">Munkaidő</button>
+    </h2>
+    <div id="collapse_working_hours" class="accordion-collapse collapse show" aria-labelledby="heading_working_hours">
+        <div class="accordion-body">
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Heti munkaóraszám</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->weekly_working_hours }}</span>
+            </div>
+
+            <p class="mb-1"><strong>Munkaidő</strong></p>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Hétfő</label>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Kedd</label>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Szerda</label>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Csütörtök</label>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Péntek</label>
+                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card accordion-item">
     <h2 class="accordion-header" id="heading_salary_elements">
         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_salary_elements" aria-expanded="false" aria-controls="collapse_salary_elements">Bérelemek</button>
     </h2>
@@ -194,42 +230,6 @@
 
             <hr>
             <p class="mb-1"><strong>Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó</strong></p>
-        </div>
-    </div>
-</div>
-
-<div class="card accordion-item">
-    <h2 class="accordion-header" id="heading_working_hours">
-        <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse_working_hours" aria-expanded="false" aria-controls="collapse_working_hours">Munkaidő</button>
-    </h2>
-    <div id="collapse_working_hours" class="accordion-collapse collapse show" aria-labelledby="heading_working_hours">
-        <div class="accordion-body">
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Heti munkaóraszám</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->weekly_working_hours }}</span>
-            </div>
-
-            <p class="mb-1"><strong>Munkaidő</strong></p>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Hétfő</label>
-                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Kedd</label>
-                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Szerda</label>
-                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Csütörtök</label>
-                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Péntek</label>
-                <span class="fw-bold ms-1 text-break">{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</span>
-            </div>
         </div>
     </div>
 </div>

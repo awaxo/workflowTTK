@@ -258,21 +258,21 @@
                             <div class="col-sm-4">
                                 <label for="employment_type" class="form-label">Jogviszony típusa</label>
                                 <select class="form-select" id="employment_type" name="employment_type">
-                                    <option value="Határozott" selected>Határozott</option>
-                                    <option value="Határozatlan">Határozatlan</option>
+                                    <option value="Határozott" {{ $recruitment->employment_type == 'Határozott' ? 'selected' : '' }}>Határozott</option>
+                                    <option value="Határozatlan" {{ $recruitment->employment_type == 'Határozatlan' ? 'selected' : '' }}>Határozatlan</option>
                                 </select>
                             </div>
                             <div class="col-sm-8">
                                 <label for="task" class="form-label">Feladat</label>
-                                <textarea class="form-control" id="task" rows="3" name="task"></textarea>                              
+                                <textarea class="form-control" id="task" rows="3" name="task">{{ $recruitment->task ?? '' }}</textarea>                              
                             </div>
                             <div class="col-sm-4">
                                 <label for="employment_start_date" class="form-label">Jogviszony kezdete</label>
-                                <input type="text" id="employment_start_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="employment_start_date" />
+                                <input type="text" id="employment_start_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="employment_start_date" value="{{ str_replace('-', '.', $recruitment->employment_start_date) }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="employment_end_date" class="form-label">Jogviszony vége</label>
-                                <input type="text" id="employment_end_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="employment_end_date" />
+                                <input type="text" id="employment_end_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="employment_end_date" value="{{ str_replace('-', '.', $recruitment->employment_end_date) }}" />
                             </div>
 
                             <div class="col-12 d-flex justify-content-between">
@@ -301,15 +301,15 @@
                             <div class="col-sm-4">
                                 <label for="weekly_working_hours" class="form-label">Heti munkaóraszám</label>
                                 <select class="form-select" id="weekly_working_hours" name="weekly_working_hours">
-                                    <option value="40" selected>40 óra</option>
-                                    <option value="30">30 óra</option>
-                                    <option value="25">25 óra</option>
-                                    <option value="20">20 óra</option>
-                                    <option value="16">16 óra</option>
-                                    <option value="15">15 óra</option>
-                                    <option value="10">10 óra</option>
-                                    <option value="8">8 óra</option>
-                                    <option value="5">5 óra</option>
+                                    <option value="40" {{ $recruitment->weekly_working_hours == '40' ? 'selected' : '' }}>40 óra</option>
+                                    <option value="30" {{ $recruitment->weekly_working_hours == '30' ? 'selected' : '' }}>30 óra</option>
+                                    <option value="25" {{ $recruitment->weekly_working_hours == '25' ? 'selected' : '' }}>25 óra</option>
+                                    <option value="20" {{ $recruitment->weekly_working_hours == '20' ? 'selected' : '' }}>20 óra</option>
+                                    <option value="16" {{ $recruitment->weekly_working_hours == '16' ? 'selected' : '' }}>16 óra</option>
+                                    <option value="15" {{ $recruitment->weekly_working_hours == '15' ? 'selected' : '' }}>15 óra</option>
+                                    <option value="10" {{ $recruitment->weekly_working_hours == '10' ? 'selected' : '' }}>10 óra</option>
+                                    <option value="8" {{ $recruitment->weekly_working_hours == '8' ? 'selected' : '' }}>8 óra</option>
+                                    <option value="5" {{ $recruitment->weekly_working_hours == '5' ? 'selected' : '' }}>5 óra</option>
                                 </select>
                             </div>
 

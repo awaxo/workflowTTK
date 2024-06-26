@@ -136,7 +136,9 @@ $(function () {
         }
     });
 
-    // Initially show the job ad exists inputs when new is creating
+    /**
+     * Initialize form for New or Edit
+     */
     if ($('#recruitment_id').val() === '') {
         $('#job_ad_exists').prop('checked', true);
     } else {    // If editing an existing recruitment
@@ -144,10 +146,14 @@ $(function () {
         $('#workgroup_id_2').val($('#workgroup_id_2_value').val()).trigger('change');
 
         let positionType = $('#position_id option[value="' + $('#position_id_value').val() + '"]').data('type');
-
         $('#position_type').val(positionType).trigger('change');
-        $('#position_id').val($('#position_id_value').val()).trigger('change');
+        setTimeout(function() {
+            $('#position_id').val($('#position_id_value').val()).trigger('change');
+        }, 400);
     }
+    /**
+     * End of Initialize form for New or Edit
+     */
     
     toggleApplicantCountInputs($('#job_ad_exists').is(':checked'));
     // Disable task input if employment type is fixed

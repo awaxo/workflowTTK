@@ -136,58 +136,59 @@
                         <div class="row g-3">
                             <div class="col-sm-4">
                                 <label class="form-label" for="name">Név</label>
-                                <input type="text" id="name" class="form-control" name="name" />
+                                <input type="text" id="name" class="form-control" name="name" value="{{ $recruitment->name }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label class="form-label" for="birth_date">Születési dátum</label>
-                                <input type="text" id="birth_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="birth_date" />
+                                <input type="text" id="birth_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="birth_date" value="{{ str_replace('-', '.', $recruitment->birth_date) }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label class="form-label" for="social_security_number">TAJ szám</label>
-                                <input type="text" id="social_security_number" class="form-control" name="social_security_number" />
+                                <input type="text" id="social_security_number" class="form-control" name="social_security_number" value="{{ $recruitment->social_security_number }}" />
                             </div>
                             <div class="col-sm-6">
                                 <label class="form-label" for="address">Lakcím (irányítószám, település neve, köztér neve és jellege, házszám)</label>
-                                <input type="text" id="address" class="form-control" name="address" />
+                                <input type="text" id="address" class="form-control" name="address" value="{{ $recruitment->address }}" />
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="job_ad_exists">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="job_ad_exists" {{ $recruitment->job_ad_exists == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="job_ad_exists">Felvétel álláshirdetéssel történt?</label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="has_prior_employment">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="has_prior_employment" {{ $recruitment->has_prior_employment == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="has_prior_employment">Volt már munkajogviszonya a Kutatóközponttal?</label>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="has_current_volunteer_contract">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="has_current_volunteer_contract" {{ $recruitment->has_current_volunteer_contract == 1 ? 'checked' : '' }}>
                                     <label class="form-check-label" for="has_current_volunteer_contract">Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal?</label>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <label for="applicants_female_count" class="form-label">Álláshirdetésre jelentkezett nők száma</label>
                                 <div class="d-flex align-items-center">
-                                    <input class="form-control numeral-mask" type="text" id="applicants_female_count" name="applicants_female_count" />
+                                    <input class="form-control numeral-mask" type="text" id="applicants_female_count" name="applicants_female_count" value="{{ $recruitment->applicants_female_count }}" />
                                     <span class="ms-2">Fő</span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <label for="applicants_male_count" class="form-label">Álláshirdetésre jelentkezett férfiak száma</label>
                                 <div class="d-flex align-items-center">
-                                    <input class="form-control numeral-mask" type="text" id="applicants_male_count" name="applicants_male_count" />
+                                    <input class="form-control numeral-mask" type="text" id="applicants_male_count" name="applicants_male_count" value="{{ $recruitment->applicants_male_count }}" />
                                     <span class="ms-2">Fő</span>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <label for="citizenship" class="form-label">Állampolgárság</label>
                                 <select class="form-select" id="citizenship" name="citizenship">
-                                    <option value="Magyar" selected>Magyar</option>
-                                    <option value="EGT tagállambeli">EGT tagállambeli</option>
-                                    <option value="Harmadik országbeli">Harmadik országbeli</option>
+                                    <option value="Magyar" {{ $recruitment->citizenship == 'Magyar' ? 'selected' : '' }}>Magyar</option>
+                                    <option value="EGT tagállambeli" {{ $recruitment->citizenship == 'EGT tagállambeli' ? 'selected' : '' }}>EGT tagállambeli</option>
+                                    <option value="Harmadik országbeli" {{ $recruitment->citizenship == 'Harmadik országbeli' ? 'selected' : '' }}>Harmadik országbeli</option>
                                 </select>
                             </div>
                             <div class="col-sm-4">
                                 <label for="workgroup_id_1" class="form-label">Csoport 1</label>
+                                <input type="hidden" id="workgroup_id_1_value" name="workgroup_id_1_value" value="{{ $recruitment->workgroup_id_1 }}" />
                                 <select class="form-select select2" id="workgroup_id_1" name="workgroup_id_1" data-placeholder="Válassz csoportot">
                                     <option value="" selected>Válassz csoportot</option>
                                     @foreach($workgroups1 as $workgroup)
@@ -197,6 +198,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="workgroup_id_2" class="form-label">Csoport 2</label>
+                                <input type="hidden" id="workgroup_id_2_value" name="workgroup_id_2_value" value="{{ $recruitment->workgroup_id_2 }}" />
                                 <select class="form-select select2" id="workgroup_id_2" name="workgroup_id_2">
                                     <option value="-1" selected>Nincs csoport</option>
                                     @foreach($workgroups2 as $workgroup)
@@ -230,12 +232,13 @@
                             <div class="col-sm-4">
                                 <label for="position_type" class="form-label">Munkakör típusa</label>
                                 <select class="form-select" id="position_type" name="position_type">
-                                    <option value="kutatói" selected>Kutatói</option>
+                                    <option value="kutatói">Kutatói</option>
                                     <option value="nem-kutatói">Nem kutatói</option>
                                 </select>
                             </div>
                             <div class="col-sm-4">
                                 <label for="position_id" class="form-label">Munkakör</label>
+                                <input type="hidden" id="position_id_value" name="position_id_value" value="{{ $recruitment->position_id }}" />
                                 <select class="form-select" id="position_id" name="position_id">
                                     @foreach($positions as $position)
                                         <option value="{{ $position->id }}" data-type="{{ $position->type }}">{{ $position->name }}</option>

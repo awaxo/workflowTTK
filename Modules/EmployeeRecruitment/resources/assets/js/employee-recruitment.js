@@ -149,6 +149,12 @@ $(function () {
         $('#position_type').val(positionType).trigger('change');
         setTimeout(function() {
             $('#position_id').val($('#position_id_value').val()).trigger('change');
+
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+            days.forEach(day => {
+                $(`#work_start_${day}`).val($(`#work_start_${day}`).attr('value').slice(0, -3)).trigger('change');
+                $(`#work_end_${day}`).val($(`#work_end_${day}`).attr('value').slice(0, -3)).trigger('change');
+            });
         }, 400);
     }
     /**

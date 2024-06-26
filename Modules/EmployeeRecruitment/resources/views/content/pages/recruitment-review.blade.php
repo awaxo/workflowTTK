@@ -316,11 +316,11 @@
                             <p class="mb-0 mt-4"><strong>Munkaidő</strong></p>
                             <div class="col-sm-4">
                                 <label for="work_start_monday" class="form-label">Hétfő - munkaidő kezdete</label>
-                                <input type="text" id="work_start_monday" placeholder="ÓÓ:PP" class="form-control" name="work_start_monday" />
+                                <input type="text" id="work_start_monday" placeholder="ÓÓ:PP" class="form-control" name="work_start_monday" value="{{ $recruitment->work_start_monday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="work_end_monday" class="form-label">Hétfő - munkaidő vége</label>
-                                <input type="text" id="work_end_monday" placeholder="ÓÓ:PP" class="form-control" name="work_end_monday" />
+                                <input type="text" id="work_end_monday" placeholder="ÓÓ:PP" class="form-control" name="work_end_monday" value="{{ $recruitment->work_end_monday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="monday_duration" class="form-label">Hétfő - munkaidő hossza</label>
@@ -332,11 +332,11 @@
 
                             <div class="col-sm-4">
                                 <label for="work_start_tuesday" class="form-label">Kedd - munkaidő kezdete</label>
-                                <input type="text" id="work_start_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_tuesday" />
+                                <input type="text" id="work_start_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_tuesday" value="{{ $recruitment->work_start_tuesday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="work_end_tuesday" class="form-label">Kedd - munkaidő vége</label>
-                                <input type="text" id="work_end_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_tuesday" />
+                                <input type="text" id="work_end_tuesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_tuesday" value="{{ $recruitment->work_end_tuesday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="tuesday_duration" class="form-label">Kedd - munkaidő hossza</label>
@@ -348,11 +348,11 @@
 
                             <div class="col-sm-4">
                                 <label for="work_start_wednesday" class="form-label">Szerda - munkaidő kezdete</label>
-                                <input type="text" id="work_start_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_wednesday" />
+                                <input type="text" id="work_start_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_start_wednesday" value="{{ $recruitment->work_start_wednesday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="work_end_wednesday" class="form-label">Szerda - munkaidő vége</label>
-                                <input type="text" id="work_end_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_wednesday" />
+                                <input type="text" id="work_end_wednesday" placeholder="ÓÓ:PP" class="form-control" name="work_end_wednesday" value="{{ $recruitment->work_end_wednesday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="wednesday_duration" class="form-label">Szerda - munkaidő hossza</label>
@@ -364,11 +364,11 @@
 
                             <div class="col-sm-4">
                                 <label for="work_start_thursday" class="form-label">Csütörtök - munkaidő kezdete</label>
-                                <input type="text" id="work_start_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_start_thursday" />
+                                <input type="text" id="work_start_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_start_thursday" value="{{ $recruitment->work_start_thursday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="work_end_thursday" class="form-label">Csütörtök - munkaidő vége</label>
-                                <input type="text" id="work_end_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_end_thursday" />
+                                <input type="text" id="work_end_thursday" placeholder="ÓÓ:PP" class="form-control" name="work_end_thursday" value="{{ $recruitment->work_end_thursday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="thursday_duration" class="form-label">Csütörtök - munkaidő hossza</label>
@@ -380,11 +380,11 @@
 
                             <div class="col-sm-4">
                                 <label for="work_start_friday" class="form-label">Péntek - munkaidő kezdete</label>
-                                <input type="text" id="work_start_friday" placeholder="ÓÓ:PP" class="form-control" name="work_start_friday" />
+                                <input type="text" id="work_start_friday" placeholder="ÓÓ:PP" class="form-control" name="work_start_friday" value="{{ $recruitment->work_start_friday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="work_end_friday" class="form-label">Péntek - munkaidő vége</label>
-                                <input type="text" id="work_end_friday" placeholder="ÓÓ:PP" class="form-control" name="work_end_friday" />
+                                <input type="text" id="work_end_friday" placeholder="ÓÓ:PP" class="form-control" name="work_end_friday" value="{{ $recruitment->work_end_friday ?? '' }}" />
                             </div>
                             <div class="col-sm-4">
                                 <label for="friday_duration" class="form-label">Péntek - munkaidő hossza</label>

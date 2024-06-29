@@ -147,14 +147,55 @@ $(function () {
 
         let positionType = $('#position_id option[value="' + $('#position_id_value').val() + '"]').data('type');
         $('#position_type').val(positionType).trigger('change');
+
+        $('.upload-file-delete').on('click', function() {
+            $('#deleteConfirmation').modal('show');
+            $('#confirm_delete').data('file-id', $(this).data('file'));
+        });
+
+        $('#confirm_delete').on('click', function () {
+            $('.' + $(this).data('file-id')).parent().hide();
+            $('#' + $(this).data('file-id')).val('');
+            $('#deleteConfirmation').modal('hide');
+        });
+
         setTimeout(function() {
             $('#position_id').val($('#position_id_value').val()).trigger('change');
+
+            $('#base_salary_cost_center_1').val($('#base_salary_cost_center_1_value').val()).trigger('change');
+            $('#base_salary_cost_center_2').val($('#base_salary_cost_center_2_value').val()).trigger('change');
+            $('#base_salary_cost_center_3').val($('#base_salary_cost_center_3_value').val()).trigger('change');
+            $('#health_allowance_cost_center_4').val($('#health_allowance_cost_center_4_value').val()).trigger('change');
+            $('#management_allowance_cost_center_5').val($('#management_allowance_cost_center_5_value').val()).trigger('change');
+            $('#extra_pay_1_cost_center_6').val($('#extra_pay_1_cost_center_6_value').val()).trigger('change');
+            $('#extra_pay_2_cost_center_7').val($('#extra_pay_2_cost_center_7_value').val()).trigger('change');
 
             const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
             days.forEach(day => {
                 $(`#work_start_${day}`).val($(`#work_start_${day}`).attr('value').slice(0, -3)).trigger('change');
                 $(`#work_end_${day}`).val($(`#work_end_${day}`).attr('value').slice(0, -3)).trigger('change');
             });
+
+            $('#employee_room').val($('#employee_room_value').val()).trigger('change');
+            
+            let availableTools = $('#available_tools_value').val().split(',');
+            $('#available_tools').val(availableTools).trigger('change');
+            
+            var inventoryNumbersJson = $('#inventory_numbers_of_available_tools').val();
+            var inventoryNumbersArray = JSON.parse(inventoryNumbersJson);
+
+            inventoryNumbersArray.forEach(function(item) {
+                for (let tool in item) {
+                    let inventoryNumber = item[tool];
+                    $('#inventory_numbers_of_available_tools_' + tool).val(inventoryNumber);
+                }
+            });
+
+            $('#job_description_file').val($('#job_description_file').data('existing'));
+            $('#personal_data_sheet_file').val($('#personal_data_sheet_file').data('existing'));
+            $('#student_status_verification_file').val($('#student_status_verification_file').data('existing'));
+            $('#certificates_file').val($('#certificates_file').data('existing'));
+            $('#commute_support_form_file').val($('#commute_support_form_file').data('existing'));
         }, 400);
     }
     /**
@@ -776,12 +817,12 @@ function validateEmployeeRecruitment() {
                 social_security_number: {
                     validators: {
                         notEmpty: {
-                            message: 'Kérjük, add meg a TAJ számot ebben a formában: 123-456-789'
+                            message: 'Kérjük, add meg a TAJ számot'
                         },
                         regexp: {
-                            regexp: /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/,
-                            message: 'Kérjük, pontosan 9 számjegyet adj meg ebben a formában: 123-456-789'
-                        }
+                            regexp: /^[0-9]{3}\s[0-9]{3}\s[0-9]{3}$/,
+                            message: 'A TAJ szám formátuma: 123 456 789 kell, hogy legyen'
+                        },
                     }
                 },
                 address: {

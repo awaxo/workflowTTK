@@ -39,6 +39,7 @@ Route::get('/generate-pdf/{id}', [EmployeeRecruitmentController::class, 'generat
 Route::get('/generate-medical-pdf/{id}', [EmployeeRecruitmentController::class, 'generateMedicalPDF'])->middleware(['auth'])->name('generateMedical.pdf');
 
 Route::post('/file/upload', [FileUploadController::class, 'upload'])->name('file.upload');
+Route::post('/file/delete', [FileUploadController::class, 'delete'])->name('file.delete');
 Route::get('/dokumentumok/{filename}', function ($filename) {
     $path = storage_path('app/public/uploads/' . $filename);
     if (!File::exists($path)) {

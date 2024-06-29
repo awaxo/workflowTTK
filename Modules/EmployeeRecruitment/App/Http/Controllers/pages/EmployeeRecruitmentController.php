@@ -698,7 +698,7 @@ class EmployeeRecruitmentController extends Controller
         return request()->validate([
             'name' => 'required|string|max:100',
             'birth_date' => 'required|date_format:Y.m.d',
-            'social_security_number' => 'required|string|regex:/^[0-9]{3}-[0-9]{3}-[0-9]{3}$/',
+            'social_security_number' => 'required|string',
             'address' => 'required|string|max:1000',
             'applicants_female_count' => [
                 'required_if:job_ad_exists,true',

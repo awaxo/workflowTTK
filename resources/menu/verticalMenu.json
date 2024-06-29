@@ -63,7 +63,7 @@
             },
             {
                 "url": "/segedadat/felhasznalok",
-                "name": "Felhasználók",
+                "name": "Felhasználó",
                 "slug": "auxiliary-data-pages-user-list",
                 "authorize": "true"
             },
@@ -99,7 +99,7 @@
             },
             {
                 "url": "/segedadat/szerepkorok",
-                "name": "Szerepkörök",
+                "name": "Szerepkör",
                 "slug": "auxiliary-data-authorizations-permissions",
                 "authorize": "true"
             }

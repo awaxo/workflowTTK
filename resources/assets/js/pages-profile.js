@@ -50,17 +50,6 @@ $(function () {
         ],
         columnDefs: [
             {
-                // For Responsive
-                targets: 0,
-                className: 'control',
-                orderable: false,
-                responsivePriority: 2,
-                searchable: false,
-                render: function(data, type, full, meta) {
-                    return '';
-                }
-            },
-            {
                 // Actions
                 targets: -1,
                 title: 'Törlés',
@@ -90,27 +79,29 @@ $(function () {
     }, 300);
 
     $('#delegation_type').on('change', function() {
-        let type = $(this).val();
-        $.ajax({
-            url: '/api/delegates/' + type,
-            type: 'GET',
-            success: function(response) {
-                let options = '';
-                if (response) {
-                    if (Array.isArray(response)) {
-                        response.forEach(function(user) {
-                            options += `<option value="${user.id}">${user.name}</option>`;
-                        });
-                    } else {
-                        options += `<option value="${response.id}">${response.name}</option>`;
+        if ($(this).val() !== '') {
+            let type = $(this).val();
+            $.ajax({
+                url: '/api/delegates/' + type,
+                type: 'GET',
+                success: function(response) {
+                    let options = '';
+                    if (response) {
+                        if (Array.isArray(response)) {
+                            response.forEach(function(user) {
+                                options += `<option value="${user.id}">${user.name}</option>`;
+                            });
+                        } else {
+                            options += `<option value="${response.id}">${response.name}</option>`;
+                        }
                     }
+                    $('#delegated_user').empty().html(options);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    GLOBALS.AJAX_ERROR('Hiba történt a helyettesítők betöltése során!', jqXHR, textStatus, errorThrown);
                 }
-                $('#delegated_user').empty().html(options);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                GLOBALS.AJAX_ERROR('Hiba történt a helyettesítők betöltése során!', jqXHR, textStatus, errorThrown);
-            }
-        });
+            });
+        }
     });
     if ($('#delegation_type').val()) {
         $('#delegation_type').trigger('change');
@@ -119,14 +110,6 @@ $(function () {
     $('#save_delegation').on('click', function() {
         $('.invalid-feedback').remove();
         let fv = validateDelegation();
-
-        // Revalidate fields when their values change
-        $('#delegation_type, #delegated_user, #delegation_start_date, #delegation_end_date').on('change', function() {
-            fv.revalidateField('delegation_type');
-            fv.revalidateField('delegated_user');
-            fv.revalidateField('delegation_start_date');
-            fv.revalidateField('delegation_end_date');
-        });
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
@@ -141,10 +124,19 @@ $(function () {
                         end_date: $('#delegation_end_date').val()
                     },
                     success: function() {
+                        $('#delegation_start_date').val('');
+                        $('#delegation_end_date').val('');
+                        $('#delegation_type').val(null).trigger('change');
+                        $('#delegated_user').val(null).trigger('change');
+
                         $('.datatables-delegates').DataTable().ajax.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        GLOBALS.AJAX_ERROR('Hiba történt a helyettesítés mentése során!', jqXHR, textStatus, errorThrown);
+                        if (jqXHR.status === 409) {
+                            GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
+                        } else {
+                            GLOBALS.AJAX_ERROR('Hiba történt a helyettesítés mentése során!', jqXHR, textStatus, errorThrown);
+                        }
                     }
                 });
             }
@@ -162,7 +154,7 @@ $(function () {
 
     // confirm cancel workflow
     $('#confirm_delete').on('click', function() {
-        let delegationId = $(this).data('delegation-id');
+        let delegationId = $(this).attr('data-delegation-id');
         let row = $(this).data('row');
 
         $.ajax({

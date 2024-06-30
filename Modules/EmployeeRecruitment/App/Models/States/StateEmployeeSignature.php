@@ -75,10 +75,23 @@ class StateEmployeeSignature implements IStateResponsibility {
     public function getDelegations(User $user): array {
         $roles = $user->roles->pluck('name')->toArray();
         $delegations = [];
+        $instituteAbbreviations = [
+            1 => 'SZKI',
+            3 => 'AKI',
+            4 => 'MÉI',
+            5 => 'KPI',
+            6 => 'AKK',
+            7 => 'SZKK',
+            8 => 'GYIK',
+        ];
         
         for ($i = 1; $i <= 9; $i++) {
             if (in_array('titkar_' . $i, $roles)) {
-                $delegations[] = ['type' => 'secretary_' . $i, 'readable_name' => 'Titkár (intézet: ' . $i . ')'];
+                $abbreviation = isset($instituteAbbreviations[$i]) ? $instituteAbbreviations[$i] : $i;
+                $delegations[] = [
+                    'type' => 'secretary_' . $i, 
+                    'readable_name' => 'Titkár (intézet: ' . $abbreviation . ')'
+                ];
             }
         }
 

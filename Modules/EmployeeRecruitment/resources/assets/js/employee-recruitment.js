@@ -344,6 +344,7 @@ $(function () {
         fv.validate().then(function(status) {
             if(status === 'Valid') {
                 var formData = {};
+                formData['recruitment_id'] = $('#recruitment_id').val();
                 $('#new-recruitment :input').each(function() {
                     var id = $(this).attr('id');
                     var value = $(this).is(':checkbox') ? $(this).is(':checked') : $(this).val();

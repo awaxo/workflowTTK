@@ -77,7 +77,16 @@ class EmployeeRecruitmentController extends Controller
 
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
         $workgroup = User::find(Auth::id())->workgroup;
-        $recruitment = new RecruitmentWorkflow();
+
+        // Step 1: Check if recruitment_id is provided
+        if ($request->has('recruitment_id') && !empty($request->input('recruitment_id'))) {
+            $recruitment = RecruitmentWorkflow::find($request->input('recruitment_id'));
+            if (!$recruitment) {
+                return response()->json(['error' => 'Recruitment not found.'], 404);
+            }
+        } else {
+            $recruitment = new RecruitmentWorkflow();
+        }
 
         $recruitment->fill($validatedData);
         

@@ -17,6 +17,7 @@ use App\Http\Controllers\pages\SettingsController;
 use App\Http\Controllers\pages\UserController;
 use App\Http\Controllers\pages\WorkflowController;
 use App\Http\Controllers\pages\WorkgroupController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,8 +63,17 @@ Route::get('/login', [LoginBasic::class, 'index'])->name('login');
 // Handle authentication
 Route::post('/login', [LoginBasic::class, 'authenticate']);
 
-// Define the logout route
-Route::post('/logout', [LoginBasic::class, 'logout'])->name('logout');
+// Define the logout route for POST requests
+Route::post('/logout', function (Request $request) {
+    app(LoginBasic::class)->logout($request);
+    return redirect('/login');
+})->name('logout');
+
+// Define the logout route for GET requests
+Route::get('/logout', function (Request $request) {
+    app(LoginBasic::class)->logout($request);
+    return redirect('/login');
+})->name('get-logout');
 
 
 // API routes

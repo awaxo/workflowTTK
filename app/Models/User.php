@@ -193,7 +193,15 @@ class User extends Authenticatable
             return $users->concat($leaders)->unique('name')->sortBy('name')->values();
         }
 
-        return $this->getUsersFromSameWorkgroup()->push($this->getSupervisor())->unique('name')->sortBy('name')->values();
+        $currentUser = $this;
+        $users = $this->getUsersFromSameWorkgroup()->push($this->getSupervisor())->unique('name')->sortBy('name')->values();
+        
+        // Filter out the current user from the collection
+        $filteredUsers = $users->reject(function ($user) use ($currentUser) {
+            return $user->id === $currentUser->id;
+        })->values();
+
+        return $filteredUsers;
     }
 
     public function canViewMenuItem(string $menuItem)

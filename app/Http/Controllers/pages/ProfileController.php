@@ -16,7 +16,7 @@ class ProfileController extends Controller
         $service = new DelegationService();
         $delegations = $service->getAllDelegations(Auth::user());
         $approval_notification = json_decode(Auth::user()->notification_preferences)->email?->recruitment->approval_notification;
-Log::info($delegations);
+
         return view('content.pages.profile', compact('delegations', 'approval_notification'));
     }
 

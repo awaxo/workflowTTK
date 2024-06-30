@@ -53,7 +53,7 @@ class StateRegistration implements IStateResponsibility {
         return $user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto') 
             ? [[
                 'type' => 'registrator',
-                'readable_name' => 'Kötelezettségvállalás nyilvántartás rögzítő'
+                'readable_name' => trans('auth.roles.munkaber_kotelezettsegvallalas_nyilvantarto')
             ]]
             : [];
     }

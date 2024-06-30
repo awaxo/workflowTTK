@@ -53,7 +53,7 @@ class StatePostFinancingApproval implements IStateResponsibility {
         return $user->hasRole('utofinanszirozas_fedezetigazolo') 
             ? [[
                 'type' => 'post_financing_approver',
-                'readable_name' => 'Utófinanszírozás fedezetigazoló'
+                'readable_name' => trans('auth.roles.utofinanszirozas_fedezetigazolo')
             ]]
             : [];
     }

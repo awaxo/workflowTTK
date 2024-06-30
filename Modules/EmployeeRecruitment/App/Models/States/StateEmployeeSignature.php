@@ -75,31 +75,18 @@ class StateEmployeeSignature implements IStateResponsibility {
     public function getDelegations(User $user): array {
         $roles = $user->roles->pluck('name')->toArray();
         $delegations = [];
-        $instituteAbbreviations = [
-            1 => 'SZKI',
-            3 => 'AKI',
-            4 => 'MÉI',
-            5 => 'KPI',
-            6 => 'AKK',
-            7 => 'SZKK',
-            8 => 'GYIK',
-        ];
         
         for ($i = 1; $i <= 9; $i++) {
             if (in_array('titkar_' . $i, $roles)) {
-                $abbreviation = isset($instituteAbbreviations[$i]) ? $instituteAbbreviations[$i] : $i;
-                $delegations[] = [
-                    'type' => 'secretary_' . $i, 
-                    'readable_name' => 'Titkár (intézet: ' . $abbreviation . ')'
-                ];
+                $delegations[] = ['type' => 'secretary_' . $i, 'readable_name' => trans('auth.roles.' . 'titkar_' . $i)];
             }
         }
 
         if (in_array('titkar_9_fi', $roles)) {
-            $delegations[] = ['type' => 'secretary_9_fi', 'readable_name' => 'Főigazgatósági titkárságvezető'];
+            $delegations[] = ['type' => 'secretary_9_fi', 'readable_name' => trans('auth.roles.' . 'titkar_9_fi')];
         }
         if (in_array('titkar_9_gi', $roles)) {
-            $delegations[] = ['type' => 'secretary_9_gi', 'readable_name' => 'Gazdasági titkárságvezető'];
+            $delegations[] = ['type' => 'secretary_9_gi', 'readable_name' => trans('auth.roles.' . 'titkar_9_gi')];
         }
 
         return empty($delegations) ? [] : [$delegations];

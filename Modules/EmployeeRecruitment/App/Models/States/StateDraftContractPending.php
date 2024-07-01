@@ -81,10 +81,22 @@ class StateDraftContractPending implements IStateResponsibility {
     public function getDelegations(User $user): array {
         $workgroups = Workgroup::where('labor_administrator', $user->id)->get();
         if ($workgroups->count() > 0) {
+            $instituteAbbreviations = [
+                1 => 'SZKI',
+                3 => 'AKI',
+                4 => 'MÉI',
+                5 => 'KPI',
+                6 => 'AKK',
+                7 => 'SZKK',
+                8 => 'GYIK',
+            ];
+
             return $workgroups->map(function ($workgroup) {
+                $abbreviation = isset($instituteAbbreviations[substr($workgroup->workgroup_number, 0, 1)]) ? $instituteAbbreviations[substr($workgroup->workgroup_number, 0, 1)] : substr($workgroup->workgroup_number, 0, 1);
+
                 return [
                     'type' => 'draft_contract_labor_administrator_' . $workgroup->workgroup_number,
-                    'readable_name' => 'Munkaügyi ügyintéző (intézet: ' . substr($workgroup->workgroup_number, 0, 1) . ')'
+                    'readable_name' => 'Munkaügyi ügyintéző (intézet: ' . $abbreviation . ')'
                 ];
             })->toArray();
         }

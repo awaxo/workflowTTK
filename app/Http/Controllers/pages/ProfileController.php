@@ -5,6 +5,7 @@ namespace App\Http\Controllers\pages;
 use App\Http\Controllers\Controller;
 use App\Models\Delegation;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
@@ -16,7 +17,7 @@ class ProfileController extends Controller
         $service = new DelegationService();
         $delegations = $service->getAllDelegations(Auth::user());
         $approval_notification = json_decode(Auth::user()->notification_preferences)->email?->recruitment->approval_notification;
-Log::info($delegations);
+
         return view('content.pages.profile', compact('delegations', 'approval_notification'));
     }
 
@@ -30,17 +31,21 @@ Log::info($delegations);
                             $service = new DelegationService();
                             $allDelegations = $service->getAllDelegations(Auth::user());
 
-                            $key = false;
+                            $readable_type = $delegation->type; // Default to delegation type
                             foreach ($allDelegations as $delegationGroup) {
-                                foreach ($delegationGroup as $delegationItem) {
-                                    if (isset($delegationItem['type'])) {
-                                        $key = $delegationItem['readable_name'];
-                                    } else {
-                                        $key = $delegationGroup['readable_name'];
+                                // Check if delegationGroup is associative or indexed
+                                if (isset($delegationGroup['type']) && $delegationGroup['type'] === $delegation->type) {
+                                    $readable_type = $delegationGroup['readable_name'];
+                                    break; // Found the matching type, break the loop
+                                } elseif (is_array($delegationGroup)) {
+                                    foreach ($delegationGroup as $delegationItem) {
+                                        if (isset($delegationItem['type']) && $delegationItem['type'] === $delegation->type) {
+                                            $readable_type = $delegationItem['readable_name'];
+                                            break 2; // Found the matching type, break both loops
+                                        }
                                     }
                                 }
                             }
-                            $readable_type = $key !== false ? $key : $delegation->type;
 
                             return [
                                 'id' => $delegation->id,
@@ -54,7 +59,7 @@ Log::info($delegations);
         return response()->json(['data' => $delegations]);
     }
 
-    public function create()
+    public function create() 
     {
         $validatedData = request()->validate([
             'type' => 'required',
@@ -76,14 +81,32 @@ Log::info($delegations);
         $validatedData['start_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['start_date'])));
         $validatedData['end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['end_date'])));
 
+        // Check for existing record
+        $exists = Delegation::where('original_user_id', Auth::id())
+                            ->where('delegate_user_id', $validatedData['delegate_user_id'])
+                            ->where('type', $validatedData['type'])
+                            ->where('start_date', $validatedData['start_date'])
+                            ->where('end_date', $validatedData['end_date'])
+                            ->where('deleted', 0)
+                            ->exists();
+
+        if ($exists) {
+            return response()->json(['message' => 'A similar delegation record already exists.'], 409);
+        }
+
         $delegation = new Delegation();
         $delegation->fill($validatedData);
         $delegation->original_user_id = Auth::id();
-        $delegation->start_date = str_replace('.', '-', $validatedData['start_date']);
-        $delegation->end_date = str_replace('.', '-', $validatedData['end_date']);
+        $delegation->start_date = $validatedData['start_date'];
+        $delegation->end_date = $validatedData['end_date'];
         $delegation->created_by = Auth::id();
         $delegation->updated_by = Auth::id();
-        $delegation->save();
+
+        try {
+            $delegation->save();
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'An unexpected error occurred.'], 500);
+        }
 
         return response()->json(['message' => 'Delegation added successfully']);
     }

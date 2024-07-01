@@ -39,10 +39,13 @@ $navbarDetached = ($navbarDetached ?? '');
       @endif
 
       <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        <div style="flex: 1; display: flex; justify-content: center;">
+          <img src="{{asset('assets/img/logo/fejlec_logo.jpg')}}" alt="logo" style="height: 60px;">
+        </div>
 
       @if($configData['hasCustomizer'] == true)
       <!-- Style Switcher -->
-      <div class="navbar-nav align-items-center">
+      <div class="navbar-nav align-items-center" style="justify-content: center;">
         <div class="nav-item dropdown-style-switcher dropdown me-2 me-xl-0">
           <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
             <i class='bx bx-sm'></i>

@@ -77,7 +77,16 @@ class EmployeeRecruitmentController extends Controller
 
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
         $workgroup = User::find(Auth::id())->workgroup;
-        $recruitment = new RecruitmentWorkflow();
+
+        // Step 1: Check if recruitment_id is provided
+        if ($request->has('recruitment_id') && !empty($request->input('recruitment_id'))) {
+            $recruitment = RecruitmentWorkflow::find($request->input('recruitment_id'));
+            if (!$recruitment) {
+                return response()->json(['error' => 'Recruitment not found.'], 404);
+            }
+        } else {
+            $recruitment = new RecruitmentWorkflow();
+        }
 
         $recruitment->fill($validatedData);
         
@@ -309,6 +318,10 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
         
         if ($recruitment->state != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
+            if ($recruitment->state == 'request_review') {
+                return $this->review($id);
+            }
+            
             // IT workgroup
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
             $chemicalFactors = ChemicalPathogenicFactor::where('deleted', 0)->get();
@@ -324,6 +337,59 @@ class EmployeeRecruitmentController extends Controller
         } else {
             return view('content.pages.misc-not-authorized');
         }
+    }
+
+    public function review($id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        if (!$recruitment) {
+            Log::error('Nem található a felvételi kérelem (id: ' . $id . ')');
+            return view('content.pages.misc-error');
+        }
+
+        $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
+        $user = User::find(Auth::id());
+
+        $workgroups = collect();
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                $workgroupNumber = substr($role, -1);
+                $workgroupNumber = $workgroupNumber == 'i' ? 9 : $workgroupNumber;
+                $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
+                $workgroups = $workgroups->concat($workgroupsForRole);
+            }
+        }
+        $workgroup800 = Workgroup::where('workgroup_number', 800)->where('deleted', 0)->get();
+
+        $workgroups2 = $workgroups->unique('id')->map(function ($workgroup) {
+            $workgroup->leader_name = $workgroup->leader()->first()?->name;
+            return $workgroup;
+        });
+        $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
+            $workgroup->leader_name = $workgroup->leader()->first()?->name;
+            return $workgroup;
+        });
+        $positions = Position::where('deleted', 0)->get();
+        $costCenters = CostCenter::where('deleted', 0)
+            ->where('valid_employee_recruitment', 1)
+            ->get()
+            ->map(function ($costCenter) {
+                $costCenter->leader_name = $costCenter->leadUser()->first()?->name;
+                return $costCenter;
+            });
+        $rooms = Room::orderBy('room_number')->get();
+        $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
+
+        return view('employeerecruitment::content.pages.recruitment-review', [
+            'recruitment' => $recruitment,
+            'id' => $id,
+            'workgroups1' => $workgroups1,
+            'workgroups2' => $workgroups2,
+            'positions' => $positions,
+            'costcenters' => $costCenters,
+            'rooms' => $rooms,
+            'externalAccessRights' => $externalAccessRights
+        ]);
     }
 
     public function approve(Request $request, $id)
@@ -641,7 +707,7 @@ class EmployeeRecruitmentController extends Controller
         return request()->validate([
             'name' => 'required|string|max:100',
             'birth_date' => 'required|date_format:Y.m.d',
-            'social_security_number' => 'required|string|regex:/^[0-9]{3}-[0-9]{3}-[0-9]{3}$/',
+            'social_security_number' => 'required|string',
             'address' => 'required|string|max:1000',
             'applicants_female_count' => [
                 'required_if:job_ad_exists,true',

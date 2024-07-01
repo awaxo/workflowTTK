@@ -184,7 +184,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
             return $workgroups->map(function ($workgroup) {
                 return [
                     'type' => 'grouplead_' . $workgroup->workgroup_number,
-                    'readable_name' => 'Témavezető (csoport: ' . $workgroup->workgroup_number . ')'
+                    'readable_name' => 'Csoportvezető (csoport: ' . $workgroup->workgroup_number . ')'
                 ];
             })->toArray();
         }

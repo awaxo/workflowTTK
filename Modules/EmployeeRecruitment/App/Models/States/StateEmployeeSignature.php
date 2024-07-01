@@ -78,15 +78,15 @@ class StateEmployeeSignature implements IStateResponsibility {
         
         for ($i = 1; $i <= 9; $i++) {
             if (in_array('titkar_' . $i, $roles)) {
-                $delegations[] = ['type' => 'secretary_' . $i, 'readable_name' => 'Titkár (intézet: ' . $i . ')'];
+                $delegations[] = ['type' => 'secretary_' . $i, 'readable_name' => trans('auth.roles.' . 'titkar_' . $i)];
             }
         }
 
         if (in_array('titkar_9_fi', $roles)) {
-            $delegations[] = ['type' => 'secretary_9_fi', 'readable_name' => 'Főigazgatósági titkárságvezető'];
+            $delegations[] = ['type' => 'secretary_9_fi', 'readable_name' => trans('auth.roles.' . 'titkar_9_fi')];
         }
         if (in_array('titkar_9_gi', $roles)) {
-            $delegations[] = ['type' => 'secretary_9_gi', 'readable_name' => 'Gazdasági titkárságvezető'];
+            $delegations[] = ['type' => 'secretary_9_gi', 'readable_name' => trans('auth.roles.' . 'titkar_9_gi')];
         }
 
         return empty($delegations) ? [] : [$delegations];

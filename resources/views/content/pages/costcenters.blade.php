@@ -128,8 +128,8 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="project_coordinator_user_id">Projektkoordinátor</label>
                     <select class="form-select select2" id="project_coordinator_user_id" name="project_coordinator_user_id">
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @foreach($projectCoordinators as $projectCoordinator)
+                            <option value="{{ $projectCoordinator->id }}">{{ $projectCoordinator->name }}</option>
                         @endforeach
                     </select>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>

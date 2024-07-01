@@ -345,7 +345,7 @@ $(function() {
         $('#name').val('');
         $('#due_date').val('');
         $('#minimal_order_limit').val('0');
-        $('#valid_employee_recruitment').prop('checked', false);
+        $('#valid_employee_recruitment').prop('checked', true);
         $('#type_id').val($('#type_id option:first').val()).trigger('change');
         $('#lead_user_id').val($('#lead_user_id option:first').val()).trigger('change');
         $('#project_coordinator_user_id').val($('#project_coordinator_user_id option:first').val()).trigger('change');

@@ -262,11 +262,37 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Hozzáférési jogosultságok</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->required_tools ? $recruitment->required_tools : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">
+                    @if($recruitment->required_tools)
+                        @php
+                            $toolsArray = explode(',', $recruitment->required_tools);
+                            $translatedTools = array_map(function($tool) {
+                                return trans('tools.' . $tool);
+                            }, $toolsArray);
+                            $toolsString = implode(', ', $translatedTools);
+                        @endphp
+                        {{ $toolsString }}
+                    @else
+                        -
+                    @endif
+                </span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Munkavégzéshez rendelkezésre álló eszközök</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->available_tools ? $recruitment->available_tools : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">
+                    @if($recruitment->available_tools)
+                        @php
+                            $toolsArray = explode(',', $recruitment->available_tools);
+                            $translatedTools = array_map(function($tool) {
+                                return trans('tools.' . $tool);
+                            }, $toolsArray);
+                            $toolsString = implode(', ', $translatedTools);
+                        @endphp
+                        {{ $toolsString }}
+                    @else
+                        -
+                    @endif
+                </span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Rendelkezésre álló eszközök leltári száma</label>
@@ -277,7 +303,7 @@
                         @endphp
                         @foreach($tools as $tool)
                             @foreach($tool as $key => $value)
-                                <span class="fw-bold ms-1 text-break">{{ ucfirst($key) . ': ' . $value }}</span><br/>
+                                <span class="fw-bold ms-1 text-break">{{ ucfirst(trans('tools.' . $key)) . ': ' . $value }}</span><br/>
                             @endforeach
                         @endforeach
                     @else

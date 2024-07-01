@@ -18,6 +18,7 @@ $(function() {
         format: "yyyy.mm.dd",
         language: 'hu',
         weekStart: 1,
+        startDate: new Date()
     });
 
     // set locale for sorting

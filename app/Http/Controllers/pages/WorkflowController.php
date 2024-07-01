@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\pages;
 
 use App\Http\Controllers\Controller;
-use App\Models\Option;
 use App\Models\User;
 use App\Models\WorkflowType;
 use App\Services\WorkflowService;
@@ -32,7 +31,7 @@ class WorkflowController extends Controller
                     'workflow_type_name' => $workflow->workflow_type["name"],
                     'state' => __('states.' . $workflow->state),
                     'state_name' => $workflow->state,
-                    'initiator_institute_group_level' => $workflow->initiator_institute["group_level"],
+                    'initiator_institute_abbreviation' => $workflow->initiator_institute["abbreviation"],
                     'updated_by_name' => $workflow->updated_by["name"],
                     'updated_at' => $workflow->updated_at,
                     'created_by_name' => $workflow->created_by["name"],
@@ -57,7 +56,7 @@ class WorkflowController extends Controller
                     'workflow_type_name' => $workflow->workflow_type["name"],
                     'state' => __('states.' . $workflow->state),
                     'state_name' => $workflow->state,
-                    'initiator_institute_group_level' => $workflow->initiator_institute["group_level"],
+                    'initiator_institute_abbreviation' => $workflow->initiator_institute["abbreviation"],
                     'updated_by_name' => $workflow->updated_by["name"],
                     'updated_at' => $workflow->updated_at,
                     'created_by_name' => $workflow->created_by["name"],

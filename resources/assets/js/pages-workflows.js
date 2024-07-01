@@ -13,7 +13,7 @@ $(function() {
             { data: 'id', searchable: false },
             { data: 'workflow_type_name' },
             { data: 'state' },
-            { data: 'initiator_institute_group_level' },
+            { data: 'initiator_institute_abbreviation' },
             { data: 'updated_by_name' },
             { 
                 data: 'updated_at',

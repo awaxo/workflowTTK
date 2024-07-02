@@ -156,7 +156,7 @@
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_cc1 ? $recruitment->base_salary_cc1->cost_center_code . ' - ' . $recruitment->base_salary_cc1->name : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Havi bruttó bér 1</label>
+                <label class="form-label col-6 col-md-3">Havi bruttó alapbér 1</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_monthly_gross_1 ? number_format($recruitment->base_salary_monthly_gross_1, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
@@ -164,7 +164,7 @@
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_cc2 ? $recruitment->base_salary_cc2->cost_center_code . ' - ' . $recruitment->base_salary_cc2->name : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Havi bruttó bér 2</label>
+                <label class="form-label col-6 col-md-3">Havi bruttó alapbér 2</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_monthly_gross_2 ? number_format($recruitment->base_salary_monthly_gross_2, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
@@ -172,27 +172,27 @@
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_cc3 ? $recruitment->base_salary_cc3->cost_center_code . ' - ' . $recruitment->base_salary_cc3->name : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Havi bruttó bér 3</label>
+                <label class="form-label col-6 col-md-3">Havi bruttó alapbér 3</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->base_salary_monthly_gross_3 ? number_format($recruitment->base_salary_monthly_gross_3, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
 
             <p class="mb-1"><strong>Egészségügyi pótlék</strong></p>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Költséghely 4</label>
+                <label class="form-label col-6 col-md-3">Költséghely</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->health_allowance_cc ? $recruitment->health_allowance_cc->cost_center_code . ' - ' . $recruitment->health_allowance_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Havi bruttó bér 4</label>
+                <label class="form-label col-6 col-md-3">Havi bruttó egészségügyi pótlék</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->health_allowance_monthly_gross_4 ? number_format($recruitment->health_allowance_monthly_gross_4, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
 
             <p class="mb-1"><strong>Vezetői pótlék</strong></p>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Költséghely 5</label>
+                <label class="form-label col-6 col-md-3">Költséghely</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->management_allowance_cc ? $recruitment->management_allowance_cc->cost_center_code . ' - ' . $recruitment->management_allowance_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Havi bruttó bér 5</label>
+                <label class="form-label col-6 col-md-3">Havi bruttó vezetői pótlék</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->management_allowance_monthly_gross_5 ? number_format($recruitment->management_allowance_monthly_gross_5, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
@@ -202,11 +202,11 @@
 
             <p class="mb-1"><strong>Bérpótlék 1</strong></p>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Költséghely 6</label>
+                <label class="form-label col-6 col-md-3">Költséghely</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_1_cc ? $recruitment->extra_pay_1_cc->cost_center_code . ' - ' . $recruitment->extra_pay_1_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Havi bruttó bér 6</label>
+                <label class="form-label col-6 col-md-3">Havi bruttó illetménykiegészítés 1</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_1_monthly_gross_6 ? number_format($recruitment->extra_pay_1_monthly_gross_6, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">
@@ -216,11 +216,11 @@
 
             <p class="mb-1"><strong>Bérpótlék 2</strong></p>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Költséghely 7</label>
+                <label class="form-label col-6 col-md-3">Költséghely</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_2_cc ? $recruitment->extra_pay_2_cc->cost_center_code . ' - ' . $recruitment->extra_pay_2_cc->name : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Havi bruttó bér 7</label>
+                <label class="form-label col-6 col-md-3">Havi bruttó illetménykiegészítés 2</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->extra_pay_2_monthly_gross_7 ? number_format($recruitment->extra_pay_2_monthly_gross_7, 0, ',', ' ') . ' Ft' : '-' }}</span>
             </div>
             <div class="d-flex">

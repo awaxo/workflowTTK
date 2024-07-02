@@ -62,7 +62,7 @@
                     
                     <table class="datatables-costcenters table border-top">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th></th>
                                 <th>Költséghely</th>
                                 <th>Megnevezés</th>

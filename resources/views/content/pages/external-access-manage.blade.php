@@ -60,7 +60,7 @@
 
                     <table class="datatables-external-access table border-top">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th></th>
                                 <th>Külső rendszer</th>
                                 <th>Admin csoport</th>

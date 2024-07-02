@@ -44,7 +44,7 @@
                 <div class="card-datatable table-responsive pt-0">
                     <table class="datatables-workflows table border-top">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th>ID</th>
                                 <th>Típus</th>
                                 <th>Státusz</th>

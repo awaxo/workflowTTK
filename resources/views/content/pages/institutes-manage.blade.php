@@ -54,7 +54,7 @@
 
                     <table class="datatables-institutes table border-top">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th></th>
                                 <th>Szám</th>
                                 <th>Név</th>

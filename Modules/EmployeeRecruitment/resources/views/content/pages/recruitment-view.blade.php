@@ -53,7 +53,7 @@
                 <div id="status_history">
                     <table class="table">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th>Döntés</th>
                                 <th>Dátum</th>
                                 <th>Felhasználó</th>

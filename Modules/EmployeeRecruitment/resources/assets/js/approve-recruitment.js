@@ -1,5 +1,6 @@
 import GLOBALS from '../../../../../resources/js/globals.js';
 import DropzoneManager from '../../../../../resources/js/dropzone-manager';
+import { trim } from 'lodash';
 
 $(function () {
     // Set numeral mask to number fields
@@ -206,11 +207,17 @@ $(function () {
         printIconClicked['print-icon-2'] = true;
         checkIconsAndShow();
     });
+
+    $(document).on('change', 'select', function () {
+        if ($(this).val() !== '') {
+            $(this).find('option[value=""]').remove();
+        }
+    });
 });
 
 function dynamicControls(source, target) {
     $('#' + source).on('change', function () {
-        if ($(this).val() !== '' || $(this).val() !== 'nincs') {
+        if ($(this).val() !== '' && $(this).val() !== 'nincs') {
             $('.' + target).removeClass('d-none');
         } else {
             $('.' + target).addClass('d-none');
@@ -239,22 +246,55 @@ function validateHealthAllowance() {
                 },
                 manual_handling_weight_5_20: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#manual_handling').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
                 manual_handling_weight_20_50: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#manual_handling').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
                 manual_handling_weight_over_50: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#manual_handling').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
@@ -267,29 +307,73 @@ function validateHealthAllowance() {
                 },
                 fire_and_explosion_risk: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
                 live_electrical_work: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
                 high_altitude_work: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
                 other_risks: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
@@ -330,15 +414,37 @@ function validateHealthAllowance() {
                 },
                 heat_exposure: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#stressful_workplace_climate').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
                 cold_exposure: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#stressful_workplace_climate').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
@@ -391,6 +497,24 @@ function validateHealthAllowance() {
                         }
                     }
                 },
+                dust_exposure_description: {
+                    validators: {
+                        callback: {
+                            callback: function(input) {
+                                if ($('#dust_exposure').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 chemicals_exposure: {
                     validators: {
                         notEmpty: {
@@ -400,8 +524,19 @@ function validateHealthAllowance() {
                 },
                 carcinogenic_substances_exposure: {
                     validators: {
-                        notEmpty: {
-                            message: 'A mező kitöltése kötelező'
+                        callback: {
+                            callback: function(input) {
+                                if ($('#chemicals_exposure').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
                         }
                     }
                 },
@@ -474,7 +609,25 @@ function validateHealthAllowance() {
                             message: 'A mező kitöltése kötelező'
                         }
                     }
-                }                
+                },
+                planned_other_health_risk_factors: {
+                    validators: {
+                        callback: {
+                            callback: function(input) {
+                                if ($('#others').val() !== 'nincs') {
+                                    return {
+                                        valid: trim(input.value) !== '',
+                                        message: 'A mező kitöltése kötelező'
+                                    };
+                                } else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             plugins: {
                 bootstrap: new FormValidation.plugins.Bootstrap5(),

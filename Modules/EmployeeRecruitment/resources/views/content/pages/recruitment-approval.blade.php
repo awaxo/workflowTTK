@@ -68,7 +68,7 @@
                 @if($recruitment->state == 'hr_lead_approval')
                     <div class="col-sm-2 mb-3">
                         <div class="d-flex align-items-center">
-                            <label class="form-label" for="probation_period">Próbaidő</label>
+                            <label class="form-label" for="probation_period" style="margin-bottom: 0">Próbaidő&nbsp;</label>
                             <input class="form-control numeral-mask" type="text" id="probation_period">
                             <span class="ms-2">Nap</span>
                         </div>
@@ -207,7 +207,7 @@
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a próbaidő hosszát!</p>
+                <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a próbaidő hosszát, ami 7 és 90 nap között kell legyen!</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>

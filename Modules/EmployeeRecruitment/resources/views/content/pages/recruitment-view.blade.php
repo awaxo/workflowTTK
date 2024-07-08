@@ -81,6 +81,7 @@
                     </table>
                 </div>
             </div>
+            <div class="fst-italic">Aktuális státusz: <b>{{ __('states.' . $recruitment->state) }}</b></div>
             <div class="fst-italic">Szükséges jóváhagyók (a lista a jóváhagyókat és az esetleges helyetteseiket is tartalmazza): <b>{{ $usersToApprove ? $usersToApprove : '' }}</b></div>
         </div>
     </div>

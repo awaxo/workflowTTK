@@ -198,6 +198,9 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->requires_commute_support = request('requires_commute_support') == 'true' ? 1 : 0;
         $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
 
+        $service = new WorkflowService();
+        $service->storeMetadata($recruitment, '-- Felvételi kérelem létrehozva --', 'start');
+
         try {
             $recruitment->save();
             return response()->json(['url' => route('workflows-employee-recruitment-opened')]);

@@ -19,21 +19,24 @@
             width: 100%;
         }
         .header-table td {
-            width: 50%;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .header-logo img {
             width: auto;
             height: 60px;
             max-width: 100%;
         }
-        .header-text {
-            text-align: right;
-            font-size: 0.5em;
+        .header-title {
+            font-size: 0.65em;
+            color: blue;
+            text-align: left;
+            margin-right: 10px;
         }
-        .header-text .title {
-            font-size: 0.8em;
-            font-weight: bold;
+        .header-subtitle {
+            font-size: 0.6em;
+            color: #999;
+            text-align: left;
+            margin-right: 10px;
         }
         
         .section-title {
@@ -74,9 +77,9 @@
         }
         
         .stamp {
-            text-align: center;
+            text-align: right;
             margin-top: 50px;
-            font-size: 0.8em;
+            font-size: 0.6em;
         }
         
         .checkboxes td {
@@ -100,22 +103,28 @@
             font-size: 0.8em;
             text-align: center !important;
         }
+
+        .legend {
+            font-size: 0.5em;
+            margin-top: 10px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
     <table class="header-table">
         <tr>
             <td class="header-logo">
-                <img src="assets/img/logo/logo.jpg" alt="Logo">
+                <img src="assets/img/logo/header-1.jpg" alt="Logo">
+                <img src="assets/img/logo/header-2.jpg" alt="Logo">
             </td>
             <td class="header-text">
-                <div class="title">TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
-                <div class="subtitle">GAZDASÁGI IGAZGATÓSÁG</div>
-                <div>1117 BUDAPEST, MAGYAR TUDÓSOK KÖRÚTJA 2.</div>
-                <div>LEVÉLCÍM: 1519 BUDAPEST, PF. 286.</div>
-                <div>TELEFON:</div>
-                <div>E-MAIL:</div>
-                <div>www.ttk.hu</div>
+                <div class="header-title">TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
+                <div class="header-subtitle">1117 BUDAPEST, MAGYAR TUDÓSOK KÖRÚTJA 2.</div>
+            </td>
+            <td class="header-text">
+                <div class="header-title">LEVÉLCÍM: 1519 BUDAPEST, PF. 286.</div>
+                <div class="header-subtitle">www.ttk.hu</div>
             </td>
         </tr>
     </table>
@@ -136,10 +145,7 @@
                 <td>TAJ száma: <b>{{ optional($recruitment)->social_security_number ?? '-' }}</b></td>
             </tr>
             <tr>
-                <td>FEOR:</td>
-            </tr>
-            <tr>
-                <td>Egység megnevezés:</td>
+                <td>Egység megnevezés: <b>{{ optional(optional($recruitment)->workgroup1)->name ?? '-' }}</b></td>
             </tr>
             <tr>
                 <td>A vizsgálat oka: <b>munkába lépés előtti vizsgálat</b></td>
@@ -325,14 +331,17 @@
             </tr>
         </tbody>
     </table>
+    <div class="legend">
+        E: érintett, R: részben érintett, -: nem érintett
+    </div>
     
 
     <div class="signature">
         Budapest, {{ date('Y') }}.{{ date('m') }}.{{ date('d') }}.
     </div>
     <div class="stamp">
-        P.H. <br>
-        ..........................................................
+        ..............................................................<br />
+        Munkáltató aláírása, hiteles bélyegzője
     </div>
 
 </body>

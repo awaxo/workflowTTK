@@ -52,9 +52,14 @@
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">
+    <h4 class="py-3 mb-2">
         <span class="text-muted fw-light">Új folyamat /</span> Felvételi kérelem
     </h4>
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
+    </div>
 
     <div class="row">
         <!-- Vertical Wizard -->

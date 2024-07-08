@@ -24,7 +24,12 @@
 @endsection
 
 @section('content')
-<h4 class="py-3 mb-4">Folyamat megtekintés / <span class="dynamic-part">{{ $recruitment->name }}</span></h4>
+<h4 class="py-3 mb-2">Folyamat megtekintés / <span class="dynamic-part">{{ $recruitment->name }}</span></h4>
+
+<!-- Back Button -->
+<div class="mb-4">
+    <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
+</div>
 
 <!-- Form with Tabs -->
 <div class="row">

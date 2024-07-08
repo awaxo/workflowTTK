@@ -123,6 +123,7 @@
                 </div>
                 <div class="bs-stepper-content" id="new-recruitment">
                     <input type="hidden" id="recruitment_id" name="recruitment_id" value="{{ isset($id) ? $id : '' }}" />
+                    <input type="hidden" id="recruitmentCreatedAt" name="recruitmentCreatedAt" value="{{ $recruitment->created_at }}">
 
                     <!-- Data section 1 -->
                     <div id="data-section-1" class="content">

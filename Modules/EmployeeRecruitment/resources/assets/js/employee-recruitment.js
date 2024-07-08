@@ -37,53 +37,6 @@ $(function () {
         toggleTaskInput($(this).val());
     });
 
-    // set datepicker date fields start
-    $("#citizenship").on('change', function() {
-        $("#employment_start_date, #employment_end_date").val('');
-
-        var startDate = $(this).val() == 'Harmadik országbeli' ? '+60D' : '+21D';
-        $("#employment_start_date").datepicker('destroy').datepicker({
-            format: "yyyy.mm.dd",
-            startDate: startDate,
-            language: 'hu',
-            weekStart: 1
-        });
-        
-        $("#employment_end_date").datepicker({
-            format: "yyyy.mm.dd",
-            startDate: '+6M',
-            language: 'hu',
-            weekStart: 1
-        });
-    });
-    
-    var startDate = $("#citizenship").val() == 'Harmadik országbeli' ? '+60D' : '+21D';
-    $("#employment_start_date").datepicker({
-        format: "yyyy.mm.dd",
-        startDate: startDate,
-        endDate: '+30Y',
-        language: 'hu',
-        weekStart: 1,
-        autoclose: true
-    });
-    $("#employment_end_date").datepicker({
-        format: "yyyy.mm.dd",
-        startDate: '+200D',
-        endDate: '+30Y',
-        language: 'hu',
-        weekStart: 1,
-        autoclose: true
-    });
-    $("#employment_start_date").on('change', function() {
-        var startDate = $("#employment_start_date").datepicker('getDate');
-        if (startDate) {
-            var endDate = moment(startDate).add(6, 'months').toDate();
-            $("#employment_end_date").datepicker('setDate', null);
-            $("#employment_end_date").datepicker('setStartDate', endDate);
-        }
-    });
-    // set datepicker date fields end
-
     $('#weekly_working_hours').on('change', function() {
         setWorkingHoursWeekdays();
         $('#health_allowance_monthly_gross_4').val('');
@@ -139,8 +92,55 @@ $(function () {
     /**
      * Initialize form for New or Edit
      */
-    if ($('#recruitment_id').val() === '') {
+    if ($('#recruitment_id').val() === '') {    // If creating a new recruitment
         $('#job_ad_exists').prop('checked', true);
+        
+        // set datepicker date fields start
+        $("#citizenship").on('change', function() {
+            $("#employment_start_date, #employment_end_date").val('');
+
+            var startDate = $(this).val() == 'Harmadik országbeli' ? '+60D' : '+21D';
+            $("#employment_start_date").datepicker('destroy').datepicker({
+                format: "yyyy.mm.dd",
+                startDate: startDate,
+                language: 'hu',
+                weekStart: 1
+            });
+            
+            $("#employment_end_date").datepicker({
+                format: "yyyy.mm.dd",
+                startDate: '+6M',
+                language: 'hu',
+                weekStart: 1
+            });
+        });
+        
+        var startDate = $("#citizenship").val() == 'Harmadik országbeli' ? '+60D' : '+21D';
+        $("#employment_start_date").datepicker({
+            format: "yyyy.mm.dd",
+            startDate: startDate,
+            endDate: '+30Y',
+            language: 'hu',
+            weekStart: 1,
+            autoclose: true
+        });
+        $("#employment_end_date").datepicker({
+            format: "yyyy.mm.dd",
+            startDate: '+200D',
+            endDate: '+30Y',
+            language: 'hu',
+            weekStart: 1,
+            autoclose: true
+        });
+        $("#employment_start_date").on('change', function() {
+            var startDate = $("#employment_start_date").datepicker('getDate');
+            if (startDate) {
+                var endDate = moment(startDate).add(6, 'months').toDate();
+                $("#employment_end_date").datepicker('setDate', null);
+                $("#employment_end_date").datepicker('setStartDate', endDate);
+            }
+        });
+        // set datepicker date fields end
     } else {    // If editing an existing recruitment
         $('#workgroup_id_1').val($('#workgroup_id_1_value').val()).trigger('change');
         $('#workgroup_id_2').val($('#workgroup_id_2_value').val()).trigger('change');
@@ -197,6 +197,65 @@ $(function () {
             $('#certificates_file').val($('#certificates_file').data('existing'));
             $('#commute_support_form_file').val($('#commute_support_form_file').data('existing'));
         }, 400);
+
+        // set datepicker date fields start
+        var recruitmentCreatedAt = $('#recruitmentCreatedAt').val();
+        var baseDate = recruitmentCreatedAt ? new Date(recruitmentCreatedAt) : new Date();
+
+        function calculateStartDate() {
+            return $("#citizenship").val() == 'Harmadik országbeli' ? moment(baseDate).add(60, 'days') : moment(baseDate).add(21, 'days');
+        }
+
+        $("#citizenship").on('change', function() {
+            $("#employment_start_date, #employment_end_date").val('');
+
+            var startDate = calculateStartDate().format('YYYY.MM.DD');
+            $("#employment_start_date").datepicker('destroy').datepicker({
+                format: "yyyy.mm.dd",
+                startDate: startDate,
+                language: 'hu',
+                weekStart: 1
+            });
+
+            var endDate = moment(baseDate).add(6, 'months').format('YYYY.MM.DD');
+            $("#employment_end_date").datepicker('destroy').datepicker({
+                format: "yyyy.mm.dd",
+                startDate: endDate,
+                language: 'hu',
+                weekStart: 1
+            });
+        });
+
+        // Initialize with recruitmentCreatedAt if available
+        var initialStartDate = calculateStartDate().format('YYYY.MM.DD');
+        $("#employment_start_date").datepicker({
+            format: "yyyy.mm.dd",
+            startDate: initialStartDate,
+            endDate: moment(baseDate).add(30, 'years').format('YYYY.MM.DD'),
+            language: 'hu',
+            weekStart: 1,
+            autoclose: true
+        });
+
+        var initialEndDate = moment(baseDate).add(6, 'months').format('YYYY.MM.DD');
+        $("#employment_end_date").datepicker({
+            format: "yyyy.mm.dd",
+            startDate: initialEndDate,
+            endDate: moment(baseDate).add(30, 'years').format('YYYY.MM.DD'),
+            language: 'hu',
+            weekStart: 1,
+            autoclose: true
+        });
+
+        $("#employment_start_date").on('change', function() {
+            var startDate = $("#employment_start_date").datepicker('getDate');
+            if (startDate) {
+                var endDate = moment(startDate).add(6, 'months').toDate();
+                $("#employment_end_date").datepicker('setDate', null);
+                $("#employment_end_date").datepicker('setStartDate', endDate);
+            }
+        });
+        // set datepicker date fields end
     }
     /**
      * End of Initialize form for New or Edit

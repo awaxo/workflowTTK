@@ -443,7 +443,7 @@ $(function () {
                         .then(function(status) {
                             if (status === 'Invalid') {
                                 console.log('Field:', name, 'Status:', status);
-                                GLOBALS.AJAX_ERROR('Hibás adat(ok) vagy hiányzó mező(k) vannak a formon, kérjük ellenőrizd!');
+                                GLOBALS.AJAX_ERROR('Hibás adat(ok) vagy hiányzó mező(k) vannak az űrlapon, kérjük ellenőrizd!');
                             }
                         });
                 });

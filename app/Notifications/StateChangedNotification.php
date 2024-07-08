@@ -53,7 +53,7 @@ class StateChangedNotification extends Notification
                     ->line('Jelenlegi státusz: ' . $this->currentState)
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
-                    ->line('Workflow rendszer');
+                    ->line('Ügyintézési rendszer');
     }
 
     /**

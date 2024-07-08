@@ -52,7 +52,7 @@ class StateOverdueSupervisorNotification extends Notification
                     ->line('Jelenlegi státusz: ' .  __('states.' . $this->workflow->state))
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
-                    ->line('Workflow rendszer');
+                    ->line('Ügyintézési rendszer');
     }
 
     /**

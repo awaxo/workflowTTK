@@ -52,9 +52,18 @@
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">
+    <h4 class="py-3 mb-2">
         <span class="text-muted fw-light">Új folyamat /</span> Felvételi kérelem
     </h4>
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
+    </div>
+
+    <div class="mb-2" style="font-size: larger;">
+        <div class="">ID: <b>{{ $recruitment->id }}</b></div>
+    </div>
 
     <div class="row">
         <!-- Vertical Wizard -->
@@ -123,6 +132,7 @@
                 </div>
                 <div class="bs-stepper-content" id="new-recruitment">
                     <input type="hidden" id="recruitment_id" name="recruitment_id" value="{{ isset($id) ? $id : '' }}" />
+                    <input type="hidden" id="recruitmentCreatedAt" name="recruitmentCreatedAt" value="{{ $recruitment->created_at }}">
 
                     <!-- Data section 1 -->
                     <div id="data-section-1" class="content">

@@ -35,7 +35,16 @@
 @endsection
 
 @section('content')
-<h4 class="py-3 mb-4">Folyamat jóváhagyás / <span class="dynamic-part">{{ $recruitment->name }}</span></h4>
+<h4 class="py-3 mb-2">Folyamat jóváhagyás / <span class="dynamic-part">{{ $recruitment->name }}</span></h4>
+
+<!-- Back Button -->
+<div class="mb-4">
+    <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
+</div>
+
+<div class="mb-2" style="font-size: larger;">
+    <div class="">ID: <b>{{ $recruitment->id }}</b></div>
+</div>
 
 <!-- Form with Tabs -->
 <div class="row">
@@ -153,8 +162,8 @@
                         <tbody>
                         @foreach($history as $history_entry)
                             <tr>
-                                <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : 'info')) }} me-1">
-                                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : 'Visszaállítás')) }}</span></td>
+                                <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : 'info'))) }} me-1">
+                                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : 'Visszaállítás'))) }}</span></td>
                                 <td>{{ $history_entry['datetime'] }}</td>
                                 <td>{{ $history_entry['user_name'] }}</td>
                                 <td>{{ __('states.' . $history_entry['status']) }}</td>

@@ -28,6 +28,10 @@
     <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
 </div>
 
+<div class="mb-2" style="font-size: larger;">
+    <div class="">ID: <b>{{ $recruitment->id }}</b></div>
+</div>
+
 <!-- Form with Tabs -->
 <div class="row">
     <div class="col">

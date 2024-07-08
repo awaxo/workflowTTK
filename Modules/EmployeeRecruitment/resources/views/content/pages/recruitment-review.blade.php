@@ -61,6 +61,10 @@
         <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
     </div>
 
+    <div class="mb-2" style="font-size: larger;">
+        <div class="">ID: <b>{{ $recruitment->id }}</b></div>
+    </div>
+
     <div class="row">
         <!-- Vertical Wizard -->
         <div class="col-12 mb-4">

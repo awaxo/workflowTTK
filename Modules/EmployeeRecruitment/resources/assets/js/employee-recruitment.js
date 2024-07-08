@@ -402,6 +402,9 @@ $(function () {
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
+                // Disable the button to prevent double clicks
+                $(".btn-submit").prop('disabled', true);
+
                 var formData = {};
                 formData['recruitment_id'] = $('#recruitment_id').val();
                 $('#new-recruitment :input').each(function() {

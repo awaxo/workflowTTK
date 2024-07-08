@@ -267,6 +267,9 @@ $(function() {
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
+                // Disable the button to prevent double clicks
+                $(".data-submit").prop('disabled', true);
+                
                 $.ajax({
                     url: url,
                     type: 'POST',

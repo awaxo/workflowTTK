@@ -246,7 +246,21 @@
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Belépési jogosultságok</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->entry_permissions ? $recruitment->entry_permissions : '-' }}</span>
+                <span class="fw-bold ms-1 text-break">
+                    @if($recruitment->entry_permissions)
+                        @php
+                            $entriesArray = explode(',', $recruitment->entry_permissions);
+                            $translatedEntries = array_map(function($entry) {
+                                $translation = trans('entries.' . $entry);
+                                return $translation === 'entries.' . $entry ? $entry : $translation;
+                            }, $entriesArray);
+                            $translatedEntries = implode(', ', $translatedEntries);
+                        @endphp
+                        {{ $translatedEntries }}
+                    @else
+                        -
+                    @endif
+                </span>
             </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Rendszám</label>

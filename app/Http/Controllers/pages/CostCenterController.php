@@ -14,8 +14,13 @@ class CostCenterController extends Controller
     {
         $costcenterTypes = CostCenterType::where('deleted', 0)->get();
         $users = User::where('deleted', 0)->get();
+        $projectCoordinators = User::where('deleted', 0)
+            ->whereHas('workgroup', function ($query) {
+                $query->whereIn('workgroup_number', [910, 911]);
+            })
+            ->get();
 
-        return view('content.pages.costcenters', compact('users', 'costcenterTypes'));
+        return view('content.pages.costcenters', compact('users', 'projectCoordinators', 'costcenterTypes'));
     }
 
     public function getAllCostCenters()

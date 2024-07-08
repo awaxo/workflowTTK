@@ -43,7 +43,7 @@
                 <div class="card-datatable table-responsive pt-0">
                     <table class="datatables-permissions table border-top">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th></th>
                                 <th>Név</th>
                                 <th>Szerepkör</th>

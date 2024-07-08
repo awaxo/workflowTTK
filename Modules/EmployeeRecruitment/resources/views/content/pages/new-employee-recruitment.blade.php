@@ -425,7 +425,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-6">
-                                <label for="base_salary_monthly_gross_1" class="form-label">Havi bruttó bér 1</label>
+                                <label for="base_salary_monthly_gross_1" class="form-label">Havi bruttó alapbér 1</label>
                                 <div class="d-flex align-items-center">
                                     <input class="form-control numeral-mask" type="text" id="base_salary_monthly_gross_1" name="base_salary_monthly_gross_1" />
                                     <span class="ms-2">Ft</span>
@@ -441,7 +441,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-6">
-                                <label for="base_salary_monthly_gross_2" class="form-label">Havi bruttó bér 2</label>
+                                <label for="base_salary_monthly_gross_2" class="form-label">Havi bruttó alapbér 2</label>
                                 <div class="d-flex align-items-center">
                                     <input class="form-control numeral-mask" type="text" id="base_salary_monthly_gross_2" name="base_salary_monthly_gross_2" />
                                     <span class="ms-2">Ft</span>
@@ -457,7 +457,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-6">
-                                <label for="base_salary_monthly_gross_3" class="form-label">Havi bruttó bér 3</label>
+                                <label for="base_salary_monthly_gross_3" class="form-label">Havi bruttó alapbér 3</label>
                                 <div class="d-flex align-items-center">
                                     <input class="form-control numeral-mask" type="text" value="" id="base_salary_monthly_gross_3" name="base_salary_monthly_gross_3" />
                                     <span class="ms-2">Ft</span>
@@ -468,7 +468,7 @@
 
                             <p class="mb-0 mt-0"><strong>Egészségügyi pótlék</strong></p>
                             <div class="col-sm-6">
-                                <label for="health_allowance_cost_center_4" class="form-label">Költséghely 4</label>
+                                <label for="health_allowance_cost_center_4" class="form-label">Költséghely</label>
                                 <select class="form-select select2" id="health_allowance_cost_center_4" name="health_allowance_cost_center_4">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
@@ -477,7 +477,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-6">
-                                <label for="health_allowance_monthly_gross_4" class="form-label">Havi bruttó bér 4</label>
+                                <label for="health_allowance_monthly_gross_4" class="form-label">Havi bruttó egészségügyi pótlék</label>
                                 <div class="d-flex align-items-center">
                                     <input class="form-control numeral-mask" type="text" value="" id="health_allowance_monthly_gross_4" name="health_allowance_monthly_gross_4" />
                                     <span class="ms-2">Ft</span>
@@ -488,7 +488,7 @@
 
                             <p class="mb-0 mt-0"><strong>Vezetői pótlék</strong></p>
                             <div class="col-sm-4">
-                                <label for="management_allowance_cost_center_5" class="form-label">Költséghely 5</label>
+                                <label for="management_allowance_cost_center_5" class="form-label">Költséghely</label>
                                 <select class="form-select select2" id="management_allowance_cost_center_5" name="management_allowance_cost_center_5">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
@@ -497,7 +497,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <label for="management_allowance_monthly_gross_5" class="form-label">Havi bruttó bér 5</label>
+                                <label for="management_allowance_monthly_gross_5" class="form-label">Havi bruttó vezetői pótlék</label>
                                 <div class="d-flex align-items-center">
                                     <input class="form-control numeral-mask" type="text" value="" id="management_allowance_monthly_gross_5" name="management_allowance_monthly_gross_5"/>
                                     <span class="ms-2">Ft</span>
@@ -512,7 +512,7 @@
 
                             <p class="mb-0 mt-0"><strong>Bérpótlék 1</strong></p>
                             <div class="col-sm-4">
-                                <label for="extra_pay_1_cost_center_6" class="form-label">Költséghely 6</label>
+                                <label for="extra_pay_1_cost_center_6" class="form-label">Költséghely</label>
                                 <select class="form-select select2" id="extra_pay_1_cost_center_6" name="extra_pay_1_cost_center_6">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
@@ -521,7 +521,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <label for="extra_pay_1_monthly_gross_6" class="form-label">Havi bruttó bér 6</label>
+                                <label for="extra_pay_1_monthly_gross_6" class="form-label">Havi bruttó illetménykiegészítés 1</label>
                                 <div class="d-flex align-items-center">
                                     <input class="form-control numeral-mask" type="text" value="" id="extra_pay_1_monthly_gross_6" name="extra_pay_1_monthly_gross_6" />
                                     <span class="ms-2">Ft</span>
@@ -536,7 +536,7 @@
 
                             <p class="mb-0 mt-0"><strong>Bérpótlék 2</strong></p>
                             <div class="col-sm-4">
-                                <label for="extra_pay_2_cost_center_7" class="form-label">Költséghely 7</label>
+                                <label for="extra_pay_2_cost_center_7" class="form-label">Költséghely</label>
                                 <select class="form-select select2" id="extra_pay_2_cost_center_7" name="extra_pay_2_cost_center_7">
                                     <option value="" selected>Válassz költséghelyet</option>
                                     @foreach($costcenters as $costcenter)
@@ -545,7 +545,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <label for="extra_pay_2_monthly_gross_7" class="form-label">Havi bruttó bér 7</label>
+                                <label for="extra_pay_2_monthly_gross_7" class="form-label">Havi bruttó illetménykiegészítés 2</label>
                                 <div class="d-flex align-items-center">
                                     <input class="form-control numeral-mask" type="text" value="" id="extra_pay_2_monthly_gross_7" name="extra_pay_2_monthly_gross_7" />
                                     <span class="ms-2">Ft</span>
@@ -556,14 +556,17 @@
                                 <input type="text" id="extra_pay_2_end_date" placeholder="ÉÉÉÉ.HH.NN" class="form-control" name="extra_pay_2_end_date" />
                             </div>
 
+                            <div class="col-12">
+                                <div>
+                                    <span><strong>Bruttó munkabér összesen: <span id="totalGross">0</span> Ft / hó</strong></span>
+                                </div>
+                            </div>
+
                             <div class="col-12 d-flex justify-content-between">
                                 <button class="btn btn-primary btn-prev">
                                     <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                     <span class="align-middle d-sm-inline-block d-none">Vissza</span>
                                 </button>
-                                <div>
-                                    <span><strong>Összesen: <span id="totalGross">0</span> Ft / hó</strong></span>
-                                </div>
                                 <button class="btn btn-primary btn-next">
                                     <span class="align-middle d-sm-inline-block d-none me-sm-1">Tovább</span>
                                     <i class="bx bx-chevron-right bx-sm me-sm-n2"></i>

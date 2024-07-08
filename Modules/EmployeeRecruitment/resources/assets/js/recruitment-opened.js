@@ -120,7 +120,7 @@ $(function() {
         initComplete: function() {
             var checkboxHtml = `
                 <div class="form-check form-switch show-own-cases">
-                    <input class="form-check-input" type="checkbox" role="switch" id="show_only_own">
+                    <input class="form-check-input" type="checkbox" role="switch" id="show_only_own" checked>
                     <label class="form-check-label" for="show_only_own">Csak saját ügyek listázása</label>
                 </div>
             `;
@@ -131,7 +131,7 @@ $(function() {
 
             $('#show_only_own').on('change', function() {
                 $('.datatables-recruitments').DataTable().draw();
-            });
+            }).trigger('change');
         }
     });
 

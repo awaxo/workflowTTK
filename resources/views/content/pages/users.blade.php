@@ -59,7 +59,7 @@
 
                     <table class="datatables-users table border-top" data-api-endpoint="{{ $apiEndpoint }}">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th></th>
                                 <th>Név</th>
                                 <th>Email</th>

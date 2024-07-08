@@ -57,7 +57,7 @@
 
                     <table class="datatables-costcenter-types table border-top">
                         <thead>
-                            <tr>
+                            <tr style="background-color: rgba(105,108,255,.16)">
                                 <th></th>
                                 <th>Költséghely típus</th>
                                 <th>Pályázat</th>

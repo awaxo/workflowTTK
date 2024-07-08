@@ -31,4 +31,25 @@
 /* hovered rows */
 .card-datatable table tbody tr:hover {
     background-color: #efefef;
-} 
+}
+
+/* datatable header */
+.table > :not(caption) > * > *, 
+.card,
+.bg-footer-theme,
+.dataTables_info,
+.dataTables_paginate .page-item .page-link,
+.bs-stepper-content,
+.modal-content {
+    color: rgb(86, 106, 127) !important;
+}
+
+.light-style .bs-stepper .bs-stepper-header .step .bs-stepper-subtitle {
+    color: #8397ad;
+}
+
+.page-item.active .page-link {
+    background-color: #5f61e6;
+    border-color: #5f61e6;
+    color: #fff !important;
+}

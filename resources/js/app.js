@@ -2,9 +2,9 @@
   Add custom scripts here
 */
 import.meta.glob([
-  '../assets/img/**',
-  // '../assets/json/**',
-  '../assets/vendor/fonts/**'
+    '../assets/img/**',
+    // '../assets/json/**',
+    '../assets/vendor/fonts/**'
 ]);
 
 $(function() {
@@ -21,4 +21,20 @@ $(function() {
             };
         }
     };
+
+    $(document).on('mouseenter', '.dataTables_filter input', function() {
+        if (!$(this).data('bs.tooltip')) {
+            $(this).attr({
+                'data-bs-toggle': 'tooltip',
+                'data-bs-offset': '0,4',
+                'data-bs-html': 'true',
+                'title': 'Pontosan egyező találat megjelenítéséhez a keresőszöveget aposztrófok közé kell írni'
+            }).tooltip();
+
+            // remove the title attribute to prevent the default tooltip from showing
+            $(this).attr('title', '');
+
+            $(this).tooltip('show');
+        }
+    });
 });

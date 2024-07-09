@@ -292,7 +292,7 @@
                                 <h5 class="mb-0">Munkaidő</h5>
                                 <small>Add meg a munkaidő adatokat</small>
                             </div>
-                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal4" title="Segítség"></i>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal3" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <div class="col-sm-4">
@@ -411,7 +411,7 @@
                                 <h5 class="mb-0">Bérelemek</h5>
                                 <small>Add meg a bérelemeket</small>
                             </div>
-                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal3" title="Segítség"></i>
+                            <i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal4" title="Segítség"></i>
                         </div>
                         <div class="row g-3">
                             <p class="mb-0"><strong>Alapbér</strong></p>
@@ -749,9 +749,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Ezen a lapon tudsz megadni néhány alapadatot a felvételi kérelemhez kapcsolódóan.</p>
-                    <p>Az <i>'Álláshirdetésre jelentkezett nők száma'</i> és <i>'Álláshirdetésre jelentkezett férfiak száma'</i> mező csak szám értéket fogad el.</p>
-                    <p>A <i>'Csoport 1'</i> és <i>'Csoport 2'</i> legördülő listáknál, kattintás után a lista tetején látható szövegdobozba írva keresni lehet a lista elemei között.</p>
+                    <p>Itt tudod megadni a munkavállalóhoz kapcsolódó alapadatokat (Név, TAJ szám, lakcím, csoportszám).</p>
+                    <p>Csoportszám 2 megadása akkor szükséges, ha a bérét két csoporthoz kapcsolódó témaszámból kívánjátok fedezni, vagy ha a Csoportszám 1-ben megjelölt 800-as intézethez tartozó munkavállaló munkavégzési csoportját kívánjátok megadni.</p>
+                    <p>Esélyegyenlőségi statisztikához kérjük megadni a jelentkezők nemenkénti megoszlását, amennyiben a felvétel álláshirdetés alapján történt.</p>
+                    <p>A korábbi TTK-s jogviszony jelölése (igen/nem) az 5 év határozott idő lejárta esetén és a próbaidő szempontjából fontos.</p>
+                    <p>Esetleges jelenleg érvényes önkéntes szerződés meglétének megadása a belépő kártya csere és önkéntes szerződés lezárása miatt szükséges.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
@@ -769,9 +771,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Ezen a lapon a jogviszonyhoz kapcsolódó adatokat adhatod meg.</p>
-                    <p>A <i>'Munkakör'</i> lista annak megfelelően frissül, hogy melyik munkakör típust választottad.</p>
-                    <p>A fájl feltöltésnél 1 db pdf fájl feltöltésére van lehetőség, aminek a mérete maximálisan 20MB lehet.</p>
+                    <p>Itt tudod megadni a munkakört és a felvétel kezdő dátumát, valamint a munkaviszony tartalmát (határozott idő esetén a feladat megadása kötelező).</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
@@ -789,9 +789,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Itt adhatod meg az egyes típusok szerinti vérelemeket<./p>
-                    <p>A bér mezőkbe csak szám érték adható meg.</p>
-                    <p>A választható költséghelyek az első lapon megadott csoportszámoktól függenek, amennyiben kiválasztasz egy költséghelyet, akkor összeget (és ahol van, dátumot) is meg kell adnod.</p>
+                    <p>Itt tudod megadni a heti óraszámot és az ahhoz kapcsolódó napi munkaidő beosztást. A munkaidő kezdete és vége minden napnál szabadon állítható, a napi munkaidő nem kell, hogy azonos legyen, csak a napi óraszámok összege adja ki az előzőleg megadott heti óraszámot.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
@@ -809,7 +807,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Ezen a lapon adhatot meg a munkaidőhöz kapcsolódó adatokat hétköznap napi bontásban. A napi munkaidő adatok összegének meg kell egyeznie a kiválasztott heti munkaidő mértékével</p>
+                    <p>Itt tudod megadni a munkavállaló munkabérét.</p>
+                    <p>Először az alapbért kötelező megadni hozzá tartozó témaszám kiválasztását követően, mely kiválasztható a legördülő menüből. Az alapadatokban megadott csoportszámhoz tartozó témaszámok jelennek meg. Az alapbér legfeljebb 3 különböző témaszámra osztható.</p>
+                    <p>Munkakörhöz kapcsolódóan megadható az egészségügyi pótlék (20 000 Ft heti 40 órás jogviszony esetén) és a vezetői pótlék (40 000 Ft csoportvezető esetén).</p>
+                    <p>Határozott időre a Csoportszám 1 vagy Csoportszám 2 szerinti témaszámra megadható bérpótlék (illetménykiegészítés), ehhez időszak és összeg megadása kötelező.</p>
+                    <p>Az összes bérelem megadása után szükséges ellenőrizni a bruttó bér összesen sort.</p>
+                    <p>Legalább egy bérelem, az alapbér megadása kötelező.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
@@ -827,7 +830,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Ezen a lapon néhány további, fontos adat adható meg. A belépési jogosultságok lista az első lapon kiválasztott csoportoktól függ.</p>
+                    <p>Itt lehet beállítani a dolgozó e-mail címét (vezeteknev.keresztnev@ttk.hu). A belépési jogosultságokat ki lehet választani legördülő menüből, amelyben a csoporthoz tartozó helyiségek jelennek meg.</p>
+                    <p>Lehetőség van kiválasztani a szükséges munkaeszközöket (asztal, számítógép, laptop stb.). Amennyiben megadtuk, hogy az adott eszköz rendelkezésre áll, szükséges megadni az eszköz leltári számát.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>
@@ -845,8 +849,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Ezen a lapon további, szükséges dokumentum feltöltésére van lehetőséged</p>
-                    <p>Mindegyik mezőnél 1 db pdf formátumú fájl tölthető fel és a feltöltött fájlok mérete egyenként maximum 20MB lehet.</p>
+                    <p>Itt kell feltölteni a felvételi kérelem kötelező mellékleteit:
+                        <ul>
+                            <li>személyi adatlap,</li>
+                            <li>bizonyítványok egy PDF dokumentumba mentve,</li>
+                            <li>tudományos segédmunkatárs vagy egyetemi hallgató felvétele esetén pedig a hallgatói jogviszony igazolást is.</li>
+                        </ul>
+                    </p>
+                    <p>Lehetőség van megadni, hogy munkába járási támogatást igényel-e (nem budapesti lakcímmel rendelkező esetén érdemes rákérdezni) és feltölteni az adatlapot.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Bezárás</button>

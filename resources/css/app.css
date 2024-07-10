@@ -57,3 +57,7 @@ ul.menu-sub {
     border-color: #5f61e6;
     color: #fff !important;
 }
+
+.app-brand .layout-menu-toggle i {
+    line-height: 0.9 !important;
+}

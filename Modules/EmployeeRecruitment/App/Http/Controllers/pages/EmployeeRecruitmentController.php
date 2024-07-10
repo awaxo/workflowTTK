@@ -220,11 +220,11 @@ class EmployeeRecruitmentController extends Controller
         return view('employeerecruitment::content.pages.recruitment-closed');
     }
     
-    public function getAllOpened()
+    public function getAll()
     {
         $service = new WorkflowService();
 
-        $recruitments = RecruitmentWorkflow::whereNotIn('state', ['completed', 'rejected'])->get()->map(function ($recruitment) use ($service) {
+        $recruitments = RecruitmentWorkflow::where('deleted', 0)->get()->map(function ($recruitment) use ($service) {
             return [
                 'id' => $recruitment->id,
                 'name' => $recruitment->name,
@@ -244,6 +244,7 @@ class EmployeeRecruitmentController extends Controller
                 'updated_at' => $recruitment->updated_at,
                 'updated_by_name' => $recruitment->updatedBy->name,
                 'is_user_responsible' => $service->isUserResponsible(Auth::user(), $recruitment),
+                'is_closed' => $recruitment->state == 'completed' || $recruitment->state == 'rejected',
                 'is_initiator_role' => User::find(Auth::id())->hasRole('titkar_' . $recruitment->initiator_institute_id),
                 'is_manager_user' => WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()
             ];

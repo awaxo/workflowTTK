@@ -31,7 +31,7 @@ Route::post('/employee-recruitment/{id}/reject', [EmployeeRecruitmentController:
 Route::post('/employee-recruitment/{id}/suspend', [EmployeeRecruitmentController::class, 'suspend'])->middleware(['auth']);
 Route::post('/employee-recruitment/{id}/restore', [EmployeeRecruitmentController::class, 'restore'])->middleware(['auth']);
 
-Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class, 'getAllOpened'])->middleware(['auth']);
+Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class, 'getAll'])->middleware(['auth']);
 Route::get('/employee-recruitment/closed', [EmployeeRecruitmentController::class, 'getAllClosed'])->middleware(['auth']);
 
 Route::get('/generate-pdf/{id}', [EmployeeRecruitmentController::class, 'generatePDF'])->middleware(['auth'])->name('generate.pdf');

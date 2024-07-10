@@ -148,7 +148,7 @@ $(function() {
             parent.find('.dataTables_length').css('margin-right', '20px');
             parent.find('.dataTables_length').after(checkboxClosedHtml).after(checkboxOwnHtml);
 
-            $('#show_only_own').on('change', function() {
+            $('#show_only_own, #show_closed').on('change', function() {
                 $('.datatables-recruitments').DataTable().draw();
             }).trigger('change');
         }
@@ -164,6 +164,20 @@ $(function() {
                 return rowData.is_user_responsible;
             } else {
                 return true;
+            }
+        }
+    );
+
+    // refresh number of rows on show closed checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            var showClosedAlso = $('#show_closed').prop('checked');
+            var rowData = dataTable.row(dataIndex).data();
+            
+            if (showClosedAlso) {
+                return true;
+            } else {
+                return !rowData.is_closed;
             }
         }
     );

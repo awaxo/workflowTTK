@@ -22,6 +22,7 @@ $(function() {
         }
     };
 
+    // search tooltip
     $(document).on('mouseenter', '.dataTables_filter input', function() {
         if (!$(this).data('bs.tooltip')) {
             $(this).attr({
@@ -37,4 +38,17 @@ $(function() {
             $(this).tooltip('show');
         }
     });
+
+    // sidebar menu event handling
+    const menuElement = document.querySelector('#sideMenu');
+    if (menuElement) {
+        const menu = new Menu(menuElement, {
+            onOpen: (item, toggleLink, menu) => {
+                window.location.href = menu.href;
+            },
+            onClose: () => {},
+        });
+    } else {
+        console.error('Menu element not found in the DOM.');
+    }
 });

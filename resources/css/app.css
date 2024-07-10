@@ -17,6 +17,10 @@
     cursor: pointer;
 }
 
+ul.menu-sub {
+    padding-left: 15px;
+}
+
 /* datatable strip lines */
 /* odd rows */
 .card-datatable table tbody tr:nth-child(odd) {

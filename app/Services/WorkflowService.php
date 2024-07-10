@@ -8,10 +8,33 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\Facades\Module;
 
 class WorkflowService
 {
+    public function getAllButDeletedWorkflows(User $user): Collection
+    {
+        $allWorkflows = collect();
+
+        foreach (WorkflowRegistry::getAll() as $workflowClass) {
+            $workflows = $workflowClass::fetchAllButDeleted();
+    
+            $marked = $workflows->map(function ($workflow) use ($user) {
+                $stateHandler = $this->getStateHandler($workflow);
+                $is_user_responsible = $stateHandler && ($stateHandler->isUserResponsible($user, $workflow) || $stateHandler->isUserResponsibleAsDelegate($user, $workflow));
+                $is_closed = $workflow->state == 'completed' || $workflow->state == 'rejected';
+    
+                // add is_user_responsible and is_closed fields to the output
+                return (object) array_merge($workflow->toArray(), ['is_user_responsible' => $is_user_responsible, 'is_closed' => $is_closed]);
+            });
+    
+            $allWorkflows = $allWorkflows->merge($marked);
+        }
+
+        return new \Illuminate\Database\Eloquent\Collection($allWorkflows->all());
+    }
+
     public function getVisibleWorkflows(User $user): Collection
     {
         $visibleWorkflows = collect();
@@ -99,6 +122,7 @@ class WorkflowService
             }
         }
 
+        Log::error("State handler for {$workflow->getCurrentState()} ({$stateClass}) not found.");
         throw new Exception("State handler for {$workflow->getCurrentState()} ({$stateClass}) not found.");
     }
 

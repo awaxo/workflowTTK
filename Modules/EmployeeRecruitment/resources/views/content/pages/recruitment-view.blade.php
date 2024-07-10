@@ -4,12 +4,18 @@
 
 @section('vendor-style')
     @vite([
+        'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+        'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+        'resources/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.scss',
+        'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
+        'resources/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.scss',
         'resources/assets/vendor/libs/dropzone/dropzone.scss',
     ])
 @endsection
 
 @section('vendor-script')
     @vite([
+        'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
         'resources/assets/vendor/libs/cleavejs/cleave.js',
         'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
         'resources/assets/vendor/libs/dropzone/dropzone.min.js',
@@ -19,6 +25,7 @@
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'Modules/EmployeeRecruitment/resources/assets/js/approve-recruitment.js'
     ])
 @endsection

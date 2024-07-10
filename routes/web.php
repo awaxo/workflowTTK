@@ -34,8 +34,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
 Route::get('/segedadat/szerepkorok', [RoleController::class, 'index'])->middleware(['check.wg915'])->name('auxiliary-data-authorizations-roles');
 Route::get('/segedadat/jogosultsagok', [PermissionController::class, 'index'])->middleware(['auth'])->name('authorizations-permissions');
-Route::get('/folyamatok/nyitott', [WorkflowController::class, 'index'])->middleware(['auth'])->name('workflows-all-open');
-Route::get('/folyamatok/lezart', [WorkflowController::class, 'closed'])->middleware(['auth'])->name('workflows-all-closed');
+Route::get('/folyamatok', [WorkflowController::class, 'index'])->middleware(['auth'])->name('workflows-all-open');
 Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-institute');
 Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-workgroup');
 Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['check.wg915'])->name('auxiliary-data-external-access');

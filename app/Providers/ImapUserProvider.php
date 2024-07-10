@@ -23,10 +23,11 @@ class ImapUserProvider implements UserProvider {
     }
 
     public function retrieveByCredentials(array $credentials) {
+        $username = str_replace('@ttk.hu', '', $credentials['email']);
         $user = User::where('email', $credentials['email'])->first();
 
         if ($user) {
-            $user->connectToImap();
+            $user->connectToImap($username);
             if ($user->checkImapConnection()) {
                 return $user;
             }
@@ -37,7 +38,9 @@ class ImapUserProvider implements UserProvider {
 
     public function validateCredentials(Authenticatable $user, array $credentials) {
         if ($user instanceof User) {
-            $user->connectToImap();
+            $username = str_replace('@ttk.hu', '', $user->email);
+
+            $user->connectToImap($username);
             return $user->checkImapConnection();
         }
         return false;

@@ -96,7 +96,7 @@ class StateDraftContractPending implements IStateResponsibility {
 
                 return [
                     'type' => 'draft_contract_labor_administrator_' . $workgroup->workgroup_number,
-                    'readable_name' => 'Munkaügyi ügyintéző (intézet: ' . $abbreviation . ')'
+                    'readable_name' => 'Munkaügyi ügyintéző (intézet: ' . $abbreviation . ', csoport: ' . $workgroup->workgroup_number . ')'
                 ];
             })->toArray();
         }

@@ -10,6 +10,11 @@
 <!-- Vendor Styles -->
 @section('vendor-style')
 @vite([
+    'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.scss',
+    'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.scss',
     'resources/assets/vendor/libs/bs-stepper/bs-stepper.scss',
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.scss',
     'resources/assets/vendor/libs/select2/select2.scss',
@@ -24,6 +29,7 @@
 <!-- Vendor Scripts -->
 @section('vendor-script')
 @vite([
+    'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
     'resources/assets/vendor/libs/bs-stepper/bs-stepper.js',
     'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
     'resources/assets/vendor/libs/select2/select2.js',
@@ -45,6 +51,7 @@
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'resources/assets/js/form-wizard-numbered.js',
         'resources/assets/js/form-basic-inputs.js',
         'Modules/EmployeeRecruitment/resources/assets/js/employee-recruitment.js'

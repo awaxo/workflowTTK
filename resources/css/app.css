@@ -17,6 +17,10 @@
     cursor: pointer;
 }
 
+ul.menu-sub {
+    padding-left: 15px;
+}
+
 /* datatable strip lines */
 /* odd rows */
 .card-datatable table tbody tr:nth-child(odd) {
@@ -52,4 +56,8 @@
     background-color: #5f61e6;
     border-color: #5f61e6;
     color: #fff !important;
+}
+
+.app-brand .layout-menu-toggle i {
+    line-height: 1 !important;
 }

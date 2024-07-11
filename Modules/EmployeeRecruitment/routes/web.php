@@ -18,9 +18,8 @@ use Modules\EmployeeRecruitment\App\Middleware\CheckSecretary;
 */
 
 // Page routes
-Route::get('/felveteli-kerelem/uj', [EmployeeRecruitmentController::class, 'index'])->middleware([CheckSecretary::class])->name('workflows-employee-recruitment-new');
-Route::get('/felveteli-kerelem/nyitott', [EmployeeRecruitmentController::class, 'opened'])->middleware(['auth'])->name('workflows-employee-recruitment-opened');
-Route::get('/felveteli-kerelem/lezart', [EmployeeRecruitmentController::class, 'closed'])->middleware(['auth'])->name('workflows-employee-recruitment-closed');
+Route::get('/hr/felveteli-kerelem/uj', [EmployeeRecruitmentController::class, 'index'])->middleware([CheckSecretary::class])->name('workflows-employee-recruitment-new');
+Route::get('/hr/felveteli-kerelem', [EmployeeRecruitmentController::class, 'opened'])->middleware(['auth'])->name('workflows-employee-recruitment-opened');
 Route::get('/folyamat/jovahagyas/{id}', [EmployeeRecruitmentController::class, 'beforeApprove'])->middleware(['auth'])->name('pages-approve-process');
 Route::get('/folyamat/visszaallitas/{id}', [EmployeeRecruitmentController::class, 'beforeRestore'])->middleware(['auth'])->name('pages-restore-process');
 Route::get('/folyamat/megtekintes/{id}', [EmployeeRecruitmentController::class, 'view'])->middleware(['auth'])->name('pages-restore-process');
@@ -32,7 +31,7 @@ Route::post('/employee-recruitment/{id}/reject', [EmployeeRecruitmentController:
 Route::post('/employee-recruitment/{id}/suspend', [EmployeeRecruitmentController::class, 'suspend'])->middleware(['auth']);
 Route::post('/employee-recruitment/{id}/restore', [EmployeeRecruitmentController::class, 'restore'])->middleware(['auth']);
 
-Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class, 'getAllOpened'])->middleware(['auth']);
+Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class, 'getAll'])->middleware(['auth']);
 Route::get('/employee-recruitment/closed', [EmployeeRecruitmentController::class, 'getAllClosed'])->middleware(['auth']);
 
 Route::get('/generate-pdf/{id}', [EmployeeRecruitmentController::class, 'generatePDF'])->middleware(['auth'])->name('generate.pdf');

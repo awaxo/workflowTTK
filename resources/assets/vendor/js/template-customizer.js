@@ -1307,6 +1307,19 @@ TemplateCustomizer.LANGUAGES = {
     layout_navbar_label: 'Navbar Type',
     direction_label: 'Direction'
   },
+  hu: {
+    panel_header: 'Template testreszabás',
+    panel_sub_header: 'Testre szabás és valós idejű előnézet',
+    theming_header: 'Téma',
+    style_label: 'Stílus',
+    theme_label: 'Témák',
+    layout_header: 'Elrendezés',
+    layout_label: 'Menü',
+    layout_header_label: 'Fejléc típusok',
+    content_label: 'Tartalom',
+    layout_navbar_label: 'Navigációs sáv típusa',
+    direction_label: 'Irány'
+  },
   fr: {
     panel_header: 'Modèle De Personnalisation',
     panel_sub_header: 'Personnalisez et prévisualisez en temps réel',

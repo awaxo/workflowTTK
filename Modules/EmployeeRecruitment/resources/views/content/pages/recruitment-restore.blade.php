@@ -4,18 +4,23 @@
 
 @section('vendor-style')
     @vite([
-    // Add paths to the necessary CSS files for the page
+        'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+        'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+        'resources/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.scss',
+        'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
+        'resources/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.scss',
     ])
 @endsection
 
 @section('vendor-script')
     @vite([
-    // Add paths to the necessary JavaScript files for the page
+        'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
     ])
 @endsection
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'Modules/EmployeeRecruitment/resources/assets/js/restore-recruitment.js'
     ])
 @endsection

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\WorkflowType;
 use App\Services\WorkflowService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class WorkflowController extends Controller
 {
@@ -24,7 +25,7 @@ class WorkflowController extends Controller
     {
         $service = new WorkflowService();
 
-        $workflows = $service->getVisibleWorkflows(Auth::user())
+        $workflows = $service->getAllButDeletedWorkflows(Auth::user())
             ->map(function ($workflow) {
                 return [
                     'id' => $workflow->id,
@@ -37,6 +38,7 @@ class WorkflowController extends Controller
                     'created_by_name' => $workflow->created_by["name"],
                     'created_at' => $workflow->created_at,
                     'is_user_responsible' => $workflow->is_user_responsible,
+                    'is_closed' => $workflow->is_closed,
                     'is_initiator_role' => User::find(Auth::id())->hasRole('titkar_' . $workflow->initiator_institute_id),
                     'is_manager_user' => WorkflowType::find($workflow->workflow_type_id)->first()->workgroup->leader_id == Auth::id()
                 ];

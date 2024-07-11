@@ -27,7 +27,7 @@ class LoginBasic extends Controller
                 ])->onlyInput('email-username');
             }
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            return redirect()->intended('folyamatok');
         }
 
         return back()->withErrors([

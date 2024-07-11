@@ -40,6 +40,15 @@
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-datatable table-responsive pt-0">
+                    @php
+                        $isSecretary = Auth::user()->roles->filter(function($role) {
+                            return Str::startsWith($role->name, 'titkar');
+                        })->isNotEmpty();
+                    @endphp
+                    <script>
+                        window.isSecretary = @json($isSecretary);
+                    </script>
+
                     <table class="datatables-recruitments table border-top">
                         <thead>
                             <tr style="background-color: rgba(105,108,255,.16)">

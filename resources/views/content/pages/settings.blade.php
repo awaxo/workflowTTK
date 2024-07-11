@@ -32,6 +32,7 @@
 
 @section('page-script')
     @vite([
+        'resources/js/app.js',
         'resources/assets/js/pages-settings.js'
     ])
 @endsection

@@ -1,43 +1,52 @@
 {
     "menu": [
     {
-        "url": "/",
+        "url": "/folyamatok",
         "name": "Folyamatok",
         "icon": "menu-icon tf-icons bx bx-directions",
         "slug": "workflows",
         "submenu": [
             {
-                "url": "/folyamatok/nyitott",
-                "name": "Nyitott folyamatok",
+                "url": "/folyamatok",
+                "name": "Összes folyamat",
                 "slug": "workflows-all-open"
             },
             {
-                "url": "/folyamatok/lezart",
-                "name": "Lezárt folyamatok",
-                "slug": "workflows-all-closed"
-            },
-            {
-                "url": "/",
+                "url": "/hr/felveteli-kerelem",
                 "name": "HR Osztály",
                 "slug": "workflows-employee-recruitment",
                 "submenu":[
                     {
-                        "url": "/felveteli-kerelem/uj",
-                        "name": "Új",
-                        "slug": "workflows-employee-recruitment-new",
-                        "authorize": "true"
-                    },
-                    {
-                        "url": "/felveteli-kerelem/nyitott",
-                        "name": "Nyitott",
+                        "url": "/hr/felveteli-kerelem",
+                        "name": "Felvételi kérelem",
                         "slug": "workflows-employee-recruitment-opened"
-                    },
-                    {
-                        "url": "/felveteli-kerelem/lezart",
-                        "name": "Lezárt",
-                        "slug": "workflows-employee-recruitment-closed"
                     }
                 ]
+            },
+            {
+                "url": "#",
+                "name": "Pénzügy",
+                "slug": "workflows-finance"
+            },
+            {
+                "url": "#",
+                "name": "Projekt",
+                "slug": "workflows-project"
+            },
+            {
+                "url": "#",
+                "name": "Beszerzés",
+                "slug": "workflows-purchase"
+            },
+            {
+                "url": "#",
+                "name": "Üzemeltetés",
+                "slug": "workflows-operations"
+            },
+            {
+                "url": "#",
+                "name": "IT Osztály",
+                "slug": "workflows-all-closed"
             }
         ]
     },
@@ -49,7 +58,7 @@
         "authorize": "true"
     },
     {
-        "url": "/",
+        "url": "#",
         "name": "Segédadatok",
         "icon": "menu-icon tf-icons bx bx-data",
         "slug": "auxiliary-data",

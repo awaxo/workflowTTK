@@ -84,6 +84,19 @@ $(function() {
         order: [[1, 'asc']],
         displayLength: 10,
         lengthMenu: [10, 25, 50, 75, 100],
+        dom: window.isSecretary 
+            ? '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
+            : '<"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+        buttons: [
+            {
+                text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új folyamat</span>',
+                className: 'create-new btn btn-primary',
+                attr: {
+                    'data-bs-toggle': 'offcanvas',
+                    'data-bs-target': '#new_workgroup'
+                },
+            }
+        ],
         responsive: {
             details: {
                 display: $.fn.dataTable.Responsive.display.modal({
@@ -118,18 +131,24 @@ $(function() {
         },
         language: GLOBALS.DATATABLE_TRANSLATION,
         initComplete: function() {
-            var checkboxHtml = `
+            var checkboxOwnHtml = `
                 <div class="form-check form-switch show-own-cases">
                     <input class="form-check-input" type="checkbox" role="switch" id="show_only_own" checked>
                     <label class="form-check-label" for="show_only_own">Csak saját ügyek listázása</label>
                 </div>
             `;
+            var checkboxClosedHtml = `
+                <div class="form-check form-switch show-closed-cases ms-3">
+                    <input class="form-check-input" type="checkbox" role="switch" id="show_closed">
+                    <label class="form-check-label" for="show_closed">Lezárt folyamatok megjelenítése is</label>
+                </div>
+            `;
             var parent = $(this).closest('.dataTables_wrapper').find('.dataTables_length').parent();
             parent.css('display', 'flex').css('align-items', 'center');
             parent.find('.dataTables_length').css('margin-right', '20px');
-            parent.find('.dataTables_length').after(checkboxHtml);
+            parent.find('.dataTables_length').after(checkboxClosedHtml).after(checkboxOwnHtml);
 
-            $('#show_only_own').on('change', function() {
+            $('#show_only_own, #show_closed').on('change', function() {
                 $('.datatables-recruitments').DataTable().draw();
             }).trigger('change');
         }
@@ -145,6 +164,20 @@ $(function() {
                 return rowData.is_user_responsible;
             } else {
                 return true;
+            }
+        }
+    );
+
+    // refresh number of rows on show closed checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            var showClosedAlso = $('#show_closed').prop('checked');
+            var rowData = dataTable.row(dataIndex).data();
+            
+            if (showClosedAlso) {
+                return true;
+            } else {
+                return !rowData.is_closed;
             }
         }
     );
@@ -205,5 +238,9 @@ $(function() {
     $('#deleteConfirmation').on('hidden.bs.modal', function () {
         $('#cancel_reason').removeClass('is-invalid').val('');
         $('.invalid-feedback').remove();
+    });
+
+    $('.create-new').on('click', function() {
+        window.location.href = '/hr/felveteli-kerelem/uj';
     });
 });

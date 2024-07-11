@@ -24,7 +24,7 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      */
     public static function fetchActive(): Collection
     {
-        return static::where('state', '!=', 'completed')
+        return static::where('state', '!=', 'completed')->where('state', '!=', 'rejected')
             ->where('deleted', 0)
             ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
             ->get();
@@ -39,6 +39,18 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
     {
         return static::whereIn('state', ['completed', 'rejected'])
             ->orWhere('deleted', 1)
+            ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
+            ->get();
+    }
+
+    /**
+     * Fetch all workflows except deleted ones.
+     * 
+     * @return Collection|AbstractWorkflow[]
+     */
+    public static function fetchAllButDeleted(): Collection
+    {
+        return static::where('deleted', 0)
             ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
             ->get();
     }

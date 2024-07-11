@@ -224,7 +224,7 @@ class EmployeeRecruitmentController extends Controller
     {
         $service = new WorkflowService();
 
-        $recruitments = RecruitmentWorkflow::where('deleted', 0)->get()->map(function ($recruitment) use ($service) {
+        $recruitments = RecruitmentWorkflow::baseQuery()->where('deleted', 0)->get()->map(function ($recruitment) use ($service) {
             return [
                 'id' => $recruitment->id,
                 'name' => $recruitment->name,
@@ -255,7 +255,7 @@ class EmployeeRecruitmentController extends Controller
 
     public function getAllClosed()
     {
-        $recruitments = RecruitmentWorkflow::where(function ($query) {
+        $recruitments = RecruitmentWorkflow::baseQuery()->where(function ($query) {
             $query->whereIn('state', ['completed', 'rejected'])
             ->orWhere('deleted', 1);
         })->get()->map(function ($recruitment) {
@@ -292,7 +292,7 @@ class EmployeeRecruitmentController extends Controller
         }
 
         // check, if user has read permission for the given recruitment
-        if(!$recruitment->baseQuery()->where('id', $id)->exists()) {
+        if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
             return view('content.pages.misc-not-authorized');
         }
 
@@ -325,7 +325,7 @@ class EmployeeRecruitmentController extends Controller
         }
 
         // check, if user has read permission for the given recruitment
-        if(!$recruitment->baseQuery()->where('id', $id)->exists()) {
+        if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
             return view('content.pages.misc-not-authorized');
         }
 
@@ -556,7 +556,7 @@ class EmployeeRecruitmentController extends Controller
         }
 
         // check, if user has read permission for the given recruitment
-        if(!$recruitment->baseQuery()->where('id', $id)->exists()) {
+        if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
             return view('content.pages.misc-not-authorized');
         }
 

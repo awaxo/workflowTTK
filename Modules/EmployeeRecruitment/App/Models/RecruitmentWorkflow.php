@@ -6,7 +6,10 @@ use App\Models\AbstractWorkflow;
 use App\Models\Position;
 use App\Models\Workgroup;
 use App\Models\CostCenter;
-use Illuminate\Database\Eloquent\Collection;
+use App\Models\Delegation;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
@@ -14,6 +17,58 @@ use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 class RecruitmentWorkflow extends AbstractWorkflow
 {
     use WorkflowTrait;
+
+    public static function baseQuery(): Builder
+    {
+        $user = User::find(Auth::id());
+        $workgroup901 = Workgroup::where('workgroup_number', 901)->first();
+        $workgroup903 = Workgroup::where('workgroup_number', 903)->first();
+        $workgroup910 = Workgroup::where('workgroup_number', 910)->first();
+        $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
+        $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+
+        $delegations = Delegation::where('delegate_user_id', $user->id)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->get();
+
+        if ($user && $user->hasRole('adminisztrator') ||
+            $user->workgroup->workgroup_number == 908 ||
+            $workgroup901 && $workgroup901->leader_id === $user->id ||
+            $delegations->contains(function ($delegation) use ($workgroup901) {
+                return $delegation->type === 'obligee_approver' && $delegation->original_user_id === $workgroup901->leader_id;
+            }) ||
+            $workgroup903 && $workgroup903->leader_id === $user->id ||
+            $delegations->contains(function ($delegation) use ($workgroup903) {
+                return $delegation->type === 'financial_countersign_approver' && $delegation->original_user_id === $workgroup903->leader_id;
+            }) ||
+            $workgroup910 && $workgroup910->leader_id === $user->id ||
+            $workgroup911 && $workgroup911->leader_id === $user->id ||
+            $delegations->contains(function ($delegation) use ($workgroup911) {
+                return $delegation->type === 'project_coordination_lead' && $delegation->original_user_id === $workgroup911->leader_id;
+            }) ||
+            $workgroup915 && $workgroup915->leader_id === $user->id ||
+            $delegations->contains(function ($delegation) use ($workgroup915) {
+                return $delegation->type === 'it_head' && $delegation->original_user_id === $workgroup915->leader_id;
+            }) ||
+            $user && $user->hasRole('titkar_9_fi') ||
+            $delegations->contains(function ($delegation) {
+                return $delegation->type === 'secretary_9_fi';
+            }) ||
+            $user && $user->hasRole('titkar_9_gi') ||
+            $delegations->contains(function ($delegation) {
+                return $delegation->type === 'secretary_9_gi';
+            }) ||
+            $user && $user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto') ||
+            $delegations->contains(function ($delegation) {
+                return $delegation->type === 'registrator';
+            })) {
+            
+            return self::query();
+        } else {
+            return self::query()->whereRaw('1 = 0');
+        }
+    }
 
     protected static function newFactory()
     {

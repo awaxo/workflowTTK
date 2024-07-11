@@ -291,6 +291,11 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-error');
         }
 
+        // check, if user has read permission for the given recruitment
+        if(!$recruitment->baseQuery()->where('id', $id)->exists()) {
+            return view('content.pages.misc-not-authorized');
+        }
+
         // administrators to see, who else need to approve
         $service = new WorkflowService();
         $usersToApprove = $service->getResponsibleUsers($recruitment, true);
@@ -317,6 +322,11 @@ class EmployeeRecruitmentController extends Controller
         if (!$recruitment) {
             Log::error('Nem található a felvételi kérelem (id: ' . $id . ')');
             return view('content.pages.misc-error');
+        }
+
+        // check, if user has read permission for the given recruitment
+        if(!$recruitment->baseQuery()->where('id', $id)->exists()) {
+            return view('content.pages.misc-not-authorized');
         }
 
         $service = new WorkflowService();
@@ -543,6 +553,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         if (!$recruitment) {
             return view('content.pages.misc-error');
+        }
+
+        // check, if user has read permission for the given recruitment
+        if(!$recruitment->baseQuery()->where('id', $id)->exists()) {
+            return view('content.pages.misc-not-authorized');
         }
 
         $service = new WorkflowService();

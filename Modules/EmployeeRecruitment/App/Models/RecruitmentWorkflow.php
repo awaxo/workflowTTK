@@ -164,6 +164,82 @@ class RecruitmentWorkflow extends AbstractWorkflow
                     $query->whereIn('workgroup_id_1', $matchingWorkgroupIds)
                         ->orWhereIn('workgroup_id_2', $matchingWorkgroupIds);
                 });
+        } elseif (CostCenter::where('lead_user_id', $user->id)->exists() || 
+                $delegations->contains(function ($delegation) {
+                    return strpos($delegation->type, 'supervisor_workgroup_') === 0;
+                })) {
+            $leadCostCenters = CostCenter::where('lead_user_id', $user->id)->get();
+
+            $delegateOriginalUserIds = $delegations->filter(function ($delegation) {
+                return strpos($delegation->type, 'supervisor_workgroup_') === 0;
+            })->map(function ($delegation) {
+                return $delegation->original_user_id;
+            })->unique();
+            
+            $delegateCostCenters = collect();
+            foreach ($delegateOriginalUserIds as $originalUserId) {
+                $costcenters = CostCenter::where('lead_user_id', $originalUserId)->get();
+                if ($costcenters->isNotEmpty()) {
+                    $delegateCostCenters = $delegateCostCenters->merge($costcenters);
+                }
+            }
+
+            $allRelevantCostCenters = $leadCostCenters->merge($delegateCostCenters);
+            $matchingCostCenterIds = $allRelevantCostCenters->pluck('id')->toArray();
+
+            return self::query()
+                ->where(function ($query) use ($matchingCostCenterIds) {
+                    $query->whereIn('base_salary_cost_center_1', $matchingCostCenterIds)
+                        ->orWhereIn('base_salary_cost_center_2', $matchingCostCenterIds)
+                        ->orWhereIn('base_salary_cost_center_3', $matchingCostCenterIds)
+                        ->orWhereIn('health_allowance_cost_center_4', $matchingCostCenterIds)
+                        ->orWhereIn('management_allowance_cost_center_5', $matchingCostCenterIds)
+                        ->orWhereIn('extra_pay_1_cost_center_6', $matchingCostCenterIds)
+                        ->orWhereIn('extra_pay_2_cost_center_7', $matchingCostCenterIds);
+                });
+        } elseif (CostCenter::where('project_coordinator_user_id', $user->id)->exists() || 
+                $delegations->contains(function ($delegation) {
+                    return strpos($delegation->type, 'project_coordinator_workgroup_') === 0;
+                })) {
+            $projectCoordinatorCostCenters = CostCenter::where('project_coordinator_user_id', $user->id)->get();
+
+            Log::info($projectCoordinatorCostCenters);
+
+            $delegateOriginalUserIds = $delegations->filter(function ($delegation) {
+                return strpos($delegation->type, 'project_coordinator_workgroup_') === 0;
+            })->map(function ($delegation) {
+                return $delegation->original_user_id;
+            })->unique();
+            
+            $delegateCostCenters = collect();
+            foreach ($delegateOriginalUserIds as $originalUserId) {
+                $costcenters = CostCenter::where('project_coordinator_user_id', $originalUserId)->get();
+                if ($costcenters->isNotEmpty()) {
+                    $delegateCostCenters = $delegateCostCenters->merge($costcenters);
+                }
+            }
+
+            $allRelevantCostCenters = $projectCoordinatorCostCenters->merge($delegateCostCenters);
+            $matchingCostCenterIds = $allRelevantCostCenters->pluck('id')->toArray();
+
+            return self::query()
+                ->where(function ($query) use ($matchingCostCenterIds) {
+                    $query->whereIn('base_salary_cost_center_1', $matchingCostCenterIds)
+                        ->orWhereIn('base_salary_cost_center_2', $matchingCostCenterIds)
+                        ->orWhereIn('base_salary_cost_center_3', $matchingCostCenterIds)
+                        ->orWhereIn('health_allowance_cost_center_4', $matchingCostCenterIds)
+                        ->orWhereIn('management_allowance_cost_center_5', $matchingCostCenterIds)
+                        ->orWhereIn('extra_pay_1_cost_center_6', $matchingCostCenterIds)
+                        ->orWhereIn('extra_pay_2_cost_center_7', $matchingCostCenterIds);
+                });
+        } elseif ($user && $user->hasRole('utofinanszirozas_fedezetigazolo') ||
+                $delegations->contains(function ($delegation) {
+                    return $delegation->type === 'post_financing_approver';
+                })) {
+
+            return self::query()
+                ->whereJsonLength('meta_data->additional_fields', '>', 0)
+                ->whereJsonContains('meta_data->additional_fields', ['post_financed_application' => 'on']);
         } else {
             // return no rows
             return self::query()->whereRaw('1 = 0');

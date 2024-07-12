@@ -35,7 +35,7 @@
 
 <!-- Back Button -->
 <div class="mb-4">
-    <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
+    <button onclick="window.location.href='/hr/felveteli-kerelem'" class="btn btn-secondary">Vissza</button>
 </div>
 
 <div class="mb-2" style="font-size: larger;">

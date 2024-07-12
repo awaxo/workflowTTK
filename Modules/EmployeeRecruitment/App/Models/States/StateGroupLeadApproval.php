@@ -179,7 +179,7 @@ class StateGroupLeadApproval implements IStateResponsibility {
 
     public function getDelegations(User $user): array
     {
-        $workgroups = Workgroup::where('leader_id', $user->id)->get();
+        $workgroups = Workgroup::where('deleted', 0)->where('leader_id', $user->id)->get();
         if ($workgroups->count() > 0) {
             return $workgroups->map(function ($workgroup) {
                 return [

@@ -52,7 +52,7 @@ class StateHrLeadApproval implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
+        $workgroup908 = Workgroup::where('deleted', 0)->where('workgroup_number', 908)->first();
         if ($workgroup908 && $workgroup908->leader_id === $user->id) {
             return [[
                 'type' => 'hr_head',

@@ -135,7 +135,7 @@
         <tbody>
             <tr>
                 <td>A munkavállaló neve: <b>{{ optional($recruitment)->name ?? '-' }}</b></td>
-                <td>Született: <b>{{ optional($recruitment)->birth_date ?? '-' }}</b></td>
+                <td>Született: <b>{{ $recruitment->birth_date ? Carbon::parse($recruitment->birth_date)->format('Y.m.d') : '-' }}</b></td>
             </tr>
             <tr>
                 <td>Lakcíme: <b>{{ optional($recruitment)->address ?? '-' }}</b></td>
@@ -332,7 +332,7 @@
         </tbody>
     </table>
     <div class="legend">
-        E: érintett, R: részben érintett, -: nem érintett
+        Rövidítések: E: munkaidő egészében; R: munkaidő egy részében; -: Nem jellemző
     </div>
     
 

@@ -76,7 +76,7 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
+        $workgroup911 = Workgroup::where('deleted', 0)->where('workgroup_number', 911)->first();
         if ($workgroup911 && $workgroup911->leader_id === $user->id) {
             return [[
                 'type' => 'project_coordination_lead',

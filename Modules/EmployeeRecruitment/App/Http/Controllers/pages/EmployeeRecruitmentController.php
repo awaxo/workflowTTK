@@ -87,6 +87,7 @@ class EmployeeRecruitmentController extends Controller
         } else {
             $recruitment = new RecruitmentWorkflow();
         }
+        $old_state = $recruitment->state;
 
         $recruitment->fill($validatedData);
         
@@ -199,7 +200,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
 
         $service = new WorkflowService();
-        $service->storeMetadata($recruitment, '-- Felvételi kérelem létrehozva --', 'start');
+        if ($old_state == 'request_review') {
+            $service->storeMetadata($recruitment, '-- Felvételi kérelem módosítva --', 'restart');
+        } else {
+            $service->storeMetadata($recruitment, '-- Felvételi kérelem létrehozva --', 'start');
+        }
 
         try {
             $recruitment->save();
@@ -501,7 +506,9 @@ class EmployeeRecruitmentController extends Controller
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('message')) > 0) {
                 $previous_state = __('states.' . $recruitment->state);
+                $service->resetApprovals($recruitment);
                 $service->storeMetadata($recruitment, $request->input('message'), 'rejections');
+
                 $recruitment->workflow_apply('to_request_review');
                 $recruitment->updated_by = Auth::id();
 

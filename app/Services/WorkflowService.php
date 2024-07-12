@@ -146,7 +146,7 @@ class WorkflowService
             'message' => $message ? $message : '',
         ];
         $history = [
-            'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : ($decision == 'start' ? 'start' : 'restore'))),
+            'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : ($decision == 'start' ? 'start' : ($decision == 'restart' ? 'restart' : 'restore')))),
             'status' => $workflow->state,
             'user_id' => $userId,
             'datetime' => now()->toDateTimeString(),
@@ -168,6 +168,18 @@ class WorkflowService
         $metaData[$decision][$workflow->state]['details'][] = $detail;
         $metaData['history'][] = $history;
 
+        $workflow->meta_data = json_encode($metaData);
+    }
+
+    /**
+     * Resets the approvals for a workflow.
+     * 
+     * @param AbstractWorkflow $workflow The workflow instance.
+     */
+    public function resetApprovals(AbstractWorkflow $workflow)
+    {
+        $metaData = json_decode($workflow->meta_data, true) ?? [];
+        $metaData['approvals'] = [];
         $workflow->meta_data = json_encode($metaData);
     }
 }

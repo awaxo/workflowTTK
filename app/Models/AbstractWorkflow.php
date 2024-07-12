@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,12 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
     use HasFactory;
     use WorkflowTrait;
 
+    /**
+     * Base query for fetching workflows based on workflow specific visibility conditions.
+     * 
+     * @return Builder
+     */
+    abstract public static function baseQuery(): Builder;
     abstract protected static function newFactory();
 
     /**
@@ -24,7 +31,9 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      */
     public static function fetchActive(): Collection
     {
-        return static::where('state', '!=', 'completed')->where('state', '!=', 'rejected')
+        return static::baseQuery()
+            ->where('state', '!=', 'completed')
+            ->where('state', '!=', 'rejected')
             ->where('deleted', 0)
             ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
             ->get();
@@ -37,7 +46,8 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      */
     public static function fetchClosed(): Collection
     {
-        return static::whereIn('state', ['completed', 'rejected'])
+        return static::baseQuery()
+            ->whereIn('state', ['completed', 'rejected'])
             ->orWhere('deleted', 1)
             ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
             ->get();
@@ -50,7 +60,8 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      */
     public static function fetchAllButDeleted(): Collection
     {
-        return static::where('deleted', 0)
+        return static::baseQuery()
+            ->where('deleted', 0)
             ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
             ->get();
     }

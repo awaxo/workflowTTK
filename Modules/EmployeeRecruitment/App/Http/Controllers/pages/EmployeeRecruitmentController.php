@@ -224,7 +224,7 @@ class EmployeeRecruitmentController extends Controller
     {
         $service = new WorkflowService();
 
-        $recruitments = RecruitmentWorkflow::where('deleted', 0)->get()->map(function ($recruitment) use ($service) {
+        $recruitments = RecruitmentWorkflow::baseQuery()->where('deleted', 0)->get()->map(function ($recruitment) use ($service) {
             return [
                 'id' => $recruitment->id,
                 'name' => $recruitment->name,
@@ -255,7 +255,7 @@ class EmployeeRecruitmentController extends Controller
 
     public function getAllClosed()
     {
-        $recruitments = RecruitmentWorkflow::where(function ($query) {
+        $recruitments = RecruitmentWorkflow::baseQuery()->where(function ($query) {
             $query->whereIn('state', ['completed', 'rejected'])
             ->orWhere('deleted', 1);
         })->get()->map(function ($recruitment) {
@@ -291,6 +291,11 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-error');
         }
 
+        // check, if user has read permission for the given recruitment
+        if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
+            return view('content.pages.misc-not-authorized');
+        }
+
         // administrators to see, who else need to approve
         $service = new WorkflowService();
         $usersToApprove = $service->getResponsibleUsers($recruitment, true);
@@ -317,6 +322,11 @@ class EmployeeRecruitmentController extends Controller
         if (!$recruitment) {
             Log::error('Nem található a felvételi kérelem (id: ' . $id . ')');
             return view('content.pages.misc-error');
+        }
+
+        // check, if user has read permission for the given recruitment
+        if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
+            return view('content.pages.misc-not-authorized');
         }
 
         $service = new WorkflowService();
@@ -543,6 +553,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         if (!$recruitment) {
             return view('content.pages.misc-error');
+        }
+
+        // check, if user has read permission for the given recruitment
+        if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
+            return view('content.pages.misc-not-authorized');
         }
 
         $service = new WorkflowService();

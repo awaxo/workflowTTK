@@ -42,7 +42,7 @@ class StateOverdueSupervisorNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/folyamat/megtekintes/' . $this->workflow->id);
+        $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
         return (new MailMessage)
                     ->subject('Ügy státusz határidő lejárat')

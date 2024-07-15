@@ -16,6 +16,10 @@
         .fw-bold {
             font-weight: bold;
         }
+
+        .history {
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -256,15 +260,55 @@
             </tr>
             <tr>
                 <td>Hozzáférési jogosultságok</td>
-                <td>{{ $recruitment->required_tools ? $recruitment->required_tools : '-' }}</td>
+                <td>
+                    @if($recruitment->required_tools)
+                        @php
+                            $toolsArray = explode(',', $recruitment->required_tools);
+                            $translatedTools = array_map(function($tool) {
+                                return trans('tools.' . $tool);
+                            }, $toolsArray);
+                            $toolsString = implode(', ', $translatedTools);
+                        @endphp
+                        {{ $toolsString }}
+                    @else
+                        -
+                    @endif
+                    {{ $toolsString }}
+                </td>
             </tr>
             <tr>
                 <td>Munkavégzéshez rendelkezésre álló eszközök</td>
-                <td>{{ $recruitment->available_tools ? $recruitment->available_tools : '-' }}</td>
+                <td>
+                    @if($recruitment->available_tools)
+                    @php
+                        $toolsArray = explode(',', $recruitment->available_tools);
+                        $translatedTools = array_map(function($tool) {
+                            return trans('tools.' . $tool);
+                        }, $toolsArray);
+                        $toolsString = implode(', ', $translatedTools);
+                    @endphp
+                        {{ $toolsString }}
+                    @else
+                        -
+                    @endif
+                </td>
             </tr>
             <tr>
                 <td>Rendelkezésre álló eszközök leltári száma</td>
-                <td>{{ $recruitment->inventory_numbers_of_available_tools ? $recruitment->inventory_numbers_of_available_tools : '-' }}</td>
+                <td>
+                    @if($recruitment->inventory_numbers_of_available_tools)
+                        @php
+                            $tools = json_decode($recruitment->inventory_numbers_of_available_tools, true);
+                        @endphp
+                        @foreach($tools as $tool)
+                            @foreach($tool as $key => $value)
+                                <span class="ms-1 text-break">{{ ucfirst(trans('tools.' . $key)) . ': ' . $value }}</span><br/>
+                            @endforeach
+                        @endforeach
+                    @else
+                        <span class="ms-1 text-break">-</span>
+                    @endif
+                </td>
             </tr>
             <tr>
                 <td>Sugárzó izotóppal fog dolgozni</td>
@@ -316,6 +360,32 @@
                 <td>Szerződés</td>
                 <td>{{ $recruitment->contract ? 'Igen' : 'Nem' }}</td>
             </tr>
+        </tbody>
+    </table>
+
+    <table class="table history">
+        <thead>
+            <tr>
+                <th colspan="5" class="fw-bold">Státusztörténet</th>
+            </tr>
+            <tr style="background-color: rgba(105,108,255,.16)">
+                <th>Döntés</th>
+                <th>Dátum</th>
+                <th>Felhasználó</th>
+                <th>Státusz</th>
+                <th>Üzenet</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach($history as $history_entry)
+            <tr>
+                <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : ($history_entry['decision'] == 'restart' ? 'success' : 'info')))) }} me-1">
+                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : 'Visszaállítás')))) }}</span></td>                                <td>{{ $history_entry['datetime'] }}</td>
+                <td>{{ $history_entry['user_name'] }}</td>
+                <td>{{ __('states.' . $history_entry['status']) }}</td>
+                <td>{{ $history_entry['message'] }}</td>
+            </tr>
+        @endforeach
         </tbody>
     </table>
 </body>

@@ -613,7 +613,8 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         $pdf = Pdf::loadView('employeerecruitment::content.pdf.recruitment', [
-            'recruitment' => $recruitment
+            'recruitment' => $recruitment,
+            'history' => $this->getHistory($recruitment),
         ]);
 
         return $pdf->download('FelveteliKerelem_' . $id . '.pdf');

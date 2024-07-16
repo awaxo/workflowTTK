@@ -81,7 +81,7 @@ $(function() {
                 }
             },
         ],
-        order: [[1, 'asc']],
+        order: [[0, 'desc']],
         displayLength: 10,
         lengthMenu: [10, 25, 50, 75, 100],
         dom: window.isSecretary 

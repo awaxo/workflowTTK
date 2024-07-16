@@ -1,30 +1,27 @@
 <?php
 
-namespace App\Notifications;
+namespace Modules\EmployeeRecruitment\App\Notifications;
 
 use App\Models\AbstractWorkflow;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
-class StateOverdueSupervisorNotification extends Notification
+class SuspendedNotification extends Notification
 {
     use Queueable;
 
     public $workflow;
-    public $deadline;
-    public $responsible;
+    public $ccEmails;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(AbstractWorkflow $workflow, $responsible, $deadline)
+    public function __construct(AbstractWorkflow $workflow, array $ccEmails = [])
     {
         $this->workflow = $workflow;
-        $this->deadline = $deadline;
-        $this->responsible = $responsible;
+        $this->ccEmails = $ccEmails;
     }
 
     /**
@@ -42,17 +39,22 @@ class StateOverdueSupervisorNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/folyamat/megtekintes/' . $this->workflow->id);
+        $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
-        return (new MailMessage)
-                    ->subject('Ügy státusz határidő lejárat')
-                    ->greeting('Kedves ' . $notifiable->name . '!')
-                    ->line('Az alábbi ügy ' . $this->responsible . ' jóváhagyására vár, több, mint ' . $this->deadline . ' órája, ami az előirányzott maximális idő ebben a státuszban.')
-                    ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
-                    ->line('Jelenlegi státusz: ' .  __('states.' . $this->workflow->state))
+        $mailMessage = (new MailMessage)
+                    ->subject('Ügy felfüggesztve')
+                    ->greeting('Tisztelt ' . $notifiable->name . '!')
+                    ->line('Az alábbi ügy felfüggesztésre került.')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
-                    ->line('Ügyintézési rendszer');
+                    ->line('Workflow rendszer');
+
+        // Add CC recipients
+        foreach ($this->ccEmails as $ccEmail) {
+            $mailMessage->cc($ccEmail);
+        }
+
+        return $mailMessage;
     }
 
     /**

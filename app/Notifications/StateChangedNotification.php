@@ -42,11 +42,11 @@ class StateChangedNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/folyamat/megtekintes/' . $this->workflow->id);
+        $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
         return (new MailMessage)
                     ->subject('Ügy státusz változás')
-                    ->greeting('Kedves ' . $notifiable->name . '!')
+                    ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy státusza megváltozott:')
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
                     ->line('Korábbi státusz: ' . $this->previousState)

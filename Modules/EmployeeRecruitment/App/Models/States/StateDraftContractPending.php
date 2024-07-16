@@ -79,7 +79,7 @@ class StateDraftContractPending implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        $workgroups = Workgroup::where('labor_administrator', $user->id)->get();
+        $workgroups = Workgroup::where('deleted', 0)->where('labor_administrator', $user->id)->get();
         if ($workgroups->count() > 0) {
             $instituteAbbreviations = [
                 1 => 'SZKI',

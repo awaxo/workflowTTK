@@ -35,7 +35,7 @@
 
 <!-- Back Button -->
 <div class="mb-4">
-    <button onclick="history.back()" class="btn btn-secondary">Vissza</button>
+    <button onclick="window.location.href='/hr/felveteli-kerelem'" class="btn btn-secondary">Vissza</button>
 </div>
 
 <div class="mb-2" style="font-size: larger;">
@@ -80,9 +80,8 @@
                         <tbody>
                         @foreach($history as $history_entry)
                             <tr>
-                                <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : 'info'))) }} me-1">
-                                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : 'Visszaállítás'))) }}</span></td>
-                                <td>{{ $history_entry['datetime'] }}</td>
+                                <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : ($history_entry['decision'] == 'restart' ? 'success' : 'info')))) }} me-1">
+                                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : 'Visszaállítás')))) }}</span></td>                                <td>{{ $history_entry['datetime'] }}</td>
                                 <td>{{ $history_entry['user_name'] }}</td>
                                 <td>{{ __('states.' . $history_entry['status']) }}</td>
                                 <td>{{ $history_entry['message'] }}</td>

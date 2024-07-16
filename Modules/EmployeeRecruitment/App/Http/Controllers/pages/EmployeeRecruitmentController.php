@@ -3,7 +3,10 @@
 namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 
 use App\Events\ApproverAssignedEvent;
+use App\Events\CancelledEvent;
+use App\Events\RejectedEvent;
 use App\Events\StateChangedEvent;
+use App\Events\SuspendedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\ChemicalPathogenicFactor;
 use App\Models\CostCenter;
@@ -87,6 +90,7 @@ class EmployeeRecruitmentController extends Controller
         } else {
             $recruitment = new RecruitmentWorkflow();
         }
+        $old_state = $recruitment->state;
 
         $recruitment->fill($validatedData);
         
@@ -199,7 +203,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
 
         $service = new WorkflowService();
-        $service->storeMetadata($recruitment, '-- Felvételi kérelem létrehozva --', 'start');
+        if ($old_state == 'request_review') {
+            $service->storeMetadata($recruitment, '-- Felvételi kérelem módosítva --', 'restart');
+        } else {
+            $service->storeMetadata($recruitment, '-- Felvételi kérelem létrehozva --', 'start');
+        }
 
         try {
             $recruitment->save();
@@ -473,7 +481,7 @@ class EmployeeRecruitmentController extends Controller
                     $recruitment->updated_by = Auth::id();
 
                     $recruitment->save();
-                    event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
+                    event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state), $request->input('message')));
                     event(new ApproverAssignedEvent($recruitment));
                     
                     return response()->json(['redirectUrl' => route('workflows-all-open')]);
@@ -501,12 +509,15 @@ class EmployeeRecruitmentController extends Controller
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('message')) > 0) {
                 $previous_state = __('states.' . $recruitment->state);
+                $service->resetApprovals($recruitment);
                 $service->storeMetadata($recruitment, $request->input('message'), 'rejections');
+
                 $recruitment->workflow_apply('to_request_review');
                 $recruitment->updated_by = Auth::id();
 
                 $recruitment->save();
                 event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
+                event(new RejectedEvent($recruitment));
 
                 return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {
@@ -532,10 +543,12 @@ class EmployeeRecruitmentController extends Controller
                 $recruitment->updated_by = Auth::id();
                 if ($request->input('is_cancel') && WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()) {
                     $recruitment->deleted = 1;
+                    event(new CancelledEvent($recruitment));
                 }
                 
                 $recruitment->save();
                 event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
+                event(new SuspendedEvent($recruitment));
 
                 return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {
@@ -606,7 +619,8 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         $pdf = Pdf::loadView('employeerecruitment::content.pdf.recruitment', [
-            'recruitment' => $recruitment
+            'recruitment' => $recruitment,
+            'history' => $this->getHistory($recruitment),
         ]);
 
         return $pdf->download('FelveteliKerelem_' . $id . '.pdf');

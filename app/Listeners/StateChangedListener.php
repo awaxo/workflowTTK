@@ -20,11 +20,13 @@ class StateChangedListener
      */
     public function handle(StateChangedEvent $event): void
     {
-        $notificationReceivers[] = $event->workflow->createdBy;
+        $notificationReceivers[] = $event->message ? $event->workflow->createdBy : [];
 
         // notify all users in notificationReceivers
         foreach ($notificationReceivers as $receiver) {
-            $receiver->notify(new StateChangedNotification($event->workflow, $event->previousState, $event->currentState));
+            if(method_exists($receiver, 'notify')) {
+                $receiver->notify(new StateChangedNotification($event->workflow, $event->previousState, $event->currentState));
+            }
         }
     }
 }

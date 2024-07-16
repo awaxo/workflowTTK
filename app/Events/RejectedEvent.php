@@ -7,23 +7,17 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class StateChangedEvent
+class RejectedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public AbstractWorkflow $workflow;
-    public string $previousState;
-    public string $currentState;
-    public string $message;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(AbstractWorkflow $workflow, string $previousState, string $currentState, string $message = null)
+    public function __construct(AbstractWorkflow $workflow)
     {
         $this->workflow = $workflow;
-        $this->previousState = $previousState;
-        $this->currentState = $currentState;
-        $this->message = $message;
     }
 }

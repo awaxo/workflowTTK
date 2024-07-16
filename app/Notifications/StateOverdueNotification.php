@@ -15,14 +15,16 @@ class StateOverdueNotification extends Notification
 
     public $workflow;
     public $deadline;
+    public $ccEmails;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(AbstractWorkflow $workflow, $deadline)
+    public function __construct(AbstractWorkflow $workflow, $deadline, array $ccEmails = [])
     {
         $this->workflow = $workflow;
         $this->deadline = $deadline;
+        $this->ccEmails = $ccEmails;
     }
 
     /**
@@ -40,18 +42,25 @@ class StateOverdueNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('/folyamat/megtekintes/' . $this->workflow->id);
+        $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
                     ->subject('Ügy státusz határidő lejárat')
-                    ->greeting('Kedves ' . $notifiable->name . '!')
-                    ->line('Az alábbi ügy a Te jóváhagyásodra vár, több, mint ' . $this->deadline . ' órája, ami az előirányzott maximális idő ebben a státuszban.')
-                    ->line('Kérjük, hogy minél előbb ellenőrizd az ügyet és hozz döntést. Köszönjük!')
+                    ->greeting('Tisztelt ' . $notifiable->name . '!')
+                    ->line('Az alábbi ügy az Ön jóváhagyására vár, több, mint ' . $this->deadline . ' órája.')
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
                     ->line('Jelenlegi státusz: ' .  __('states.' . $this->workflow->state))
                     ->action('Ügy megtekintése', $url)
+                    ->line('Kérjük, mihamarabb lépjen be az Ügyintézési rendszerbe, és hozza meg döntését!')
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');
+
+        // Add CC recipients
+        foreach ($this->ccEmails as $ccEmail) {
+            $mailMessage->cc($ccEmail);
+        }
+
+        return $mailMessage;
     }
 
     /**

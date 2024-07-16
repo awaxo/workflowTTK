@@ -29,7 +29,7 @@ $(function() {
                 'data-bs-toggle': 'tooltip',
                 'data-bs-offset': '0,4',
                 'data-bs-html': 'true',
-                'title': 'Pontosan egyező találat megjelenítéséhez a keresőszöveget aposztrófok közé kell írni'
+                'title': 'Pontosan egyező találat megjelenítéséhez a keresőszöveget idézőjelek közé kell írni'
             }).tooltip();
 
             // remove the title attribute to prevent the default tooltip from showing

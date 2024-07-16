@@ -51,8 +51,8 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        CommandRegistry::registerCommand(CheckSuspendedDeadline::class, 'everyFifteenMinutes');
-        CommandRegistry::registerCommand(CheckStateDeadlines::class, 'everyFifteenMinutes');
+        CommandRegistry::registerCommand(CheckSuspendedDeadline::class, 'daily');
+        CommandRegistry::registerCommand(CheckStateDeadlines::class, 'daily');
     }
 
     /**

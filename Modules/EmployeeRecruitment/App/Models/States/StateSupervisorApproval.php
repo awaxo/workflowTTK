@@ -165,7 +165,7 @@ class StateSupervisorApproval implements IStateResponsibility {
     }
 
     public function getDelegations(User $user): array {
-        $cost_center_codes = CostCenter::where('lead_user_id', $user->id)->pluck('cost_center_code')->toArray();
+        $cost_center_codes = CostCenter::where('deleted', 0)->where('lead_user_id', $user->id)->pluck('cost_center_code')->toArray();
         $workgroup_numbers = array_map(function($code) {
             return substr($code, -3);
         }, $cost_center_codes);

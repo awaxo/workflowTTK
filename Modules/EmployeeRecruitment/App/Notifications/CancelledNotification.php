@@ -7,20 +7,21 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
-class ApproverAssignedNotification extends Notification
+class CancelledNotification extends Notification
 {
     use Queueable;
 
     public $workflow;
+    public $ccEmails;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(AbstractWorkflow $workflow)
+    public function __construct(AbstractWorkflow $workflow, array $ccEmails = [])
     {
         $this->workflow = $workflow;
+        $this->ccEmails = $ccEmails;
     }
 
     /**
@@ -40,14 +41,20 @@ class ApproverAssignedNotification extends Notification
     {
         $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
-        return (new MailMessage)
-                    ->subject('Jóváhagyás szükséges')
+        $mailMessage = (new MailMessage)
+                    ->subject('Ügy sztornózva')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
-                    ->line('Az alábbi ügynél az Ön jóváhagyása szükséges:')
-                    ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
+                    ->line('Az alábbi ügy sztornózásra került.')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Workflow rendszer');
+
+        // Add CC recipients
+        foreach ($this->ccEmails as $ccEmail) {
+            $mailMessage->cc($ccEmail);
+        }
+
+        return $mailMessage;
     }
 
     /**

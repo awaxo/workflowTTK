@@ -481,7 +481,8 @@ class EmployeeRecruitmentController extends Controller
                     $recruitment->updated_by = Auth::id();
 
                     $recruitment->save();
-                    event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state), $request->input('message')));
+                    $message = $request->input('message') ? $request->input('message') : '';
+                    event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state), $message));
                     event(new ApproverAssignedEvent($recruitment));
                     
                     return response()->json(['redirectUrl' => route('workflows-all-open')]);

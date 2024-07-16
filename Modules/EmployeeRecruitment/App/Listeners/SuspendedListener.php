@@ -2,7 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Listeners;
 
-use App\Events\RejectedEvent;
+use App\Events\SuspendedEvent;
 use Modules\EmployeeRecruitment\App\Notifications\SuspendedNotification;
 
 class SuspendedListener
@@ -18,7 +18,7 @@ class SuspendedListener
     /**
      * Handle the event.
      */
-    public function handle(RejectedEvent $event): void
+    public function handle(SuspendedEvent $event): void
     {
         $event->workflow->createdBy->notify(new SuspendedNotification($event->workflow));
     }

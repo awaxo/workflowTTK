@@ -106,7 +106,7 @@ $(function() {
             var checkboxOwnHtml = `
                 <div class="form-check form-switch show-own-cases">
                     <input class="form-check-input" type="checkbox" role="switch" id="show_only_own" checked>
-                    <label class="form-check-label" for="show_only_own">Csak saját ügyek listázása</label>
+                    <label class="form-check-label" for="show_only_own">Csak saját jóváhagyásra váró ügyek listázása</label>
                 </div>
             `;
             var checkboxClosedHtml = `

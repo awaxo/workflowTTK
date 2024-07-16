@@ -34,7 +34,7 @@ $(function() {
                 searchable: false, 
                 orderable: false,
                 render: function(data, type, row, meta) {
-                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-times text-danger"></i></a>' : '';
+                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-minus text-danger" title="Sztornózás"></i></a>' : '';
                 }
             },
         ],

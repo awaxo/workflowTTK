@@ -304,7 +304,6 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-not-authorized');
         }
 
-        // administrators to see, who else need to approve
         $service = new WorkflowService();
         $usersToApprove = $service->getResponsibleUsers($recruitment, true);
         $usersToApproveName = [];
@@ -344,15 +343,23 @@ class EmployeeRecruitmentController extends Controller
                 return $this->review($id);
             }
             
+            $service = new WorkflowService();
+            $usersToApprove = $service->getResponsibleUsers($recruitment, true);
+            $usersToApproveName = [];
+            foreach ($usersToApprove as $user) {
+                $usersToApproveName[] = User::find($user['id'])->name;
+            }
+
             // IT workgroup
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
             $chemicalFactors = ChemicalPathogenicFactor::where('deleted', 0)->get();
-            
+
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
+                'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment),
                 'chemicalFactors' => $chemicalFactors
             ]);
@@ -577,6 +584,13 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
 
         if ($recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
+            $service = new WorkflowService();
+            $usersToApprove = $service->getResponsibleUsers($recruitment, true);
+            $usersToApproveName = [];
+            foreach ($usersToApprove as $user) {
+                $usersToApproveName[] = User::find($user['id'])->name;
+            }
+
             // IT workgroup
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
 
@@ -584,6 +598,7 @@ class EmployeeRecruitmentController extends Controller
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
+                'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
             ]);
         } else {

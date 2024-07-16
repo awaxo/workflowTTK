@@ -46,7 +46,7 @@ class StateChangedNotification extends Notification
 
         return (new MailMessage)
                     ->subject('Ügy státusz változás')
-                    ->greeting('Kedves ' . $notifiable->name . '!')
+                    ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy státusza megváltozott:')
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
                     ->line('Korábbi státusz: ' . $this->previousState)

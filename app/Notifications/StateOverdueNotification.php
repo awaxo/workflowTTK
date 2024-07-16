@@ -44,12 +44,12 @@ class StateOverdueNotification extends Notification
 
         return (new MailMessage)
                     ->subject('Ügy státusz határidő lejárat')
-                    ->greeting('Kedves ' . $notifiable->name . '!')
-                    ->line('Az alábbi ügy a Te jóváhagyásodra vár, több, mint ' . $this->deadline . ' órája, ami az előirányzott maximális idő ebben a státuszban.')
-                    ->line('Kérjük, hogy minél előbb ellenőrizd az ügyet és hozz döntést. Köszönjük!')
+                    ->greeting('Tisztelt ' . $notifiable->name . '!')
+                    ->line('Az alábbi ügy az Ön jóváhagyására vár, több, mint ' . $this->deadline . ' órája.')
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
                     ->line('Jelenlegi státusz: ' .  __('states.' . $this->workflow->state))
                     ->action('Ügy megtekintése', $url)
+                    ->line('Kérjük, mihamarabb lépjen be az Ügyintézési rendszerbe, és hozza meg döntését!')
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');
     }

@@ -25,11 +25,14 @@ class CancelledListener
         $history = $metaData['history'] ?? [];
         $userIds = array_unique(array_column($history, 'user_id'));
 
+        $emails = [];
         foreach ($userIds as $userId) {
             $user = User::find($userId);
             if ($user) {
-                $user->notify(new CancelledNotification($event->workflow));
+                $emails[] = $user->email;
             }
         }
+        $emails = array_unique($emails);
+        $event->workflow->createdBy->notify(new CancelledNotification($event->workflow, $emails));
     }
 }

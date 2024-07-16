@@ -5,7 +5,6 @@ namespace Modules\EmployeeRecruitment\App\Console\Commands;
 use App\Models\Option;
 use App\Models\User;
 use App\Notifications\StateOverdueNotification;
-use App\Notifications\StateOverdueSupervisorNotification;
 use App\Services\WorkflowService;
 use Illuminate\Console\Command;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
@@ -47,11 +46,8 @@ class CheckStateDeadlines extends Command
             $usersToApprove = $service->getResponsibleUsers($recruitmentWorkflow, true);
             foreach ($usersToApprove as $user) {
                 $user = User::find($user['id']);
-                $user->notify(new StateOverdueNotification($recruitmentWorkflow, $options['recruitment_process_' . $recruitmentWorkflow->state . '_deadline']));
+                $user->notify(new StateOverdueNotification($recruitmentWorkflow, $options['recruitment_process_' . $recruitmentWorkflow->state . '_deadline'], $user->getSupervisor()->email));
                 $this->info($user->name . ' értesítve \'' . $recruitmentWorkflow->name . '\' felvételi kérelmének lejárt státusz határidejéről');
-
-                $user->getSupervisor()->notify(new StateOverdueSupervisorNotification($recruitmentWorkflow, $user->name, $options['recruitment_process_' . $recruitmentWorkflow->state . '_deadline']));
-                $this->info($user->getSupervisor()->name . ' értesítve \'' . $recruitmentWorkflow->name . '\' felvételi kérelmének lejárt státusz határidejéről, mint ' . $user->name . ' jóváhagyó felettese');
             }
         }
     }

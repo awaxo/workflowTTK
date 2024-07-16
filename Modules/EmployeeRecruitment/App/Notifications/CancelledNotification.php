@@ -13,13 +13,15 @@ class CancelledNotification extends Notification
     use Queueable;
 
     public $workflow;
+    public $ccEmails;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(AbstractWorkflow $workflow)
+    public function __construct(AbstractWorkflow $workflow, array $ccEmails = [])
     {
         $this->workflow = $workflow;
+        $this->ccEmails = $ccEmails;
     }
 
     /**
@@ -39,13 +41,20 @@ class CancelledNotification extends Notification
     {
         $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
                     ->subject('Ügy sztornózva')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy sztornózásra került.')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Workflow rendszer');
+
+        // Add CC recipients
+        foreach ($this->ccEmails as $ccEmail) {
+            $mailMessage->cc($ccEmail);
+        }
+
+        return $mailMessage;
     }
 
     /**

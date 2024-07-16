@@ -15,14 +15,16 @@ class StateOverdueNotification extends Notification
 
     public $workflow;
     public $deadline;
+    public $ccEmails;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(AbstractWorkflow $workflow, $deadline)
+    public function __construct(AbstractWorkflow $workflow, $deadline, array $ccEmails = [])
     {
         $this->workflow = $workflow;
         $this->deadline = $deadline;
+        $this->ccEmails = $ccEmails;
     }
 
     /**
@@ -42,7 +44,7 @@ class StateOverdueNotification extends Notification
     {
         $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
-        return (new MailMessage)
+        $mailMessage = (new MailMessage)
                     ->subject('Ügy státusz határidő lejárat')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy az Ön jóváhagyására vár, több, mint ' . $this->deadline . ' órája.')
@@ -52,6 +54,13 @@ class StateOverdueNotification extends Notification
                     ->line('Kérjük, mihamarabb lépjen be az Ügyintézési rendszerbe, és hozza meg döntését!')
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');
+
+        // Add CC recipients
+        foreach ($this->ccEmails as $ccEmail) {
+            $mailMessage->cc($ccEmail);
+        }
+
+        return $mailMessage;
     }
 
     /**

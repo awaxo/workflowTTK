@@ -7,9 +7,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
-class ApproverAssignedNotification extends Notification
+class RejectedNotification extends Notification
 {
     use Queueable;
 
@@ -41,10 +40,9 @@ class ApproverAssignedNotification extends Notification
         $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
 
         return (new MailMessage)
-                    ->subject('Jóváhagyás szükséges')
+                    ->subject('Ügy elutasítva')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
-                    ->line('Az alábbi ügynél az Ön jóváhagyása szükséges:')
-                    ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
+                    ->line('Az alábbi ügy elutasításra került.')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Workflow rendszer');

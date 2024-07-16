@@ -3,7 +3,10 @@
 namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 
 use App\Events\ApproverAssignedEvent;
+use App\Events\CancelledEvent;
+use App\Events\RejectedEvent;
 use App\Events\StateChangedEvent;
+use App\Events\SuspendedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\ChemicalPathogenicFactor;
 use App\Models\CostCenter;
@@ -514,6 +517,7 @@ class EmployeeRecruitmentController extends Controller
 
                 $recruitment->save();
                 event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
+                event(new RejectedEvent($recruitment));
 
                 return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {
@@ -539,10 +543,12 @@ class EmployeeRecruitmentController extends Controller
                 $recruitment->updated_by = Auth::id();
                 if ($request->input('is_cancel') && WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()) {
                     $recruitment->deleted = 1;
+                    event(new CancelledEvent($recruitment));
                 }
                 
                 $recruitment->save();
                 event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
+                event(new SuspendedEvent($recruitment));
 
                 return response()->json(['redirectUrl' => route('workflows-all-open')]);
             } else {

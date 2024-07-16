@@ -10,7 +10,7 @@ $(function() {
     let dataTable = $('.datatables-recruitments').DataTable({
         ajax: '/employee-recruitment/opened',
         columns: [
-            { data: 'id', searchable: false },
+            { data: 'id' },
             { data: 'name' },
             { data: 'state' },
             { data: 'workgroup1' },

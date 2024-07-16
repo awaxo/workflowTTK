@@ -11,7 +11,7 @@ $(function() {
     let dataTable = $('.datatables-workflows').DataTable({
         ajax: '/api/workflows',
         columns: [
-            { data: 'id', searchable: false },
+            { data: 'id' },
             { data: 'workflow_type_name' },
             { data: 'state' },
             { data: 'initiator_institute_abbreviation' },

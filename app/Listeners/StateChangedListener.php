@@ -20,7 +20,7 @@ class StateChangedListener
      */
     public function handle(StateChangedEvent $event): void
     {
-        $notificationReceivers[] = $event->message ? $event->workflow->createdBy : [];
+        $notificationReceivers[] = $event->message == '' ? $event->workflow->createdBy : [];
 
         // notify all users in notificationReceivers
         foreach ($notificationReceivers as $receiver) {

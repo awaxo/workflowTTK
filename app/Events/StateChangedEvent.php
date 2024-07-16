@@ -19,7 +19,7 @@ class StateChangedEvent
     /**
      * Create a new event instance.
      */
-    public function __construct(AbstractWorkflow $workflow, string $previousState, string $currentState, string $message = null)
+    public function __construct(AbstractWorkflow $workflow, string $previousState, string $currentState, string $message = '')
     {
         $this->workflow = $workflow;
         $this->previousState = $previousState;

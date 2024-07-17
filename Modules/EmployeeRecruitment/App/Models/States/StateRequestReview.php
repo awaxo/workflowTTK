@@ -11,12 +11,10 @@ use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateRequestReview implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
-        $role = null;
-
         $role = 'titkar_' . $workflow->initiatorInstitute->group_level;
+        
         if ($workflow->initiatorInstitute->group_level == 9) {
-            $createdBy = User::find($workflow->created_by);
-            $role .= $createdBy->hasRole('titkar_foigazgatosag') ? '_fi' : '_gi';
+            $role .= '_' . strtolower($workflow->initiatorInstitute->abbreviation);
         }
 
         if ($role) {
@@ -33,10 +31,9 @@ class StateRequestReview implements IStateResponsibility {
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool {
         $role = 'secretary_' . $workflow->initiatorInstitute->group_level;
-    
+
         if ($workflow->initiatorInstitute->group_level == 9) {
-            $createdBy = User::find($workflow->created_by);
-            $role .= $createdBy->hasRole('titkar_foigazgatosag') ? '_fi' : '_gi';
+            $role .= '_' . strtolower($workflow->initiatorInstitute->abbreviation);
         }
     
         if ($role) {
@@ -53,8 +50,7 @@ class StateRequestReview implements IStateResponsibility {
         $role = 'titkar_' . $workflow->initiatorInstitute->group_level;
 
         if ($workflow->initiatorInstitute->group_level == 9) {
-            $createdBy = User::find($workflow->created_by);
-            $role .= $createdBy->hasRole('titkar_foigazgatosag') ? '_fi' : '_gi';
+            $role .= '_' . strtolower($workflow->initiatorInstitute->abbreviation);
         }
 
         $usersWithRole = User::role($role)->get();

@@ -47,7 +47,7 @@ class CancelledNotification extends Notification
                     ->line('Az alábbi ügy sztornózásra került.')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
-                    ->line('Workflow rendszer');
+                    ->line('Ügyintézési rendszer');
 
         // Add CC recipients
         foreach ($this->ccEmails as $ccEmail) {

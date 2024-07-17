@@ -47,7 +47,7 @@ class ApproverAssignedNotification extends Notification
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
-                    ->line('Workflow rendszer');
+                    ->line('Ügyintézési rendszer');
     }
 
     /**

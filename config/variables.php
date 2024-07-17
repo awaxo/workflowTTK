@@ -5,7 +5,7 @@
     "creatorUrl" => "https://www.ttk.hun-ren.hu/",
     "appVersion" => "0.22.5",
 
-    "templateName" => "",
+    "templateName" => "Ügykezelés",
     "templateSuffix" => "",
     "templateVersion" => "2.2.0",
     "templateFree" => false,

@@ -273,7 +273,6 @@
                     @else
                         -
                     @endif
-                    {{ $toolsString }}
                 </td>
             </tr>
             <tr>

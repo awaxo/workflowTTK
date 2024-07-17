@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Költséghely típusok')
+@section('title', 'Ügyintézés')
 
 <!-- Vendor Styles -->
 @section('vendor-style')

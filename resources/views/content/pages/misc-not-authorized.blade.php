@@ -5,7 +5,7 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Not Authorized - Pages')
+@section('title', 'Ügyintézés')
 
 @section('page-style')
     <!-- Page -->

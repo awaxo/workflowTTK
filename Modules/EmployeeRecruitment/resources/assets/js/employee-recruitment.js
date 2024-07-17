@@ -23,10 +23,12 @@ $(function () {
         endDate: '+4Y',
         language: 'hu',
         weekStart: 1,
+        todayBtn: true
     });
     $("#birth_date").datepicker({
         language: 'hu',
-        weekStart: 1
+        weekStart: 1,
+        todayBtn: true
     });
 
     $('#job_ad_exists').on('change', function() {
@@ -104,14 +106,14 @@ $(function () {
                 format: "yyyy.mm.dd",
                 startDate: startDate,
                 language: 'hu',
-                weekStart: 1
+                weekStart: 1,
             });
             
             $("#employment_end_date").datepicker({
                 format: "yyyy.mm.dd",
                 startDate: '+6M',
                 language: 'hu',
-                weekStart: 1
+                weekStart: 1,
             });
         });
         
@@ -122,7 +124,7 @@ $(function () {
             endDate: '+30Y',
             language: 'hu',
             weekStart: 1,
-            autoclose: true
+            autoclose: true,
         });
         $("#employment_end_date").datepicker({
             format: "yyyy.mm.dd",
@@ -130,7 +132,7 @@ $(function () {
             endDate: '+30Y',
             language: 'hu',
             weekStart: 1,
-            autoclose: true
+            autoclose: true,
         });
         $("#employment_start_date").on('change', function() {
             var startDate = $("#employment_start_date").datepicker('getDate');
@@ -214,7 +216,7 @@ $(function () {
                 format: "yyyy.mm.dd",
                 startDate: startDate,
                 language: 'hu',
-                weekStart: 1
+                weekStart: 1,
             });
 
             var endDate = moment(baseDate).add(6, 'months').format('YYYY.MM.DD');
@@ -222,7 +224,7 @@ $(function () {
                 format: "yyyy.mm.dd",
                 startDate: endDate,
                 language: 'hu',
-                weekStart: 1
+                weekStart: 1,
             });
         });
 
@@ -234,7 +236,7 @@ $(function () {
             endDate: moment(baseDate).add(30, 'years').format('YYYY.MM.DD'),
             language: 'hu',
             weekStart: 1,
-            autoclose: true
+            autoclose: true,
         });
 
         var initialEndDate = moment(baseDate).add(6, 'months').format('YYYY.MM.DD');
@@ -244,7 +246,7 @@ $(function () {
             endDate: moment(baseDate).add(30, 'years').format('YYYY.MM.DD'),
             language: 'hu',
             weekStart: 1,
-            autoclose: true
+            autoclose: true,
         });
 
         $("#employment_start_date").on('change', function() {

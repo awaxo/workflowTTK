@@ -14,67 +14,67 @@ document.addEventListener('DOMContentLoaded', function (e) {
           username: {
             validators: {
               notEmpty: {
-                message: 'Please enter username'
+                message: 'Kérjük, add meg a felhasználónevet'
               },
               stringLength: {
                 min: 6,
-                message: 'Username must be more than 6 characters'
+                message: 'A felhasználónévnek több mint 6 karakterből kell állnia'
               }
             }
           },
           email: {
             validators: {
               notEmpty: {
-                message: 'Please enter your email'
+                message: 'Kérjük, add meg az e-mail címet'
               },
               emailAddress: {
-                message: 'Please enter valid email address'
+                message: 'Kérjük, adjon meg egy érvényes e-mail címet'
               }
             }
           },
           'email-username': {
             validators: {
               notEmpty: {
-                message: 'Please enter email / username'
+                message: 'Kérjük, add meg az e-mailt / felhasználónevet'
               },
               stringLength: {
                 min: 6,
-                message: 'Username must be more than 6 characters'
+                message: 'A felhasználónévnek több mint 6 karakterből kell állnia'
               }
             }
           },
           password: {
             validators: {
               notEmpty: {
-                message: 'Please enter your password'
+                message: 'Kérjük, add meg a jelszavad'
               },
               stringLength: {
                 min: 6,
-                message: 'Password must be more than 6 characters'
+                message: 'A jelszónak több mint 6 karakterből kell állnia'
               }
             }
           },
           'confirm-password': {
             validators: {
               notEmpty: {
-                message: 'Please confirm password'
+                message: 'Kérjük, erősítsd meg a jelszavad'
               },
               identical: {
                 compare: function () {
                   return formAuthentication.querySelector('[name="password"]').value;
                 },
-                message: 'The password and its confirm are not the same'
+                message: 'A jelszó és a megerősítése nem egyezik'
               },
               stringLength: {
                 min: 6,
-                message: 'Password must be more than 6 characters'
+                message: 'A jelszónak több mint 6 karakterből kell állnia'
               }
             }
           },
           terms: {
             validators: {
               notEmpty: {
-                message: 'Please agree terms & conditions'
+                message: 'Kérjük, fogadja el a felhasználási feltételeket'
               }
             }
           }

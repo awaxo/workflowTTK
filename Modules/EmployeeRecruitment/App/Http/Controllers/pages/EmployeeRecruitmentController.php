@@ -411,6 +411,7 @@ class EmployeeRecruitmentController extends Controller
 
         return view('employeerecruitment::content.pages.recruitment-review', [
             'recruitment' => $recruitment,
+            'history' => $this->getHistory($recruitment),
             'id' => $id,
             'workgroups1' => $workgroups1,
             'workgroups2' => $workgroups2,

@@ -161,6 +161,10 @@ $(function () {
             $('#deleteConfirmation').modal('hide');
         });
 
+        $('.btn-delete').on('click', function() {
+            $('#deleteWorkflowConfirmation').modal('show');
+        });
+
         setTimeout(function() {
             $('#position_id').val($('#position_id_value').val()).trigger('change');
 
@@ -449,6 +453,37 @@ $(function () {
                             }
                         });
                 });
+            }
+        });
+    });
+
+    $('#confirm_delete_case').on('click', function (event) {
+        $('#deleteWorkflowConfirmation').modal('hide');
+
+        var formData = {};
+        formData['recruitment_id'] = $('#recruitment_id').val();
+        
+        $.ajax({
+            url: '/employee-recruitment/' + $('#recruitment_id').val() + '/delete',
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (data) {
+                if (data.url) {
+                    window.location.href = data.url;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var errors = jqXHR.responseJSON.errors;
+                var errorAlertMessage = '';
+                for (var key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        errorAlertMessage += errors[key] + '<br>';
+                    }
+                }
+                GLOBALS.AJAX_ERROR(errorAlertMessage, jqXHR, textStatus, errorThrown);
             }
         });
     });

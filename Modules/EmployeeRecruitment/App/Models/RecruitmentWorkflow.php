@@ -50,6 +50,9 @@ class RecruitmentWorkflow extends AbstractWorkflow
         })));
         // *** End titkar or titkar delegate ***
 
+        $recruitmentsQuery = self::query();
+        $orQueries = collect();
+
         if ($user && $user->hasRole('adminisztrator') ||
             $user->workgroup->workgroup_number == 908 ||
             $workgroup901 && $workgroup901->leader_id === $user->id ||
@@ -84,19 +87,21 @@ class RecruitmentWorkflow extends AbstractWorkflow
             
             // return all rows
             return self::query();
-        } elseif (!empty($titkarRoleNumbers)) {
-            $recruitmentsQuery = self::query();
+        }
 
+        if (!empty($titkarRoleNumbers)) {
             foreach ($titkarRoleNumbers as $number) {
-                $recruitmentsQuery->orWhereHas('workgroup1', function ($query) use ($number) {
-                    $query->where('workgroup_number', 'LIKE', "$number%");
-                })->orWhereHas('workgroup2', function ($query) use ($number) {
-                    $query->where('workgroup_number', 'LIKE', "$number%");
+                $orQueries->push(function ($query) use ($number) {
+                    $query->WhereHas('workgroup1', function ($query) use ($number) {
+                        $query->where('workgroup_number', 'LIKE', "$number%");
+                    })->orWhereHas('workgroup2', function ($query) use ($number) {
+                        $query->where('workgroup_number', 'LIKE', "$number%");
+                    });
                 });
             }
+        }
 
-            return $recruitmentsQuery;
-        } elseif (Workgroup::where('workgroup_number', 'like', '%00')
+        if (Workgroup::where('workgroup_number', 'like', '%00')
                                 ->where('leader_id', $user->id)
                                 ->exists() || 
                 $delegations->contains(function ($delegation) {
@@ -129,12 +134,13 @@ class RecruitmentWorkflow extends AbstractWorkflow
             $matchingWorkgroups = Workgroup::whereIn(DB::raw('LEFT(workgroup_number, 1)'), $firstChars)->get();
             $matchingWorkgroupIds = $matchingWorkgroups->pluck('id')->toArray();
 
-            return self::query()
-                ->where(function ($query) use ($matchingWorkgroupIds) {
-                    $query->whereIn('workgroup_id_1', $matchingWorkgroupIds)
-                        ->orWhereIn('workgroup_id_2', $matchingWorkgroupIds);
-                });
-        } elseif (Workgroup::where('leader_id', $user->id)->exists() || 
+            $orQueries->push(function ($query) use ($matchingWorkgroupIds) {
+                $query->whereIn('workgroup_id_1', $matchingWorkgroupIds)
+                    ->orWhereIn('workgroup_id_2', $matchingWorkgroupIds);
+            });
+        }
+
+        if (Workgroup::where('leader_id', $user->id)->exists() || 
                 $delegations->contains(function ($delegation) {
                     return strpos($delegation->type, 'grouplead_') === 0;
                 })) {
@@ -159,12 +165,13 @@ class RecruitmentWorkflow extends AbstractWorkflow
             $allRelevantWorkgroups = $leaderWorkgroups->merge($delegateWorkgroups);
             $matchingWorkgroupIds = $allRelevantWorkgroups->pluck('id')->toArray();
 
-            return self::query()
-                ->where(function ($query) use ($matchingWorkgroupIds) {
-                    $query->whereIn('workgroup_id_1', $matchingWorkgroupIds)
-                        ->orWhereIn('workgroup_id_2', $matchingWorkgroupIds);
-                });
-        } elseif (CostCenter::where('lead_user_id', $user->id)->exists() || 
+            $orQueries->push(function ($query) use ($matchingWorkgroupIds) {
+                $query->whereIn('workgroup_id_1', $matchingWorkgroupIds)
+                    ->orWhereIn('workgroup_id_2', $matchingWorkgroupIds);
+            });
+        }
+
+        if (CostCenter::where('lead_user_id', $user->id)->exists() || 
                 $delegations->contains(function ($delegation) {
                     return strpos($delegation->type, 'supervisor_workgroup_') === 0;
                 })) {
@@ -187,23 +194,22 @@ class RecruitmentWorkflow extends AbstractWorkflow
             $allRelevantCostCenters = $leadCostCenters->merge($delegateCostCenters);
             $matchingCostCenterIds = $allRelevantCostCenters->pluck('id')->toArray();
 
-            return self::query()
-                ->where(function ($query) use ($matchingCostCenterIds) {
-                    $query->whereIn('base_salary_cost_center_1', $matchingCostCenterIds)
-                        ->orWhereIn('base_salary_cost_center_2', $matchingCostCenterIds)
-                        ->orWhereIn('base_salary_cost_center_3', $matchingCostCenterIds)
-                        ->orWhereIn('health_allowance_cost_center_4', $matchingCostCenterIds)
-                        ->orWhereIn('management_allowance_cost_center_5', $matchingCostCenterIds)
-                        ->orWhereIn('extra_pay_1_cost_center_6', $matchingCostCenterIds)
-                        ->orWhereIn('extra_pay_2_cost_center_7', $matchingCostCenterIds);
-                });
-        } elseif (CostCenter::where('project_coordinator_user_id', $user->id)->exists() || 
+            $orQueries->push(function ($query) use ($matchingCostCenterIds) {
+                $query->whereIn('base_salary_cost_center_1', $matchingCostCenterIds)
+                    ->orWhereIn('base_salary_cost_center_2', $matchingCostCenterIds)
+                    ->orWhereIn('base_salary_cost_center_3', $matchingCostCenterIds)
+                    ->orWhereIn('health_allowance_cost_center_4', $matchingCostCenterIds)
+                    ->orWhereIn('management_allowance_cost_center_5', $matchingCostCenterIds)
+                    ->orWhereIn('extra_pay_1_cost_center_6', $matchingCostCenterIds)
+                    ->orWhereIn('extra_pay_2_cost_center_7', $matchingCostCenterIds);
+            });
+        }
+        
+        if (CostCenter::where('project_coordinator_user_id', $user->id)->exists() || 
                 $delegations->contains(function ($delegation) {
                     return strpos($delegation->type, 'project_coordinator_workgroup_') === 0;
                 })) {
             $projectCoordinatorCostCenters = CostCenter::where('project_coordinator_user_id', $user->id)->get();
-
-            Log::info($projectCoordinatorCostCenters);
 
             $delegateOriginalUserIds = $delegations->filter(function ($delegation) {
                 return strpos($delegation->type, 'project_coordinator_workgroup_') === 0;
@@ -222,28 +228,38 @@ class RecruitmentWorkflow extends AbstractWorkflow
             $allRelevantCostCenters = $projectCoordinatorCostCenters->merge($delegateCostCenters);
             $matchingCostCenterIds = $allRelevantCostCenters->pluck('id')->toArray();
 
-            return self::query()
-                ->where(function ($query) use ($matchingCostCenterIds) {
-                    $query->whereIn('base_salary_cost_center_1', $matchingCostCenterIds)
-                        ->orWhereIn('base_salary_cost_center_2', $matchingCostCenterIds)
-                        ->orWhereIn('base_salary_cost_center_3', $matchingCostCenterIds)
-                        ->orWhereIn('health_allowance_cost_center_4', $matchingCostCenterIds)
-                        ->orWhereIn('management_allowance_cost_center_5', $matchingCostCenterIds)
-                        ->orWhereIn('extra_pay_1_cost_center_6', $matchingCostCenterIds)
-                        ->orWhereIn('extra_pay_2_cost_center_7', $matchingCostCenterIds);
-                });
-        } elseif ($user && $user->hasRole('utofinanszirozas_fedezetigazolo') ||
+            $orQueries->push(function ($query) use ($matchingCostCenterIds) {
+                $query->whereIn('base_salary_cost_center_1', $matchingCostCenterIds)
+                    ->orWhereIn('base_salary_cost_center_2', $matchingCostCenterIds)
+                    ->orWhereIn('base_salary_cost_center_3', $matchingCostCenterIds)
+                    ->orWhereIn('health_allowance_cost_center_4', $matchingCostCenterIds)
+                    ->orWhereIn('management_allowance_cost_center_5', $matchingCostCenterIds)
+                    ->orWhereIn('extra_pay_1_cost_center_6', $matchingCostCenterIds)
+                    ->orWhereIn('extra_pay_2_cost_center_7', $matchingCostCenterIds);
+            });
+        }
+        
+        if ($user && $user->hasRole('utofinanszirozas_fedezetigazolo') ||
                 $delegations->contains(function ($delegation) {
                     return $delegation->type === 'post_financing_approver';
                 })) {
 
-            return self::query()
-                ->whereJsonLength('meta_data->additional_fields', '>', 0)
-                ->whereJsonContains('meta_data->additional_fields', ['post_financed_application' => 'on']);
-        } else {
+            $orQueries->push(function ($query) {
+                $query->whereJsonLength('meta_data->additional_fields', '>', 0)
+                    ->whereJsonContains('meta_data->additional_fields', ['post_financed_application' => 'on']);
+            });
+        }
+
+        if ($orQueries->isEmpty()) {
             // return no rows
             return self::query()->whereRaw('1 = 0');
         }
+
+        foreach ($orQueries as $orQuery) {
+            $recruitmentsQuery->orWhere($orQuery);
+        }
+        
+        return $recruitmentsQuery;
     }
 
     protected static function newFactory()

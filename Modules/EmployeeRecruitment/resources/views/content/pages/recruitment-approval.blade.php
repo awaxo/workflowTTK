@@ -140,10 +140,6 @@
                         </div>
                     @endif
 
-                    <div>
-                        Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó
-                    </div>
-
                     @if($recruitment->state == 'draft_contract_pending')
                         <div id="action_buttons" class="d-grid mt-4 d-none">
                             <button type="button" id="approve" class="btn btn-label-success me-2">Jóváhagyás</button>

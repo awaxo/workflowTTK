@@ -31,6 +31,18 @@ $(function () {
         todayBtn: true
     });
 
+    // Format the social security number input
+    var socialSecurityNumberField = document.getElementById('social_security_number');
+    if (socialSecurityNumberField) {
+        var cleaveSSN = new Cleave(socialSecurityNumberField, {
+            numericOnly: true,
+            blocks: [3, 3, 3],
+            delimiters: [' ', ' '],
+        });
+
+        cleaveInstances[socialSecurityNumberField.id] = cleaveSSN;
+    }
+
     $('#job_ad_exists').on('change', function() {
         toggleApplicantCountInputs($(this).is(':checked'));
     });

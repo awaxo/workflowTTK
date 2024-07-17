@@ -4,7 +4,7 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Új felvételi kérelem')
+@section('title', 'Ügyintézés')
 
 
 <!-- Vendor Styles -->

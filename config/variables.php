@@ -3,10 +3,10 @@
   return [
     "creatorName" => "HUN-REN TTK",
     "creatorUrl" => "https://www.ttk.hun-ren.hu/",
-    "appVersion" => "0.22.3",
+    "appVersion" => "0.22.4",
 
-    "templateName" => "Ügyintézés",
-    "templateSuffix" => "Bootstrap 5 HTML Admin Template - Pro",
+    "templateName" => "",
+    "templateSuffix" => "",
     "templateVersion" => "2.2.0",
     "templateFree" => false,
     "templateDescription" => "Most Powerful & Comprehensive Bootstrap 5 HTML Admin Dashboard Template built for developers!",

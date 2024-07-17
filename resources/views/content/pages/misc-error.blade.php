@@ -5,7 +5,7 @@
 
 @extends('layouts/layoutMaster')
 
-@section('title', 'Hiba - Oldal nem elérhető')
+@section('title', 'Ügyintézés')
 
 @section('page-style')
 <!-- Page -->

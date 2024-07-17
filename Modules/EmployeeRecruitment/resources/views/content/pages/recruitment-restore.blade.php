@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'Folyamatok / ' . $recruitment->name)
+@section('title', 'Ügyintézés')
 
 @section('vendor-style')
     @vite([

@@ -61,3 +61,7 @@ ul.menu-sub {
 .app-brand .layout-menu-toggle i {
     line-height: 1 !important;
 }
+
+td.day {
+    color: #35353f;
+}

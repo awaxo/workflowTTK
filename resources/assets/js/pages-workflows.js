@@ -11,7 +11,7 @@ $(function() {
     let dataTable = $('.datatables-workflows').DataTable({
         ajax: '/api/workflows',
         columns: [
-            { data: 'id', searchable: false },
+            { data: 'id' },
             { data: 'workflow_type_name' },
             { data: 'state' },
             { data: 'initiator_institute_abbreviation' },
@@ -34,7 +34,7 @@ $(function() {
                 searchable: false, 
                 orderable: false,
                 render: function(data, type, row, meta) {
-                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-times text-danger"></i></a>' : '';
+                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-minus text-danger" title="Sztornózás"></i></a>' : '';
                 }
             },
         ],
@@ -66,7 +66,7 @@ $(function() {
                 }
             },
         ],
-        order: [[1, 'asc']],
+        order: [[0, 'desc']],
         displayLength: 10,
         lengthMenu: [10, 25, 50, 75, 100],
         responsive: {
@@ -106,7 +106,7 @@ $(function() {
             var checkboxOwnHtml = `
                 <div class="form-check form-switch show-own-cases">
                     <input class="form-check-input" type="checkbox" role="switch" id="show_only_own" checked>
-                    <label class="form-check-label" for="show_only_own">Csak saját ügyek listázása</label>
+                    <label class="form-check-label" for="show_only_own">Csak saját jóváhagyásra váró ügyek listázása</label>
                 </div>
             `;
             var checkboxClosedHtml = `

@@ -10,7 +10,7 @@ $(function() {
     let dataTable = $('.datatables-recruitments').DataTable({
         ajax: '/employee-recruitment/opened',
         columns: [
-            { data: 'id', searchable: false },
+            { data: 'id' },
             { data: 'name' },
             { data: 'state' },
             { data: 'workgroup1' },
@@ -31,7 +31,7 @@ $(function() {
                 searchable: false, 
                 orderable: false,
                 render: function(data, type, row, meta) {
-                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-times text-danger"></i></a>' : '';
+                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-minus text-danger" title="Sztornózás"></i></a>' : '';
                 }
             },
         ],
@@ -81,7 +81,7 @@ $(function() {
                 }
             },
         ],
-        order: [[1, 'asc']],
+        order: [[0, 'desc']],
         displayLength: 10,
         lengthMenu: [10, 25, 50, 75, 100],
         dom: window.isSecretary 
@@ -133,8 +133,8 @@ $(function() {
         initComplete: function() {
             var checkboxOwnHtml = `
                 <div class="form-check form-switch show-own-cases">
-                    <input class="form-check-input" type="checkbox" role="switch" id="show_only_own" checked>
-                    <label class="form-check-label" for="show_only_own">Csak saját ügyek listázása</label>
+                    <input class="form-check-input" type="checkbox" role="switch" id="show_only_own">
+                    <label class="form-check-label" for="show_only_own">Csak saját jóváhagyásra váró ügyek listázása</label>
                 </div>
             `;
             var checkboxClosedHtml = `

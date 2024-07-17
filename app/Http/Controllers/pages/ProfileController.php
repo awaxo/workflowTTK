@@ -7,7 +7,6 @@ use App\Models\Delegation;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class ProfileController extends Controller
@@ -25,6 +24,7 @@ class ProfileController extends Controller
     {
         $delegations = Delegation::where('original_user_id', Auth::id())
                         ->where('deleted', 0)
+                        ->where('end_date', '>', now())
                         ->with('delegateUser')
                         ->get()
                         ->map(function ($delegation) {

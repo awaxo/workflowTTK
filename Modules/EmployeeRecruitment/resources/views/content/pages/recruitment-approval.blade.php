@@ -76,6 +76,10 @@
                     @endif
                 </div>
 
+                <br/>
+                <div class="fst-italic">Aktuális státusz: <b>{{ __('states.' . $recruitment->state) }}</b></div>
+                <div class="fst-italic">Szükséges jóváhagyók (a lista a jóváhagyókat és az esetleges helyetteseiket is tartalmazza): <b>{{ $usersToApprove ? $usersToApprove : '' }}</b></div>
+
                 <!-- Approval controls -->
                 <input type="hidden" id="state" value="{{ $recruitment->state }}">
                 @if($recruitment->state == 'group_lead_approval')

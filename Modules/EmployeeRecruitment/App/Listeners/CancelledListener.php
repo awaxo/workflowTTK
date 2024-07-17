@@ -2,7 +2,7 @@
 
 namespace Modules\EmployeeRecruitment\App\Listeners;
 
-use App\Events\RejectedEvent;
+use App\Events\CancelledEvent;
 use App\Models\User;
 use Modules\EmployeeRecruitment\App\Notifications\CancelledNotification;
 
@@ -19,7 +19,7 @@ class CancelledListener
     /**
      * Handle the event.
      */
-    public function handle(RejectedEvent $event): void
+    public function handle(CancelledEvent $event): void
     {
         $metaData = json_decode($event->workflow->meta_data, true);
         $history = $metaData['history'] ?? [];

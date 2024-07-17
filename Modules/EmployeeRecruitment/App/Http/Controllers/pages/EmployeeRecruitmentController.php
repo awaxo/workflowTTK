@@ -551,6 +551,7 @@ class EmployeeRecruitmentController extends Controller
                 $recruitment->updated_by = Auth::id();
                 if ($request->input('is_cancel') && WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()) {
                     $recruitment->deleted = 1;
+                    $service->storeMetadata($recruitment, $request->input('message'), 'cancel');
                     event(new CancelledEvent($recruitment));
                 }
                 

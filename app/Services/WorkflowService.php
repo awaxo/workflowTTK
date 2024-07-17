@@ -146,7 +146,7 @@ class WorkflowService
             'message' => $message ? $message : '',
         ];
         $history = [
-            'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : ($decision == 'start' ? 'start' : ($decision == 'restart' ? 'restart' : 'restore')))),
+            'decision' => $decision == 'approvals' ? 'approve' : ($decision == 'rejections' ? 'reject' : ($decision == 'suspensions' ? 'suspend' : ($decision == 'start' ? 'start' : ($decision == 'restart' ? 'restart' : ($decision == 'cancel' ? 'cancel' : 'restore'))))),
             'status' => $workflow->state,
             'user_id' => $userId,
             'datetime' => now()->toDateTimeString(),

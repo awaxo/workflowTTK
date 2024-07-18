@@ -313,11 +313,15 @@ class EmployeeRecruitmentController extends Controller
 
         // IT workgroup
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
+        
+        // HR workgroup
+        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
 
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
             'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
+            'isHRHead' => $workgroup908 && $workgroup908->leader_id === Auth::id(),
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
         ]);
@@ -514,8 +518,10 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
+        $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
+        $isHRHead = $workgroup908 && $workgroup908->leader_id === Auth::id();
         
-        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+        if ($service->isUserResponsible(Auth::user(), $recruitment) || $isHRHead) {
             if (strlen($request->input('message')) > 0) {
                 $previous_state = __('states.' . $recruitment->state);
                 $service->resetApprovals($recruitment);

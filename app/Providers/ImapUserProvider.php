@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class ImapUserProvider implements UserProvider {
 
@@ -27,7 +28,7 @@ class ImapUserProvider implements UserProvider {
         $user = User::where('email', $credentials['email'])->first();
 
         if ($user) {
-            $user->connectToImap($username);
+            $user->connectToImap($username, $credentials['password']);
             if ($user->checkImapConnection()) {
                 return $user;
             }
@@ -39,8 +40,7 @@ class ImapUserProvider implements UserProvider {
     public function validateCredentials(Authenticatable $user, array $credentials) {
         if ($user instanceof User) {
             $username = str_replace('@ttk.hu', '', $user->email);
-
-            $user->connectToImap($username);
+            $user->connectToImap($username, $credentials['password']);
             return $user->checkImapConnection();
         }
         return false;

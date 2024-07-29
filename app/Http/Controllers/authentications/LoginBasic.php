@@ -5,6 +5,7 @@ namespace App\Http\Controllers\authentications;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoginBasic extends Controller
 {
@@ -16,9 +17,17 @@ class LoginBasic extends Controller
 
     public function authenticate(Request $request)
     {
-        $credentials = $request->only('email-username', 'password');
+        $request->validate([
+            'email-username' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
-        if (Auth::guard('dynamic')->attempt(['email' => $request['email-username'], 'password' => $request['password']])) {
+        $credentials = [
+            'email' => $request->input('email-username'),
+            'password' => $request->input('password'),
+        ];
+
+        if (Auth::guard('dynamic')->attempt($credentials)) {
             $user = Auth::guard('dynamic')->user();
             if ($user->roles->isEmpty() || $user->deleted) {
                 Auth::guard('dynamic')->logout();
@@ -26,7 +35,9 @@ class LoginBasic extends Controller
                     'email-username' => 'Nincs jogosultsága a belépéshez',
                 ])->onlyInput('email-username');
             }
+
             $request->session()->regenerate();
+
             return redirect()->intended('folyamatok');
         }
 

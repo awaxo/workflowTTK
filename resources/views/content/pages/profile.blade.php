@@ -52,31 +52,15 @@
     <div class="nav-align-top">
         <ul class="nav nav-pills mb-3" role="tablist">
             <li class="nav-item">
-                <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-noticitation-settings" aria-controls="navs-pills-generic-settings" aria-selected="true">Értesítési beállítások</button>
+                <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-delegations" aria-controls="navs-pills-delegations" aria-selected="false">Helyettesítések</button>
             </li>
             <li class="nav-item">
-                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-delegations" aria-controls="navs-pills-delegations" aria-selected="false">Helyettesítések</button>
+                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-noticitation-settings" aria-controls="navs-pills-generic-settings" aria-selected="true">Értesítési beállítások</button>
             </li>
         </ul>
         
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="navs-pills-noticitation-settings" role="tabpanel">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <div class="col-3">
-                            <label for="approval_notification" class="form-label">Értesítő email jóváhagyóként</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="approval_notification" {{ $approval_notification == 'true' ? 'checked' : '' }}>
-                                <label class="form-check-label" for="approval_notification">Kérek értesítő emailt jóváhagyóként</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <button class="btn btn-success btn-submit">Mentés</button>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="navs-pills-delegations" role="tabpanel">
+            <div class="tab-pane fade show active" id="navs-pills-delegations" role="tabpanel">
                 <div class="content-header mb-3">
                     <h5 class="mb-0">Helyettesek beállítása</h5>
                     <small>Add meg a helyettesíteni kívánt funkciót és a helyettest</small>
@@ -132,6 +116,23 @@
                                 </thead>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="navs-pills-noticitation-settings" role="tabpanel">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="col-3">
+                            <label for="approval_notification" class="form-label">Értesítő email jóváhagyóként</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="approval_notification" {{ $approval_notification == 'true' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="approval_notification">Kérek értesítő emailt jóváhagyóként</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-success btn-submit">Mentés</button>
                     </div>
                 </div>
             </div>

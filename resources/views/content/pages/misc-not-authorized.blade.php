@@ -9,7 +9,10 @@
 
 @section('page-style')
     <!-- Page -->
-    @vite(['resources/assets/vendor/scss/pages/page-misc.scss'])
+    @vite([
+        'resources/assets/vendor/scss/pages/page-misc.scss',
+        'resources/css/app.css'
+    ])
 @endsection
 
 

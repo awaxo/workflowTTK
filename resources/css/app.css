@@ -65,3 +65,7 @@ ul.menu-sub {
 td.day {
     color: #35353f;
 }
+
+.app-brand-text.demo {
+    text-transform: none;
+}

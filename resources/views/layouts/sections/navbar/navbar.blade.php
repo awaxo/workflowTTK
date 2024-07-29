@@ -39,9 +39,15 @@ $navbarDetached = ($navbarDetached ?? '');
       @endif
 
       <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-        <div style="flex: 1; display: flex; justify-content: center;">
-          <img src="{{asset('assets/img/logo/fejlec_logo.jpg')}}" alt="logo" style="height: 60px;">
-        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+          <div style="flex: 1; display: flex; justify-content: flex-start;">
+              <img src="{{asset('assets/img/logo/header-1.jpg')}}" alt="logo" style="height: 50px;">
+          </div>
+          <div style="flex: 1; display: flex; justify-content: center;">
+              <img src="{{asset('assets/img/logo/fejlec_logo.jpg')}}" alt="logo" style="height: 60px;">
+          </div>
+          <div style="flex: 1"><!-- This empty div ensures that the center logo actually centers by balancing the flex container --></div>
+      </div>
 
       @if($configData['hasCustomizer'] == true)
       <!-- Style Switcher -->

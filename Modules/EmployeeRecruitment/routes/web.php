@@ -30,6 +30,7 @@ Route::post('/employee-recruitment/{id}/approve', [EmployeeRecruitmentController
 Route::post('/employee-recruitment/{id}/reject', [EmployeeRecruitmentController::class, 'reject'])->middleware(['auth']);
 Route::post('/employee-recruitment/{id}/suspend', [EmployeeRecruitmentController::class, 'suspend'])->middleware(['auth']);
 Route::post('/employee-recruitment/{id}/restore', [EmployeeRecruitmentController::class, 'restore'])->middleware(['auth']);
+Route::post('/employee-recruitment/{id}/delete', [EmployeeRecruitmentController::class, 'delete'])->middleware(['auth']);
 
 Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class, 'getAll'])->middleware(['auth']);
 Route::get('/employee-recruitment/closed', [EmployeeRecruitmentController::class, 'getAllClosed'])->middleware(['auth']);

@@ -803,6 +803,7 @@
                                                     <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                                     <span class="align-middle d-sm-inline-block d-none">Vissza</span>
                                                 </button>
+                                                <button class="btn btn-danger btn-delete">Folyamat törlése</button>
                                                 <button class="btn btn-success btn-submit">Folyamat indítása</button>
                                             </div>
                                         </div>
@@ -826,8 +827,9 @@
                                 <tbody>
                                 @foreach($history as $history_entry)
                                     <tr>
-                                        <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : ($history_entry['decision'] == 'restart' ? 'success' : 'info')))) }} me-1">
-                                            {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : 'Visszaállítás')))) }}</span></td>                                <td>{{ $history_entry['datetime'] }}</td>
+                                        <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : ($history_entry['decision'] == 'restart' ? 'success' : ($history_entry['decision'] == 'delete' ? 'danger' : 'info'))))) }} me-1">
+                                            {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : ($history_entry['decision'] == 'delete' ? 'Törlés' : 'Visszaállítás'))))) }}</span></td>
+                                        <td>{{ $history_entry['datetime'] }}</td>
                                         <td>{{ $history_entry['user_name'] }}</td>
                                         <td>{{ __('states.' . $history_entry['status']) }}</td>
                                         <td>{{ $history_entry['message'] }}</td>
@@ -856,6 +858,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
                     <button type="button" id="confirm_delete" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Jóváhagyás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete workflow case confirmation modal -->
+    <div class="modal fade" id="deleteWorkflowConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Megerősítés</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Biztosan szeretnéd törölni az ügyet?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                    <button type="button" id="confirm_delete_case" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Jóváhagyás</button>
                 </div>
             </div>
         </div>

@@ -633,6 +633,25 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    public function delete(Request $request, $id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+        
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            $service->storeMetadata($recruitment, '', 'deletion');
+            $recruitment->updated_by = Auth::id();
+            $recruitment->deleted = 1;
+            
+            $recruitment->save();
+
+            return response()->json(['url' => route('workflows-all-open')]);
+        } else {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem törlésére');
+            return view('content.pages.misc-not-authorized');
+        }
+    }
+
     public function generatePDF($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);

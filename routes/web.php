@@ -30,11 +30,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth'])->name('pages-institutes');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth:dynamic'])->name('dashboard');
+Route::get('/intezetek', [InstituteController::class, 'index'])->middleware(['auth:dynamic'])->name('pages-institutes');
 Route::get('/segedadat/szerepkorok', [RoleController::class, 'index'])->middleware(['check.wg915'])->name('auxiliary-data-authorizations-roles');
-Route::get('/segedadat/jogosultsagok', [PermissionController::class, 'index'])->middleware(['auth'])->name('authorizations-permissions');
-Route::get('/folyamatok', [WorkflowController::class, 'index'])->middleware(['auth'])->name('workflows-all-open');
+Route::get('/segedadat/jogosultsagok', [PermissionController::class, 'index'])->middleware(['auth:dynamic'])->name('authorizations-permissions');
+Route::get('/folyamatok', [WorkflowController::class, 'index'])->middleware(['auth:dynamic'])->name('workflows-all-open');
 Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-institute');
 Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-workgroup');
 Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['check.wg915'])->name('auxiliary-data-external-access');
@@ -44,7 +44,7 @@ Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->midd
 Route::get('/segedadat/felhasznalok', [UserController::class, 'index'])->middleware(['check.wg915'])->name('auxiliary-data-pages-users');
 Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['check.wg915'])->name('pages-users-role');
 Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['check.admin'])->name('settings');
-Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth'])->name('profile');
+Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth:dynamic'])->name('profile');
 
 // locale
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
@@ -76,7 +76,7 @@ Route::get('/logout', function (Request $request) {
 
 
 // API routes
-Route::prefix('api')->middleware(['auth'])->group(function () {
+Route::prefix('api')->middleware(['auth:dynamic'])->group(function () {
     Route::get('/permissions', [PermissionController::class, 'getAllPermissions']);
 
     Route::get('/workflows', [WorkflowController::class, 'getAllWorkflows']);

@@ -14,7 +14,8 @@ $customizerHidden = 'customizer-hide';
 
 @section('page-style')
 @vite([
-  'resources/assets/vendor/scss/pages/page-auth.scss'
+  'resources/assets/vendor/scss/pages/page-auth.scss',
+  'resources/css/app.css'
 ])
 @endsection
 
@@ -41,7 +42,10 @@ $customizerHidden = 'customizer-hide';
         <div class="card-body">
         <!-- Logo -->
         <div class="app-brand justify-content-center">
-            <a href="{{url('/')}}" class="app-brand-link gap-2">
+            <img src="{{asset('assets/img/logo/header-1.jpg')}}" alt="logo" style="height: 50px;">
+        </div>
+        <div class="app-brand justify-content-center">
+            <a href="{{url('/login')}}" class="app-brand-link gap-2">
             <span class="app-brand-logo demo">@include('_partials.macros',["width"=>25,"withbg"=>'var(--bs-primary)'])</span>
             <span class="app-brand-text demo text-body fw-bold">{{config('variables.templateName')}}</span>
             </a>

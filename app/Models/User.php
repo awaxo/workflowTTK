@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Webklex\IMAP\Facades\Client;
 
 class User extends Authenticatable
 {
@@ -263,5 +264,32 @@ class User extends Authenticatable
         }
 
         return false;
+    }
+
+    public function connectToImap($username, $password) {
+        Log::info('Attempting IMAP connection with username: ' . $username);
+        $client = Client::make([
+            'host'          => config('imap.accounts.default.host'),
+            'port'          => config('imap.accounts.default.port'),
+            'encryption'    => config('imap.accounts.default.encryption'),
+            'validate_cert' => config('imap.accounts.default.validate_cert'),
+            'username'      => $username,
+            'password'      => $password,
+            'authentication'=> config('imap.accounts.default.authentication'),
+        ]);
+
+        try {
+            $client->connect();
+            $this->imapClient = $client;
+            Log::info('IMAP connection successful for username: ' . $username);
+        } catch (\Exception $e) {
+            Log::error('IMAP connection failed for username: ' . $username . ' with error: ' . $e->getMessage());
+            Log::error($e);
+            $this->imapClient = null;
+        }
+    }
+
+    public function checkImapConnection() {
+        return $this->imapClient && $this->imapClient->isConnected();
     }
 }

@@ -27,7 +27,7 @@
             max-width: 100%;
         }
         .header-title {
-            font-size: 0.65em;
+            font-size: 0.55em;
             color: blue;
             text-align: left;
             margin-right: 10px;
@@ -119,7 +119,7 @@
                 <img src="assets/img/logo/header-2.jpg" alt="Logo">
             </td>
             <td class="header-text">
-                <div class="header-title">TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
+                <div class="header-title">HUN-REN TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
                 <div class="header-subtitle">1117 BUDAPEST, MAGYAR TUDÓSOK KÖRÚTJA 2.</div>
             </td>
             <td class="header-text">

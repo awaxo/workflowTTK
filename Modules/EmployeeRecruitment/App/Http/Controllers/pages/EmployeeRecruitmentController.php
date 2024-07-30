@@ -722,10 +722,28 @@ class EmployeeRecruitmentController extends Controller
         $currentYear = $employmentStartDate->year;
 
         if ($recruitment->employment_type === 'Határozott') {
-            // Calculate only for the months between employmentStartDate and employmentEndDate
-            $monthsInPeriod = $employmentEndDate->diffInMonths($employmentStartDate) + 1;
-            $amountForPeriod = $totalMonthlyGrossSalary * $monthsInPeriod * (1 + $employerContribution / 100);
-            $amountsByYear[] = [$currentYear, number_format($amountForPeriod, 0, '', ' ')];
+            // Calculate for each year within the employment period
+            for ($i = 0; $i < 4; $i++) {
+                $startOfYear = Carbon::create($currentYear + $i, 1, 1);
+                $endOfYear = Carbon::create($currentYear + $i, 12, 31);
+    
+                if ($i == 0) {
+                    $startOfYear = $employmentStartDate;
+                }
+    
+                if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
+                    $endOfYear = $employmentEndDate;
+                }
+    
+                if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
+                    $amountForYear = 0;
+                } else {
+                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
+                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
+                }
+    
+                $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
+            }
         } else {
             // Calculate for indefinite term
             for ($i = 0; $i < 4; $i++) {
@@ -750,7 +768,6 @@ class EmployeeRecruitmentController extends Controller
                 $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
             }
         }
-
 
         return $amountsByYear;
     }

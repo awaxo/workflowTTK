@@ -716,31 +716,41 @@ class EmployeeRecruitmentController extends Controller
         $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
         $employmentEndDate = $recruitment->employment_end_date ? Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date) : null;
 
-        $years = $employmentEndDate ? $employmentEndDate->diffInYears($employmentStartDate) : 3;
-        $years = $years > 3 ? 3 : $years;
-
         $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
 
         $amountsByYear = [];
         $currentYear = $employmentStartDate->year;
 
-        for ($i = 0; $i < 4; $i++) {
-            $startOfYear = Carbon::create($currentYear + $i, 1, 1);
-            $endOfYear = Carbon::create($currentYear + $i, 12, 31);
+        if ($recruitment->employment_type === 'Határozott') {
+            // Calculate only for the months between employmentStartDate and employmentEndDate
+            $monthsInPeriod = $employmentEndDate->diffInMonths($employmentStartDate) + 1;
+            $amountForPeriod = $totalMonthlyGrossSalary * $monthsInPeriod * (1 + $employerContribution / 100);
+            $amountsByYear[] = [$currentYear, number_format($amountForPeriod, 0, '', ' ')];
+        } else {
+            // Calculate for indefinite term
+            for ($i = 0; $i < 4; $i++) {
+                $startOfYear = Carbon::create($currentYear + $i, 1, 1);
+                $endOfYear = Carbon::create($currentYear + $i, 12, 31);
 
-            if ($i == 0) {
-                $startOfYear = $employmentStartDate;
+                if ($i == 0) {
+                    $startOfYear = $employmentStartDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
+                    $endOfYear = $employmentEndDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
+                    $amountForYear = 0;
+                } else {
+                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
+                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
+                }
+
+                $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
             }
-
-            if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
-                $endOfYear = $employmentEndDate;
-            }
-
-            $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
-
-            $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
-            $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
         }
+
 
         return $amountsByYear;
     }
@@ -757,7 +767,28 @@ class EmployeeRecruitmentController extends Controller
             $months = $employmentEndDate->diffInMonths($employmentStartDate) + 1;
             $totalAmountToCover = $totalMonthlyGrossSalary * $months * (1 + $employerContributionRate / 100);
         } else {
-            $totalAmountToCover = $totalMonthlyGrossSalary * 48 * (1 + $employerContributionRate / 100);
+            $totalAmountToCover = 0;
+            for ($i = 0; $i < 4; $i++) {
+                $startOfYear = Carbon::create($employmentStartDate->year + $i, 1, 1);
+                $endOfYear = Carbon::create($employmentStartDate->year + $i, 12, 31);
+
+                if ($i == 0) {
+                    $startOfYear = $employmentStartDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year == $employmentStartDate->year + $i) {
+                    $endOfYear = $employmentEndDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year < $employmentStartDate->year + $i) {
+                    $amountForYear = 0;
+                } else {
+                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
+                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContributionRate / 100);
+                }
+
+                $totalAmountToCover += $amountForYear;
+            }
         }
 
         return number_format($totalAmountToCover, 0, '', ' ');

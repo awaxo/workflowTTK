@@ -12,6 +12,7 @@ use App\Models\ChemicalPathogenicFactor;
 use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
 use App\Models\Institute;
+use App\Models\Option;
 use App\Models\Position;
 use App\Models\Room;
 use App\Models\User;
@@ -323,7 +324,9 @@ class EmployeeRecruitmentController extends Controller
             'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
             'isHRHead' => $workgroup908 && $workgroup908->leader_id === Auth::id(),
             'usersToApprove' => implode(', ', $usersToApproveName),
-            'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
+            'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
+            'amountToCover' => $this->getAmountToCover($recruitment),
+            'totalAmountToCover' => $this->getTotalAmountToCover($recruitment)
         ]);
     }
 
@@ -364,7 +367,9 @@ class EmployeeRecruitmentController extends Controller
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
                 'usersToApprove' => implode(', ', $usersToApproveName),
-                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment),
+                'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
+                'amountToCover' => $this->getAmountToCover($recruitment),
+                'totalAmountToCover' => $this->getTotalAmountToCover($recruitment),
                 'chemicalFactors' => $chemicalFactors
             ]);
         } else {
@@ -607,7 +612,9 @@ class EmployeeRecruitmentController extends Controller
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
                 'usersToApprove' => implode(', ', $usersToApproveName),
-                'monthlyGrossSalariesSum' => $this->getSumOfSallaries($recruitment)
+                'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
+                'amountToCover' => $this->getAmountToCover($recruitment),
+                'totalAmountToCover' => $this->getTotalAmountToCover($recruitment)
             ]);
         } else {
             Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésének visszaállítására');
@@ -695,7 +702,113 @@ class EmployeeRecruitmentController extends Controller
             return !is_null($value);
         }));
         
-        return number_format($monthlyGrossSalariesSum, 0, '', ' ');
+        return $monthlyGrossSalariesSum;
+    }
+
+    private function getSumOfSallariesFormatted($recruitment)
+    {
+        return number_format($this->getSumOfSallaries($recruitment), 0, '', ' ');
+    }
+
+    private function getAmountToCover($recruitment)
+    {
+        $employerContribution = Option::where('option_name', 'employer_contribution')->first()->option_value;
+        $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
+        $employmentEndDate = $recruitment->employment_end_date ? Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date) : null;
+
+        $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
+
+        $amountsByYear = [];
+        $currentYear = $employmentStartDate->year;
+
+        if ($recruitment->employment_type === 'Határozott') {
+            // Calculate for each year within the employment period
+            for ($i = 0; $i < 4; $i++) {
+                $startOfYear = Carbon::create($currentYear + $i, 1, 1);
+                $endOfYear = Carbon::create($currentYear + $i, 12, 31);
+    
+                if ($i == 0) {
+                    $startOfYear = $employmentStartDate;
+                }
+    
+                if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
+                    $endOfYear = $employmentEndDate;
+                }
+    
+                if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
+                    $amountForYear = 0;
+                } else {
+                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
+                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
+                }
+    
+                $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
+            }
+        } else {
+            // Calculate for indefinite term
+            for ($i = 0; $i < 4; $i++) {
+                $startOfYear = Carbon::create($currentYear + $i, 1, 1);
+                $endOfYear = Carbon::create($currentYear + $i, 12, 31);
+
+                if ($i == 0) {
+                    $startOfYear = $employmentStartDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
+                    $endOfYear = $employmentEndDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
+                    $amountForYear = 0;
+                } else {
+                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
+                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
+                }
+
+                $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
+            }
+        }
+
+        return $amountsByYear;
+    }
+
+    private function getTotalAmountToCover($recruitment)
+    {
+        $employerContributionRate = Option::where('option_name', 'employer_contribution')->first()->option_value;
+        $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
+
+        $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
+        $employmentEndDate = $recruitment->employment_end_date ? Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date) : null;
+
+        if ($recruitment->employment_type === 'Határozott') {
+            $months = $employmentEndDate->diffInMonths($employmentStartDate) + 1;
+            $totalAmountToCover = $totalMonthlyGrossSalary * $months * (1 + $employerContributionRate / 100);
+        } else {
+            $totalAmountToCover = 0;
+            for ($i = 0; $i < 4; $i++) {
+                $startOfYear = Carbon::create($employmentStartDate->year + $i, 1, 1);
+                $endOfYear = Carbon::create($employmentStartDate->year + $i, 12, 31);
+
+                if ($i == 0) {
+                    $startOfYear = $employmentStartDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year == $employmentStartDate->year + $i) {
+                    $endOfYear = $employmentEndDate;
+                }
+
+                if ($employmentEndDate && $employmentEndDate->year < $employmentStartDate->year + $i) {
+                    $amountForYear = 0;
+                } else {
+                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
+                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContributionRate / 100);
+                }
+
+                $totalAmountToCover += $amountForYear;
+            }
+        }
+
+        return number_format($totalAmountToCover, 0, '', ' ');
     }
 
     private function validateFields(RecruitmentWorkflow $recruitment, Request $request)

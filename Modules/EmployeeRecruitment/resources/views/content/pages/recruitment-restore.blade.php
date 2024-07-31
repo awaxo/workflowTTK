@@ -68,6 +68,24 @@
                     <div>
                         Összesített havi bruttó bér: {{ $monthlyGrossSalariesSum }} Ft / hó
                     </div>
+                    <div>
+                        <p>Fedezetigazolandó összeg:</p>
+                        <div class="d-flex flex-column" style="width: 50%;">
+                            <div class="d-flex">
+                                <div class="p-2 flex-fill"><strong>Év</strong></div>
+                                <div class="p-2 flex-fill"><strong>Összeg</strong></div>
+                            </div>
+                            @foreach ($amountToCover as $yearAmount)
+                                <div class="d-flex">
+                                    <div class="p-2 flex-fill">{{ $yearAmount[0] }}</div>
+                                    <div class="p-2 flex-fill">{{ $yearAmount[1] }} Ft</div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div>
+                        Teljes fedezetigazolandó összeg: {{ $totalAmountToCover }} Ft
+                    </div>
 
                     <!-- Restore button -->
                     <div class="d-grid mt-4 d-md-block">

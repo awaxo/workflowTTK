@@ -46,7 +46,11 @@ class CheckStateDeadlines extends Command
             $usersToApprove = $service->getResponsibleUsers($recruitmentWorkflow, true);
             foreach ($usersToApprove as $user) {
                 $user = User::find($user['id']);
-                $user->notify(new StateOverdueNotification($recruitmentWorkflow, $options['recruitment_process_' . $recruitmentWorkflow->state . '_deadline'], $user->getSupervisor()->email));
+                $user->notify(new StateOverdueNotification(
+                    $recruitmentWorkflow,
+                    $options['recruitment_process_' . $recruitmentWorkflow->state . '_deadline'],
+                    [$user->getSupervisor()->email]
+                ));
                 $this->info($user->name . ' értesítve \'' . $recruitmentWorkflow->name . '\' felvételi kérelmének lejárt státusz határidejéről');
             }
         }

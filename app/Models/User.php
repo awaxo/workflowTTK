@@ -154,26 +154,38 @@ class User extends Authenticatable
 
     public function getDelegates(string $delegationType = null)
     {
+        // Helper function to filter users with any roles
+        $filterUsersWithRoles = function ($users) {
+            return $users->filter(function ($user) {
+                return $user->roles()->count() > 0;
+            })->values()->toArray();
+        };
+
         if ($this->id == Workgroup::where('workgroup_number', 903)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
-            return User::find(Workgroup::where('workgroup_number', 910)->first()->leader_id);
+            $user = User::find(Workgroup::where('workgroup_number', 910)->first()->leader_id);
+            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
         }
 
         if ($this->id == Workgroup::where('workgroup_number', 910)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
-            return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
+            $user = User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
+            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
         }
 
         if ($this->id == Workgroup::where('workgroup_number', 911)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
-            return User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
+            $user = User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
+            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
         }
 
         if ($this->id == Workgroup::where('workgroup_number', 901)->first()->leader_id && $delegationType === 'obligee_approver') {
             $workgroups = Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900])->get();
             $leaderIds = $workgroups->pluck('leader_id');
-            return User::whereIn('id', $leaderIds)->orderBy('name')->get();
+            $users = User::whereIn('id', $leaderIds)->orderBy('name')->get();
+            return $filterUsersWithRoles($users);
         }
 
         if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900, 903])->where('leader_id', $this->id)->exists() && $delegationType === 'obligee_approver') {
-            return User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
+            $user = User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
+            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
         }
 
         if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900])->where('leader_id', $this->id)->exists()) {
@@ -191,7 +203,8 @@ class User extends Authenticatable
                 $query->whereRaw('LEFT(workgroup_number, 1) = ?', [$firstCharOfWorkgroup])->where('leader_id', $this->id);
             })->get();
 
-            return $users->concat($leaders)->unique('name')->sortBy('name')->values();
+            $allUsers = $users->concat($leaders)->unique('name')->sortBy('name')->values();
+            return $filterUsersWithRoles($allUsers);
         }
 
         $currentUser = $this;
@@ -202,7 +215,10 @@ class User extends Authenticatable
             return $user->id === $currentUser->id;
         })->values();
 
-        return $filteredUsers;
+        Log::info('Filtered users: ' . $filteredUsers);
+        Log::info($filterUsersWithRoles($filteredUsers));
+
+        return $filterUsersWithRoles($filteredUsers);
     }
 
     public function canViewMenuItem(string $menuItem)

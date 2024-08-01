@@ -38,7 +38,7 @@ class CheckSuspendedDeadline extends Command
             $recruitmentWorkflow->workflow_apply('to_request_review');
             $recruitmentWorkflow->updated_by = User::where('email', 'rendszerfiok')->first()->id;
             $recruitmentWorkflow->save();
-            $this->info($recruitmentWorkflow->name . ' felvételi kérelme törölve ' . $suspendThreshold . ' óra felfüggesztés után');
+            $this->info($recruitmentWorkflow->name . ' felvételi kérelme visszaküldve újraellenőrzésre ' . $suspendThreshold . ' óra felfüggesztés után');
         }
     }
 }

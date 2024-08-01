@@ -5,27 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Felvételi kérelem</title>
     <style>
+        @page {
+            margin: 1.2cm;
+        }
+        
         body {
             font-family: 'DejaVu Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header-table {
+            width: 100%;
+        }
+        .header-table td {
+            vertical-align: top;
+        }
+        .header-logo img {
+            width: auto;
+            height: 60px;
+            max-width: 100%;
+        }
+        .header-title {
+            font-size: 0.55em;
+            color: blue;
+            text-align: left;
+            margin-right: 10px;
+        }
+        .header-subtitle {
+            font-size: 0.6em;
+            color: #999;
+            text-align: left;
+            margin-right: 10px;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: fixed;
+            white-space: normal;
+        }
+        
+        .bordered th, .bordered td {
+            border: 1px solid #bbb;
+            padding: 4px;
+            text-align: left;
+            font-size: 0.5em;
+        }
+        
+        .table-header th {
+            background-color: #f0f0f0;
+            text-align: center;
         }
         .title {
             text-align: center;
             margin-top: 20px;
-            font-size: 24px;
+            font-size: 1em;
         }
         .fw-bold {
             font-weight: bold;
         }
 
+        .table-data {
+            font-size: 0.7em;
+        }
+
         .history {
             margin-top: 30px;
+            font-size: 0.7em;
+        }
+
+        .history td {
+            padding: 5px 0;
+            border-bottom: solid 1px #ccc;
         }
     </style>
 </head>
 <body>
-    <div class="title">Felvételi kérelem</div>
+    <table class="header-table">
+        <tr>
+            <td class="header-logo">
+                <img src="assets/img/logo/header-1.jpg" alt="Logo">
+                <img src="assets/img/logo/header-2.jpg" alt="Logo">
+            </td>
+            <td class="header-text">
+                <div class="header-title">HUN-REN TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
+                <div class="header-subtitle">1117 BUDAPEST, MAGYAR TUDÓSOK KÖRÚTJA 2.</div>
+            </td>
+            <td class="header-text">
+                <div class="header-title">LEVÉLCÍM: 1519 BUDAPEST, PF. 286.</div>
+                <div class="header-subtitle">www.ttk.hu</div>
+            </td>
+        </tr>
+    </table>
 
-    <table>
+    <div class="title">Felvételi kérelem</div><br />
+
+    <table class="table-data">
         <tbody>
             <!-- Alapadatok Section -->
             <tr>
@@ -365,23 +449,21 @@
     <table class="table history">
         <thead>
             <tr>
-                <th colspan="5" class="fw-bold">Státusztörténet</th>
+                <th colspan="3" class="fw-bold">Státusztörténet</th>
             </tr>
             <tr style="background-color: rgba(105,108,255,.16)">
-                <th>Döntés</th>
-                <th>Dátum</th>
-                <th>Felhasználó</th>
-                <th>Státusz</th>
-                <th>Üzenet</th>
+                <th width="25%">Döntés</th>
+                <th width="30%">Státusz</th>
+                <th width="45%">Üzenet</th>
             </tr>
         </thead>
         <tbody>
         @foreach($history as $history_entry)
             <tr>
                 <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : ($history_entry['decision'] == 'restart' ? 'success' : ($history_entry['decision'] == 'delete' ? 'danger' : 'info'))))) }} me-1">
-                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : ($history_entry['decision'] == 'delete' ? 'Törlés' : 'Visszaállítás'))))) }}</span></td>
-                <td>{{ $history_entry['datetime'] }}</td>
-                <td>{{ $history_entry['user_name'] }}</td>
+                    {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : ($history_entry['decision'] == 'delete' ? 'Törlés' : 'Visszaállítás'))))) }}
+                    <br />{{ $history_entry['datetime'] }}
+                    <br />{{ $history_entry['user_name'] }}</span></td>
                 <td>{{ __('states.' . $history_entry['status']) }}</td>
                 <td>{{ $history_entry['message'] }}</td>
             </tr>

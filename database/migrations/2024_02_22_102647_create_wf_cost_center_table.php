@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('due_date')->nullable();
             $table->decimal('minimal_order_limit', 10, 2);
             $table->unsignedTinyInteger('valid_employee_recruitment')->default(1);
+            $table->unsignedTinyInteger('valid_procurement')->default(1);
             $table->unsignedTinyInteger('deleted')->default(0);
             $table->timestamps();
             $table->unsignedBigInteger('created_by');

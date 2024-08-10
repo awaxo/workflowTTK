@@ -30,11 +30,6 @@ class Authenticate extends Middleware
             return redirect()->guest(route('login'));
         }
 
-        Log::info('User is authenticated', [
-            'guards' => $guards,
-            'user' => $this->auth->guard($guards[0] ?? null)->user(),
-        ]);
-
         return $next($request);
     }
 }

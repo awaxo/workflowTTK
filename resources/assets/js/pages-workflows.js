@@ -197,6 +197,11 @@ $(function() {
                     window.location.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+                    
                     $('#deleteConfirmation').modal('hide');
                     GLOBALS.AJAX_ERROR('Hiba történt a sztornózás során!', jqXHR, textStatus, errorThrown);
                 }

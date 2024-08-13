@@ -598,7 +598,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="entry_permissions" class="form-label">Belépési jogosultságok</label>
-                                <select class="form-select select2" id="entry_permissions" placeholder="&nbsp;" name="entry_permissions" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
+                                <select class="form-select select2" id="entry_permissions" name="entry_permissions" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" data-placeholder="Válassz belépési jogosultságo(ka)t" multiple>
                                     <optgroup label="Általános belépési engedélyek">
                                         <option value="auto">Autó behajtás</option>
                                         <option value="kerekpar">Kerékpár behajtás</option>

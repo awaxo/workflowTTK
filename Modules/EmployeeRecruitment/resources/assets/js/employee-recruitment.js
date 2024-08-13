@@ -444,6 +444,11 @@ $(function () {
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
+                        if (xhr.status === 401) {
+                            alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                            window.location.href = '/login';
+                        }
+
                         var errors = jqXHR.responseJSON.errors;
                         var errorAlertMessage = '';
                         for (var key in errors) {
@@ -488,6 +493,11 @@ $(function () {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (xhr.status === 401) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 var errors = jqXHR.responseJSON.errors;
                 var errorAlertMessage = '';
                 for (var key in errors) {

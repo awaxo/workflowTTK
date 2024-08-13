@@ -225,6 +225,11 @@ $(function() {
                     window.location.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    if (xhr.status === 401) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+                    
                     $('#deleteConfirmation').modal('hide');
                     $('#errorAlertMessage').text('Hiba történt a sztornózás során!');
                     $('#errorAlert').removeClass('d-none');

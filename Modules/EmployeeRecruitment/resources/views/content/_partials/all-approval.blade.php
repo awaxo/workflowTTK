@@ -351,30 +351,6 @@
                     @endif
                 </div>
             </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Sugárzó izotóppal fog dolgozni</label>
-                <span class="fw-bold ms-1 text-break">
-                    @if($recruitment->work_with_radioactive_isotopes)
-                        <span class="badge bg-success">Igen</span>
-                    @else
-                        <span class="badge bg-secondary">Nem</span>
-                    @endif
-                </span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Rákkeltő anyaggal fog dolgozni</label>
-                <span class="fw-bold ms-1 text-break">
-                    @if($recruitment->work_with_carcinogenic_materials)
-                        <span class="badge bg-success">Igen</span>
-                    @else
-                        <span class="badge bg-secondary">Nem</span>
-                    @endif
-                </span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Használni tervezett rákkeltő anyagok felsorolása</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->planned_carcinogenic_materials_use ? $recruitment->planned_carcinogenic_materials_use : '-' }}</span>
-            </div>
         </div>
     </div>
 </div>

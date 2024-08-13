@@ -9,6 +9,18 @@
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->name }}</span>
             </div>
             <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Születési dátum</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->birth_date }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">TAJ szám</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->social_security_number }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Lakcím</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->address }}</span>
+            </div>
+            <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Folyamatindító intézet</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->initiatorInstitute ? $recruitment->initiatorInstitute->group_level . ' - ' . $recruitment->initiatorInstitute->name : '' }}</span>
             </div>

@@ -195,7 +195,7 @@ $(function() {
                 window.location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
                     alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                     window.location.href = '/login';
                 }
@@ -229,7 +229,7 @@ $(function() {
                 window.location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
                     alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                     window.location.href = '/login';
                 }
@@ -285,7 +285,7 @@ $(function() {
                         window.location.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.status === 401) {
+                        if (jqXHR.status === 401 || jqXHR.status === 419) {
                             alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                             window.location.href = '/login';
                         }

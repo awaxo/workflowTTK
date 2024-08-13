@@ -98,7 +98,7 @@ $(function () {
                     $('#delegated_user').empty().html(options);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status === 401) {
+                    if (jqXHR.status === 401 || jqXHR.status === 419) {
                         alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                         window.location.href = '/login';
                     }
@@ -137,7 +137,7 @@ $(function () {
                         $('.datatables-delegates').DataTable().ajax.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        if (jqXHR.status === 401) {
+                        if (jqXHR.status === 401 || jqXHR.status === 419) {
                             alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                             window.location.href = '/login';
                         }
@@ -178,7 +178,7 @@ $(function () {
                 $('.datatables-delegates').DataTable().row(row).remove().draw();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
                     alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                     window.location.href = '/login';
                 }
@@ -201,7 +201,7 @@ $(function () {
                 //
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
                     alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                     window.location.href = '/login';
                 }

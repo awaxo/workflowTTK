@@ -301,7 +301,7 @@
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->phone_extension ? $recruitment->phone_extension : '-' }}</span>
             </div>
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Hozzáférési jogosultságok</label>
+                <label class="form-label col-6 col-md-3">Munkavégzéshez szükséges eszközök</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->required_tools)
                         @php

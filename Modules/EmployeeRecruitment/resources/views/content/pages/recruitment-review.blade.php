@@ -74,7 +74,7 @@
 
     <div class="row">
         <div class="col">
-            <div class="nav-align-top mb-3">
+            <div class="mb-3">
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
                         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab_review" role="tab" aria-selected="true">Adatok</button>

@@ -50,6 +50,7 @@ return [
     
         'dynamic' => [
             'driver' => 'dynamic',
+            'provider' => 'dynamic',
         ],
     ],
 
@@ -78,6 +79,10 @@ return [
     
         'imap_users' => [
             'driver' => 'imap',
+            'model' => App\Models\User::class,
+        ],
+
+        'dynamic' => [
             'model' => App\Models\User::class,
         ],
     ],

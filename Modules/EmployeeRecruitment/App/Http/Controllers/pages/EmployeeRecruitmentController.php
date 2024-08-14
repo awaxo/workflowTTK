@@ -234,6 +234,8 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
 
         $recruitments = RecruitmentWorkflow::baseQuery()->where('deleted', 0)->get()->map(function ($recruitment) use ($service) {
+            $recruitment_workflow = RecruitmentWorkflow::find($recruitment->id);
+
             return [
                 'id' => $recruitment->id,
                 'name' => $recruitment->name,
@@ -252,7 +254,7 @@ class EmployeeRecruitmentController extends Controller
                 'created_by_name' => $recruitment->createdBy->name,
                 'updated_at' => $recruitment->updated_at,
                 'updated_by_name' => $recruitment->updatedBy->name,
-                'is_user_responsible' => $service->isUserResponsible(Auth::user(), $recruitment),
+                'is_user_responsible' => $service->isUserResponsible(Auth::user(), $recruitment_workflow),
                 'is_closed' => $recruitment->state == 'completed' || $recruitment->state == 'rejected',
                 'is_initiator_role' => User::find(Auth::id())->hasRole('titkar_' . $recruitment->initiator_institute_id),
                 'is_manager_user' => WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()

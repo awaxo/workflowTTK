@@ -598,7 +598,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="entry_permissions" class="form-label">Belépési jogosultságok</label>
-                                <select class="form-select select2" id="entry_permissions" name="entry_permissions" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" data-placeholder="Válassz belépési jogosultságo(ka)t" multiple>
+                                <select class="form-select select2" id="entry_permissions" name="entry_permissions" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary" data-placeholder="Válassz belépési jogosultságo(ka)t" multiple>
                                     <optgroup label="Általános belépési engedélyek">
                                         <option value="auto">Autó behajtás</option>
                                         <option value="kerekpar">Kerékpár behajtás</option>
@@ -628,7 +628,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="external_access_rights" class="form-label">Hozzáférési jogosultságok</label>
-                                <select class="form-select select2" id="external_access_rights" placeholder="&nbsp;" name="external_access_rights" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
+                                <select class="form-select select2" id="external_access_rights" placeholder="&nbsp;" name="external_access_rights" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple data-placeholder="Válassz hozzáférési jogosultságo(ka)t">
                                     @foreach($externalAccessRights as $externalAccessRight)
                                         <option value="{{ $externalAccessRight->id }}">{{ $externalAccessRight->external_system }}</option>
                                     @endforeach
@@ -636,7 +636,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="required_tools" class="form-label">Munkavégzéshez szükséges eszközök</label>
-                                <select class="form-select select2" id="required_tools" placeholder="&nbsp;" name="required_tools" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
+                                <select class="form-select select2" id="required_tools" placeholder="&nbsp;" name="required_tools" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple data-placeholder="Válassz eszköz(öke)t">
                                     <option value="asztal">asztal</option>
                                     <option value="szek">szék</option>
                                     <option value="asztali_szamitogep">asztali számítógép</option>
@@ -651,7 +651,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="available_tools" class="form-label">Munkavégzéshez rendelkezésre álló eszközök</label>
-                                <select class="form-select select2" id="available_tools" placeholder="&nbsp;" name="available_tools" data-style="btn-default" multiple data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple>
+                                <select class="form-select select2" id="available_tools" placeholder="&nbsp;" name="available_tools" data-style="btn-default" data-icon-base="bx" data-tick-icon="bx-check text-primary" multiple data-placeholder="Válassz eszköz(öke)t">
                                     <!-- dynamically updated -->
                                 </select>
                             </div>

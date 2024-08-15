@@ -61,6 +61,7 @@ $(function () {
         let filteredOptions = selectedOptions.filter(option => option !== 'auto' && option !== 'kerekpar');
 
         $('#employee_room').empty();
+        $('#employee_room').append(new Option('', ''));
         filteredOptions.forEach(function(option) {
             $('#employee_room').append(new Option(option, option)).trigger('change');
         });

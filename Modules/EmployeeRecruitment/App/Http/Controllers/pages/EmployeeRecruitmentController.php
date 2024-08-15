@@ -336,10 +336,17 @@ class EmployeeRecruitmentController extends Controller
 
     public function beforeApprove($id)
     {
+        $service = new WorkflowService();
+
         $recruitment = RecruitmentWorkflow::find($id);
         if (!$recruitment) {
             Log::error('Nem található a felvételi kérelem (id: ' . $id . ')');
-            return view('content.pages.misc-error');
+            return view('content.pages.misc-not-authorized');
+        }
+
+        if (!$service->isUserResponsible(Auth::user(), $recruitment)) {
+            Log::error('A kérelmet jóváhagyására a felhasználó nem jogosult (id: ' . $id . ')');
+            return view('content.pages.misc-not-authorized');
         }
 
         // check, if user has read permission for the given recruitment
@@ -347,14 +354,11 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-not-authorized');
         }
 
-        $service = new WorkflowService();
-        
         if ($recruitment->state != 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             if ($recruitment->state == 'request_review') {
                 return $this->review($id);
             }
             
-            $service = new WorkflowService();
             $usersToApprove = $service->getResponsibleUsers($recruitment, true);
             $usersToApproveName = [];
             foreach ($usersToApprove as $user) {

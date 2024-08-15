@@ -114,7 +114,11 @@ class User extends Authenticatable
      */
     public function getUsersFromSameWorkgroup()
     {
-        return User::where('workgroup_id', $this->workgroup_id)->get();
+        $excludedEmails = ['ttkwf.admin@ttk.hu', 'rendszerfiok'];
+    
+        return User::where('workgroup_id', $this->workgroup_id)
+                ->whereNotIn('email', $excludedEmails)
+                ->get();
     }
 
     /**
@@ -214,9 +218,6 @@ class User extends Authenticatable
         $filteredUsers = $users->reject(function ($user) use ($currentUser) {
             return $user->id === $currentUser->id;
         })->values();
-
-        Log::info('Filtered users: ' . $filteredUsers);
-        Log::info($filterUsersWithRoles($filteredUsers));
 
         return $filterUsersWithRoles($filteredUsers);
     }

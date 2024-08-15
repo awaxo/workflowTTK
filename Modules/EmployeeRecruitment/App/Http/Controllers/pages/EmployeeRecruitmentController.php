@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class EmployeeRecruitmentController extends Controller
 {
@@ -320,11 +321,12 @@ class EmployeeRecruitmentController extends Controller
         // HR workgroup
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
 
+        $delegationService = new DelegationService();
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
-            'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
-            'isHRHead' => $workgroup908 && $workgroup908->leader_id === Auth::id(),
+            'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
+            'isHRHead' => $workgroup908 && ($workgroup908->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'hr_head')),
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
             'amountToCover' => $this->getAmountToCover($recruitment),
@@ -363,11 +365,12 @@ class EmployeeRecruitmentController extends Controller
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
             $chemicalFactors = ChemicalPathogenicFactor::where('deleted', 0)->get();
 
+            $delegationService = new DelegationService();
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
-                'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
+                'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
                 'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),
@@ -523,10 +526,12 @@ class EmployeeRecruitmentController extends Controller
 
     public function reject(Request $request, $id)
     {
-        $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
+        $delegationService = new DelegationService();
+
+        $recruitment = RecruitmentWorkflow::find($id);
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
-        $isHRHead = $workgroup908 && $workgroup908->leader_id === Auth::id();
+        $isHRHead = $workgroup908 && ($workgroup908->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'hr_head'));
         
         if ($service->isUserResponsible(Auth::user(), $recruitment) || $isHRHead) {
             if (strlen($request->input('message')) > 0) {
@@ -609,10 +614,11 @@ class EmployeeRecruitmentController extends Controller
             // IT workgroup
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
 
+            $delegationService = new DelegationService();
             return view('employeerecruitment::content.pages.recruitment-restore', [
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
-                'isITHead' => $workgroup915 && $workgroup915->leader_id === Auth::id(),
+                'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
                 'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),

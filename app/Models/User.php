@@ -115,7 +115,7 @@ class User extends Authenticatable
     public function getUsersFromSameWorkgroup()
     {
         $excludedEmails = ['ttkwf.admin@ttk.hu', 'rendszerfiok'];
-    
+
         return User::where('workgroup_id', $this->workgroup_id)
                 ->whereNotIn('email', $excludedEmails)
                 ->get();

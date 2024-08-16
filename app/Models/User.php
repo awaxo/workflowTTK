@@ -212,7 +212,9 @@ class User extends Authenticatable
         }
 
         $currentUser = $this;
-        $users = $this->getUsersFromSameWorkgroup()->push($this->getSupervisor())->unique('name')->sortBy('name')->values();
+        $users = $this->getUsersFromSameWorkgroup()->sortBy('name')->unique('name')->values();
+        $supervisor = $this->getSupervisor();
+        $users->prepend($supervisor);
         
         // Filter out the current user from the collection
         $filteredUsers = $users->reject(function ($user) use ($currentUser) {

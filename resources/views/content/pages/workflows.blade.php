@@ -47,12 +47,12 @@
                             <tr style="background-color: rgba(105,108,255,.16)">
                                 <th>ID</th>
                                 <th>Típus</th>
-                                <th>Státusz</th>
                                 <th>Folyamatindító</th>
                                 <th>Utolsó módosító</th>
                                 <th>Utolsó módosítás</th>
                                 <th>Létrehozó</th>
                                 <th>Létrehozás</th>
+                                <th>Státusz</th>
                                 <th></th>
                             </tr>
                         </thead>

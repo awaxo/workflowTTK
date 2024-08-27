@@ -45,6 +45,7 @@ class ApproverAssignedNotification extends Notification
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügynél az Ön jóváhagyása szükséges:')
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
+                    ->line('')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');

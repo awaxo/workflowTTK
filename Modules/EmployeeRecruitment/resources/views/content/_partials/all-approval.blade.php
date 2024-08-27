@@ -438,6 +438,14 @@
                 @endif
             </div>
             <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Felvételi kérelem</label>
+                @if($recruitment->medical_eligibility_data)
+                    <span class="fw-bold ms-1 text-break"><a href="/generate-pdf/{{ $recruitment->id }}" target="_blank">felvételi kérelem megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1 text-break">-</span>
+                @endif
+            </div>
+            <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Beutaló munkaköri orvosi alkalmassági vizsgálatra</label>
                 @if($recruitment->medical_eligibility_data)
                     <span class="fw-bold ms-1 text-break"><a href="/generate-medical-pdf/{{ $recruitment->id }}" target="_blank">adatlap megtekintése</a></span>

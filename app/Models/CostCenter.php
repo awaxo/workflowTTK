@@ -27,6 +27,7 @@ class CostCenter extends Model
         'due_date',
         'minimal_order_limit',
         'valid_employee_recruitment',
+        'valid_procurement',
         'created_by',
         'updated_by',
     ];
@@ -40,6 +41,7 @@ class CostCenter extends Model
     protected $attributes = [
         'deleted' => 0,
         'valid_employee_recruitment' => 1,
+        'valid_procurement' => 1,
     ];
 
     public function type()

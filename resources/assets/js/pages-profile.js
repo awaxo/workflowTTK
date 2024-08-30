@@ -98,6 +98,11 @@ $(function () {
                     $('#delegated_user').empty().html(options);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401 || jqXHR.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+
                     GLOBALS.AJAX_ERROR('Hiba történt a helyettesítők betöltése során!', jqXHR, textStatus, errorThrown);
                 }
             });
@@ -132,6 +137,11 @@ $(function () {
                         $('.datatables-delegates').DataTable().ajax.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status === 401 || jqXHR.status === 419) {
+                            alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                            window.location.href = '/login';
+                        }
+
                         if (jqXHR.status === 409) {
                             GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
                         } else {
@@ -168,6 +178,11 @@ $(function () {
                 $('.datatables-delegates').DataTable().row(row).remove().draw();
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 $('#deleteConfirmation').modal('hide');
                 GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
             }
@@ -186,6 +201,11 @@ $(function () {
                 //
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 GLOBALS.AJAX_ERROR('Hiba történt a mentés során!', jqXHR, textStatus, errorThrown);
             }
         });

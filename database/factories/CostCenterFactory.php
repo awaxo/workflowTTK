@@ -32,6 +32,7 @@ class CostCenterFactory extends Factory
             'due_date' => $this->faker->date(),
             'minimal_order_limit' => $this->faker->randomFloat(2, 0, 10000),
             'valid_employee_recruitment' => $this->faker->boolean,
+            'valid_procurement' => $this->faker->boolean,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];

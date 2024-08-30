@@ -50,6 +50,7 @@ class StateOverdueNotification extends Notification
                     ->line('Az alábbi ügy az Ön jóváhagyására vár, több, mint ' . $this->deadline . ' órája.')
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
                     ->line('Jelenlegi státusz: ' .  __('states.' . $this->workflow->state))
+                    ->line('')
                     ->action('Ügy megtekintése', $url)
                     ->line('Kérjük, mihamarabb lépjen be az Ügyintézési rendszerbe, és hozza meg döntését!')
                     ->line('Üdvözlettel,')

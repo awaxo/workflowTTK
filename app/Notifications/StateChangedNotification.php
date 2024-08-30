@@ -51,6 +51,7 @@ class StateChangedNotification extends Notification
                     ->line('Ügy típusa: ' . $this->workflow->workflowType->name)
                     ->line('Korábbi státusz: ' . $this->previousState)
                     ->line('Jelenlegi státusz: ' . $this->currentState)
+                    ->line('')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');

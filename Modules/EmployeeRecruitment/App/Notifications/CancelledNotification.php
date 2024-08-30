@@ -45,6 +45,7 @@ class CancelledNotification extends Notification
                     ->subject('Ügy sztornózva')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy sztornózásra került.')
+                    ->line('')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');

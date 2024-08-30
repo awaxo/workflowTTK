@@ -3,7 +3,7 @@
   return [
     "creatorName" => "HUN-REN TTK",
     "creatorUrl" => "https://www.ttk.hun-ren.hu/",
-    "appVersion" => "0.23.6",
+    "appVersion" => "1.5.0",
 
     "templateName" => "Ügyintézés",
     "templateSuffix" => "",

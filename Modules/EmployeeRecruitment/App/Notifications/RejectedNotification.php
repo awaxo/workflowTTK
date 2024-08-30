@@ -45,6 +45,7 @@ class RejectedNotification extends Notification
                     ->subject('Ügy elutasítva')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy elutasításra került.')
+                    ->line('')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');

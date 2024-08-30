@@ -87,6 +87,11 @@ $(function () {
                             window.location.href = response.redirectUrl;
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
+                            if (jqXHR.status === 401 || jqXHR.status === 419) {
+                                alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                                window.location.href = '/login';
+                            }
+
                             console.log(textStatus, errorThrown);
                         }
                     });
@@ -119,6 +124,11 @@ $(function () {
                     window.location.href = response.redirectUrl;
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401 || jqXHR.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+
                     console.log(textStatus, errorThrown);
                 }
             });
@@ -149,6 +159,11 @@ $(function () {
                 window.location.href = response.redirectUrl;
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 console.log(textStatus, errorThrown);
             }
         });
@@ -178,6 +193,11 @@ $(function () {
                 window.location.href = response.redirectUrl;
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 console.log(textStatus, errorThrown);
             }
         });

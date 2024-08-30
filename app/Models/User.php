@@ -114,7 +114,11 @@ class User extends Authenticatable
      */
     public function getUsersFromSameWorkgroup()
     {
-        return User::where('workgroup_id', $this->workgroup_id)->get();
+        $excludedEmails = ['ttkwf.admin@ttk.hu', 'rendszerfiok'];
+
+        return User::where('workgroup_id', $this->workgroup_id)
+                ->whereNotIn('email', $excludedEmails)
+                ->get();
     }
 
     /**
@@ -208,15 +212,14 @@ class User extends Authenticatable
         }
 
         $currentUser = $this;
-        $users = $this->getUsersFromSameWorkgroup()->push($this->getSupervisor())->unique('name')->sortBy('name')->values();
+        $users = $this->getUsersFromSameWorkgroup()->sortBy('name')->unique('name')->values();
+        $supervisor = $this->getSupervisor();
+        $users->prepend($supervisor);
         
         // Filter out the current user from the collection
         $filteredUsers = $users->reject(function ($user) use ($currentUser) {
             return $user->id === $currentUser->id;
         })->values();
-
-        Log::info('Filtered users: ' . $filteredUsers);
-        Log::info($filterUsersWithRoles($filteredUsers));
 
         return $filterUsersWithRoles($filteredUsers);
     }

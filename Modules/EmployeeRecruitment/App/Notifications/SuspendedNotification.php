@@ -45,6 +45,7 @@ class SuspendedNotification extends Notification
                     ->subject('Ügy felfüggesztve')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('Az alábbi ügy felfüggesztésre került.')
+                    ->line('')
                     ->action('Ügy megtekintése', $url)
                     ->line('Üdvözlettel,')
                     ->line('Ügyintézési rendszer');

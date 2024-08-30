@@ -195,6 +195,11 @@ $(function() {
                 window.location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 $('#deleteConfirmation').modal('hide');
                 GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
             }
@@ -224,6 +229,11 @@ $(function() {
                 window.location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 $('#restoreConfirmation').modal('hide');
                 GLOBALS.AJAX_ERROR('Hiba történt a visszaállítás során!', jqXHR, textStatus, errorThrown);
             }
@@ -275,6 +285,11 @@ $(function() {
                         window.location.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status === 401 || jqXHR.status === 419) {
+                            alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                            window.location.href = '/login';
+                        }
+                        
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_institute')).hide();
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessages = "";

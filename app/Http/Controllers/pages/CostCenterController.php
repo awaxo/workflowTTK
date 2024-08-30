@@ -39,6 +39,7 @@ class CostCenterController extends Controller
                 'due_date' => $costCenter->due_date,
                 'minimal_order_limit' => number_format($costCenter->minimal_order_limit, 0, '.', ' '),
                 'valid_employee_recruitment' => $costCenter->valid_employee_recruitment,
+                'valid_procurement' => $costCenter->valid_procurement,
                 'deleted' => $costCenter->deleted,
                 'created_at' => $costCenter->created_at,
                 'created_by_name' => $costCenter->createdBy->name,

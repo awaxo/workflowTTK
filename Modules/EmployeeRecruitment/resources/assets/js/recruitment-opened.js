@@ -12,7 +12,6 @@ $(function() {
         columns: [
             { data: 'id' },
             { data: 'name' },
-            { data: 'state' },
             { data: 'workgroup1' },
             { data: 'workgroup2' },
             { data: 'base_salary_cost_center_1' },
@@ -26,6 +25,7 @@ $(function() {
                     return moment(data).format('YYYY.MM.DD HH:mm:ss');
                 }
             },
+            { data: 'state' },
             {
                 data: 'is_manager_user', 
                 searchable: false, 
@@ -37,26 +37,50 @@ $(function() {
         ],
         columnDefs: [
             {
-                targets: 3,
+                targets: 0,
+                render: function(data, type, full, meta) {
+                    let $is_user_responsible = full['is_user_responsible'];
+
+                    var $row_output = '';
+
+                    if ($is_user_responsible) {
+                        if (full['state_name'] === 'suspended') {
+                            $row_output = `<a href="/folyamat/visszaallitas/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span></a>`;
+                        } else {
+                            $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"<span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span></a>`;
+                        }
+                    } else {
+                        if (full['is_initiator_role']) {
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span>`;
+                        } else {
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1" style="font-size: 15px;">${data}</span>`;
+                        }
+                    }
+
+                    return $row_output;
+                }
+            },
+            {
+                targets: 2,
                 render: function(data, type, full, meta) {
                     return '<span title="' + data + '">' + full['workgroup1_number'] + '</span>';
                 }
             },
             {
-                targets: 4,
+                targets: 3,
                 render: function(data, type, full, meta) {
                     return data ? '<span title="' + data + '">' + full['workgroup2_number'] + '</span>' : '-';
                 }
             },
             {
-                targets: 5,
+                targets: 4,
                 render: function(data, type, full, meta) {
                     return '<span title="' + data + '">' + full['base_salary_cost_center_1_code'] + '</span>';
                 }
             },
             {
                 // State
-                targets: 2,
+                targets: 10,
                 responsivePriority: 3,
                 render: function(data, type, full, meta) {
                     let $is_user_responsible = full['is_user_responsible'];
@@ -225,6 +249,11 @@ $(function() {
                     window.location.reload();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401 || jqXHR.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+
                     $('#deleteConfirmation').modal('hide');
                     $('#errorAlertMessage').text('Hiba történt a sztornózás során!');
                     $('#errorAlert').removeClass('d-none');

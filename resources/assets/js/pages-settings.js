@@ -25,6 +25,11 @@ $(function() {
                 GLOBALS.AJAX_SUCCESS('Beállítások mentve');
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 GLOBALS.AJAX_ERROR('Hiba történt a beállítások mentése során!', jqXHR, textStatus, errorThrown);
             }
         });
@@ -54,6 +59,11 @@ $(function() {
                 });
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 console.log(textStatus, errorThrown);
             }
         });
@@ -72,6 +82,11 @@ $(function() {
                 $('#workflow_state_deadline').val(response.data);
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 console.log(textStatus, errorThrown);
             }
         });
@@ -96,6 +111,11 @@ $(function() {
                 GLOBALS.AJAX_SUCCESS('Határidő mentve');
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+                
                 GLOBALS.AJAX_ERROR('Hiba történt a határidő mentése során!', jqXHR, textStatus, errorThrown);
             }
         });

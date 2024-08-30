@@ -61,6 +61,7 @@ $(function () {
         let filteredOptions = selectedOptions.filter(option => option !== 'auto' && option !== 'kerekpar');
 
         $('#employee_room').empty();
+        $('#employee_room').append(new Option('', ''));
         filteredOptions.forEach(function(option) {
             $('#employee_room').append(new Option(option, option)).trigger('change');
         });
@@ -444,6 +445,11 @@ $(function () {
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status === 401 || jqXHR.status === 419) {
+                            alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                            window.location.href = '/login';
+                        }
+
                         var errors = jqXHR.responseJSON.errors;
                         var errorAlertMessage = '';
                         for (var key in errors) {
@@ -488,6 +494,11 @@ $(function () {
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
                 var errors = jqXHR.responseJSON.errors;
                 var errorAlertMessage = '';
                 for (var key in errors) {

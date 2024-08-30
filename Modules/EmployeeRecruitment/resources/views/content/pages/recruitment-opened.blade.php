@@ -54,7 +54,6 @@
                             <tr style="background-color: rgba(105,108,255,.16)">
                                 <th>ID</th>
                                 <th>Név</th>
-                                <th>Státusz</th>
                                 <th>Csoport 1</th>
                                 <th>Csoport 2</th>
                                 <th>Költséghely 1</th>
@@ -63,6 +62,7 @@
                                 <th>Jogviszony típusa</th>
                                 <th>Jogviszony kezdete</th>
                                 <th>Létrehozás</th>
+                                <th>Státusz</th>
                                 <th></th>
                             </tr>
                         </thead>

@@ -9,6 +9,18 @@
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->name }}</span>
             </div>
             <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Születési dátum</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->birth_date }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">TAJ szám</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->social_security_number }}</span>
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Lakcím</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->address }}</span>
+            </div>
+            <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Folyamatindító intézet</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->initiatorInstitute ? $recruitment->initiatorInstitute->group_level . ' - ' . $recruitment->initiatorInstitute->name : '' }}</span>
             </div>
@@ -288,8 +300,20 @@
                 <label class="form-label col-6 col-md-3">Telefon mellék</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->phone_extension ? $recruitment->phone_extension : '-' }}</span>
             </div>
+            @if($recruitment->external_access_rights)
+                <div class="d-flex">
+                    <label class="form-label col-6 col-md-3">Hozzáférési jogosultságok</label>
+                    <span class="fw-bold ms-1 text-break">
+                        @php
+                            $accessArray = explode(',', $recruitment->external_access_rights);
+                            $accessString = implode(', ', $accessArray);
+                        @endphp
+                        {{ $accessString }}
+                    </span>
+                </div>
+            @endif
             <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Hozzáférési jogosultságok</label>
+                <label class="form-label col-6 col-md-3">Munkavégzéshez szükséges eszközök</label>
                 <span class="fw-bold ms-1 text-break">
                     @if($recruitment->required_tools)
                         @php
@@ -338,30 +362,6 @@
                         <span class="fw-bold ms-1 text-break">-</span>
                     @endif
                 </div>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Sugárzó izotóppal fog dolgozni</label>
-                <span class="fw-bold ms-1 text-break">
-                    @if($recruitment->work_with_radioactive_isotopes)
-                        <span class="badge bg-success">Igen</span>
-                    @else
-                        <span class="badge bg-secondary">Nem</span>
-                    @endif
-                </span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Rákkeltő anyaggal fog dolgozni</label>
-                <span class="fw-bold ms-1 text-break">
-                    @if($recruitment->work_with_carcinogenic_materials)
-                        <span class="badge bg-success">Igen</span>
-                    @else
-                        <span class="badge bg-secondary">Nem</span>
-                    @endif
-                </span>
-            </div>
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Használni tervezett rákkeltő anyagok felsorolása</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->planned_carcinogenic_materials_use ? $recruitment->planned_carcinogenic_materials_use : '-' }}</span>
             </div>
         </div>
     </div>
@@ -433,6 +433,14 @@
                 <label class="form-label col-6 col-md-3">Szerződés</label>
                 @if($recruitment->contract)
                     <span class="fw-bold ms-1 text-break"><a href="/dokumentumok/{{ $recruitment->contract }}" target="_blank">szerződés megtekintése</a></span>
+                @else
+                    <span class="fw-bold ms-1 text-break">-</span>
+                @endif
+            </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Felvételi kérelem</label>
+                @if($recruitment->medical_eligibility_data)
+                    <span class="fw-bold ms-1 text-break"><a href="/generate-pdf/{{ $recruitment->id }}" target="_blank">felvételi kérelem megtekintése</a></span>
                 @else
                     <span class="fw-bold ms-1 text-break">-</span>
                 @endif

@@ -19,7 +19,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -165,7 +165,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -181,7 +181,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -197,7 +197,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -233,7 +233,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -249,7 +249,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -265,7 +265,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -281,7 +281,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -297,7 +297,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -313,7 +313,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -329,7 +329,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -345,7 +345,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -361,7 +361,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -379,7 +379,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -395,7 +395,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -436,7 +436,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -465,7 +465,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -481,7 +481,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -497,7 +497,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -513,7 +513,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -529,7 +529,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -545,7 +545,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -561,7 +561,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -577,7 +577,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -593,7 +593,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>
@@ -609,7 +609,7 @@
                             <option value="" selected></option>
                             <option value="nincs">Nincs</option>
                             <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkidő egy részében</option>
+                            <option value="resz">A munkaidő egy részében</option>
                         </select>
                     </div>
                 </div>

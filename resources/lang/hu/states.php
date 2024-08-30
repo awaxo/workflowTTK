@@ -2,13 +2,13 @@
 
 return [
     'new_request' => 'Új kérelem',
-    'it_head_approval' => 'Email cím jóváhagyás',
-    'supervisor_approval' => 'Témavezetői jóváhagyás',
-    'group_lead_approval' => 'Csoportvezetői jóváhagyás',
-    'director_approval' => 'Igazgatói jóváhagyás',
-    'hr_lead_approval' => 'HR osztályvezetői jóváhagyás',
+    'it_head_approval' => 'Email cím jóváhagyására vár',
+    'supervisor_approval' => 'Témavezető jóváhagyására vár',
+    'group_lead_approval' => 'Csoportvezető jóváhagyására vár',
+    'director_approval' => 'Igazgató jóváhagyására vár',
+    'hr_lead_approval' => 'Humánpolitikai osztályvezető jóváhagyására vár',
     'proof_of_coverage' => 'Fedezetigazolásra vár',
-    'project_coordination_lead_approval' => 'Projekt koordinációs osztályvezetői jóváhagyásra vár',
+    'project_coordination_lead_approval' => 'Projektkoordinációs osztályvezető jóváhagyására vár',
     'post_financing_approval' => 'Utófinanszírozott pályázat fedezetigazolására vár',
     'registration' => 'Nyilvántartásba vételre vár',
     'financial_counterparty_approval' => 'Pénzügyi ellenjegyző jóváhagyására vár',
@@ -21,5 +21,5 @@ return [
     'completed' => 'Lezárva',
     'rejected' => 'Elutasítva',
     'suspended' => 'Felfüggesztve',
-    'request_review' => 'Kérelem újraellenőrzése',
+    'request_review' => 'Kérelem újraellenőrzésére vár',
 ];

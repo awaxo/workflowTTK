@@ -38,7 +38,7 @@ class ApproverAssignedNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = url('https://ugyintezes.ttk.hu/folyamat/megtekintes/' . $this->workflow->id);
+        $url = url('https://ugyintezes.ttk.hu/folyamat/jovahagyas/' . $this->workflow->id);
 
         return (new MailMessage)
                     ->subject('Jóváhagyás szükséges')

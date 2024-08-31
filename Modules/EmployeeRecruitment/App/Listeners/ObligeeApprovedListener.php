@@ -6,6 +6,7 @@ use App\Events\StateChangedEvent;
 use App\Events\SuspendedEvent;
 use App\Models\Workgroup;
 use App\Notifications\ITLeadNotification;
+use Modules\EmployeeRecruitment\App\Notifications\EntryPermissionNotification;
 use Modules\EmployeeRecruitment\App\Notifications\SuspendedNotification;
 
 class ObligeeApprovedListener
@@ -25,7 +26,10 @@ class ObligeeApprovedListener
     {
         if ($event->previousState == 'obligee_approval') {
             $itLeadUser = Workgroup::where('workgroup_number', 915)->first()->leader;
-            $itLeadUser->notify(new ITLeadNotification($event->workflow, $event->previousState, $event->currentState));
+            $itLeadUser->notify(new EntryPermissionNotification($event->workflow));
+
+            $operationLeadUser = Workgroup::where('workgroup_number', 914)->first()->leader;
+            $operationLeadUser->notify(new EntryPermissionNotification($event->workflow));
         }
     }
 }

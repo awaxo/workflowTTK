@@ -683,6 +683,7 @@ class EmployeeRecruitmentController extends Controller
         $pdf = Pdf::loadView('employeerecruitment::content.pdf.recruitment', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
+            'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
         ]);
 
         return $pdf->download('FelveteliKerelem_' . $id . '.pdf');

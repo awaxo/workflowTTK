@@ -285,6 +285,10 @@
                 <td>Időtartam vége</td>
                 <td>{{ $recruitment->extra_pay_2_end_date }}</td>
             </tr>
+            <tr>
+                <td>Összesített havi bruttó bér</td>
+                <td>{{ $monthlyGrossSalariesSum }} Ft / hó</td>
+            </tr>
             
             <!-- Munkaidő Section -->
             <tr>

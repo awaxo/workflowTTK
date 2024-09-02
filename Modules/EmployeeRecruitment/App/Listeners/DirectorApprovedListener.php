@@ -6,7 +6,7 @@ use App\Events\StateChangedEvent;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Notifications\EntryPermissionNotification;
 
-class ObligeeApprovedListener
+class DirectorApprovedListener
 {
     /**
      * Create the event listener.
@@ -21,7 +21,7 @@ class ObligeeApprovedListener
      */
     public function handle(StateChangedEvent $event): void
     {
-        if ($event->workflow->state == 'draft_contract_pending') {
+        if ($event->workflow->state == 'hr_lead_approval') {
             $itLeadUser = Workgroup::where('workgroup_number', 915)->first()->leader;
             $itLeadUser->notify(new EntryPermissionNotification($event->workflow));
 

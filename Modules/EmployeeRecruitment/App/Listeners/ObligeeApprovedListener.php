@@ -3,11 +3,8 @@
 namespace Modules\EmployeeRecruitment\App\Listeners;
 
 use App\Events\StateChangedEvent;
-use App\Events\SuspendedEvent;
 use App\Models\Workgroup;
-use App\Notifications\ITLeadNotification;
 use Modules\EmployeeRecruitment\App\Notifications\EntryPermissionNotification;
-use Modules\EmployeeRecruitment\App\Notifications\SuspendedNotification;
 
 class ObligeeApprovedListener
 {
@@ -24,7 +21,7 @@ class ObligeeApprovedListener
      */
     public function handle(StateChangedEvent $event): void
     {
-        if ($event->previousState == 'obligee_approval') {
+        if ($event->workflow->state == 'draft_contract_pending') {
             $itLeadUser = Workgroup::where('workgroup_number', 915)->first()->leader;
             $itLeadUser->notify(new EntryPermissionNotification($event->workflow));
 

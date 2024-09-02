@@ -5,11 +5,13 @@ namespace Modules\EmployeeRecruitment\App\Providers;
 use App\Events\ApproverAssignedEvent;
 use App\Events\CancelledEvent;
 use App\Events\RejectedEvent;
+use App\Events\StateChangedEvent;
 use App\Events\SuspendedEvent;
+use App\Listeners\StateChangedListener;
 use Modules\EmployeeRecruitment\App\Listeners\ApproverAssignedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Modules\EmployeeRecruitment\App\Listeners\CancelledListener;
-use Modules\EmployeeRecruitment\App\Listeners\ObligeeApprovedListener;
+use Modules\EmployeeRecruitment\App\Listeners\DirectorApprovedListener;
 use Modules\EmployeeRecruitment\App\Listeners\RejectedListener;
 use Modules\EmployeeRecruitment\App\Listeners\SuspendedListener;
 
@@ -33,8 +35,9 @@ class EventServiceProvider extends ServiceProvider
         CancelledEvent::class => [
             CancelledListener::class,
         ],
-        ObligeeApprovedListener::class => [
-            ObligeeApprovedListener::class,
+        StateChangedEvent::class => [
+            DirectorApprovedListener::class,
+            StateChangedListener::class,
         ],
     ];
 

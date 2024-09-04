@@ -332,7 +332,21 @@
             </tr>
             <tr>
                 <td>Belépési jogosultságok</td>
-                <td>{{ $recruitment->entry_permissions ? $recruitment->entry_permissions : '-' }}</td>
+                <td>
+                    @if($recruitment->entry_permissions)
+                        @php
+                            $entriesArray = explode(',', $recruitment->entry_permissions);
+                            $translatedEntries = array_map(function($entry) {
+                                $translation = trans('entries.' . $entry);
+                                return $translation === 'entries.' . $entry ? $entry : $translation;
+                            }, $entriesArray);
+                            $translatedEntries = implode(', ', $translatedEntries);
+                        @endphp
+                        {{ $translatedEntries }}
+                    @else
+                        -
+                    @endif
+                </td>
             </tr>
             <tr>
                 <td>Rendszám</td>

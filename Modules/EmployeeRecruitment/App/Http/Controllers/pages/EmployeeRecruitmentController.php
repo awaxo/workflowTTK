@@ -206,7 +206,7 @@ class EmployeeRecruitmentController extends Controller
 
         $service = new WorkflowService();
         if ($old_state == 'request_review') {
-            $service->storeMetadata($recruitment, '-- Felvételi kérelem módosítva --', 'restart');
+            $service->storeMetadata($recruitment, '-- Felvételi kérelem újra leadva --', 'restart');
         } else {
             $service->storeMetadata($recruitment, '-- Felvételi kérelem létrehozva --', 'start');
         }

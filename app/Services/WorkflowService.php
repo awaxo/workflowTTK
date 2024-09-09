@@ -155,7 +155,13 @@ class WorkflowService
                 ($decision == 'cancel' ? 'cancel' : 
                 ($decision == 'deletion' ? 'delete' : 
                 'restore')))))),
-            'status' => $workflow->state,
+            'status' => 
+                $decision == 'rejections' ? 'rejected' : 
+                ($decision == 'start' ? 'new_request' : 
+                ($decision == 'restart' ? 'request_review' : 
+                ($decision == 'cancel' ? 'rejected' : 
+                ($decision == 'deletion' ? 'rejected' :
+                $workflow->state)))),
             'user_id' => $userId,
             'datetime' => now()->toDateTimeString(),
             'message' => $message ? $message : '',

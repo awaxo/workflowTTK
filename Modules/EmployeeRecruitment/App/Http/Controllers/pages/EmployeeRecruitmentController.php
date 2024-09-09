@@ -206,7 +206,7 @@ class EmployeeRecruitmentController extends Controller
 
         $service = new WorkflowService();
         if ($old_state == 'request_review') {
-            $service->storeMetadata($recruitment, '-- Felvételi kérelem módosítva --', 'restart');
+            $service->storeMetadata($recruitment, '-- Felvételi kérelem újra leadva --', 'restart');
         } else {
             $service->storeMetadata($recruitment, '-- Felvételi kérelem létrehozva --', 'start');
         }
@@ -599,14 +599,11 @@ class EmployeeRecruitmentController extends Controller
         if (!$recruitment) {
             return view('content.pages.misc-error');
         }
-
         // check, if user has read permission for the given recruitment
         if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
             return view('content.pages.misc-not-authorized');
         }
-
         $service = new WorkflowService();
-
         if ($recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
             $service = new WorkflowService();
             $usersToApprove = $service->getResponsibleUsers($recruitment, true);

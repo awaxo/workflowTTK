@@ -121,13 +121,6 @@ $(function () {
                 language: 'hu',
                 weekStart: 1,
             });
-            
-            $("#employment_end_date").datepicker({
-                format: "yyyy.mm.dd",
-                startDate: '+6M',
-                language: 'hu',
-                weekStart: 1,
-            });
         });
         
         var startDate = $("#citizenship").val() == 'Harmadik országbeli' ? '+60D' : '+21D';
@@ -150,7 +143,7 @@ $(function () {
         $("#employment_start_date").on('change', function() {
             var startDate = $("#employment_start_date").datepicker('getDate');
             if (startDate) {
-                var endDate = moment(startDate).add(6, 'months').toDate();
+                var endDate = moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
                 $("#employment_end_date").datepicker('setDate', null);
                 $("#employment_end_date").datepicker('setStartDate', endDate);
             }
@@ -235,14 +228,6 @@ $(function () {
                 language: 'hu',
                 weekStart: 1,
             });
-
-            var endDate = moment(baseDate).add(6, 'months').format('YYYY.MM.DD');
-            $("#employment_end_date").datepicker('destroy').datepicker({
-                format: "yyyy.mm.dd",
-                startDate: endDate,
-                language: 'hu',
-                weekStart: 1,
-            });
         });
 
         // Initialize with recruitmentCreatedAt if available
@@ -269,7 +254,7 @@ $(function () {
         $("#employment_start_date").on('change', function() {
             var startDate = $("#employment_start_date").datepicker('getDate');
             if (startDate) {
-                var endDate = moment(startDate).add(6, 'months').toDate();
+                var endDate = moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
                 $("#employment_end_date").datepicker('setDate', null);
                 $("#employment_end_date").datepicker('setStartDate', endDate);
             }

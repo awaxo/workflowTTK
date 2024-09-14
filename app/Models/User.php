@@ -165,63 +165,68 @@ class User extends Authenticatable
             })->values()->toArray();
         };
 
+        // Helper function to filter out the current user
+        $filterOutCurrentUser = function ($users) {
+            return $users->reject(function ($user) {
+                return $user->id === $this->id;
+            })->values();
+        };
+
         if ($this->id == Workgroup::where('workgroup_number', 903)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
             $user = User::find(Workgroup::where('workgroup_number', 910)->first()->leader_id);
-            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            $users = $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            return $filterUsersWithRoles($filterOutCurrentUser($users));
         }
-
+    
         if ($this->id == Workgroup::where('workgroup_number', 910)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
             $user = User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
-            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            $users = $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            return $filterUsersWithRoles($filterOutCurrentUser($users));
         }
-
+    
         if ($this->id == Workgroup::where('workgroup_number', 911)->first()->leader_id && $delegationType === 'financial_counterparty_approver') {
             $user = User::find(Workgroup::where('workgroup_number', 903)->first()->leader_id);
-            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            $users = $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            return $filterUsersWithRoles($filterOutCurrentUser($users));
         }
-
+    
         if ($this->id == Workgroup::where('workgroup_number', 901)->first()->leader_id && $delegationType === 'obligee_approver') {
             $workgroups = Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900])->get();
             $leaderIds = $workgroups->pluck('leader_id');
             $users = User::whereIn('id', $leaderIds)->orderBy('name')->get();
-            return $filterUsersWithRoles($users);
+            return $filterUsersWithRoles($filterOutCurrentUser($users));
         }
-
+    
         if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900, 903])->where('leader_id', $this->id)->exists() && $delegationType === 'obligee_approver') {
             $user = User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
-            return $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            $users = $user && $user->roles()->count() > 0 ? collect([$user]) : collect();
+            return $filterUsersWithRoles($filterOutCurrentUser($users));
         }
-
+    
         if (Workgroup::whereIn('workgroup_number', [100, 300, 400, 500, 600, 700, 800, 900])->where('leader_id', $this->id)->exists()) {
             $users = $this->getUsersFromSameWorkgroup();
-
+    
             $leaderOf901 = User::find(Workgroup::where('workgroup_number', 901)->first()->leader_id);
-
+    
             if ($leaderOf901) {
                 $users->push($leaderOf901);
             }
-
+    
             $firstCharOfWorkgroup = substr($this->workgroup->workgroup_number, 0, 1);
-
+    
             $leaders = User::whereHas('workgroup', function ($query) use ($firstCharOfWorkgroup) {
                 $query->whereRaw('LEFT(workgroup_number, 1) = ?', [$firstCharOfWorkgroup])->where('leader_id', $this->id);
             })->get();
-
+    
             $allUsers = $users->concat($leaders)->unique('name')->sortBy('name')->values();
-            return $filterUsersWithRoles($allUsers);
+            return $filterUsersWithRoles($filterOutCurrentUser($allUsers));
         }
 
-        $currentUser = $this;
         $users = $this->getUsersFromSameWorkgroup()->sortBy('name')->unique('name')->values();
         $supervisor = $this->getSupervisor();
         $users->prepend($supervisor);
         
-        // Filter out the current user from the collection
-        $filteredUsers = $users->reject(function ($user) use ($currentUser) {
-            return $user->id === $currentUser->id;
-        })->values();
-
-        return $filterUsersWithRoles($filteredUsers);
+        return $filterUsersWithRoles($filterOutCurrentUser($users));
     }
 
     public function canViewMenuItem(string $menuItem)

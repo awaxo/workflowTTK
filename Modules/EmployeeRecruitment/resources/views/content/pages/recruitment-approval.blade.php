@@ -89,8 +89,11 @@
                         <div class="col-sm-2 mb-3">
                             <div class="d-flex align-items-center">
                                 <label class="form-label" for="probation_period" style="margin-bottom: 0">Próbaidő&nbsp;</label>
-                                <input class="form-control numeral-mask" type="text" id="probation_period">
+                                <input class="form-control numeral-mask" type="text" id="probation_period" value="{{ $recruitment->probation_period }}">
                                 <span class="ms-2">Nap</span>
+                            </div>
+                            <div>
+                                <span class="fst-italic">Felfüggesztéskor és elutasításkor a próbaidő nem kerül mentésre</span>
                             </div>
                         </div>
                     @endif

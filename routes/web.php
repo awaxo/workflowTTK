@@ -62,17 +62,20 @@ Route::get('/login', [LoginBasic::class, 'index'])->name('login');
 // Handle authentication
 Route::post('/login', [LoginBasic::class, 'authenticate']);
 
-// Define the logout route for POST requests
-Route::post('/logout', function (Request $request) {
+// Define the logout route for GET requests
+Route::get('/logout', function (Request $request) {
+    if (!auth()->check()) {
+        return redirect('/login');
+    }
+    
     app(LoginBasic::class)->logout($request);
     return redirect('/login');
 })->name('logout');
 
-// Define the logout route for GET requests
-Route::get('/logout', function (Request $request) {
-    app(LoginBasic::class)->logout($request);
-    return redirect('/login');
-})->name('get-logout');
+// Define a route that returns a fresh CSRF token
+Route::get('/refresh-csrf', function() {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
 
 
 // API routes

@@ -48,7 +48,9 @@ class LoginBasic extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('dynamic')->logout();
+        if (auth()->check()) {
+            Auth::guard('dynamic')->logout();
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

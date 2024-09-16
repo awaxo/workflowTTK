@@ -2,8 +2,14 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Routing\Router;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -49,5 +55,32 @@ class Handler extends ExceptionHandler
 
         // Uncomment this line to log the stack trace
         //parent::report($exception);
+    }
+
+    public function render($request, Throwable $e)
+    {
+        $e = $this->mapException($e);
+
+        if ($e instanceof Responsable) {
+            return $e->toResponse($request);
+        }
+
+        $e = $this->prepareException($e);
+
+        // Custom handling for CSRF TokenMismatchException
+        if ($e instanceof TokenMismatchException) {
+            return redirect()->route('login')->with('message', 'Your session has expired. Please login again.');
+        }
+
+        if ($response = $this->renderViaCallbacks($request, $e)) {
+            return $response;
+        }
+
+        return match (true) {
+            $e instanceof HttpResponseException => $e->getResponse(),
+            $e instanceof AuthenticationException => $this->unauthenticated($request, $e),
+            $e instanceof ValidationException => $this->convertValidationExceptionToResponse($e, $request),
+            default => $this->renderExceptionResponse($request, $e),
+        };
     }
 }

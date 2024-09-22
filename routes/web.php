@@ -116,6 +116,7 @@ Route::prefix('api')->middleware(['check.wg910Users.wg911Users'])->group(functio
     Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
     Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
     Route::post('/costcenter/create', [CostCenterController::class, 'create']);
+    Route::post('/costcenter/import', [CostCenterController::class, 'import']);
 });
 
 // workgroup 910 or 911 API routes

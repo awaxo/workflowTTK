@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\ModuleManager;
+use App\Services\Import\ImportManager;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,8 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(ModuleManager::class, function ($app) {
-            return new ModuleManager();
+        $this->app->singleton(ImportManager::class, function ($app) {
+            return new ImportManager();
         });
     }
 

@@ -24,7 +24,6 @@ class ProfileController extends Controller
     {
         $delegations = Delegation::where('original_user_id', Auth::id())
                         ->where('deleted', 0)
-                        ->whereDate('start_date', '<=', now())
                         ->whereDate('end_date', '>=', now())
                         ->with('delegateUser')
                         ->get()

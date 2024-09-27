@@ -127,6 +127,14 @@ $(function() {
             : '<"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
+                text: '<i class="bx bx-import me-1"></i> <span class="d-none d-lg-inline-block">Import</span>',
+                className: 'create-new btn btn-primary me-4',
+                attr: {
+                    'data-bs-toggle': 'offcanvas',
+                    'data-bs-target': '#import_costcenter'
+                },
+            },
+            {
                 text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új költséghely</span>',
                 className: 'create-new btn btn-primary',
                 attr: {
@@ -353,6 +361,54 @@ $(function() {
                         GLOBALS.AJAX_ERROR(errorMessages, jqXHR, textStatus, errorThrown);
                     }
                 });
+            }
+        });
+    });
+
+    // import costcenter
+    $('.upload-csv-btn').on('click', function() {
+        // Disable the button to prevent multiple clicks
+        $(".upload-csv-btn").prop('disabled', true);
+    
+        var formData = new FormData();
+        formData.append('csv_file', $('#csv_file')[0].files[0]);
+        formData.append('_token', $('meta[name="csrf-token"]').attr('content')); // CSRF token for Laravel
+    
+        $.ajax({
+            url: '/api/costcenter/import',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(".upload-csv-btn").prop('disabled', false);
+                $('#csv_file').val('');
+                $('.cancel').trigger('click');
+                GLOBALS.AJAX_SUCCESS('Költséghelyek importálása sikeres');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $(".upload-csv-btn").prop('disabled', false);
+    
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
+                $('.cancel').trigger('click');
+    
+                var errors = jqXHR.responseJSON.errors;
+                var errorMessages = "";
+                for (var key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        errorMessages += errors[key] + '<br>';
+                    }
+                }
+
+                if (errorMessages === '') {
+                    GLOBALS.AJAX_ERROR('Ismeretlen hiba történt az importálás során', jqXHR, textStatus, errorThrown);
+                } else {
+                    GLOBALS.AJAX_ERROR(errorMessages, jqXHR, textStatus, errorThrown);
+                }
             }
         });
     });

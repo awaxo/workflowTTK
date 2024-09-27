@@ -6,10 +6,46 @@ use App\Http\Controllers\Controller;
 use App\Models\CostCenter;
 use App\Models\CostCenterType;
 use App\Models\User;
+use App\Services\Import\CostCenterImporter;
+use App\Services\Import\ImportManager;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CostCenterController extends Controller
 {
+    protected $importManager;
+
+    public function __construct(ImportManager $importManager)
+    {
+        $this->importManager = $importManager;
+        $this->importManager->registerImporter('costcenter', new CostCenterImporter());
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt',
+        ]);
+    
+        $file = $request->file('csv_file');
+    
+        $errors = $this->importManager->import('costcenter', $file);
+    
+        if (!empty($errors)) {
+            // Ensure the error messages are properly encoded in UTF-8
+            $encodedErrors = array_map(function($errorArray) {
+                return array_map(function($errorMessage) {
+                    return mb_convert_encoding($errorMessage, 'UTF-8', 'UTF-8');
+                }, $errorArray);
+            }, $errors);
+    
+            return response()->json(['errors' => $encodedErrors], 422);
+        }
+    
+        return response()->json(['message' => 'Import successful!'], 200);
+    }
+
     public function manage()
     {
         $costcenterTypes = CostCenterType::where('deleted', 0)->get();

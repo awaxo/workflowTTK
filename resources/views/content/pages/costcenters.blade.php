@@ -51,6 +51,10 @@
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card">
+                <div class="nav-align-top">
+                    <!-- placeholder for error messages -->
+                </div>
+
                 <div class="card-datatable table-responsive pt-0">
                     @php
                         $user = \App\Models\User::find(Auth::id());
@@ -83,6 +87,28 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="import_costcenter" aria-labelledby="import_costcenter_label">
+        <div class="offcanvas-header border-bottom">
+            <h5 id="import_costcenter_label" class="offcanvas-title">Költséghely importálás</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body mx-0 flex-grow-1">
+            <form class="upload-csv-form pt-0 row g-2" id="form-upload-csv" enctype="multipart/form-data" onsubmit="return false" novalidate="novalidate">
+                <div class="col-sm-12">
+                    <label class="form-label" for="csv_file">CSV fájl</label>
+                    <div class="input-group input-group-merge has-validation">
+                        <input class="form-control" type="file" id="csv_file" name="csv_file" />
+                    </div>
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+                <div class="col-sm-12">
+                    <button type="button" class="btn btn-primary upload-csv-btn me-sm-3 me-1">Feltöltés</button>
+                    <button type="reset" class="btn btn-outline-secondary cancel" data-bs-dismiss="offcanvas">Mégse</button>
+                </div>
+            </form>
         </div>
     </div>
 

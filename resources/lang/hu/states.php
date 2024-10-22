@@ -22,4 +22,5 @@ return [
     'rejected' => 'Elutasítva',
     'suspended' => 'Felfüggesztve',
     'request_review' => 'Kérelem újraellenőrzésére vár',
+    'cancelled' => 'Sztornózva',
 ];

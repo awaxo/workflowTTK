@@ -31,7 +31,11 @@ $(function() {
                 searchable: false, 
                 orderable: false,
                 render: function(data, type, row, meta) {
-                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-minus text-danger" title="Sztornózás"></i></a>' : '';
+                    if (!row.is_closed) {
+                        return data ? '<a href="javascript:;" class="cancel-workflow"><i class="fas fa-minus text-danger" title="Sztornózás"></i></a>' : '';
+                    } else {
+                        return '';
+                    }
                 }
             },
         ],
@@ -44,10 +48,12 @@ $(function() {
                     var $row_output = '';
 
                     if ($is_user_responsible) {
-                        if (full['state_name'] === 'suspended') {
+                        if (full['is_closed']) {
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1" style="font-size: 15px;">${data}</span></a>`;
+                        } else if (full['state_name'] === 'suspended') {
                             $row_output = `<a href="/folyamat/visszaallitas/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span></a>`;
                         } else {
-                            $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"<span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span></a>`;
+                            $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span></a>`;
                         }
                     } else {
                         if (full['is_initiator_role']) {
@@ -88,7 +94,9 @@ $(function() {
                     var $row_output = '';
 
                     if ($is_user_responsible) {
-                        if (full['state_name'] === 'suspended') {
+                        if (full['is_closed']) {
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1" style="font-size: 15px;">${data}</span></a>`;
+                        } else if (full['state_name'] === 'suspended') {
                             $row_output = `<a href="/folyamat/visszaallitas/${full['id']}"><span class="badge bg-label-info m-1">${data}</span></a>`;
                         } else {
                             $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"<span class="badge bg-label-info m-1">${data}</span></a>`;
@@ -214,16 +222,16 @@ $(function() {
     }, 300);
 
     // cancel workflow
-    $(document).on('click', '.delete-workflow', function() {
+    $(document).on('click', '.cancel-workflow', function() {
         var row = $(this).closest('tr');
         var workflowId = $('.datatables-recruitments').DataTable().row(row).data().id;
 
-        $('#confirm_delete').attr('data-workflow-id', workflowId);
+        $('#confirm_cancel').attr('data-workflow-id', workflowId);
         $('#deleteConfirmation').modal('show');
     });
 
     // confirm cancel workflow
-    $('#confirm_delete').on('click', function() {
+    $('#confirm_cancel').on('click', function() {
         var textarea = $('#cancel_reason');
         if (!textarea.val().trim()) {
             textarea.addClass('is-invalid');
@@ -238,11 +246,10 @@ $(function() {
             let reason = $('#cancel_reason').val();
 
             $.ajax({
-                url: '/employee-recruitment/' + workflowId + '/suspend',
+                url: '/employee-recruitment/' + workflowId + '/cancel',
                 type: 'POST',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
-                    is_cancel: true,
                     message: reason
                 },
                 success: function (response) {

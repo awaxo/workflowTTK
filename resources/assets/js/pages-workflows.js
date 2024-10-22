@@ -29,14 +29,6 @@ $(function() {
                 }
             },
             { data: 'state' },
-            {
-                data: 'is_manager_user', 
-                searchable: false, 
-                orderable: false,
-                render: function(data, type, row, meta) {
-                    return data ? '<a href="javascript:;" class="delete-workflow"><i class="fas fa-minus text-danger" title="Sztornózás"></i></a>' : '';
-                }
-            },
         ],
         columnDefs: [
             {
@@ -184,15 +176,6 @@ $(function() {
         $('.dataTables_filter .form-control').removeClass('form-control-sm');
         $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
-
-    // cancel workflow
-    $(document).on('click', '.delete-workflow', function() {
-        var row = $(this).closest('tr');
-        var workflowId = $('.datatables-workflows').DataTable().row(row).data().id;
-
-        $('#confirm_delete').attr('data-workflow-id', workflowId);
-        $('#deleteConfirmation').modal('show');
-    });
 
     // confirm cancel workflow
     $('#confirm_delete').on('click', function() {

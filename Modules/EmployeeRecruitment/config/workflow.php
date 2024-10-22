@@ -33,6 +33,7 @@ return [
             'rejected',
             'suspended',
             'request_review',
+            'cancelled',
         ],
         'transitions' => [
             'to_it_head_approval' => [
@@ -132,6 +133,16 @@ return [
                     'draft_contract_pending', 'financial_countersign_approval', 'obligee_signature', 'employee_signature',
                     'request_to_complete', 'request_review',
                 ],
+            ],
+            'to_cancelled' => [
+                'from' => [
+                    'new_request', 'it_head_approval', 'supervisor_approval', 'group_lead_approval',
+                    'director_approval', 'hr_lead_approval', 'proof_of_coverage', 'project_coordination_lead_approval',
+                    'post_financing_approval', 'registration', 'financial_counterparty_approval', 'obligee_approval',
+                    'draft_contract_pending', 'financial_countersign_approval', 'obligee_signature', 'employee_signature',
+                    'request_to_complete', 'completed', 'rejected', 'suspended', 'request_review',
+                ],
+                'to' => 'cancelled',
             ],
         ],
     ],

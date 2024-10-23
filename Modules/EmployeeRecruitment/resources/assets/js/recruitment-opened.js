@@ -10,7 +10,7 @@ $(function() {
     let dataTable = $('.datatables-recruitments').DataTable({
         ajax: '/employee-recruitment/opened',
         columns: [
-            { data: 'id' },
+            { data: 'pseudo_id' },
             { data: 'name' },
             { data: 'workgroup1' },
             { data: 'workgroup2' },
@@ -44,22 +44,25 @@ $(function() {
                 targets: 0,
                 render: function(data, type, full, meta) {
                     let $is_user_responsible = full['is_user_responsible'];
+                    let pseudo_id = full['pseudo_id'];
+                    let year = moment(full['created_at']).format('YYYY');
+                    let displayValue = `${pseudo_id}/${year}`;
 
                     var $row_output = '';
 
                     if ($is_user_responsible) {
                         if (full['is_closed']) {
-                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1" style="font-size: 15px;">${data}</span></a>`;
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1" style="font-size: 15px;">${displayValue}</span></a>`;
                         } else if (full['state_name'] === 'suspended') {
-                            $row_output = `<a href="/folyamat/visszaallitas/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span></a>`;
+                            $row_output = `<a href="/folyamat/visszaallitas/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${displayValue}</span></a>`;
                         } else {
-                            $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span></a>`;
+                            $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${displayValue}</span></a>`;
                         }
                     } else {
                         if (full['is_initiator_role']) {
-                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${data}</span>`;
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-info m-1" style="font-size: 15px;">${displayValue}</span>`;
                         } else {
-                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1" style="font-size: 15px;">${data}</span>`;
+                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1" style="font-size: 15px;">${displayValue}</span>`;
                         }
                     }
 

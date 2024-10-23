@@ -91,6 +91,9 @@ class EmployeeRecruitmentController extends Controller
             }
         } else {
             $recruitment = new RecruitmentWorkflow();
+
+            $maxPseudoId = RecruitmentWorkflow::whereYear('created_at', date('Y'))->max('pseudo_id');
+            $recruitment->pseudo_id = $maxPseudoId ? $maxPseudoId + 1 : 1;
         }
         $old_state = $recruitment->state;
 
@@ -239,6 +242,7 @@ class EmployeeRecruitmentController extends Controller
 
             return [
                 'id' => $recruitment->id,
+                'pseudo_id' => $recruitment->pseudo_id,
                 'name' => $recruitment->name,
                 'state' => __('states.' . $recruitment->state),
                 'workgroup1' => $recruitment->workgroup1->name,
@@ -273,6 +277,7 @@ class EmployeeRecruitmentController extends Controller
         })->get()->map(function ($recruitment) {
                 return [
                     'id' => $recruitment->id,
+                    'pseudo_id' => $recruitment->pseudo_id,
                     'name' => $recruitment->name,
                     'state' => __('states.' . $recruitment->state),
                     'workgroup1' => $recruitment->workgroup1->name,

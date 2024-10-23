@@ -45,7 +45,7 @@
 </div>
 
 <div class="mb-2" style="font-size: larger;">
-    <div class="">ID: <b>{{ $recruitment->id }}</b></div>
+    <div class="">ID: <b>{{ $recruitment->pseudo_id }}/{{ \Carbon\Carbon::parse($recruitment->created_at)->format('Y') }}</b></div>
 </div>
 
 <!-- Form with Tabs -->

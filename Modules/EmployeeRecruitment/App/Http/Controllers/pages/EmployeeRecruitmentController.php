@@ -245,6 +245,7 @@ class EmployeeRecruitmentController extends Controller
                 'pseudo_id' => $recruitment->pseudo_id,
                 'name' => $recruitment->name,
                 'state' => __('states.' . $recruitment->state),
+                'state_name' => $recruitment->state,
                 'workgroup1' => $recruitment->workgroup1->name,
                 'workgroup1_number' => $recruitment->workgroup1->workgroup_number,
                 'workgroup2' => $recruitment->workgroup2?->name,

@@ -327,6 +327,13 @@ class EmployeeRecruitmentController extends Controller
         // HR workgroup
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
 
+        // External access rights
+        $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+        $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+        // Extract the external_system fields
+        $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+        $externalSystemsList = implode(', ', $externalSystems);
+
         $delegationService = new DelegationService();
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
@@ -336,7 +343,8 @@ class EmployeeRecruitmentController extends Controller
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
             'amountToCover' => $this->getAmountToCover($recruitment),
-            'totalAmountToCover' => $this->getTotalAmountToCover($recruitment)
+            'totalAmountToCover' => $this->getTotalAmountToCover($recruitment),
+            'externalSystemsList' => $externalSystemsList
         ]);
     }
 
@@ -504,7 +512,7 @@ class EmployeeRecruitmentController extends Controller
 
             if ($service->isAllApproved($recruitment)) {
                 $transition = $service->getNextTransition($recruitment);
-                $previous_state = __('states.' . $recruitment->state);
+                $previous_state = $recruitment->state;
 
                 if ($transition) {
                     $this->validateFields($recruitment, $request);
@@ -514,7 +522,7 @@ class EmployeeRecruitmentController extends Controller
 
                     $recruitment->save();
                     $message = $request->input('message') ? $request->input('message') : '';
-                    event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state), $message));
+                    event(new StateChangedEvent($recruitment, $previous_state, $recruitment->state, $message));
                     event(new ApproverAssignedEvent($recruitment));
                     
                     return response()->json(['redirectUrl' => route('workflows-all-open')]);

@@ -25,7 +25,7 @@ class StateChangedListener
         // notify all users in notificationReceivers
         foreach ($notificationReceivers as $receiver) {
             if(method_exists($receiver, 'notify')) {
-                $receiver->notify(new StateChangedNotification($event->workflow, $event->previousState, $event->currentState));
+                $receiver->notify(new StateChangedNotification($event->workflow, __('states.' . $event->previousState), __('states.' . $event->currentState)));
             }
         }
     }

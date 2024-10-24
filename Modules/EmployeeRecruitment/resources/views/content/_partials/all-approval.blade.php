@@ -304,11 +304,7 @@
                 <div class="d-flex">
                     <label class="form-label col-6 col-md-3">Hozzáférési jogosultságok</label>
                     <span class="fw-bold ms-1 text-break">
-                        @php
-                            $accessArray = explode(',', $recruitment->external_access_rights);
-                            $accessString = implode(', ', $accessArray);
-                        @endphp
-                        {{ $accessString }}
+                        {{ $externalSystemsList }}
                     </span>
                 </div>
             @endif

@@ -21,7 +21,7 @@ class DirectorApprovedListener
      */
     public function handle(StateChangedEvent $event): void
     {
-        if ($event->workflow->state == 'hr_lead_approval') {
+        if ($event->previousState == 'director_approval') {
             $itLeadUser = Workgroup::where('workgroup_number', 915)->first()->leader;
             $itLeadUser->notify(new EntryPermissionNotification($event->workflow));
 

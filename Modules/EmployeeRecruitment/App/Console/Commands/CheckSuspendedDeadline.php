@@ -34,6 +34,7 @@ class CheckSuspendedDeadline extends Command
         $systemUser = User::where('email', 'rendszerfiok')->first();
 
         foreach ($recruitmentWorkflows as $recruitmentWorkflow) {
+            $service->resetApprovals($recruitmentWorkflow);
             $service->storeMetadata($recruitmentWorkflow, 'Felvételi kérelem automatikusan elutasítva ' . $suspendThreshold . ' óra felfüggesztés után', 'rejections', $systemUser->id);
             $recruitmentWorkflow->workflow_apply('to_request_review');
             $recruitmentWorkflow->updated_by = User::where('email', 'rendszerfiok')->first()->id;

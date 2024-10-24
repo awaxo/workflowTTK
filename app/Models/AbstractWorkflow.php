@@ -34,6 +34,7 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
         return static::baseQuery()
             ->where('state', '!=', 'completed')
             ->where('state', '!=', 'rejected')
+            ->where('state', '!=', 'cancelled')
             ->where('deleted', 0)
             ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
             ->get();
@@ -47,7 +48,7 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
     public static function fetchClosed(): Collection
     {
         return static::baseQuery()
-            ->whereIn('state', ['completed', 'rejected'])
+            ->whereIn('state', ['completed', 'rejected', 'cancelled'])
             ->orWhere('deleted', 1)
             ->with(['workflowType', 'initiatorInstitute', 'createdBy', 'updatedBy'])
             ->get();

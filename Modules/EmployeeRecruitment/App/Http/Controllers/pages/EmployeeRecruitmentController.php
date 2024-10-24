@@ -91,6 +91,9 @@ class EmployeeRecruitmentController extends Controller
             }
         } else {
             $recruitment = new RecruitmentWorkflow();
+
+            $maxPseudoId = RecruitmentWorkflow::whereYear('created_at', date('Y'))->max('pseudo_id');
+            $recruitment->pseudo_id = $maxPseudoId ? $maxPseudoId + 1 : 1;
         }
         $old_state = $recruitment->state;
 
@@ -234,13 +237,15 @@ class EmployeeRecruitmentController extends Controller
     {
         $service = new WorkflowService();
 
-        $recruitments = RecruitmentWorkflow::baseQuery()->where('deleted', 0)->get()->map(function ($recruitment) use ($service) {
+        $recruitments = RecruitmentWorkflow::baseQuery()->get()->map(function ($recruitment) use ($service) {
             $recruitment_workflow = RecruitmentWorkflow::find($recruitment->id);
 
             return [
                 'id' => $recruitment->id,
+                'pseudo_id' => $recruitment->pseudo_id,
                 'name' => $recruitment->name,
                 'state' => __('states.' . $recruitment->state),
+                'state_name' => $recruitment->state,
                 'workgroup1' => $recruitment->workgroup1->name,
                 'workgroup1_number' => $recruitment->workgroup1->workgroup_number,
                 'workgroup2' => $recruitment->workgroup2?->name,
@@ -256,7 +261,7 @@ class EmployeeRecruitmentController extends Controller
                 'updated_at' => $recruitment->updated_at,
                 'updated_by_name' => $recruitment->updatedBy->name,
                 'is_user_responsible' => $service->isUserResponsible(Auth::user(), $recruitment_workflow),
-                'is_closed' => $recruitment->state == 'completed' || $recruitment->state == 'rejected',
+                'is_closed' => $recruitment->state == 'completed' || $recruitment->state == 'rejected' || $recruitment->state == 'cancelled',
                 'is_initiator_role' => User::find(Auth::id())->hasRole('titkar_' . $recruitment->initiator_institute_id),
                 'is_manager_user' => WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()
             ];
@@ -273,6 +278,7 @@ class EmployeeRecruitmentController extends Controller
         })->get()->map(function ($recruitment) {
                 return [
                     'id' => $recruitment->id,
+                    'pseudo_id' => $recruitment->pseudo_id,
                     'name' => $recruitment->name,
                     'state' => __('states.' . $recruitment->state),
                     'workgroup1' => $recruitment->workgroup1->name,
@@ -566,17 +572,12 @@ class EmployeeRecruitmentController extends Controller
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
         
-        if ($service->isUserResponsible(Auth::user(), $recruitment) || $request->input('is_cancel')) {
+        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
             if (strlen($request->input('message')) > 0) {
                 $previous_state = __('states.' . $recruitment->state);
                 $service->storeMetadata($recruitment, $request->input('message'), 'suspensions');
                 $recruitment->workflow_apply('to_suspended');
                 $recruitment->updated_by = Auth::id();
-                if ($request->input('is_cancel') && WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()) {
-                    $recruitment->deleted = 1;
-                    $service->storeMetadata($recruitment, $request->input('message'), 'cancel');
-                    event(new CancelledEvent($recruitment));
-                }
                 
                 $recruitment->save();
                 event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
@@ -589,6 +590,33 @@ class EmployeeRecruitmentController extends Controller
             }
         } else {
             Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésére');
+            return view('content.pages.misc-not-authorized');
+        }
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $recruitment = RecruitmentWorkflow::find($id);
+        $service = new WorkflowService();
+
+        if (WorkflowType::find($recruitment->workflow_type_id)->first()->workgroup->leader_id == Auth::id()) {
+            if (strlen($request->input('message')) > 0) {
+                $previous_state = __('states.' . $recruitment->state);
+                $service->storeMetadata($recruitment, $request->input('message'), 'cancellations');
+                $recruitment->workflow_apply('to_cancelled');
+                $recruitment->updated_by = Auth::id();
+                event(new CancelledEvent($recruitment));
+
+                $recruitment->save();
+                event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state)));
+
+                return response()->json(['redirectUrl' => route('workflows-all-open')]);
+            } else {
+                Log::error('Nincs indoklás a törléshez');
+                throw new \Exception('No reason given for cancellation');
+            }
+        } else {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem törlésére');
             return view('content.pages.misc-not-authorized');
         }
     }

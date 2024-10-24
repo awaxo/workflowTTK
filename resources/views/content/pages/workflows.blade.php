@@ -53,7 +53,6 @@
                                 <th>Létrehozó</th>
                                 <th>Létrehozás</th>
                                 <th>Státusz</th>
-                                <th></th>
                             </tr>
                         </thead>
                     </table>

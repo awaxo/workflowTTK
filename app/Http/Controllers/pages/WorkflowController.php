@@ -29,6 +29,7 @@ class WorkflowController extends Controller
             ->map(function ($workflow) {
                 return [
                     'id' => $workflow->id,
+                    'pseudo_id' => $workflow->pseudo_id,
                     'workflow_type_name' => $workflow->workflow_type["name"],
                     'state' => __('states.' . $workflow->state),
                     'state_name' => $workflow->state,
@@ -55,6 +56,7 @@ class WorkflowController extends Controller
             ->map(function ($workflow) {
                 return [
                     'id' => $workflow->id,
+                    'pseudo_id' => $workflow->pseudo_id,
                     'workflow_type_name' => $workflow->workflow_type["name"],
                     'state' => __('states.' . $workflow->state),
                     'state_name' => $workflow->state,

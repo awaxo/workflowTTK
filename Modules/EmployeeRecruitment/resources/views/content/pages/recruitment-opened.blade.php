@@ -89,7 +89,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                    <button type="button" id="confirm_delete" data-workflow-id="" class="btn btn-primary">Sztornózás</button>
+                    <button type="button" id="confirm_cancel" data-workflow-id="" class="btn btn-primary">Sztornózás</button>
                 </div>
             </div>
         </div>

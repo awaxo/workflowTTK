@@ -23,7 +23,7 @@ class WorkflowService
             $marked = $workflows->map(function ($workflow) use ($user) {
                 $stateHandler = $this->getStateHandler($workflow);
                 $is_user_responsible = $stateHandler && ($stateHandler->isUserResponsible($user, $workflow) || $stateHandler->isUserResponsibleAsDelegate($user, $workflow));
-                $is_closed = $workflow->state == 'completed' || $workflow->state == 'rejected';
+                $is_closed = $workflow->state == 'completed' || $workflow->state == 'rejected' || $workflow->state == 'cancelled';
     
                 // add is_user_responsible and is_closed fields to the output
                 return (object) array_merge($workflow->toArray(), ['is_user_responsible' => $is_user_responsible, 'is_closed' => $is_closed]);
@@ -152,14 +152,14 @@ class WorkflowService
                 ($decision == 'suspensions' ? 'suspend' : 
                 ($decision == 'start' ? 'start' : 
                 ($decision == 'restart' ? 'restart' : 
-                ($decision == 'cancel' ? 'cancel' : 
+                ($decision == 'cancellations' ? 'cancel' : 
                 ($decision == 'deletion' ? 'delete' : 
                 'restore')))))),
             'status' => 
                 $decision == 'rejections' ? 'rejected' : 
                 ($decision == 'start' ? 'new_request' : 
                 ($decision == 'restart' ? 'request_review' : 
-                ($decision == 'cancel' ? 'rejected' : 
+                ($decision == 'cancellations' ? 'cancelled' : 
                 ($decision == 'deletion' ? 'rejected' :
                 $workflow->state)))),
             'user_id' => $userId,

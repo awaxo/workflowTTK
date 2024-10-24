@@ -69,7 +69,7 @@
     </div>
 
     <div class="mb-2" style="font-size: larger;">
-        <div class="">ID: <b>{{ $recruitment->id }}</b></div>
+        <div class="">ID: <b>{{ $recruitment->pseudo_id }}/{{ \Carbon\Carbon::parse($recruitment->created_at)->format('Y') }}</b></div>
     </div>
 
     <div class="row">
@@ -830,8 +830,25 @@
                                 <tbody>
                                 @foreach($history as $history_entry)
                                     <tr>
-                                        <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : ($history_entry['decision'] == 'restart' ? 'success' : ($history_entry['decision'] == 'delete' ? 'danger' : 'info'))))) }} me-1">
-                                            {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : ($history_entry['decision'] == 'delete' ? 'Törlés' : 'Visszaállítás'))))) }}</span></td>
+                                        <td>
+                                            <span class="badge bg-label-{{ 
+                                                $history_entry['decision'] == 'approve' ? 'success' : 
+                                                ($history_entry['decision'] == 'reject' ? 'danger' : 
+                                                ($history_entry['decision'] == 'suspend' ? 'warning' : 
+                                                ($history_entry['decision'] == 'start' ? 'success' : 
+                                                ($history_entry['decision'] == 'restart' ? 'success' : 
+                                                ($history_entry['decision'] == 'delete' ? 'danger' : 
+                                                ($history_entry['decision'] == 'cancel' ? 'danger' : 'info')))))) }} me-1">
+                                                {{ 
+                                                    $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : 
+                                                    ($history_entry['decision'] == 'reject' ? 'Elutasítás' : 
+                                                    ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : 
+                                                    ($history_entry['decision'] == 'start' ? 'Indítás' : 
+                                                    ($history_entry['decision'] == 'restart' ? 'Újraindítás' : 
+                                                    ($history_entry['decision'] == 'delete' ? 'Törlés' : 
+                                                    ($history_entry['decision'] == 'cancel' ? 'Sztornózás' : 'Visszaállítás')))))) }}
+                                            </span>
+                                        </td>
                                         <td>{{ $history_entry['datetime'] }}</td>
                                         <td>{{ $history_entry['user_name'] }}</td>
                                         <td>{{ __('states.' . $history_entry['status']) }}</td>

@@ -54,7 +54,7 @@ class EntryPermissionNotification extends Notification
                     ->subject('Értesítés belépő belépési jogosultságairól')
                     ->greeting('Tisztelt ' . $notifiable->name . '!')
                     ->line('')
-                    ->line('Az alábbi ügyet a kötelezettségvállaló jóváhagyta:')
+                    ->line('Az alábbi felvétel indult:')
                     ->line('Név: ' . $this->workflow->name)
                     ->line('Volt már munkajogviszonya a Kutatóközponttal: ' . ($this->workflow->has_prior_employment == 1 ? 'Igen' : 'Nem'))
                     ->line('Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal: ' . ($this->workflow->has_current_volunteer_contract == 1 ? 'Igen' : 'Nem'))

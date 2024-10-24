@@ -45,7 +45,7 @@
 </div>
 
 <div class="mb-2" style="font-size: larger;">
-    <div class="">ID: <b>{{ $recruitment->id }}</b></div>
+    <div class="">ID: <b>{{ $recruitment->pseudo_id }}/{{ \Carbon\Carbon::parse($recruitment->created_at)->format('Y') }}</b></div>
 </div>
 
 <!-- Form with Tabs -->
@@ -86,8 +86,25 @@
                             <tbody>
                             @foreach($history as $history_entry)
                                 <tr>
-                                    <td><span class="badge bg-label-{{ $history_entry['decision'] == 'approve' ? 'success' : ($history_entry['decision'] == 'reject' ? 'danger' : ($history_entry['decision'] == 'suspend' ? 'warning' : ($history_entry['decision'] == 'start' ? 'success' : ($history_entry['decision'] == 'restart' ? 'success' : ($history_entry['decision'] == 'delete' ? 'danger' : 'info'))))) }} me-1">
-                                        {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : ($history_entry['decision'] == 'delete' ? 'Törlés' : 'Visszaállítás'))))) }}</span></td>
+                                    <td>
+                                        <span class="badge bg-label-{{ 
+                                            $history_entry['decision'] == 'approve' ? 'success' : 
+                                            ($history_entry['decision'] == 'reject' ? 'danger' : 
+                                            ($history_entry['decision'] == 'suspend' ? 'warning' : 
+                                            ($history_entry['decision'] == 'start' ? 'success' : 
+                                            ($history_entry['decision'] == 'restart' ? 'success' : 
+                                            ($history_entry['decision'] == 'delete' ? 'danger' : 
+                                            ($history_entry['decision'] == 'cancel' ? 'danger' : 'info')))))) }} me-1">
+                                            {{ 
+                                                $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : 
+                                                ($history_entry['decision'] == 'reject' ? 'Elutasítás' : 
+                                                ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : 
+                                                ($history_entry['decision'] == 'start' ? 'Indítás' : 
+                                                ($history_entry['decision'] == 'restart' ? 'Újraindítás' : 
+                                                ($history_entry['decision'] == 'delete' ? 'Törlés' : 
+                                                ($history_entry['decision'] == 'cancel' ? 'Sztornózás' : 'Visszaállítás')))))) }}
+                                        </span>
+                                    </td>
                                     <td>{{ $history_entry['datetime'] }}</td>
                                     <td>{{ $history_entry['user_name'] }}</td>
                                     <td>{{ $history_entry['decision'] == 'start' ? 'Új kérelem' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztve' : ($history_entry['decision'] == 'restore' ? 'Visszaállítva' : ($history_entry['decision'] == 'reject' || $history_entry['decision'] == 'restart' ? 'Kérelem újraellenőrzésére vár' : ($history_entry['decision'] == 'cancel' ? 'Elutasítva' : __('states.' . $history_entry['status']))))) }}</td>
@@ -101,7 +118,7 @@
                 <div class="fst-italic">Aktuális státusz: <b>{{ __('states.' . $recruitment->state) }}</b></div>
                 <div class="fst-italic">Szükséges jóváhagyók (a lista a jóváhagyókat és az esetleges helyetteseiket is tartalmazza): <b>{{ $usersToApprove ? $usersToApprove : '' }}</b></div>
 
-                @if ($isHRHead && $recruitment->state != 'request_review' && $recruitment->state != 'completed')
+                @if ($isHRHead && $recruitment->state != 'request_review' && $recruitment->state != 'completed' && $recruitment->state != 'cancelled')
                     <div class="mb-3 mt-4">
                         <label class="form-label" for="message">Üzenet</label>
                         <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>

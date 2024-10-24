@@ -31,6 +31,7 @@ Route::post('/employee-recruitment/{id}/reject', [EmployeeRecruitmentController:
 Route::post('/employee-recruitment/{id}/suspend', [EmployeeRecruitmentController::class, 'suspend'])->middleware(['auth:dynamic']);
 Route::post('/employee-recruitment/{id}/restore', [EmployeeRecruitmentController::class, 'restore'])->middleware(['auth:dynamic']);
 Route::post('/employee-recruitment/{id}/delete', [EmployeeRecruitmentController::class, 'delete'])->middleware(['auth:dynamic']);
+Route::post('/employee-recruitment/{id}/cancel', [EmployeeRecruitmentController::class, 'cancel'])->middleware(['auth:dynamic']);
 
 Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class, 'getAll'])->middleware(['auth:dynamic']);
 Route::get('/employee-recruitment/closed', [EmployeeRecruitmentController::class, 'getAllClosed'])->middleware(['auth:dynamic']);

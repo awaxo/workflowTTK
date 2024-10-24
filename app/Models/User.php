@@ -225,6 +225,9 @@ class User extends Authenticatable
         $users = $this->getUsersFromSameWorkgroup()->sortBy('name')->unique('name')->values();
         $supervisor = $this->getSupervisor();
         $users->prepend($supervisor);
+
+        Log::debug('Superior: ' . $supervisor->name);
+        Log::debug('Delegates: ' . $users->pluck('name')->join(', '));
         
         return $filterUsersWithRoles($filterOutCurrentUser($users));
     }

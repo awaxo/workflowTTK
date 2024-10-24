@@ -11,7 +11,7 @@ $(function() {
     let dataTable = $('.datatables-workflows').DataTable({
         ajax: '/api/workflows',
         columns: [
-            { data: 'pseudo_id' },
+            { data: 'pseudo_id', type: 'num' },
             { data: 'workflow_type_name' },
             { data: 'initiator_institute_abbreviation' },
             { data: 'updated_by_name' },
@@ -34,6 +34,10 @@ $(function() {
             {
                 targets: 0,
                 render: function(data, type, full, meta) {
+                    if (type === 'sort') {
+                        return parseInt(full['pseudo_id'], 10);
+                    }
+                    
                     let $is_user_responsible = full['is_user_responsible'];
                     let pseudo_id = full['pseudo_id'];
                     let year = moment(full['created_at']).format('YYYY');

@@ -10,7 +10,7 @@ $(function() {
     let dataTable = $('.datatables-recruitments').DataTable({
         ajax: '/employee-recruitment/opened',
         columns: [
-            { data: 'pseudo_id' },
+            { data: 'pseudo_id', type: 'num' },
             { data: 'name' },
             { data: 'workgroup1' },
             { data: 'workgroup2' },
@@ -43,6 +43,10 @@ $(function() {
             {
                 targets: 0,
                 render: function(data, type, full, meta) {
+                    if (type === 'sort') {
+                        return parseInt(full['pseudo_id'], 10);
+                    }
+
                     let $is_user_responsible = full['is_user_responsible'];
                     let pseudo_id = full['pseudo_id'];
                     let year = moment(full['created_at']).format('YYYY');
@@ -67,7 +71,7 @@ $(function() {
                     }
 
                     return $row_output;
-                }
+                },
             },
             {
                 targets: 2,

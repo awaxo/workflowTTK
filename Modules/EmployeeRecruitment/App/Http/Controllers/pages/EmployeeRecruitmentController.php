@@ -327,6 +327,13 @@ class EmployeeRecruitmentController extends Controller
         // HR workgroup
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
 
+        // External access rights
+        $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+        $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+        // Extract the external_system fields
+        $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+        $externalSystemsList = implode(', ', $externalSystems);
+
         $delegationService = new DelegationService();
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
@@ -336,7 +343,8 @@ class EmployeeRecruitmentController extends Controller
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
             'amountToCover' => $this->getAmountToCover($recruitment),
-            'totalAmountToCover' => $this->getTotalAmountToCover($recruitment)
+            'totalAmountToCover' => $this->getTotalAmountToCover($recruitment),
+            'externalSystemsList' => $externalSystemsList
         ]);
     }
 
@@ -375,6 +383,13 @@ class EmployeeRecruitmentController extends Controller
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
             $chemicalFactors = ChemicalPathogenicFactor::where('deleted', 0)->get();
 
+            // External access rights
+            $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+            $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+            // Extract the external_system fields
+            $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+            $externalSystemsList = implode(', ', $externalSystems);
+
             $delegationService = new DelegationService();
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
@@ -385,7 +400,8 @@ class EmployeeRecruitmentController extends Controller
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),
                 'totalAmountToCover' => $this->getTotalAmountToCover($recruitment),
-                'chemicalFactors' => $chemicalFactors
+                'chemicalFactors' => $chemicalFactors,
+                'externalSystemsList' => $externalSystemsList
             ]);
         } else {
             return view('content.pages.misc-not-authorized');
@@ -433,6 +449,13 @@ class EmployeeRecruitmentController extends Controller
         $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
 
+        // External access rights
+        $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+        $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+        // Extract the external_system fields
+        $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+        $externalSystemsList = implode(', ', $externalSystems);
+
         return view('employeerecruitment::content.pages.recruitment-review', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
@@ -442,7 +465,8 @@ class EmployeeRecruitmentController extends Controller
             'positions' => $positions,
             'costcenters' => $costCenters,
             'rooms' => $rooms,
-            'externalAccessRights' => $externalAccessRights
+            'externalAccessRights' => $externalAccessRights,
+            'externalSystemsList' => $externalSystemsList
         ]);
     }
 
@@ -504,7 +528,7 @@ class EmployeeRecruitmentController extends Controller
 
             if ($service->isAllApproved($recruitment)) {
                 $transition = $service->getNextTransition($recruitment);
-                $previous_state = __('states.' . $recruitment->state);
+                $previous_state = $recruitment->state;
 
                 if ($transition) {
                     $this->validateFields($recruitment, $request);
@@ -514,7 +538,7 @@ class EmployeeRecruitmentController extends Controller
 
                     $recruitment->save();
                     $message = $request->input('message') ? $request->input('message') : '';
-                    event(new StateChangedEvent($recruitment, $previous_state, __('states.' . $recruitment->state), $message));
+                    event(new StateChangedEvent($recruitment, $previous_state, $recruitment->state, $message));
                     event(new ApproverAssignedEvent($recruitment));
                     
                     return response()->json(['redirectUrl' => route('workflows-all-open')]);
@@ -643,6 +667,13 @@ class EmployeeRecruitmentController extends Controller
             // IT workgroup
             $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
 
+            // External access rights
+            $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+            $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+            // Extract the external_system fields
+            $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+            $externalSystemsList = implode(', ', $externalSystems);
+
             $delegationService = new DelegationService();
             return view('employeerecruitment::content.pages.recruitment-restore', [
                 'recruitment' => $recruitment,
@@ -651,7 +682,8 @@ class EmployeeRecruitmentController extends Controller
                 'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),
-                'totalAmountToCover' => $this->getTotalAmountToCover($recruitment)
+                'totalAmountToCover' => $this->getTotalAmountToCover($recruitment),
+                'externalSystemsList' => $externalSystemsList
             ]);
         } else {
             Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésének visszaállítására');

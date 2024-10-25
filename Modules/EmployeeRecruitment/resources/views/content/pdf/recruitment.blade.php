@@ -188,10 +188,50 @@
                 <td>Jogviszony vége</td>
                 <td>{{ $recruitment->employment_end_date }}</td>
             </tr>
+            <tr>
+                <td>Próbaidő hossza</td>
+                <td>{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</td>
+            </tr>
             
+            <!-- Munkaidő Section -->
+            <tr>
+                <th colspan="2" class="fw-bold">Munkaidő</th>
+            </tr>
+            <tr>
+                <td>Heti munkaóraszám</td>
+                <td>{{ $recruitment->weekly_working_hours }}</td>
+            </tr>
+            <tr>
+                <th colspan="2" class="fw-bold"><strong>Munkaidő</strong></th>
+            </tr>
+            <tr>
+                <td>Hétfő</td>
+                <td>{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Kedd</td>
+                <td>{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Szerda</td>
+                <td>{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Csütörtök</td>
+                <td>{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</td>
+            </tr>
+            <tr>
+                <td>Péntek</td>
+                <td>{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</td>
+            </tr>
+
             <!-- Bérelemek Section -->
             <tr>
                 <th colspan="2" class="fw-bold">Bérelemek</th>
+            </tr>
+            <tr>
+                <td>Havi bruttó bér</td>
+                <td>{{ $monthlyGrossSalariesSum }} Ft / hó</td>
             </tr>
             <!-- Alapbér -->
             <tr>
@@ -285,42 +325,6 @@
                 <td>Időtartam vége</td>
                 <td>{{ $recruitment->extra_pay_2_end_date }}</td>
             </tr>
-            <tr>
-                <td>Összesített havi bruttó bér</td>
-                <td>{{ $monthlyGrossSalariesSum }} Ft / hó</td>
-            </tr>
-            
-            <!-- Munkaidő Section -->
-            <tr>
-                <th colspan="2" class="fw-bold">Munkaidő</th>
-            </tr>
-            <tr>
-                <td>Heti munkaóraszám</td>
-                <td>{{ $recruitment->weekly_working_hours }}</td>
-            </tr>
-            <tr>
-                <th colspan="2" class="fw-bold"><strong>Munkaidő</strong></th>
-            </tr>
-            <tr>
-                <td>Hétfő</td>
-                <td>{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</td>
-            </tr>
-            <tr>
-                <td>Kedd</td>
-                <td>{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</td>
-            </tr>
-            <tr>
-                <td>Szerda</td>
-                <td>{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</td>
-            </tr>
-            <tr>
-                <td>Csütörtök</td>
-                <td>{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</td>
-            </tr>
-            <tr>
-                <td>Péntek</td>
-                <td>{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</td>
-            </tr>
             
             <!-- Egyéb adatok Section -->
             <tr>
@@ -362,6 +366,24 @@
             </tr>
             <tr>
                 <td>Hozzáférési jogosultságok</td>
+                <td>
+                    @if($recruitment->external_access_rights)
+                        @php
+                            // External access rights
+                            $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+                            $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+                            // Extract the external_system fields
+                            $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+                            $externalSystemsList = implode(', ', $externalSystems);
+                        @endphp
+                        {{ $externalSystemsList }}
+                    @else
+                        -
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td>Munkavégzéshez szükséges eszközök</td>
                 <td>
                     @if($recruitment->required_tools)
                         @php
@@ -452,14 +474,6 @@
             <!-- Kiegészítő adatok Section -->
             <tr>
                 <th colspan="2" class="fw-bold">Kiegészítő adatok</th>
-            </tr>
-            <tr>
-                <td>Próbaidő hossza</td>
-                <td>{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</td>
-            </tr>
-            <tr>
-                <td>Szerződés</td>
-                <td>{{ $recruitment->contract ? 'Igen' : 'Nem' }}</td>
             </tr>
         </tbody>
     </table>

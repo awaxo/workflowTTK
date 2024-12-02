@@ -306,6 +306,7 @@
                                 <label for="weekly_working_hours" class="form-label">Heti munkaóraszám</label>
                                 <select class="form-select" id="weekly_working_hours" name="weekly_working_hours">
                                     <option value="40" selected>40 óra</option>
+                                    <option value="36">36 óra</option>
                                     <option value="30">30 óra</option>
                                     <option value="25">25 óra</option>
                                     <option value="20">20 óra</option>

@@ -337,6 +337,7 @@
                                                 <label for="weekly_working_hours" class="form-label">Heti munkaóraszám</label>
                                                 <select class="form-select" id="weekly_working_hours" name="weekly_working_hours">
                                                     <option value="40" {{ $recruitment->weekly_working_hours == '40' ? 'selected' : '' }}>40 óra</option>
+                                                    <option value="36" {{ $recruitment->weekly_working_hours == '36' ? 'selected' : '' }}>36 óra</option>
                                                     <option value="30" {{ $recruitment->weekly_working_hours == '30' ? 'selected' : '' }}>30 óra</option>
                                                     <option value="25" {{ $recruitment->weekly_working_hours == '25' ? 'selected' : '' }}>25 óra</option>
                                                     <option value="20" {{ $recruitment->weekly_working_hours == '20' ? 'selected' : '' }}>20 óra</option>

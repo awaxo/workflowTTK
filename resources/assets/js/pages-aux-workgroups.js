@@ -301,6 +301,7 @@ $(function() {
                         }
                         
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_workgroup')).hide();
+                        $('.data-submit').attr('data-workgroup-id', null);
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessages = "";
                         for (var key in errors) {
@@ -317,6 +318,7 @@ $(function() {
 
     $('.create-new').on('click', function() {
         $('#new_workgroup_label').text('Új csoport');
+        $('.data-submit').attr('data-workgroup-id', null);
         $('#workgroup_number').val('');
         $('#name').val('');
         $('#leader_id').val($('#leader_id option:first').val()).trigger('change');

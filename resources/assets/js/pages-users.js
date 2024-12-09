@@ -285,7 +285,8 @@ $(function() {
                             window.location.href = '/login';
                         }
                         
-                        bootstrap.Offcanvas.getInstance(document.getElementById('new_user')).hide();                        
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_user')).hide();
+                        $('.data-submit').attr('data-user-id', null);
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessage = "";
                         for (var key in errors) {
@@ -302,6 +303,7 @@ $(function() {
 
     $('.create-new').on('click', function() {
         $('#new_user_label').text('Új felhasználó');
+        $('.data-submit').attr('data-user-id', null);
         $('#name').val('');
         $('#email').val('');
         $('#roles').val(null).trigger('change');

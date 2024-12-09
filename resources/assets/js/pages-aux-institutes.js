@@ -291,6 +291,7 @@ $(function() {
                         }
                         
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_institute')).hide();
+                        $('.data-submit').attr('data-institute-id', null);
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessages = "";
                         for (var key in errors) {
@@ -307,6 +308,7 @@ $(function() {
 
     $('.create-new').on('click', function() {
         $('#new_institute_label').text('Új intézet');
+        $('.data-submit').attr('data-institute-id', null);
         $('#group_level').val('');
         $('#name').val('');
         $('#abbreviation').val('');

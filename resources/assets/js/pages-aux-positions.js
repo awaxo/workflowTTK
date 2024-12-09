@@ -279,6 +279,7 @@ $(function() {
                         }
                         
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_position')).hide();
+                        $('.data-submit').attr('data-position-id', null);
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessages = "";
                         for (var key in errors) {
@@ -295,6 +296,7 @@ $(function() {
 
     $('.create-new').on('click', function() {
         $('#new_position_label').text('Új munkakör');
+        $('.data-submit').attr('data-position-id', null);
         $('#name').val('');
 
         fv?.resetForm(true);

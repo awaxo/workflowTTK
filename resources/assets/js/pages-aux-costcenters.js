@@ -351,6 +351,7 @@ $(function() {
                         }
                         
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_costcenter')).hide();
+                        $('.data-submit').attr('data-costcenter-id', null);
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessages = "";
                         for (var key in errors) {
@@ -415,6 +416,7 @@ $(function() {
 
     $('.create-new').on('click', function() {
         $('#new_costcenter_label').text('Új költséghely');
+        $('.data-submit').attr('data-costcenter-id', null);
         $('#cost_center_code').val('');
         $('#name').val('');
         $('#due_date').val('');

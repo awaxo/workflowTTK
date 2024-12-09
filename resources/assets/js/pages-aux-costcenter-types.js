@@ -298,6 +298,7 @@ $(function() {
                         }
                         
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_costcenter_type')).hide();
+                        $('.data-submit').attr('data-costcenter-type-id', null);
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessages = "";
                         for (var key in errors) {
@@ -314,6 +315,7 @@ $(function() {
 
     $('.create-new').on('click', function() {
         $('#new_costcenter_type_label').text('Új költséghely típus');
+        $('.data-submit').attr('data-costcenter-type-id', null);
         $('#name').val('');
         $('#clause_template').val('');
         $('#tender').prop('checked', false);

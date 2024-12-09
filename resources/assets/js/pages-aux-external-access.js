@@ -281,6 +281,7 @@ $(function() {
                         }
                         
                         bootstrap.Offcanvas.getInstance(document.getElementById('new_external_access')).hide();
+                        $('.data-submit').attr('data-external-access-id', null);
                         var errors = jqXHR.responseJSON.errors;
                         var errorMessages = "";
                         for (var key in errors) {
@@ -297,6 +298,7 @@ $(function() {
 
     $('.create-new').on('click', function() {
         $('#new_external_access_label').text('Új hozzáférési jogosultság');
+        $('.data-submit').attr('data-external-access-id', null);
         $('#external_system').val('');
         $('#admin_group_number').val($('#admin_group_number option:first').val()).trigger('change');
 

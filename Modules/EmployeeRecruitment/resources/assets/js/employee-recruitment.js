@@ -287,6 +287,13 @@ $(function () {
         $('.invalid-feedback').remove();
         let fv = validateEmployeeRecruitment();
 
+        // on the test environment, it has a problem with the validation of this specific file input
+        if ($('#position_id').val() == 11 || $('#position_id').val() == 23) {
+            fv.enableValidator('student_status_verification_file');
+        } else {
+            fv.disableValidator('student_status_verification_file');
+        }
+
         // revalidate fields when their values change
         revalidateOnChange(fv, 'name');
         revalidateOnChange(fv, 'birth_date');

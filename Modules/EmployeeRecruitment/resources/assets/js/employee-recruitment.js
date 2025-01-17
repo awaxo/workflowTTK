@@ -287,12 +287,18 @@ $(function () {
         $('.invalid-feedback').remove();
         let fv = validateEmployeeRecruitment();
 
-        // on the test environment, it has a problem with the validation of this specific file input
-        if ($('#position_id').val() == 11 || $('#position_id').val() == 23) {
-            fv.enableValidator('student_status_verification_file');
-        } else {
-            fv.disableValidator('student_status_verification_file');
-        }
+        const originalEnableValidator = fv.enableValidator.bind(fv);
+        const originalDisableValidator = fv.disableValidator.bind(fv);
+
+        fv.enableValidator = function(field) {
+            console.log('Enabling validator for:', field);
+            return originalEnableValidator(field);
+        };
+
+        fv.disableValidator = function(field) {
+            console.log('Disabling validator for:', field);
+            return originalDisableValidator(field);
+        };
 
         // revalidate fields when their values change
         revalidateOnChange(fv, 'name');
@@ -384,7 +390,17 @@ $(function () {
         enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
         
         enableOnChange(fv, 'license_plate', 'entry_permissions', function() { return $('#entry_permissions').val().includes('auto') });
-        enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
+        //enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
+        enableOnChange(fv, 'student_status_verification_file', 'position_id', function() {
+            const shouldValidate = $('#position_id').val() == 11 || $('#position_id').val() == 23;
+            if (shouldValidate) {
+                fv.enableValidator('student_status_verification_file');
+                fv.revalidateField('student_status_verification_file');
+            } else {
+                fv.disableValidator('student_status_verification_file');
+            }
+            return shouldValidate;
+        });
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
         if (!validateCostCenterSum()) {

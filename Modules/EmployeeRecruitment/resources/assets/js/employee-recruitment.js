@@ -377,7 +377,10 @@ $(function () {
         enableOnChange(fv, 'extra_pay_2_end_date', 'extra_pay_2_cost_center_7', function() { return $('#extra_pay_2_cost_center_7').val() != ""});
         
         enableOnChange(fv, 'license_plate', 'entry_permissions', function() { return $('#entry_permissions').val().includes('auto') });
-        enableOnChange(fv, 'student_status_verification_file', 'position_id', function() { return $('#position_id').val() == 11 || $('#position_id').val() == 23 });
+        enableOnChange(fv, 'student_status_verification_file', 'position_id', function() {
+            const selectedPositionName = $('#position_id option:selected').text();
+            return selectedPositionName === 'egyetemi hallgató' || selectedPositionName === 'tudományos segédmunkatárs';
+        });
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
         if (!validateCostCenterSum()) {

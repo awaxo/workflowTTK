@@ -80,6 +80,13 @@ $navbarDetached = ($navbarDetached ?? '');
 
         <ul class="navbar-nav flex-row align-items-center ms-auto">
 
+        <!-- User document -->
+        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+          <a href="{{ asset('dokumentumok/Kezikonyv.docx') }}" download class="me-3">
+            <i class="fas fa-question-circle fa-2x"></i>
+          </a>
+        </li>
+        
         <!-- User -->
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
           <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">

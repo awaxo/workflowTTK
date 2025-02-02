@@ -82,7 +82,7 @@ $navbarDetached = ($navbarDetached ?? '');
 
         <!-- User document -->
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
-          <a href="{{ asset('dokumentumok/Kezikonyv.docx') }}" download class="me-3">
+          <a href="{{ asset('dokumentumok/Kezikonyv.pdf') }}" download class="me-3">
             <i class="fas fa-question-circle fa-2x"></i>
           </a>
         </li>

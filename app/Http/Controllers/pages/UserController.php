@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -38,52 +39,47 @@ class UserController extends Controller
 
     public function getAllUsers()
     {
-        $users = User::all()->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'workgroup_id' => $user->workgroup_id,
-                'workgroup_name' => ($user->workgroup->workgroup_number . ' - ' . $user->workgroup->name),
-                'role_names' => $user->roles->map(function ($role) {
-                    return $role->name;
-                }),
-                'roles' => $user->roles->map(function ($role) {
-                    return __('auth.roles.' . $role->name);
-                })->implode(', '),
-                'deleted' => $user->deleted,
-                'created_at' => $user->created_at,
-                'created_by_name' => $user->createdBy->name,
-                'updated_at' => $user->updated_at,
-                'updated_by_name' => $user->updatedBy->name,
-            ];
-        });
+        $users = User::withAdmin()
+            ->get()
+            ->map(function ($user) {
+                return $this->formatUserData($user);
+            });
+        return response()->json(['data' => $users]);
+    }
+
+    public function getFeaturedUsers()
+    {
+        $users = User::withFeatured()
+            ->where('featured', 1)
+            ->get()
+            ->map(function ($user) {
+                return $this->formatUserData($user);
+            });
+        return response()->json(['data' => $users]);
+    }
+
+    public function getAdminUsers()
+    {
+        $users = User::withAdmin()
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'adminisztrator');
+            })
+            ->get()
+            ->map(function ($user) {
+                return $this->formatUserData($user);
+            });
         return response()->json(['data' => $users]);
     }
 
     public function getUsersByRole($roleName)
     {
         $role = Role::findByName($roleName);
-        $users = $role->users->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'workgroup_id' => $user->workgroup_id,
-                'workgroup_name' => ($user->workgroup->workgroup_number . ' - ' . $user->workgroup->name),
-                'role_names' => $user->roles->map(function ($role) {
-                    return $role->name;
-                }),
-                'roles' => $user->roles->map(function ($role) {
-                    return __('auth.roles.' . $role->name);
-                })->implode(', '),
-                'deleted' => $user->deleted,
-                'created_at' => $user->created_at,
-                'created_by_name' => $user->createdBy->name,
-                'updated_at' => $user->updated_at,
-                'updated_by_name' => $user->updatedBy->name,
-            ];
-        });
+        $users = $role->users()
+            ->where('featured', 0)
+            ->get()
+            ->map(function ($user) {
+                return $this->formatUserData($user);
+            });
 
         return response()->json(['data' => $users]);
     }
@@ -131,6 +127,40 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'User created successfully']);
+    }
+
+    private function formatUserData($user)
+    {
+        if (!$user) {
+            return null;
+        }
+
+        try {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'workgroup_id' => $user->workgroup_id,
+                'workgroup_name' => $user->workgroup 
+                    ? ($user->workgroup->workgroup_number . ' - ' . $user->workgroup->name)
+                    : null,
+                'role_names' => $user->roles ? $user->roles->map(function ($role) {
+                    return $role->name;
+                }) : [],
+                'roles' => $user->roles ? $user->roles->map(function ($role) {
+                    return __('auth.roles.' . $role->name);
+                })->implode(', ') : '',
+                'deleted' => $user->deleted,
+                'featured' => $user->featured,
+                'created_at' => $user->created_at,
+                'created_by_name' => $user->createdBy ? $user->createdBy->name : null,
+                'updated_at' => $user->updated_at,
+                'updated_by_name' => $user->updatedBy ? $user->updatedBy->name : null,
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error formatting user data for user ID: ' . $user->id . '. Error: ' . $e->getMessage());
+            return null;
+        }
     }
 
     private function validateRequest()

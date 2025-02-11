@@ -31,21 +31,21 @@ class Delegation extends Model
 
     public function originalUser()
     {
-        return $this->belongsTo(User::class, 'original_user_id');
+        return $this->belongsTo(User::class, 'original_user_id')->withoutGlobalScopes();
     }
 
     public function delegateUser()
     {
-        return $this->belongsTo(User::class, 'delegate_user_id');
+        return $this->belongsTo(User::class, 'delegate_user_id')->withoutGlobalScopes();
     }
 
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by')->withoutGlobalScopes();
     }
 
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_by')->withoutGlobalScopes();
     }
 }

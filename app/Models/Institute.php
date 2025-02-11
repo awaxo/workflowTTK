@@ -32,7 +32,7 @@ class Institute extends Model
      */
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by')->withoutGlobalScopes();
     }
 
     /**
@@ -40,7 +40,7 @@ class Institute extends Model
      */
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_by')->withoutGlobalScopes();
     }
 
     // Additional methods related to this model can be added here

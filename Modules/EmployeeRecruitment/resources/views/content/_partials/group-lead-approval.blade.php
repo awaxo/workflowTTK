@@ -1,3 +1,6 @@
+<div id="health_allowance" 
+     data-medical="{{ $medical ? json_encode($medical) : '' }}">
+</div>
 <div class="card">
     <div class="card-body" id="health_allowance">
         <div class="content-header mb-3 d-flex justify-content-between align-items-center">

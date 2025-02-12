@@ -37,7 +37,8 @@
     @vite([
         'resources/js/app.js',
         'resources/assets/js/form-basic-inputs.js',
-        'Modules/EmployeeRecruitment/resources/assets/js/approve-recruitment.js'
+        'Modules/EmployeeRecruitment/resources/assets/js/approve-recruitment.js',
+        'Modules/EmployeeRecruitment/resources/assets/js/medical-eligibility.js'
     ])
 @endsection
 
@@ -83,7 +84,7 @@
                     <!-- Approval controls -->
                     <input type="hidden" id="state" value="{{ $recruitment->state }}">
                     @if($recruitment->state == 'group_lead_approval')
-                        @include('EmployeeRecruitment::content._partials.group-lead-approval', ['chemicalFactors' => $chemicalFactors])
+                        @include('EmployeeRecruitment::content._partials.group-lead-approval', ['chemicalFactors' => $chemicalFactors, 'medical' => $medical])
                     @endif
                     @if($recruitment->state == 'hr_lead_approval')
                         <div class="col-sm-2 mb-3">

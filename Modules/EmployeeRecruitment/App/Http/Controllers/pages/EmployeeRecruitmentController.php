@@ -391,6 +391,16 @@ class EmployeeRecruitmentController extends Controller
             $externalSystemsList = implode(', ', $externalSystems);
 
             $delegationService = new DelegationService();
+
+            $medicalData = null;
+            if (!is_null($recruitment->medical_eligibility_data)) {
+                try {
+                    $medicalData = json_decode($recruitment->medical_eligibility_data, true);
+                } catch (\Exception $e) {
+                    Log::error('Hiba a medical eligibility data feldolgozása során: ' . $e->getMessage());
+                }
+            }
+
             return view('employeerecruitment::content.pages.recruitment-approval', [
                 'recruitment' => $recruitment,
                 'id' => $id,
@@ -401,7 +411,8 @@ class EmployeeRecruitmentController extends Controller
                 'amountToCover' => $this->getAmountToCover($recruitment),
                 'totalAmountToCover' => $this->getTotalAmountToCover($recruitment),
                 'chemicalFactors' => $chemicalFactors,
-                'externalSystemsList' => $externalSystemsList
+                'externalSystemsList' => $externalSystemsList,
+                'medical' => $medicalData
             ]);
         } else {
             return view('content.pages.misc-not-authorized');

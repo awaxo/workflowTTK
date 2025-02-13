@@ -53,7 +53,7 @@ class Workgroup extends Model
      */
     public function leader()
     {
-        return $this->belongsTo(User::class, 'leader_id')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'leader_id');
     }
 
     /**
@@ -61,7 +61,7 @@ class Workgroup extends Model
      */
     public function laborAdministrator()
     {
-        return $this->belongsTo(User::class, 'labor_administrator')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'labor_administrator');
     }
 
     /**
@@ -69,7 +69,7 @@ class Workgroup extends Model
      */
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
@@ -77,6 +77,6 @@ class Workgroup extends Model
      */
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

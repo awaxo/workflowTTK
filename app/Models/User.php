@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\NonAdminScope;
-use App\Models\Scopes\NonFeaturedScope;
 use App\Traits\ImapTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,39 +15,6 @@ use Webklex\IMAP\Facades\Client;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, ImapTrait;
-
-    protected static function booted()
-    {
-        static::addGlobalScope(new NonFeaturedScope);
-        static::addGlobalScope(new NonAdminScope);
-    }
-
-    /**
-     * Get all users including the featured ones
-     */
-    public static function withFeatured()
-    {
-        return static::withoutGlobalScope(NonFeaturedScope::class);
-    }
-
-    /**
-     * Get all users including the admin ones
-     */
-    public static function withAdmin()
-    {
-        return static::withoutGlobalScope(NonAdminScope::class);
-    }
-
-    /**
-     * Get all users including the featured and admin ones
-     */
-    public static function withFeaturedAndAdmin()
-    {
-        return static::withoutGlobalScopes([
-            NonFeaturedScope::class,
-            NonAdminScope::class
-        ]);
-    }
 
     /**
      * Specify custom table name
@@ -91,7 +56,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'deleted' => 'boolean',
-        'featured' => 'boolean',
     ];
 
     /**
@@ -124,7 +88,7 @@ class User extends Authenticatable
      */
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
@@ -132,7 +96,7 @@ class User extends Authenticatable
      */
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     /**

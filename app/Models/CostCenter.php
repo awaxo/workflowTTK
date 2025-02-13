@@ -51,21 +51,21 @@ class CostCenter extends Model
 
     public function leadUser()
     {
-        return $this->belongsTo(User::class, 'lead_user_id')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'lead_user_id');
     }
 
     public function projectCoordinatorUser()
     {
-        return $this->belongsTo(User::class, 'project_coordinator_user_id')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'project_coordinator_user_id');
     }
 
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

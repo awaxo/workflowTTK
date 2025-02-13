@@ -50,7 +50,7 @@ class ChemicalPathogenicFactor extends Model
      */
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
@@ -58,6 +58,6 @@ class ChemicalPathogenicFactor extends Model
      */
     public function updatedBy()
     {
-        return $this->belongsTo(User::class, 'updated_by')->withoutGlobalScopes();
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

@@ -141,6 +141,6 @@ class ProfileController extends Controller
 
     public function getDelegates($type)
     {
-        return User::find(Auth::id())->getDelegates($type);
+        return User::nonAdmin()->find(Auth::id())->getDelegates($type);
     }
 }

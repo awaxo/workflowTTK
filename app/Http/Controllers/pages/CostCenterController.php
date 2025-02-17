@@ -83,6 +83,7 @@ class CostCenterController extends Controller
                 'updated_by_name' => $costCenter->updatedBy->name,
             ];
         });
+
         return response()->json(['data' => $costCenters]);
     }
 
@@ -109,6 +110,7 @@ class CostCenterController extends Controller
         $costCenter = CostCenter::find($id);
         $costCenter->fill($validatedData);
         $costCenter->valid_employee_recruitment = request('valid_employee_recruitment') == 'true' ? 1 : 0;
+        $costCenter->valid_procurement = request('valid_procurement') == 'true' ? 1 : 0;
         $costCenter->updated_by = Auth::id();
         $costCenter->save();
         
@@ -122,6 +124,7 @@ class CostCenterController extends Controller
         $costCenter = new CostCenter();
         $costCenter->fill($validatedData);
         $costCenter->valid_employee_recruitment = request('valid_employee_recruitment') == 'true' ? 1 : 0;
+        $costCenter->valid_procurement = request('valid_procurement') == 'true' ? 1 : 0;
         $costCenter->created_by = Auth::id();
         $costCenter->updated_by = Auth::id();
         $costCenter->save();

@@ -18,7 +18,8 @@ class CheckSuspendedDeadline extends Command
     {
         $this->info('Lejárt határidejű, felfüggesztett felvételi kérelmek ellenőrzése...');
 
-        $suspendThreshold = Option::where('option_name', 'recruitment_auto_suspend_threshold')->first()->option_value;
+        $suspendOption = Option::where('option_name', 'recruitment_auto_suspend_threshold')->first();
+        $suspendThreshold = intval($suspendOption->option_value);
         
         $recruitmentWorkflows = RecruitmentWorkflow::where('state', 'suspended')
             ->where('deleted', false)

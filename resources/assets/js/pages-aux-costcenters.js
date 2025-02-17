@@ -58,6 +58,16 @@ $(function() {
                 }
             },
             { 
+                data: 'valid_procurement',
+                render: function(data, type, row) {
+                    if (type === 'display') {
+                        return data ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            { 
                 data: 'deleted',
                 render: function(data, type, row) {
                     if (type === 'display') {
@@ -304,6 +314,12 @@ $(function() {
         } else {
             $('#valid_employee_recruitment').prop('checked', false);
         }
+        $('#valid_procurement').val(costcenter.valid_procurement);
+        if (costcenter.valid_procurement) {
+            $('#valid_procurement').prop('checked', true);
+        } else {
+            $('#valid_procurement').prop('checked', false);
+        }
         $('.data-submit').attr('data-costcenter-id', costcenter.id);
     });
 
@@ -340,6 +356,7 @@ $(function() {
                         due_date: $('#due_date').val(),
                         minimal_order_limit: $('#minimal_order_limit').val(),
                         valid_employee_recruitment: $('#valid_employee_recruitment').is(':checked'),
+                        valid_procurement: $('#valid_procurement').is(':checked')
                     },
                     success: function (response) {
                         window.location.reload();
@@ -422,6 +439,7 @@ $(function() {
         $('#due_date').val('');
         $('#minimal_order_limit').val('0');
         $('#valid_employee_recruitment').prop('checked', true);
+        $('#valid_procurement').prop('checked', true);
         $('#type_id').val($('#type_id option:first').val()).trigger('change');
         $('#lead_user_id').val($('#lead_user_id option:first').val()).trigger('change');
         $('#project_coordinator_user_id').val($('#project_coordinator_user_id option:first').val()).trigger('change');

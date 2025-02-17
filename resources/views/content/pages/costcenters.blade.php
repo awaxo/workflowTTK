@@ -76,6 +76,7 @@
                                 <th>Lejárat</th>
                                 <th>Minimális rendelési limit</th>
                                 <th>Érvényes felvételi kérelem</th>
+                                <th>Érvényes beszerzés</th>
                                 <th>Aktív</th>
                                 <th>Utolsó módosító</th>
                                 <th>Utolsó módosítás</th>
@@ -178,6 +179,13 @@
                     <label class="form-check-label" for="valid_employee_recruitment">Érvényes felvételi kérelem</label>
                     <div class="has-validation">
                         <input type="checkbox" id="valid_employee_recruitment" class="form-check-input" />
+                    </div>
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+                <div class="col-sm-12 fv-plugins-icon-container">
+                    <label class="form-check-label" for="valid_procurement">Érvényes beszerzés</label>
+                    <div class="has-validation">
+                        <input type="checkbox" id="valid_procurement" class="form-check-input" />
                     </div>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>

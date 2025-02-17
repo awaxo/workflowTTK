@@ -35,6 +35,7 @@ class CostCenter extends Model
     protected $casts = [
         'minimal_order_limit' => 'decimal:2',
         'valid_employee_recruitment' => 'boolean',
+        'valid_procurement' => 'boolean',
         'deleted' => 'boolean',
     ];
 

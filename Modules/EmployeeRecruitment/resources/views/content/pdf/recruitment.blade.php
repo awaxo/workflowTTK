@@ -1,3 +1,7 @@
+@php
+use App\Models\ExternalAccessRight;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -369,12 +373,16 @@
                 <td>
                     @if($recruitment->external_access_rights)
                         @php
-                            // External access rights
-                            $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
-                            $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
-                            // Extract the external_system fields
-                            $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
-                            $externalSystemsList = implode(', ', $externalSystems);
+                            try {
+                                // External access rights
+                                $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+                                $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+                                // Extract the external_system fields
+                                $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+                                $externalSystemsList = implode(', ', $externalSystems);
+                            } catch (\Exception $e) {
+                                $externalSystemsList = '-';
+                            }
                         @endphp
                         {{ $externalSystemsList }}
                     @else

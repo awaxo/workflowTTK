@@ -46,7 +46,7 @@ class StatePostFinancingApproval implements IStateResponsibility {
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
-        return 'to_registration';
+        return 'to_financial_counterparty_approval';
     }
 
     public function getDelegations(User $user): array {

@@ -54,7 +54,7 @@ class Handler extends ExceptionHandler
         }
 
         // Uncomment this line to log the stack trace
-        parent::report($exception);
+        //parent::report($exception);
     }
 
     public function render($request, Throwable $e)

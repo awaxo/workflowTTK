@@ -69,7 +69,7 @@ class StateEmployeeSignature implements IStateResponsibility {
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string {
-        return 'to_request_to_complete';
+        return 'to_registration';
     }
 
     public function getDelegations(User $user): array {

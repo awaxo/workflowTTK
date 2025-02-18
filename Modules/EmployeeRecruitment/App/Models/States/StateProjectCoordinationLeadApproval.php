@@ -66,7 +66,7 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
             if ($postFinancedExists) {
                 return 'to_post_financing_approval';
             } else {
-                return 'to_registration';
+                return 'to_financial_counterparty_approval';
             }
         }
         else {

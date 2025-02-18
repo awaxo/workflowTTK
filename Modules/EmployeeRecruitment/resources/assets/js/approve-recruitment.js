@@ -10,6 +10,8 @@ $(function () {
         });
     });
 
+    initObligeeNumberField();
+
     $('#chemical_hazards_exposure').select2();
 
     // dynamically appeared contols
@@ -41,8 +43,12 @@ $(function () {
         } else if ($('#state').val() === 'employee_signature' && $('#contract_file').val().length === 0) {
             $('#contractMissing').modal('show');
             return;
+        } else if ($('#state').val() === 'registration' && 
+            (!$('#obligee_number_year').val() || !$('#obligee_number_sequence').val())) {
+            $('#obligeeNumberMissing').modal('show');
+            return;
         }
-
+    
         $('#approveConfirmation').modal('show');
     });
 
@@ -118,7 +124,8 @@ $(function () {
                     probation_period: $('#probation_period').val(),
                     post_financed_application: $('#post_financed_application').val(),
                     contract_file: $('#contract_file').val(),
-                    message: $('#message').val()
+                    message: $('#message').val(),
+                    obligee_number: 'SZ/' + $('#obligee_number_year').val() + '/' + $('#obligee_number_sequence').val()
                 },
                 success: function (response) {
                     window.location.href = response.redirectUrl;
@@ -244,6 +251,17 @@ function dynamicControls(source, target) {
         }
     });
     $('#' + source).trigger('change');
+}
+
+function initObligeeNumberField() {
+    const yearSelect = $('#obligee_number_year');
+    const selectedOption = yearSelect.find('option[selected]');
+    
+    if (selectedOption.length > 0) {
+        yearSelect.val(selectedOption.val());
+    } else {
+        yearSelect.val('');
+    }
 }
 
 function revalidateOnChange(fv, targetId) {

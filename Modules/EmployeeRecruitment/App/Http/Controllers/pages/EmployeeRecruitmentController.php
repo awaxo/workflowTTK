@@ -901,6 +901,24 @@ class EmployeeRecruitmentController extends Controller
                 throw new \Exception('Probationary period length is not valid');
             }
             $recruitment->probation_period = $probation_period;
+        } elseif ($recruitment->state === 'registration') {
+            $obligee_number = $request->input('obligee_number');
+            
+            // Formátum ellenőrzése: SZ/YYYY/XXXXXXX
+            if (!$obligee_number || !preg_match('/^SZ\/\d{4}\/\d{7}$/', $obligee_number)) {
+                Log::error('A kötelezettségvállalási szám formátuma nem megfelelő: ' . $obligee_number);
+                throw new \Exception('Obligee number format is not valid. Required format: SZ/YYYY/XXXXXXX');
+            }
+            
+            // Év ellenőrzése (aktuális év és az elmúlt 5 év)
+            $year = substr($obligee_number, 3, 4);
+            $currentYear = date('Y');
+            if ($year > $currentYear || $year < ($currentYear - 5)) {
+                Log::error('A kötelezettségvállalási szám évszáma nem megfelelő: ' . $year);
+                throw new \Exception('Obligee number year is not valid');
+            }
+            
+            $recruitment->obligee_number = $obligee_number;
         } elseif ($recruitment->state === 'proof_of_coverage') {
             $post_financed_application = $request->input('post_financed_application');
             if ($post_financed_application === null) {
@@ -1166,6 +1184,8 @@ class EmployeeRecruitmentController extends Controller
             'student_status_verification_file' => 'nullable|string',
             'certificates_file' => 'required|string',
             'commute_support_form_file' => 'nullable|string',
+            'obligee_number_year' => 'required|integer',
+            'obligee_number_sequence' => 'required|string',
         ], [
             'name.required' => 'A név megadása kötelező',
             'name.string' => 'A név érvénytelen',
@@ -1230,7 +1250,10 @@ class EmployeeRecruitmentController extends Controller
             'personal_data_sheet_file.required' => 'Kérjük, töltsd fel a személyi adatlapot',
             'student_status_verification_file.required' => 'Kérjük, töltsd fel a hallgatói jogviszony igazolást',
             'certificates_file.required' => 'Kérjük, töltsd fel a bizonyítványokat',
-            'commute_support_form_file.required' => 'Kérjük, töltsd fel a munkába járási adatlapot'
+            'commute_support_form_file.required' => 'Kérjük, töltsd fel a munkába járási adatlapot',
+            'obligee_number_year.required' => 'Kérjük, add meg a kötelezettségvállalási szám évét',
+            'obligee_number_year.integer' => 'Kérjük, csak egész számot adj meg',
+            'obligee_number_sequence.required' => 'Kérjük, add meg a kötelezettségvállalási szám sorszámát',
         ]);
     }    
 }

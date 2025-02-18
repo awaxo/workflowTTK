@@ -21,13 +21,13 @@ return [
             'proof_of_coverage',
             'project_coordination_lead_approval',
             'post_financing_approval',
-            'registration',
             'financial_counterparty_approval',
             'obligee_approval',
             'draft_contract_pending',
             'financial_countersign_approval',
             'obligee_signature',
             'employee_signature',
+            'registration',
             'request_to_complete',
             'completed',
             'rejected',
@@ -68,12 +68,8 @@ return [
                 'from' => ['project_coordination_lead_approval', 'proof_of_coverage'],
                 'to' => 'post_financing_approval',
             ],
-            'to_registration' => [
-                'from' => ['post_financing_approval', 'project_coordination_lead_approval', 'proof_of_coverage'],
-                'to' => 'registration',
-            ],
             'to_financial_counterparty_approval' => [
-                'from' => 'registration',
+                'from' => ['post_financing_approval', 'project_coordination_lead_approval', 'proof_of_coverage'],
                 'to' => 'financial_counterparty_approval',
             ],
             'to_obligee_approval' => [
@@ -96,8 +92,12 @@ return [
                 'from' => 'obligee_signature',
                 'to' => 'employee_signature',
             ],
-            'to_request_to_complete' => [
+            'to_registration' => [
                 'from' => 'employee_signature',
+                'to' => 'registration',
+            ],
+            'to_request_to_complete' => [
+                'from' => 'registration',
                 'to' => 'request_to_complete',
             ],
             'to_completed' => [
@@ -108,9 +108,9 @@ return [
                 'from' => [
                     'new_request', 'it_head_approval', 'supervisor_approval', 'group_lead_approval',
                     'director_approval', 'hr_lead_approval', 'proof_of_coverage', 'project_coordination_lead_approval',
-                    'post_financing_approval', 'registration', 'financial_counterparty_approval', 'obligee_approval',
-                    'draft_contract_pending', 'financial_countersign_approval', 'obligee_signature', 'employee_signature',
-                    'request_to_complete', 'request_review',
+                    'post_financing_approval', 'financial_counterparty_approval', 'obligee_approval',
+                    'draft_contract_pending', 'financial_countersign_approval', 'obligee_signature', 'employee_signature', 
+                    'registration', 'request_to_complete', 'request_review',
                 ],
                 'to' => 'suspended',
             ],
@@ -118,9 +118,9 @@ return [
                 'from' => [
                     'new_request', 'it_head_approval', 'supervisor_approval', 'group_lead_approval',
                     'director_approval', 'hr_lead_approval', 'proof_of_coverage', 'project_coordination_lead_approval',
-                    'post_financing_approval', 'registration', 'financial_counterparty_approval', 'obligee_approval',
+                    'post_financing_approval', 'financial_counterparty_approval', 'obligee_approval',
                     'draft_contract_pending', 'financial_countersign_approval', 'obligee_signature', 'employee_signature',
-                    'request_to_complete', 'suspended', 'rejected',
+                    'registration', 'request_to_complete', 'suspended', 'rejected',
                 ],
                 'to' => 'request_review',
             ],
@@ -129,18 +129,18 @@ return [
                 'to' => [
                     'new_request', 'it_head_approval', 'supervisor_approval', 'group_lead_approval',
                     'director_approval', 'hr_lead_approval', 'proof_of_coverage', 'project_coordination_lead_approval',
-                    'post_financing_approval', 'registration', 'financial_counterparty_approval', 'obligee_approval',
+                    'post_financing_approval', 'financial_counterparty_approval', 'obligee_approval',
                     'draft_contract_pending', 'financial_countersign_approval', 'obligee_signature', 'employee_signature',
-                    'request_to_complete', 'request_review',
+                    'registration', 'request_to_complete', 'request_review',
                 ],
             ],
             'to_cancelled' => [
                 'from' => [
                     'new_request', 'it_head_approval', 'supervisor_approval', 'group_lead_approval',
                     'director_approval', 'hr_lead_approval', 'proof_of_coverage', 'project_coordination_lead_approval',
-                    'post_financing_approval', 'registration', 'financial_counterparty_approval', 'obligee_approval',
+                    'post_financing_approval', 'financial_counterparty_approval', 'obligee_approval',
                     'draft_contract_pending', 'financial_countersign_approval', 'obligee_signature', 'employee_signature',
-                    'request_to_complete', 'completed', 'rejected', 'suspended', 'request_review',
+                    'registration', 'request_to_complete', 'completed', 'rejected', 'suspended', 'request_review',
                 ],
                 'to' => 'cancelled',
             ],

@@ -143,6 +143,42 @@
                             <input type="hidden" id="contract_file" data-original-name="" name="contract_file" />
                         </div>
                     @endif
+                    @if($recruitment->state == 'registration')
+                        @php
+                            $obligeeYear = '';
+                            $obligeeSequence = '';
+                            
+                            if ($recruitment->obligee_number) {
+                                $parts = explode('/', $recruitment->obligee_number);
+                                if (count($parts) === 3) {
+                                    $obligeeYear = intval($parts[1]);
+                                    $obligeeSequence = $parts[2];
+                                }
+                            }
+                        @endphp
+                        <div class="col-sm-6 mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-4">
+                                    <label class="form-label mb-0" for="obligee_number">Kötelezettségvállalási szám</label>
+                                </div>
+                                <div class="col-8">
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-1">SZ/</span>
+                                        <select class="form-select me-1" id="obligee_number_year" style="width: auto">
+                                            <option value="">Válassz...</option>
+                                            @for($year = date('Y'); $year >= date('Y') - 5; $year--)
+                                                <option value="{{ $year }}" {{ (int)$obligeeYear === (int)$year ? 'selected' : '' }}>
+                                                    {{ $year }}
+                                                </option>
+                                            @endfor
+                                        </select>
+                                        <span class="me-1">/</span>
+                                        <input type="text" class="form-control" id="obligee_number_sequence" style="width: 100px;" value="{{ $obligeeSequence }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     @if($recruitment->state == 'draft_contract_pending')
                         <div id="action_buttons" class="d-grid mt-4 d-none">
@@ -246,6 +282,20 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a próbaidő hosszát, ami 7 és 90 nap között kell legyen!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Obligee number missing modal -->
+<div class="modal fade" id="obligeeNumberMissing" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a szerződés kötelezettségvállalási számát</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>

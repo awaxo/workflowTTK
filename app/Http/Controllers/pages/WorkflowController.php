@@ -34,9 +34,9 @@ class WorkflowController extends Controller
                     'state' => __('states.' . $workflow->state),
                     'state_name' => $workflow->state,
                     'initiator_institute_abbreviation' => $workflow->initiator_institute["abbreviation"],
-                    'updated_by_name' => $workflow->updated_by["name"],
+                    'updated_by_name' => $workflow->updated_by["name"] ?? 'Technikai felhasználó',
                     'updated_at' => $workflow->updated_at,
-                    'created_by_name' => $workflow->created_by["name"],
+                    'created_by_name' => $workflow->created_by["name"] ?? 'Technikai felhasználó',
                     'created_at' => $workflow->created_at,
                     'is_user_responsible' => $workflow->is_user_responsible,
                     'is_closed' => $workflow->is_closed,
@@ -61,9 +61,9 @@ class WorkflowController extends Controller
                     'state' => __('states.' . $workflow->state),
                     'state_name' => $workflow->state,
                     'initiator_institute_abbreviation' => $workflow->initiator_institute["abbreviation"],
-                    'updated_by_name' => $workflow->updated_by["name"],
+                    'updated_by_name' => $workflow->updated_by["name"] ?? 'Technikai felhasználó',
                     'updated_at' => $workflow->updated_at,
-                    'created_by_name' => $workflow->created_by["name"],
+                    'created_by_name' => $workflow->created_by["name"] ?? 'Technikai felhasználó',
                     'created_at' => $workflow->created_at,
                     'is_user_responsible' => $workflow->is_user_responsible
                 ];

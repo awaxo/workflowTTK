@@ -5,14 +5,7 @@ import { is } from 'immutable';
 'use strict';
 
 $(function () {
-    // set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand',
-            delimiter: ' ',
-        });
-    });
+    const instances = GLOBALS.initNumberInputs();
 
     $("#delegation_start_date, #delegation_end_date").datepicker({
         format: "yyyy.mm.dd",

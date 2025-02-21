@@ -4,11 +4,7 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true
-        });
-    });
+    const instances = GLOBALS.initNumberInputs();
 
     function waitForIntl(callback) {
         if (typeof $.fn.dataTable.ext.order.intl === 'function') {
@@ -285,7 +281,7 @@ $(function() {
                     type: 'POST',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
-                        workgroup_number: $('#workgroup_number').val(),
+                        workgroup_number: GLOBALS.cleanNumber($('#workgroup_number').val()),
                         name: $('#name').val(),
                         leader_id: $('#leader_id').val(),
                         labor_administrator: $('#labor_administrator').val(),
@@ -337,9 +333,6 @@ function validateWorkgroup() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg a csoportszámot'
-                        },
-                        numeric: {
-                            message: 'A csoportszám csak szám lehet'
                         },
                         stringLength: {
                             max: 5,

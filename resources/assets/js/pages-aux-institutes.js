@@ -4,12 +4,7 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
-    // Set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true
-        });
-    });
+    const instances = GLOBALS.initNumberInputs();
 
     // set locale for sorting
     $.fn.dataTable.ext.order.intl('hu', {

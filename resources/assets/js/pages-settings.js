@@ -1,14 +1,7 @@
 import GLOBALS from '../../js/globals.js';
 
 $(function() {
-    // set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand',
-            delimiter: ' ',
-        });
-    });
+    const instances = GLOBALS.initNumberInputs();
 
     $('.btn-submit-generic').on('click', function(e) {
         $.ajax({
@@ -17,8 +10,8 @@ $(function() {
             data: {
                 _token: $('meta[name="csrf-token"]').attr('content'),
                 settings: {
-                    recruitment_auto_suspend_threshold: $('#recruitment_auto_suspend_threshold').val(),
-                    recruitment_director_approve_salary_threshold: $('#recruitment_director_approve_salary_threshold').val(),
+                    recruitment_auto_suspend_threshold: GLOBALS.cleanNumber($('#recruitment_auto_suspend_threshold').val()),
+                    recruitment_director_approve_salary_threshold: GLOBALS.cleanNumber($('#recruitment_director_approve_salary_threshold').val()),
                 },
             },
             success: function(response) {

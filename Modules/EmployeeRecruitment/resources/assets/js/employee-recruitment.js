@@ -5,16 +5,7 @@ import { min } from 'lodash';
 
 var cleaveInstances = {};
 $(function () {
-    // set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        var cleave = new Cleave(field, {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand',
-            delimiter: ' ',
-        });
-
-        cleaveInstances[field.id] = cleave;
-    });
+    cleaveInstances = GLOBALS.initNumberInputs();
 
     // set datepicker date fields
     $("#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date").datepicker({

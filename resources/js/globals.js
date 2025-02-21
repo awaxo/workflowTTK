@@ -1,4 +1,6 @@
 class GLOBALS {
+    static cleaveInstances = {};
+
     static DATATABLE_TRANSLATION = {
         "sEmptyTable":     "Nincs rendelkezésre álló adat",
         "sInfo":           "Találatok: _START_ - _END_ Összesen: _TOTAL_",
@@ -41,6 +43,48 @@ class GLOBALS {
                 '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
             '</div>').insertBefore('.nav-align-top');
         }
+    };
+
+    /**
+     * Removes thousand separators and other non-numeric characters from the number
+     * @param {string|number} value - The value to clean
+     * @returns {string|null} - The cleaned number or null
+     */
+    static cleanNumber = function(value) {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+        return value.toString().replace(/[^\d.-]/g, '');
+    };
+
+    /**
+     * Format number inputs using Cleave.js
+     * @param {string} selector - jQuery selector for the input fields to format
+     */
+    static initNumberInputs = function(selector = '.numeral-mask') {
+        $(selector).toArray().forEach(function(field) {
+            const cleave = new Cleave(field, {
+                numeral: true,
+                numeralThousandsGroupStyle: 'thousand',
+                delimiter: ' ',
+            });
+
+            // Store instance only if field has an ID
+            if (field.id) {
+                GLOBALS.cleaveInstances[field.id] = cleave;
+            }
+        });
+
+        return GLOBALS.cleaveInstances;
+    };
+
+    /**
+     * Get a specific Cleave instance by field ID
+     * @param {string} fieldId - The ID of the input field
+     * @returns {Cleave|null} - The Cleave instance or null if not found
+     */
+    static getCleaveInstance = function(fieldId) {
+        return GLOBALS.cleaveInstances[fieldId] || null;
     };
 }
 

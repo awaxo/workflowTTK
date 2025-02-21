@@ -5,14 +5,7 @@ import { transform } from 'lodash';
 var fv;
 
 $(function() {
-    // set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand',
-            delimiter: ' '
-        });
-    });
+    const instances = GLOBALS.initNumberInputs();
 
     $('#due_date').datepicker({
         format: "yyyy.mm.dd",

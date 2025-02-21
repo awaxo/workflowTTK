@@ -3,12 +3,7 @@ import DropzoneManager from '../../../../../resources/js/dropzone-manager';
 import { trim } from 'lodash';
 
 $(function () {
-    // Set numeral mask to number fields
-    $('.numeral-mask').toArray().forEach(function(field){
-        new Cleave(field, {
-            numeral: true
-        });
-    });
+    const instances = GLOBALS.initNumberInputs();
 
     initObligeeNumberField();
 

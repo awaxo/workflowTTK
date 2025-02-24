@@ -114,6 +114,71 @@ class UserController extends Controller
         return response()->json(['message' => 'User created successfully']);
     }
 
+    /**
+     * Creates a new user or updates existing one from provided data
+     * 
+     * @param array $userData Array containing user data with the following keys:
+     *                      - name
+     *                      - email
+     *                      - workgroup_id
+     *                      - workflow_id
+     *                      - social_security_number
+     *                      - contract_expiration
+     *                      - legal_relationship
+     * @return User
+     */
+    public function createUserFromData(array $userData): User
+    {
+        try {
+            // Check if user exists with the given social security number
+            $user = User::where('social_security_number', $userData['social_security_number'])->first();
+            $isNewUser = !$user;
+
+            if (!$user) {
+                $user = new User();
+                // Set creation audit fields for new user
+                $user->created_at = now();
+                $user->created_by = 1;
+            }
+            
+            // Map basic information
+            $user->name = $userData['name'];
+            $user->email = $userData['email'];
+            $user->workgroup_id = $userData['workgroup_id'];
+            
+            // Only set password for new users
+            if ($isNewUser) {
+                $user->password = bcrypt('password');
+            }
+            
+            $user->workflow_id = $userData['workflow_id'];
+            $user->social_security_number = $userData['social_security_number'];
+            $user->contract_expiration = $userData['contract_expiration'];
+            $user->legal_relationship = $userData['legal_relationship'];
+            
+            // Update audit fields
+            $user->updated_at = now();
+            $user->updated_by = 1;
+            
+            $user->save();
+
+            Log::info($isNewUser ? 'User created successfully' : 'User updated successfully', [
+                'workflow_id' => $userData['workflow_id'],
+                'user_id' => $user->id,
+                'social_security_number' => $userData['social_security_number']
+            ]);
+            
+            return $user;
+        } catch (\Exception $e) {
+            Log::error('Failed to create/update user', [
+                'workflow_id' => $userData['workflow_id'] ?? null,
+                'social_security_number' => $userData['social_security_number'] ?? null,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
     private function formatUserData($user)
     {
         if (!$user) {

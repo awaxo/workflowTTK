@@ -2,12 +2,14 @@
 
 namespace Modules\EmployeeRecruitment\App\Http\Controllers\pages;
 
+use App\Enums\LegalRelationship;
 use App\Events\ApproverAssignedEvent;
 use App\Events\CancelledEvent;
 use App\Events\RejectedEvent;
 use App\Events\StateChangedEvent;
 use App\Events\SuspendedEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\pages\UserController;
 use App\Models\ChemicalPathogenicFactor;
 use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
@@ -487,6 +489,8 @@ class EmployeeRecruitmentController extends Controller
         $service = new WorkflowService();
 
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {
+            $isRequestToComplete = $recruitment->state === 'request_to_complete';
+
             if ($recruitment->state == 'group_lead_approval') {
                 // Collect client fields for medical eligibility
                 $medicalEligibilityData = $request->only([
@@ -546,6 +550,27 @@ class EmployeeRecruitmentController extends Controller
                     $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
                     $recruitment->workflow_apply($transition);
                     $recruitment->updated_by = Auth::id();
+
+                    // Create user if the previous state was request_to_complete
+                    if ($isRequestToComplete) {
+                            try {
+                                $userData = [
+                                'name' => $recruitment->name,
+                                'email' => $recruitment->email,
+                                'workgroup_id' => $recruitment->workgroup_id_1,
+                                'workflow_id' => $recruitment->id,
+                                'social_security_number' => $recruitment->social_security_number,
+                                'contract_expiration' => $recruitment->employment_end_date,
+                                'legal_relationship' => LegalRelationship::EMPLOYEE,
+                            ];
+
+                            $userController = new UserController();
+                            $user = $userController->createUserFromData($userData);
+                        } catch (\Exception $e) {
+                            Log::error('Failed to create user from workflow: ' . $e->getMessage());
+                            throw new \Exception('Failed to create user from workflow: ' . $e->getMessage());
+                        }
+                    }
 
                     $recruitment->save();
                     $message = $request->input('message') ? $request->input('message') : '';

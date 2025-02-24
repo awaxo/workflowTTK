@@ -61,6 +61,10 @@ class User extends Authenticatable
         'notification_preferences',
         'workgroup_id',
         'email_verified_at',
+        'workflow_id',
+        'social_security_number',
+        'contract_expiration',
+        'legal_relationship',
         'password',
         'created_by',
         'updated_by'
@@ -83,6 +87,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'contract_expiration' => 'date',
         'password' => 'hashed',
         'deleted' => 'boolean',
     ];

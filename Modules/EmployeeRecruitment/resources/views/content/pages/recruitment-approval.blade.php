@@ -133,6 +133,12 @@
                     @endif
                     @if($recruitment->state == 'employee_signature')
                         <div class="mb-3">
+                            <label class="form-label" for="contract_registration_number">Szerződés iktatószáma</label>
+                            <input type="text" class="form-control" id="contract_registration_number" name="contract_registration_number" 
+                                value="{{ $recruitment->contract_registration_number ?? '' }}" placeholder="Szerződés iktatószáma...">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label" for="contract">Szerződés</label>
                             <form action="/file/upload" class="dropzone needsclick" id="contract" name="contract">
                                 @csrf
@@ -282,6 +288,20 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a próbaidő hosszát, ami 7 és 90 nap között kell legyen!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contract Registration Number missing modal -->
+<div class="modal fade" id="contractRegistrationNumberMissing" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a szerződés iktatószámát (6-12 karakter hosszúságban)</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>

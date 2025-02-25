@@ -336,6 +336,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'commute_support_form',
             'probation_period',
             'contract',
+            'contract_registration_number',
             'obligee_number',
             'medical_eligibility_data'
         ]);

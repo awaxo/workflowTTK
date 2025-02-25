@@ -453,6 +453,10 @@
                 <label class="form-label col-6 col-md-3">Szerződés kötelezettségvállalási szám</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->obligee_number ? $recruitment->obligee_number : '-' }}</span>
             </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Szerződés iktatószám</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->contract_registration_number ? $recruitment->contract_registration_number : '-' }}</span>
+            </div>
         </div>
     </div>
 </div>

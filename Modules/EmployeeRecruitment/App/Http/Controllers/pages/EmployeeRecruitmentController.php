@@ -544,17 +544,17 @@ class EmployeeRecruitmentController extends Controller
             if ($service->isAllApproved($recruitment)) {
                 $transition = $service->getNextTransition($recruitment);
                 $previous_state = $recruitment->state;
-
+    
                 if ($transition) {
                     $this->validateFields($recruitment, $request);
                     $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
                     $recruitment->workflow_apply($transition);
                     $recruitment->updated_by = Auth::id();
-
+    
                     // Create user if the previous state was request_to_complete
                     if ($isRequestToComplete) {
-                            try {
-                                $userData = [
+                        try {
+                            $userData = [
                                 'name' => $recruitment->name,
                                 'email' => $recruitment->email,
                                 'workgroup_id' => $recruitment->workgroup_id_1,
@@ -563,7 +563,7 @@ class EmployeeRecruitmentController extends Controller
                                 'contract_expiration' => $recruitment->employment_end_date,
                                 'legal_relationship' => LegalRelationship::EMPLOYEE,
                             ];
-
+    
                             $userController = new UserController();
                             $user = $userController->createUserFromData($userData);
                         } catch (\Exception $e) {
@@ -571,7 +571,7 @@ class EmployeeRecruitmentController extends Controller
                             throw new \Exception('Failed to create user from workflow: ' . $e->getMessage());
                         }
                     }
-
+    
                     $recruitment->save();
                     $message = $request->input('message') ? $request->input('message') : '';
                     event(new StateChangedEvent($recruitment, $previous_state, $recruitment->state, $message));
@@ -960,6 +960,18 @@ class EmployeeRecruitmentController extends Controller
             $recruitment->meta_data = json_encode($metaData);
         } elseif ($recruitment->state === 'employee_signature') {
             $recruitment->contract = $this->getNewFileName($recruitment->name, 'AláírtSzerződés', $request->input('contract_file'));
+            
+            // Validate and save contract_registration_number
+            $contract_registration_number = $request->input('contract_registration_number');
+            
+            // Check if the field is provided and has valid length
+            if (!$contract_registration_number || strlen($contract_registration_number) < 6 || strlen($contract_registration_number) > 12) {
+                Log::error('A szerződés nyilvántartási száma nem megfelelő hosszúságú: ' . ($contract_registration_number ?? 'nincs megadva'));
+                throw new \Exception('Contract registration number must be between 6 and 12 characters');
+            }
+            
+            // Save the validated value
+            $recruitment->contract_registration_number = $contract_registration_number;
         }
     }
 

@@ -38,6 +38,12 @@ $(function () {
         } else if ($('#state').val() === 'employee_signature' && $('#contract_file').val().length === 0) {
             $('#contractMissing').modal('show');
             return;
+        } else if ($('#state').val() === 'employee_signature') {
+            const regNumber = $('#contract_registration_number').val();
+            if (!regNumber || regNumber.length < 6 || regNumber.length > 12) {
+                $('#contractRegistrationNumberMissing').modal('show');
+                return;
+            }
         } else if ($('#state').val() === 'registration' && 
             (!$('#obligee_number_year').val() || !$('#obligee_number_sequence').val())) {
             $('#obligeeNumberMissing').modal('show');
@@ -111,17 +117,29 @@ $(function () {
                 }
             });
         } else {
+            // Create an object to hold the data
+            var postData = {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                probation_period: $('#probation_period').val(),
+                post_financed_application: $('#post_financed_application').val(),
+                contract_file: $('#contract_file').val(),
+                message: $('#message').val()
+            };
+
+            // Add obligee_number only if both parts are available
+            if ($('#obligee_number_year').val() && $('#obligee_number_sequence').val()) {
+                postData.obligee_number = 'SZ/' + $('#obligee_number_year').val() + '/' + $('#obligee_number_sequence').val();
+            }
+
+            // Add contract_registration_number if we're in employee_signature state
+            if ($('#state').val() === 'employee_signature' && $('#contract_registration_number').val()) {
+                postData.contract_registration_number = $('#contract_registration_number').val();
+            }
+
             $.ajax({
                 url: '/employee-recruitment/' + recruitmentId + '/approve',
                 type: 'POST',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    probation_period: $('#probation_period').val(),
-                    post_financed_application: $('#post_financed_application').val(),
-                    contract_file: $('#contract_file').val(),
-                    message: $('#message').val(),
-                    obligee_number: 'SZ/' + $('#obligee_number_year').val() + '/' + $('#obligee_number_sequence').val()
-                },
+                data: postData,
                 success: function (response) {
                     window.location.href = response.redirectUrl;
                 },

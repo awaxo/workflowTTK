@@ -72,6 +72,15 @@
                         </div>
                     </div>
                     <div class="col-12">
+                        <div class="col-6">
+                            <label for="notification_api_url" class="form-label">Értesítési API URL</label>
+                            <div class="d-flex align-items-center">
+                                <input class="form-control" type="text" id="notification_api_url" value="{{ $options['notification_api_url'] ?? '' }}" name="notification_api_url" placeholder="https://example.com/api/notification" />
+                            </div>
+                            <small class="text-muted">A segédtáblák módosításakor (csoport, felhasználó, költséghely, költséghely típus) erre az URL-re küldünk értesítést.</small>
+                        </div>
+                    </div>
+                    <div class="col-12">
                         <button class="btn btn-success btn-submit-generic">Mentés</button>
                     </div>
                 </div>

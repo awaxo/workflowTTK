@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\CostCenter;
 use App\Models\CostCenterType;
@@ -113,6 +114,8 @@ class CostCenterController extends Controller
         $costCenter->valid_procurement = request('valid_procurement') == 'true' ? 1 : 0;
         $costCenter->updated_by = Auth::id();
         $costCenter->save();
+
+        event(new ModelChangedEvent($costCenter, 'updated'));
         
         return response()->json(['message' => 'Cost center updated successfully']);
     }
@@ -128,6 +131,8 @@ class CostCenterController extends Controller
         $costCenter->created_by = Auth::id();
         $costCenter->updated_by = Auth::id();
         $costCenter->save();
+
+        event(new ModelChangedEvent($costCenter, 'created'));
 
         return response()->json(['message' => 'Cost center created successfully']);
     }

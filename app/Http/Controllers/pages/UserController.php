@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
@@ -96,6 +97,8 @@ class UserController extends Controller
         $user->updated_by = Auth::id();
         $user->save();
 
+        event(new ModelChangedEvent($user, 'updated'));
+
         return response()->json(['message' => 'User updated successfully']);
     }
 
@@ -110,6 +113,8 @@ class UserController extends Controller
         $user->created_by = Auth::id();
         $user->updated_by = Auth::id();
         $user->save();
+
+        event(new ModelChangedEvent($user, 'created'));
 
         return response()->json(['message' => 'User created successfully']);
     }

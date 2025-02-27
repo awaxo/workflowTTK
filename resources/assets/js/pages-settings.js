@@ -3,7 +3,27 @@ import GLOBALS from '../../js/globals.js';
 $(function() {
     const instances = GLOBALS.initNumberInputs();
 
+    function isValidURL(url) {
+        try {
+            if (!url || url.trim() === '') {
+                return true;
+            }
+            
+            new URL(url);
+            
+            return /^https?:\/\//.test(url);
+        } catch (e) {
+            return false;
+        }
+    }
+
     $('.btn-submit-generic').on('click', function(e) {
+        const apiUrl = $('#notification_api_url').val().trim();
+        if (apiUrl !== '' && !isValidURL(apiUrl)) {
+            GLOBALS.AJAX_ERROR('Az API URL formátuma érvénytelen. Kérjük, adjon meg egy érvényes URL-t (pl. https://example.com/api).');
+            return;
+        }
+
         $.ajax({
             url: '/api/settings/update',
             type: 'POST',
@@ -12,6 +32,7 @@ $(function() {
                 settings: {
                     recruitment_auto_suspend_threshold: GLOBALS.cleanNumber($('#recruitment_auto_suspend_threshold').val()),
                     recruitment_director_approve_salary_threshold: GLOBALS.cleanNumber($('#recruitment_director_approve_salary_threshold').val()),
+                    notification_api_url: apiUrl,
                 },
             },
             success: function(response) {
@@ -26,6 +47,18 @@ $(function() {
                 GLOBALS.AJAX_ERROR('Hiba történt a beállítások mentése során!', jqXHR, textStatus, errorThrown);
             }
         });
+    });
+
+    $('#notification_api_url').on('blur', function() {
+        const apiUrl = $(this).val().trim();
+        if (apiUrl !== '' && !isValidURL(apiUrl)) {
+            $(this).addClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+            $(this).after('<div class="invalid-feedback">Kérjük, adjon meg egy érvényes URL-t (pl. https://example.com/api).</div>');
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
     });
 
     $('#workflows').on('change', function() {

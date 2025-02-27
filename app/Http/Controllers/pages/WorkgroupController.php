@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Workgroup;
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class WorkgroupController extends Controller
@@ -71,6 +73,8 @@ class WorkgroupController extends Controller
         $workgroup->updated_by = Auth::id();
         $workgroup->save();
 
+        event(new ModelChangedEvent($workgroup, 'updated'));
+
         return response()->json(['success' => 'Workgroup updated successfully']);
     }
 
@@ -83,6 +87,8 @@ class WorkgroupController extends Controller
         $workgroup->created_by = Auth::id();
         $workgroup->updated_by = Auth::id();
         $workgroup->save();
+
+        event(new ModelChangedEvent($workgroup, 'created'));
 
         return response()->json(['success' => 'Workgroup created successfully']);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\CostCenterType;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,8 @@ class CostCenterTypeController extends Controller
         $costcenterType->updated_by = Auth::id();
         $costcenterType->save();
 
+        event(new ModelChangedEvent($costcenterType, 'updated'));
+
         return response()->json(['message' => 'Cost center type updated successfully']);
     }
 
@@ -73,6 +76,8 @@ class CostCenterTypeController extends Controller
         $costcenterType->created_by = Auth::id();
         $costcenterType->updated_by = Auth::id();
         $costcenterType->save();
+
+        event(new ModelChangedEvent($costcenterType, 'created'));
 
         return response()->json(['message' => 'Cost center type created successfully']);
     }

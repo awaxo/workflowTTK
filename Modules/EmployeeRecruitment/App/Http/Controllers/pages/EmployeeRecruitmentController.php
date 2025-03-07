@@ -259,9 +259,9 @@ class EmployeeRecruitmentController extends Controller
                 'employment_type' => $recruitment->employment_type,
                 'employment_start_date' => $recruitment->employment_start_date,
                 'created_at' => $recruitment->created_at,
-                'created_by_name' => $recruitment->createdBy->name,
+                'created_by_name' => $recruitment->createdBy ? $recruitment->createdBy->name : null,
                 'updated_at' => $recruitment->updated_at,
-                'updated_by_name' => $recruitment->updatedBy->name,
+                'updated_by_name' => $recruitment->updatedBy ? $recruitment->updatedBy->name : null,
                 'is_user_responsible' => $service->isUserResponsible(Auth::user(), $recruitment_workflow),
                 'is_closed' => $recruitment->state == 'completed' || $recruitment->state == 'rejected' || $recruitment->state == 'cancelled',
                 'is_initiator_role' => User::find(Auth::id())->hasRole('titkar_' . $recruitment->initiator_institute_id),
@@ -972,6 +972,8 @@ class EmployeeRecruitmentController extends Controller
             
             // Save the validated value
             $recruitment->contract_registration_number = $contract_registration_number;
+        } elseif ($recruitment->state === 'draft_contract_pending' && $request->has('social_security_number')) {
+            $recruitment->social_security_number = $request->input('social_security_number');
         }
     }
 
@@ -1032,7 +1034,13 @@ class EmployeeRecruitmentController extends Controller
         return request()->validate([
             'name' => 'required|string|max:100',
             'birth_date' => 'required|date_format:Y.m.d',
-            'social_security_number' => 'required|string',
+            'social_security_number' => [
+                function ($attribute, $value, $fail) {
+                    if (request('citizenship') != 'Harmadik országbeli' && empty($value)) {
+                        $fail('A TAJ szám megadása kötelező.');
+                    }
+                },
+            ],
             'address' => 'required|string|max:1000',
             'applicants_female_count' => [
                 'required_if:job_ad_exists,true',

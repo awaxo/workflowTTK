@@ -112,6 +112,12 @@
                         </div>
                     @endif
                     @if($recruitment->state == 'draft_contract_pending')
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label" for="social_security_number">TAJ szám</label>
+                            <input type="text" class="form-control" id="social_security_number" name="social_security_number" 
+                                value="{{ $recruitment->social_security_number ?? '' }}" placeholder="123 456 789">
+                            <div class="form-text">A TAJ szám megadása kötelező. Formátum: 123 456 789</div>
+                        </div>
                         <div class="col-sm-2 mb-3 mt-4">
                             <a href="{{ route('generate.pdf', ['id' => $id]) }}" class="print-icon-1 me-5" target="_blank" title="Felvételi kérelem">
                                 <i class="fa fa-print fs-1"></i>
@@ -121,12 +127,6 @@
                             </a>
                         </div>
                         <div id="message_parent" class="mb-3 d-none">
-                            <label class="form-label" for="message">Üzenet</label>
-                            <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
-                        </div>
-                    @endif
-                    @if($recruitment->state != 'draft_contract_pending')
-                        <div class="mb-3 mt-4">
                             <label class="form-label" for="message">Üzenet</label>
                             <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
                         </div>
@@ -316,6 +316,20 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p>Amennyiben jóváhagyod a kérelmet, meg kell adnod a szerződés kötelezettségvállalási számát</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TAJ number missing modal -->
+<div class="modal fade" id="ssnMissing" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>A TAJ szám megadása kötelező! A TAJ szám formátuma: 123 456 789 kell, hogy legyen.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rendben</button>

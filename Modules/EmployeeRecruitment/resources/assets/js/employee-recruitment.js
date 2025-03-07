@@ -4,6 +4,8 @@ import GLOBALS from '../../../../../resources/js/globals.js';
 import { min } from 'lodash';
 
 var cleaveInstances = {};
+var fv;
+
 $(function () {
     cleaveInstances = GLOBALS.initNumberInputs();
 
@@ -270,13 +272,19 @@ $(function () {
     // Filter controls based on selected position
     filterByPosition();
 
+    // Revalidate social security number when citizenship changes
+    $('#citizenship').on('change', function() {
+        if (fv) {
+            fv.revalidateField('social_security_number');
+        }
+    });
 
     // Submit employee recruitment form
     $('.btn-submit').on('click', function (event) {
         event.preventDefault();
 
         $('.invalid-feedback').remove();
-        let fv = validateEmployeeRecruitment();
+        fv = validateEmployeeRecruitment();
 
         // revalidate fields when their values change
         revalidateOnChange(fv, 'name');
@@ -918,13 +926,34 @@ function validateEmployeeRecruitment() {
                 },
                 social_security_number: {
                     validators: {
-                        notEmpty: {
-                            message: 'Kérjük, add meg a TAJ számot'
-                        },
-                        regexp: {
-                            regexp: /^[0-9]{3}\s[0-9]{3}\s[0-9]{3}$/,
-                            message: 'A TAJ szám formátuma: 123 456 789 kell, hogy legyen'
-                        },
+                        callback: {
+                            message: 'Kérjük, add meg a TAJ számot',
+                            callback: function(input) {
+                                // Ha az állampolgárság "Harmadik országbeli", akkor nem kötelező
+                                if ($('#citizenship').val() === 'Harmadik országbeli') {
+                                    return true;
+                                }
+                                
+                                // Egyébként kötelező és megfelelő formátumú kell legyen
+                                if (!input.value) {
+                                    return {
+                                        valid: false,
+                                        message: 'Kérjük, add meg a TAJ számot'
+                                    };
+                                }
+                                
+                                // Formátum ellenőrzése: 123 456 789
+                                var regex = /^[0-9]{3}\s[0-9]{3}\s[0-9]{3}$/;
+                                if (!regex.test(input.value)) {
+                                    return {
+                                        valid: false,
+                                        message: 'A TAJ szám formátuma: 123 456 789 kell, hogy legyen'
+                                    };
+                                }
+                                
+                                return true;
+                            }
+                        }
                     }
                 },
                 address: {

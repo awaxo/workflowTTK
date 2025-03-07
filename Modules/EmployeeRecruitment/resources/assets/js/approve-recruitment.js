@@ -5,6 +5,16 @@ import { trim } from 'lodash';
 $(function () {
     const instances = GLOBALS.initNumberInputs();
 
+    // Format the social security number input if it exists
+    var socialSecurityNumberField = $('#social_security_number');
+    if (socialSecurityNumberField) {
+        var cleaveSSN = new Cleave(socialSecurityNumberField, {
+            numericOnly: true,
+            blocks: [3, 3, 3],
+            delimiters: [' ', ' '],
+        });
+    }
+
     initObligeeNumberField();
 
     $('#chemical_hazards_exposure').select2();
@@ -48,6 +58,14 @@ $(function () {
             (!$('#obligee_number_year').val() || !$('#obligee_number_sequence').val())) {
             $('#obligeeNumberMissing').modal('show');
             return;
+        } else if ($('#state').val() === 'draft_contract_pending') {
+            // Validate social security number
+            const ssn = $('#social_security_number').val();
+            // Check if SSN is missing or in correct format (123 456 789)
+            if (!ssn || !ssn.match(/^[0-9]{3}\s[0-9]{3}\s[0-9]{3}$/)) {
+                $('#ssnMissing').modal('show');
+                return;
+            }
         }
     
         $('#approveConfirmation').modal('show');
@@ -125,6 +143,11 @@ $(function () {
                 contract_file: $('#contract_file').val(),
                 message: $('#message').val()
             };
+
+            // Add social_security_number if present
+            if ($('#social_security_number').val()) {
+                postData.social_security_number = $('#social_security_number').val();
+            }
 
             // Add obligee_number only if both parts are available
             if ($('#obligee_number_year').val() && $('#obligee_number_sequence').val()) {

@@ -6,7 +6,7 @@ $(function () {
     const instances = GLOBALS.initNumberInputs();
 
     // Format the social security number input if it exists
-    var socialSecurityNumberField = $('#social_security_number');
+    var socialSecurityNumberField = document.getElementById('social_security_number');
     if (socialSecurityNumberField) {
         var cleaveSSN = new Cleave(socialSecurityNumberField, {
             numericOnly: true,
@@ -109,7 +109,7 @@ $(function () {
                         type: 'POST',
                         data: formData,
                         success: function (response) {
-                            window.location.href = response.redirectUrl;
+                            window.location.href = '/folyamat/megtekintes/' + recruitmentId;
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             if (jqXHR.status === 401 || jqXHR.status === 419) {
@@ -164,7 +164,7 @@ $(function () {
                 type: 'POST',
                 data: postData,
                 success: function (response) {
-                    window.location.href = response.redirectUrl;
+                    window.location.href = '/folyamat/megtekintes/' + recruitmentId;
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status === 401 || jqXHR.status === 419) {
@@ -199,7 +199,7 @@ $(function () {
                 message: $('#message').val()
             },
             success: function (response) {
-                window.location.href = response.redirectUrl;
+                window.location.href = '/folyamat/megtekintes/' + recruitmentId;
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.status === 401 || jqXHR.status === 419) {
@@ -233,7 +233,7 @@ $(function () {
                 message: $('#message').val()
             },
             success: function (response) {
-                window.location.href = response.redirectUrl;
+                window.location.href = '/folyamat/megtekintes/' + recruitmentId;
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.status === 401 || jqXHR.status === 419) {

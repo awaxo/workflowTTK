@@ -13,7 +13,7 @@ $(function () {
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
-                window.location.href = response.redirectUrl;
+                window.location.href = '/folyamat/megtekintes/' + recruitmentId;
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.status === 401 || jqXHR.status === 419) {

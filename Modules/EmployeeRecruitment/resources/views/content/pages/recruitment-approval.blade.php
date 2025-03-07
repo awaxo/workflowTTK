@@ -131,6 +131,12 @@
                             <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
                         </div>
                     @endif
+                    @if($recruitment->state != 'draft_contract_pending')
+                        <div class="mb-3 mt-4">
+                            <label class="form-label" for="message">Üzenet</label>
+                            <textarea id="message" class="form-control" placeholder="Üzenet..."></textarea>
+                        </div>
+                    @endif
                     @if($recruitment->state == 'employee_signature')
                         <div class="mb-3">
                             <label class="form-label" for="contract_registration_number">Szerződés iktatószáma</label>

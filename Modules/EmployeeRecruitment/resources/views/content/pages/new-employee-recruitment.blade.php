@@ -604,7 +604,15 @@
                                         <option value="auto">Autó behajtás</option>
                                         <option value="kerekpar">Kerékpár behajtás</option>
                                     </optgroup>
-                                    <optgroup label="Intézményi belépési engedélyek">
+                                    <optgroup label="Intézeti belépési engedélyek">
+                                        <option value="SZKI_osszes_labor" data-workgroup="1XX">SZKI összes labor</option>
+                                        <option value="AKI_osszes_labor" data-workgroup="3XX">AKI összes labor</option>
+                                        <option value="MEI2_osszes_labor" data-workgroup="4XX">MÉI 2. emelet összes labor</option>
+                                        <option value="MEI3_osszes_labor" data-workgroup="4XX">MÉI 3. emelet összes labor</option>
+                                        <option value="KPI_osszes_iroda" data-workgroup="5XX">KPI összes iroda</option>
+                                        <option value="KPI_osszes_labor" data-workgroup="5XX">KPI összes labor</option>
+                                    </optgroup>
+                                    <optgroup label="Csoportszintű belépési engedélyek">
                                         @foreach($rooms as $room)
                                             <option value="{{ $room->room_number }}" data-workgroup="{{ $room->workgroup_number }}">{{ $room->room_number }}</option>
                                         @endforeach

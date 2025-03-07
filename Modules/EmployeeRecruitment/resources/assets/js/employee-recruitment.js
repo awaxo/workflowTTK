@@ -634,15 +634,40 @@ function filterCostCenters() {
 function filterRoomOptions() {
     let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
     let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
+    
+    // Get first digits of selected workgroups if they exist
+    let firstDigit1 = selectedWorkgroup1 ? String(selectedWorkgroup1).charAt(0) : null;
+    let firstDigit2 = selectedWorkgroup2 ? String(selectedWorkgroup2).charAt(0) : null;
 
+    // Reset options to original state
     $('#entry_permissions').html(originalEntryPermissionsOptions);
     $('#employee_room').html(originalEmployeeRoomOptions);
 
+    // Filter entry permissions
     $('#entry_permissions option').filter(function() {
         let optionWorkgroup = $(this).data('workgroup');
-        return $(this).val() !== 'auto' && $(this).val() !== 'kerekpar' && optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
+        let optionValue = $(this).val();
+        let optgroupLabel = $(this).parent('optgroup').attr('label');
+        
+        // Always keep "auto" and "kerekpar" options
+        if (optionValue === 'auto' || optionValue === 'kerekpar') {
+            return false; // Don't remove
+        }
+        
+        // For Institute-level permissions, filter based on first digit
+        if (optgroupLabel === "Intézeti belépési engedélyek") {
+            // Get first digit from data-workgroup (format "1XX", "3XX", etc.)
+            let optionFirstDigit = optionWorkgroup ? String(optionWorkgroup).charAt(0) : null;
+            
+            // Keep if matches either of the selected workgroups' first digits
+            return !(optionFirstDigit === firstDigit1 || optionFirstDigit === firstDigit2);
+        }
+        
+        // For Group-level permissions, keep existing logic
+        return optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;
     }).remove();
 
+    // Keep existing employee_room filter logic
     $('#employee_room option').filter(function() {
         let optionWorkgroup = $(this).data('workgroup');
         return optionWorkgroup !== selectedWorkgroup1 && optionWorkgroup !== selectedWorkgroup2;

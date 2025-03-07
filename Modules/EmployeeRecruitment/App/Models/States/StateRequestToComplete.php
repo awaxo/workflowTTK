@@ -35,7 +35,8 @@ class StateRequestToComplete implements IStateResponsibility {
                 return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup2->workgroup_number);
             } else if ($workflow->workgroup1) {
                 return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup1->workgroup_number);
-            }    
+            }
+            return false;
         } else {
             Log::error('StateRequestToComplete::isUserResponsibleAsDelegate called with invalid workflow type');
             return false;
@@ -97,7 +98,7 @@ class StateRequestToComplete implements IStateResponsibility {
 
                 return [
                     'type' => 'draft_contract_labor_administrator_' . $workgroup->workgroup_number,
-                    'readable_name' => 'Munkaügyi ügyintéző (intézet: ' . $abbreviation . ', csoport: ' . $workgroup->workgroup_number . ')'
+                    'readable_name' => 'Munkaügyi ügyintéző'
                 ];
             })->toArray();
         }

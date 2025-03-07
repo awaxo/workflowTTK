@@ -190,7 +190,7 @@ class StateProofOfCoverage implements IStateResponsibility {
         return array_map(function($number) {
             return [[
                 'type' => 'project_coordinator_workgroup_' . $number,
-                'readable_name' => 'Projektkoordinátor (csoport: ' . $number . ')'
+                'readable_name' => 'Projektkoordinátor'
             ]];
         }, $distinct_workgroup_numbers);
     }

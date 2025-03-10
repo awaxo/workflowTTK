@@ -19,7 +19,8 @@ $(function () {
         sensitivity: 'base'
     });
 
-    $('.datatables-delegates').DataTable({
+    // Initialize delegates DataTable
+    const delegatesTable = $('.datatables-delegates').DataTable({
         ajax: '/api/delegations',
         autoWidth: false,
         dom: 'rtip',
@@ -71,9 +72,14 @@ $(function () {
         $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
 
+    // Handle delegation type change
     $('#delegation_type').on('change', function() {
         if ($(this).val() !== '') {
             let type = $(this).val();
+            
+            // Clear previous delegates
+            $('#delegated_user').empty();
+            
             $.ajax({
                 url: '/api/delegates/' + type,
                 type: 'GET',
@@ -88,7 +94,7 @@ $(function () {
                             options += `<option value="${response.id}">${response.name}</option>`;
                         }
                     }
-                    $('#delegated_user').empty().html(options);
+                    $('#delegated_user').html(options);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status === 401 || jqXHR.status === 419) {
@@ -101,10 +107,13 @@ $(function () {
             });
         }
     });
+    
+    // Trigger change if value exists on page load
     if ($('#delegation_type').val()) {
         $('#delegation_type').trigger('change');
     }
 
+    // Save delegation handler
     $('#save_delegation').on('click', function() {
         $('.invalid-feedback').remove();
         let fv = validateDelegation();
@@ -122,11 +131,13 @@ $(function () {
                         end_date: $('#delegation_end_date').val()
                     },
                     success: function() {
+                        // Reset form fields
                         $('#delegation_start_date').val('');
                         $('#delegation_end_date').val('');
                         $('#delegation_type').val(null).trigger('change');
                         $('#delegated_user').val(null).trigger('change');
 
+                        // Reload datatables
                         $('.datatables-delegates').DataTable().ajax.reload();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -146,6 +157,7 @@ $(function () {
         });
     });
 
+    // Delete delegation handler
     $(document).on('click', '.delete-delegation', function() {
         var row = $(this).closest('tr');
         var delegationId = $('.datatables-delegates').DataTable().row(row).data().id;
@@ -155,33 +167,63 @@ $(function () {
         $('#deleteConfirmation').modal('show');
     });
 
-    // confirm cancel workflow
+    // Confirm delete handler
     $('#confirm_delete').on('click', function() {
         let delegationId = $(this).attr('data-delegation-id');
         let row = $(this).data('row');
-
-        $.ajax({
-            url: '/api/delegation/' + delegationId + '/delete',
-            type: 'POST',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                $('#deleteConfirmation').modal('hide');
-                $('.datatables-delegates').DataTable().row(row).remove().draw();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 401 || jqXHR.status === 419) {
-                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
-                    window.location.href = '/login';
+        let delegationData = $('.datatables-delegates').DataTable().row(row).data();
+        
+        // Function to delete a single delegation
+        const deleteDelegation = (id) => {
+            return $.ajax({
+                url: '/api/delegation/' + id + '/delete',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+        };
+        
+        // Check if we have multiple delegations in a group
+        if (delegationData.delegations && delegationData.delegations.length > 0) {
+            // Create an array of promises for each deletion
+            const deletePromises = delegationData.delegations.map(id => deleteDelegation(id));
+            
+            // Wait for all deletions to complete
+            Promise.all(deletePromises)
+                .then(() => {
+                    $('#deleteConfirmation').modal('hide');
+                    $('.datatables-delegates').DataTable().row(row).remove().draw();
+                })
+                .catch((error) => {
+                    if (error.status === 401 || error.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+                    
+                    $('#deleteConfirmation').modal('hide');
+                    GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', error, 'error', '');
+                });
+        } else {
+            // Delete a single delegation (original behavior)
+            deleteDelegation(delegationId)
+                .done(function(response) {
+                    $('#deleteConfirmation').modal('hide');
+                    $('.datatables-delegates').DataTable().row(row).remove().draw();
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401 || jqXHR.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
 
-                $('#deleteConfirmation').modal('hide');
-                GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
-            }
-        });
+                    $('#deleteConfirmation').modal('hide');
+                    GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
+                });
+        }
     });
 
+    // Save notification settings
     $('.btn-submit').on('click', function() {
         $.ajax({
             url: '/api/notification-settings/update',
@@ -205,6 +247,10 @@ $(function () {
     });
 });
 
+/**
+ * Validate delegation form fields
+ * @returns {object} FormValidation instance
+ */
 function validateDelegation() {
     return FormValidation.formValidation(
         document.getElementById('navs-pills-delegations'),

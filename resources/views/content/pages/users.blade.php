@@ -63,7 +63,7 @@
                                 <th></th>
                                 <th>Név</th>
                                 <th>Email</th>
-                                <th>Csoportnév</th>
+                                <th>Csoport</th>
                                 <th>Szerepkörök</th>
                                 <th>Aktív</th>
                                 <th>Utolsó módosító</th>

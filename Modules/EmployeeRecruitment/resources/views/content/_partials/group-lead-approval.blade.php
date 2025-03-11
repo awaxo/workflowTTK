@@ -11,622 +11,278 @@
             <!--<i class="fas fa-question-circle fa-2x help-icon" data-bs-toggle="modal" data-bs-target="#helpModal" title="Segítség"></i>-->
         </div>
 
+        @php
+        // Fő struktúra definíciója
+        $formStructure = [
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'manual_handling' => [
+                        'label' => 'Kézi anyagmozgatás',
+                        'subfields' => [
+                            'manual_handling_weight_5_20' => '5 kg – 20 kg',
+                            'manual_handling_weight_20_50' => '20 kg – 50 kg',
+                            'manual_handling_weight_over_50' => '> 50kg'
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'increased_accident_risk' => [
+                        'label' => 'Fokozott baleseti veszély (tűz- és robbanásveszély, feszültség alatti munka, magasban végzett munka, egyéb)',
+                        'subfields' => [
+                            'fire_and_explosion_risk' => 'Tűz- és robbanásveszély',
+                            'live_electrical_work' => 'Feszültség alatti munka',
+                            'high_altitude_work' => 'Magasban végzett munka',
+                            'other_risks' => [
+                                'label' => 'Egyéb',
+                                'textarea' => [
+                                    'id' => 'other_risks_description',
+                                    'label' => 'fokozott baleseti veszéllyel járó kockázati tényező felsorolása'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'forced_body_position' => 'Kényszertesthelyzet (görnyedés, guggolás)',
+                    'sitting' => 'Ülés',
+                    'standing' => 'Állás',
+                    'walking' => 'Járás'
+                ]
+            ]
+        ];
+
+        // Második sor
+        $formStructure2 = [
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'stressful_workplace_climate' => [
+                        'label' => 'Terhelő munkahelyi klíma (meleg, hideg, nedves, változó)',
+                        'subfields' => [
+                            'heat_exposure' => 'Hőexpozíció (a munkahelyi hőmérséklet meghaladja a 24 °C korrigált effektív hőmérsékletet)',
+                            'cold_exposure' => 'Hideg expozíció (zárt térben +10 °C alatti munkavégzés)'
+                        ]
+                    ],
+                    'noise_exposure' => 'Zaj (85 dB Aeq felett)',
+                    'ionizing_radiation_exposure' => 'Ionizáló sugárzás'
+                ]
+            ],
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'non_ionizing_radiation_exposure' => 'Nem-ionizáló sugárzás',
+                    'local_vibration_exposure' => 'Helyileg ható vibráció',
+                    'whole_body_vibration_exposure' => 'Egésztest-vibráció',
+                    'ergonomic_factors_exposure' => 'Ergonómiai tényezők',
+                    'dust_exposure' => [
+                        'label' => 'Porok',
+                        'subfields' => [
+                            'dust_exposure_details' => [
+                                'label' => 'Használni tervezett porok megnevezése',
+                                'textarea' => [
+                                    'id' => 'dust_exposure_description',
+                                    'label' => 'Használni tervezett porok megnevezése',
+                                    'fullwidth' => true
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'chemicals_exposure' => [
+                        'label' => 'Vegyi anyagok',
+                        'subfields' => [
+                            'chemical_hazards_exposure' => [
+                                'label' => 'Kémiai kóroki tényezők',
+                                'special' => 'select2',
+                                'textarea' => [
+                                    'id' => 'other_chemicals_description',
+                                    'label' => 'Egyéb vegyi anyagok megnevezése',
+                                    'fullwidth' => true
+                                ]
+                            ],
+                            'carcinogenic_substances_exposure' => [
+                                'label' => 'Rákkeltő anyagok',
+                                'textarea' => [
+                                    'id' => 'planned_carcinogenic_substances_list',
+                                    'label' => 'Használni tervezett rákkeltő anyagok felsorolása',
+                                    'fullwidth' => true
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        // Harmadik sor
+        $formStructure3 = [
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'epidemiological_interest_position' => 'Járványügyi érdekből kiemelt munkakör (egészségügyi könyvhöz kötött munkakör)',
+                    'infection_risk' => 'Fertőzésveszély, biológiai kóroki tényezők (pl. leptospirózis, egyéb zoonozis, baktériumok, vér, szennyvíz stb.)',
+                    'psychological_stress' => 'Fokozott pszichés terhelés (felelősség emberekért, anyagi értékekért, alkotó szellemi munka)',
+                    'screen_time' => 'Képernyő előtt végzett munka (napi 4 óra vagy annál több)'
+                ]
+            ],
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'night_shift_work' => 'Éjszakai műszakban végzett munka',
+                    'psychosocial_factors' => 'Pszichoszociális tényezők',
+                    'personal_protective_equipment_stress' => 'Egyéni védőeszköz általi terhelés',
+                    'work_away_from_family' => 'Családtól tartósan távol munkát végzők'
+                ]
+            ],
+            [
+                'col' => 'col-xl-4',
+                'fields' => [
+                    'working_alongside_pension' => 'Időskor (nyugdíj melletti munkavégzés)',
+                    'others' => [
+                        'label' => 'Egyéb',
+                        'subfields' => [
+                            'other_details' => [
+                                'label' => 'Egyéb egészségkárosító kockázatok megnevezése',
+                                'textarea' => [
+                                    'id' => 'planned_other_health_risk_factors',
+                                    'label' => 'Egyéb egészségkárosító kockázatok megnevezése',
+                                    'fullwidth' => true
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        
+        $allFormStructure = [$formStructure, $formStructure2, $formStructure3];
+        @endphp
+
+        @foreach($allFormStructure as $formSection)
         <div class="row">
-            <div class="g-3 col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Kézi anyagmozgatás</span>
+            @foreach($formSection as $column)
+            <div class="g-3 {{ $column['col'] }}">
+                @foreach($column['fields'] as $field_id => $field_data)
+                    @php
+                    $field_label = is_array($field_data) ? $field_data['label'] : $field_data;
+                    $has_subfields = is_array($field_data) && isset($field_data['subfields']);
+                    $has_textarea = is_array($field_data) && isset($field_data['textarea']);
+                    @endphp
+                    
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <span>{{ $field_label }}</span>
+                            @if($has_textarea)
+                                <span class="d-none {{ $field_id }}">{{ $field_data['textarea']['label'] }}</span>
+                                <textarea id="{{ $field_data['textarea']['id'] }}" name="{{ $field_data['textarea']['id'] }}" class="form-control d-none {{ $field_id }}" rows="3"></textarea>
+                            @endif
+                        </div>
+                        <div class="col-6">
+                            @if(isset($field_data['special']) && $field_data['special'] == 'select2')
+                                <select id="{{ $field_id }}" name="{{ $field_id }}" class="form-select select2" multiple>
+                                    @foreach($chemicalFactors as $factor)
+                                        <option value="{{ $factor->id }}">{{ $factor->factor }}</option>
+                                    @endforeach
+                                    <option value="egyeb">Egyéb</option>
+                                </select>
+                            @else
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="{{ $field_id }}" id="{{ $field_id }}_nincs" value="nincs">
+                                    <label class="form-check-label" for="{{ $field_id }}_nincs">Nincs</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="{{ $field_id }}" id="{{ $field_id }}_resz" value="resz">
+                                    <label class="form-check-label" for="{{ $field_id }}_resz">A munkaidő egy részében</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="{{ $field_id }}" id="{{ $field_id }}_egesz" value="egesz">
+                                    <label class="form-check-label" for="{{ $field_id }}_egesz">A munkaidő egészében</label>
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <select id="manual_handling" name="manual_handling" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
 
-                <hr class="mt-1 mb-1 d-none manual_handling" />
-                
-                <div class="row align-items-center d-none manual_handling">
-                    <div class="col-6">
-                        <span>5 kg – 20 kg</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="manual_handling_weight_5_20" name="manual_handling_weight_5_20" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
+                    @if($has_subfields)
+                        <hr class="mt-1 mb-1 d-none {{ $field_id }}" />
+                        
+                        @foreach($field_data['subfields'] as $subfield_id => $subfield_data)
+                            @php
+                            $subfield_label = is_array($subfield_data) ? $subfield_data['label'] : $subfield_data;
+                            $sub_has_textarea = is_array($subfield_data) && isset($subfield_data['textarea']);
+                            @endphp
+                            
+                            <div class="row align-items-center d-none {{ $field_id }}">
+                                <div class="{{ $sub_has_textarea && isset($subfield_data['textarea']['fullwidth']) && $subfield_data['textarea']['fullwidth'] ? 'col-12' : 'col-6' }}">
+                                    <span>{{ $subfield_label }}</span>
+                                    @if($sub_has_textarea)
+                                        @if(!isset($subfield_data['textarea']['fullwidth']) || !$subfield_data['textarea']['fullwidth'])
+                                            <span class="d-none {{ $subfield_id }}">{{ $subfield_data['textarea']['label'] }}</span>
+                                        @else
+                                            <textarea id="{{ $subfield_data['textarea']['id'] }}" name="{{ $subfield_data['textarea']['id'] }}" class="form-control" rows="3"></textarea>
+                                        @endif
+                                    @endif
+                                </div>
+                                
+                                @if(!$sub_has_textarea || !isset($subfield_data['textarea']['fullwidth']) || !$subfield_data['textarea']['fullwidth'])
+                                <div class="col-6">
+                                    @if(isset($subfield_data['special']) && $subfield_data['special'] == 'select2')
+                                        <select id="{{ $subfield_id }}" name="{{ $subfield_id }}" class="form-select select2" multiple>
+                                            @foreach($chemicalFactors as $factor)
+                                                <option value="{{ $factor->id }}">{{ $factor->factor }}</option>
+                                            @endforeach
+                                            <option value="egyeb">Egyéb</option>
+                                        </select>
+                                    @else
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="{{ $subfield_id }}" id="{{ $subfield_id }}_nincs" value="nincs">
+                                            <label class="form-check-label" for="{{ $subfield_id }}_nincs">Nincs</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="{{ $subfield_id }}" id="{{ $subfield_id }}_resz" value="resz">
+                                            <label class="form-check-label" for="{{ $subfield_id }}_resz">A munkaidő egy részében</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="{{ $subfield_id }}" id="{{ $subfield_id }}_egesz" value="egesz">
+                                            <label class="form-check-label" for="{{ $subfield_id }}_egesz">A munkaidő egészében</label>
+                                        </div>
+                                    @endif
+                                    
+                                    @if($sub_has_textarea && (!isset($subfield_data['textarea']['fullwidth']) || !$subfield_data['textarea']['fullwidth']))
+                                        <textarea id="{{ $subfield_data['textarea']['id'] }}" name="{{ $subfield_data['textarea']['id'] }}" class="form-control d-none {{ $subfield_id }}" rows="3"></textarea>
+                                    @endif
+                                </div>
+                                @endif
+                            </div>
+                            
+                            @if(!$loop->last)
+                                <hr class="mt-1 mb-1 d-none {{ $field_id }}" />
+                            @endif
+                        @endforeach
+                    @endif
 
-                <hr class="mt-1 mb-1 d-none manual_handling" />
-                
-                <div class="row align-items-center d-none manual_handling">
-                    <div class="col-6">
-                        <span>20 kg – 50 kg</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="manual_handling_weight_20_50" name="manual_handling_weight_20_50" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none manual_handling" />
-                
-                <div class="row align-items-center d-none manual_handling">
-                    <div class="col-6">
-                        <span>> 50kg</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="manual_handling_weight_over_50" name="manual_handling_weight_over_50" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
+                    @if(!$loop->last)
+                        <hr class="mt-1 mb-1" />
+                    @endif
+                @endforeach
             </div>
-
-            <div class="g-3 col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Fokozott baleseti veszély (tűz- és robbanásveszély, feszültség alatti munka, magasban végzett munka, egyéb)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="increased_accident_risk" name="increased_accident_risk" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none increased_accident_risk" />
-                
-                <div class="row align-items-center d-none increased_accident_risk">
-                    <div class="col-6">
-                        <span>Tűz- és robbanásveszély</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="fire_and_explosion_risk" name="fire_and_explosion_risk" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none increased_accident_risk" />
-                
-                <div class="row align-items-center d-none increased_accident_risk">
-                    <div class="col-6">
-                        <span>Feszültség alatti munka</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="live_electrical_work" name="live_electrical_work" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none increased_accident_risk" />
-                
-                <div class="row align-items-center d-none increased_accident_risk">
-                    <div class="col-6">
-                        <span>Magasban végzett munka</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="high_altitude_work" name="high_altitude_work" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none increased_accident_risk" />
-                
-                <div class="row align-items-center d-none increased_accident_risk">
-                    <div class="col-6">
-                        <span>Egyéb</span>
-                        <span class="d-none other_risks"> fokozott baleseti veszéllyel járó kockázati tényező felsorolása</span>
-                        <textarea id="other_risks_description" name="other_risks_description" class="form-control d-none other_risks" rows="3"></textarea>
-                    </div>
-                    <div class="col-6">
-                        <select id="other_risks" name="other_risks" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="g-3 col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Kényszertesthelyzet (görnyedés, guggolás)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="forced_body_position" name="forced_body_position" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Ülés</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="sitting" name="sitting" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Állás</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="standing" name="standing" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Járás</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="walking" name="walking" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
 
-        <hr class="mt-3" />
-
-        <div class="row">
-            <div class="col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Terhelő munkahelyi klíma (meleg, hideg, nedves, változó)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="stressful_workplace_climate" name="stressful_workplace_climate" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none stressful_workplace_climate" />
-                
-                <div class="row align-items-center d-none stressful_workplace_climate">
-                    <div class="col-6">
-                        <span>Hőexpozíció (a munkahelyi hőmérséklet meghaladja a 24 °C korrigált effektív hőmérsékletet)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="heat_exposure" name="heat_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none stressful_workplace_climate" />
-                
-                <div class="row align-items-center d-none stressful_workplace_climate">
-                    <div class="col-6">
-                        <span>Hideg expozíció (zárt térben +10 °C alatti munkavégzés)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="cold_exposure" name="cold_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Zaj (85 dB Aeq felett)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="noise_exposure" name="noise_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Ionizáló sugárzás</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="ionizing_radiation_exposure" name="ionizing_radiation_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Nem-ionizáló sugárzás</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="non_ionizing_radiation_exposure" name="non_ionizing_radiation_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Helyileg ható vibráció</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="local_vibration_exposure" name="local_vibration_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Egésztest-vibráció</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="whole_body_vibration_exposure" name="whole_body_vibration_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Ergonómiai tényezők</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="ergonomic_factors_exposure" name="ergonomic_factors_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Porok</span><br />
-                        <span class="d-none dust_exposure">Használni tervezett porok megnevezése</span>
-                        <textarea id="dust_exposure_description" name="dust_exposure_description" class="form-control d-none dust_exposure" rows="3"></textarea>
-                    </div>
-                    <div class="col-6">
-                        <select id="dust_exposure" name="dust_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Vegyi anyagok</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="chemicals_exposure" name="chemicals_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none chemicals_exposure" />
-                
-                <div class="row align-items-center d-none chemicals_exposure">
-                    <div class="col-6">
-                        <span>Kémiai kóroki tényezők</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="chemical_hazards_exposure" name="chemical_hazards_exposure" class="form-select select2" multiple>
-                            @foreach($chemicalFactors as $factor)
-                                <option value="{{ $factor->id }}">{{ $factor->factor }}</option>
-                            @endforeach
-                            <option value="egyeb">Egyéb</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none chemical_hazards_exposure" />
-                
-                <div class="row align-items-center d-none chemical_hazards_exposure">
-                    <div class="col-12">
-                        <span>Egyéb vegyi anyagok megnevezése</span>
-                        <textarea id="other_chemicals_description" name="other_chemicals_description" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none chemicals_exposure" />
-                
-                <div class="row align-items-center d-none chemicals_exposure">
-                    <div class="col-6">
-                        <span>Rákkeltő anyagok</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="carcinogenic_substances_exposure" name="carcinogenic_substances_exposure" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none carcinogenic_substances_exposure" />
-                
-                <div class="row align-items-center d-none carcinogenic_substances_exposure">
-                    <div class="col-12">
-                        <span>Használni tervezett rákkeltő anyagok felsorolása</span>
-                        <textarea id="planned_carcinogenic_substances_list" name="planned_carcinogenic_substances_list" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <hr class="mt-3" />
-
-        <div class="row">
-            <div class="col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Járványügyi érdekből kiemelt munkakör (egészségügyi könyvhöz kötött munkakör)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="epidemiological_interest_position" name="epidemiological_interest_position" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Fertőzésveszély, biológiai kóroki tényezők (pl. leptospirózis, egyéb zoonozis, baktériumok, vér, szennyvíz stb.)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="infection_risk" name="infection_risk" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Fokozott pszichés terhelés (felelősség emberekért, anyagi értékekért, alkotó szellemi munka)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="psychological_stress" name="psychological_stress" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Képernyő előtt végzett munka (napi 4 óra vagy annál több)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="screen_time" name="screen_time" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Éjszakai műszakban végzett munka</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="night_shift_work" name="night_shift_work" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Pszichoszociális tényezők</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="psychosocial_factors" name="psychosocial_factors" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Egyéni védőeszköz általi terhelés</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="personal_protective_equipment_stress" name="personal_protective_equipment_stress" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Családtól tartósan távol munkát végzők</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="work_away_from_family" name="work_away_from_family" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-4">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Időskor (nyugdíj melletti munkavégzés)</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="working_alongside_pension" name="working_alongside_pension" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1" />
-                
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span>Egyéb</span>
-                    </div>
-                    <div class="col-6">
-                        <select id="others" name="others" class="form-select">
-                            <option value="" selected></option>
-                            <option value="nincs">Nincs</option>
-                            <option value="egesz">A munkaidő egészében</option>
-                            <option value="resz">A munkaidő egy részében</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mt-1 mb-1 d-none others" />
-                
-                <div class="row align-items-center d-none others">
-                    <div class="col-12">
-                        <span>Egyéb egészségkárosító kockázatok megnevezése</span>
-                        <textarea id="planned_other_health_risk_factors" name="planned_other_health_risk_factors" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @if(!$loop->last)
+            <hr class="mt-3" />
+        @endif
+        @endforeach
 
         <!-- Help Modal -->
         <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">

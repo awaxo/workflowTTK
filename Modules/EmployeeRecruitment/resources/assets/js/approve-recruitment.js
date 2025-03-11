@@ -4,6 +4,7 @@ import { trim } from 'lodash';
 
 $(function () {
     const instances = GLOBALS.initNumberInputs();
+    const medicalData = $('#health_allowance').data('medical');
 
     // Format the social security number input if it exists
     var socialSecurityNumberField = document.getElementById('social_security_number');
@@ -16,6 +17,8 @@ $(function () {
     }
 
     initObligeeNumberField();
+
+    setMedicalData(medicalData);
 
     $('#chemical_hazards_exposure').select2();
 
@@ -78,31 +81,28 @@ $(function () {
             let fv = validateHealthAllowance();
             fv.validate().then(function(status) {
                 if(status === 'Valid') {
-                    var formData = {};
-
-                    $('#health_allowance').find('input, select, textarea').each(function() {
-                        var key = $(this).attr('name');
-                        var value;
-                    
-                        if ($(this).is(':checkbox')) {
-                            value = $(this).is(':checked');
-                        } else if ($(this).is(':radio')) {
-                            if ($(this).is(':checked')) {
-                                value = $(this).val();
-                            }
-                        } else if ($(this).is('select[multiple]')) {
-                            value = $(this).val();
-                        } else {
-                            value = $(this).val();
-                        }
-                    
-                        if (key && value !== undefined) {
-                            formData[key] = value;
+                    // Egyszerű JavaScript objektum az adatok tárolására
+                    var formData = {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        message: $('#message').val(),
+                        medical_eligibility: true  // Explicit érték a medical_eligibility mezőhöz
+                    };
+    
+                    // Gyűjtsük össze a form adatait
+                    $('#health_allowance input[type="radio"]:checked, #health_allowance select, #health_allowance textarea').each(function() {
+                        var name = $(this).attr('name');
+                        if (name) {
+                            formData[name] = $(this).val();
                         }
                     });
-
-                    formData['_token'] = $('meta[name="csrf-token"]').attr('content');
-                    formData['message'] = $('#message').val();
+    
+                    // Ellenőrizzük, hogy van-e a DOM-ban data-medical attribútum
+                    var healthAllowanceElement = document.getElementById('health_allowance');
+                    console.log('health_allowance elem:', healthAllowanceElement);
+                    console.log('data-medical attribútum:', healthAllowanceElement.getAttribute('data-medical'));
+                    
+                    // Naplózzuk, hogy mit küldünk
+                    console.log('Elküldendő adatok:', formData);
                     
                     $.ajax({
                         url: '/employee-recruitment/' + recruitmentId + '/approve',
@@ -116,8 +116,9 @@ $(function () {
                                 alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                                 window.location.href = '/login';
                             }
-
-                            console.log(textStatus, errorThrown);
+    
+                            console.log('Hiba történt:', textStatus, errorThrown);
+                            console.log('Válasz:', jqXHR.responseText);
                         }
                     });
                 } else if (status === 'Invalid') {
@@ -279,14 +280,14 @@ $(function () {
 });
 
 function dynamicControls(source, target) {
-    $('#' + source).on('change', function () {
-        if ($(this).val() !== '' && $(this).val() !== 'nincs') {
+    $('input[name="' + source + '"]').on('change', function () {
+        if ($(this).val() !== 'nincs') {
             $('.' + target).removeClass('d-none');
         } else {
             $('.' + target).addClass('d-none');
         }
     });
-    $('#' + source).trigger('change');
+    $('input[name="' + source + '"]:checked').trigger('change');
 }
 
 function initObligeeNumberField() {
@@ -297,6 +298,35 @@ function initObligeeNumberField() {
         yearSelect.val(selectedOption.val());
     } else {
         yearSelect.val('');
+    }
+}
+
+function setMedicalData(medicalData) {
+    if (medicalData) {
+        // Végigmegyünk a medical adatokon és beállítjuk a megfelelő radio gombokat
+        Object.keys(medicalData).forEach(function(key) {
+            const value = medicalData[key];
+            if (value && $(`input[name="${key}"][type="radio"]`).length) {
+                // Radio gombok beállítása
+                $(`input[name="${key}"][value="${value}"]`).prop('checked', true);
+                
+                // Dinamikus megjelenítés/elrejtés triggerelése
+                if (typeof dynamicControls === 'function') {
+                    $(`input[name="${key}"]:checked`).trigger('change');
+                }
+            } else if (value && $(`textarea[name="${key}"]`).length) {
+                // Textarea kitöltése
+                $(`textarea[name="${key}"]`).val(value);
+            } else if (value && $(`select[name="${key}"]`).length) {
+                // Select mező beállítása
+                $(`select[name="${key}"]`).val(value);
+                
+                // Ha többszörös select, akkor triggereljük a change eseményt
+                if ($(`select[name="${key}"]`).is('[multiple]')) {
+                    $(`select[name="${key}"]`).trigger('change');
+                }
+            }
+        });
     }
 }
 

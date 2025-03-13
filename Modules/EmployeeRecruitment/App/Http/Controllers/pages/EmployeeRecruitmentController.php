@@ -20,8 +20,8 @@ use App\Models\Room;
 use App\Models\User;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
+use App\Services\PdfService;
 use App\Services\WorkflowService;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -33,6 +33,23 @@ use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class EmployeeRecruitmentController extends Controller
 {
+    /**
+     * The PDF service instance
+     *
+     * @var PdfService
+     */
+    protected $pdfService;
+
+    /**
+     * Create a new controller instance
+     *
+     * @param PdfService $pdfService
+     */
+    public function __construct(PdfService $pdfService)
+    {
+        $this->pdfService = $pdfService;
+    }
+
     public function index()
     {
         $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
@@ -770,27 +787,75 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /**
+     * Generate PDF for recruitment workflow
+     *
+     * @param int $id The recruitment workflow ID
+     * @return Response
+     */
     public function generatePDF($id)
     {
-        $recruitment = RecruitmentWorkflow::find($id);
-        $pdf = Pdf::loadView('employeerecruitment::content.pdf.recruitment', [
-            'recruitment' => $recruitment,
-            'history' => $this->getHistory($recruitment),
-            'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
-        ]);
-
-        return $pdf->download('FelveteliKerelem_' . $id . '.pdf');
+        $recruitment = RecruitmentWorkflow::findOrFail($id);
+        $history = $this->getHistory($recruitment);
+        $monthlyGrossSalariesSum = $this->getSumOfSallariesFormatted($recruitment);
+        $yearFromCreatedAt = date('Y', strtotime($recruitment->created_at));
+        
+        $mpdf = $this->pdfService->generatePdf(
+            'employeerecruitment::content.pdf.recruitment',
+            [
+                'recruitment' => $recruitment,
+                'history' => $history,
+                'monthlyGrossSalariesSum' => $monthlyGrossSalariesSum,
+            ],
+            [],
+            [
+                'title' => 'Felvételi kérelem - ' . $recruitment->name,
+                'author' => 'TTK',
+                'creator' => 'Ügyintézés alkalmaás',
+            ],
+            true,
+            [
+                'title' => 'Felvételi kérelem',
+                'id' => $recruitment->pseudo_id,
+                'year' => $yearFromCreatedAt,
+            ]
+        );
+        
+        return $this->pdfService->downloadPdf($mpdf, 'FelveteliKerelem_' . $id . '.pdf');
     }
 
+    /**
+     * Generate medical eligibility PDF for recruitment workflow
+     *
+     * @param int $id The recruitment workflow ID
+     * @return Response
+     */
     public function generateMedicalPDF($id)
     {
-        $recruitment = RecruitmentWorkflow::with('position')->find($id);
-        $pdf = Pdf::loadView('employeerecruitment::content.pdf.medicalEligibility', [
-            'recruitment' => $recruitment,
-            'medical' => json_decode($recruitment->medical_eligibility_data, true) ?? [],
-        ]);
-
-        return $pdf->download('OrvosiAlkalmassagBeutalo_' . $id . '.pdf');
+        $recruitment = RecruitmentWorkflow::with('position')->findOrFail($id);
+        $yearFromCreatedAt = date('Y', strtotime($recruitment->created_at));
+        
+        $mpdf = $this->pdfService->generatePdf(
+            'employeerecruitment::content.pdf.medicalEligibility',
+            [
+                'recruitment' => $recruitment,
+                'medical' => json_decode($recruitment->medical_eligibility_data, true) ?? [],
+            ],
+            [],
+            [
+                'title' => 'Orvosi Alkalmasság Beutaló - ' . $recruitment->name,
+                'author' => 'TTK',
+                'creator' => 'Ügyintézés alkalmazás',
+            ],
+            true,
+            [
+                'title' => 'Orvosi Alkalmasság Beutaló',
+                'id' => $recruitment->pseudo_id,
+                'year' => $yearFromCreatedAt,
+            ]
+        );
+        
+        return $this->pdfService->downloadPdf($mpdf, 'OrvosiAlkalmassagBeutalo_' . $id . '.pdf');
     }
 
     private function getSumOfSallaries($recruitment)

@@ -1,44 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adatszolgáltatás Munkaalkalmassági Vizsgálathoz</title>
-    <style>
-        @page {
-            margin: 1.2cm;
-        }
-        
-        body {
-            font-family: 'DejaVu Sans', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .header-table {
-            width: 100%;
-        }
-        .header-table td {
-            vertical-align: top;
-        }
-        .header-logo img {
-            width: auto;
-            height: 60px;
-            max-width: 100%;
-        }
-        .header-title {
-            font-size: 0.55em;
-            color: blue;
-            text-align: left;
-            margin-right: 10px;
-        }
-        .header-subtitle {
-            font-size: 0.6em;
-            color: #999;
-            text-align: left;
-            margin-right: 10px;
-        }
-        
+    <style>      
         .section-title {
             font-weight: bold;
             font-size: 0.8em;
@@ -112,23 +75,6 @@
     </style>
 </head>
 <body>
-    <table class="header-table">
-        <tr>
-            <td class="header-logo">
-                <img src="assets/img/logo/header-1.jpg" alt="Logo">
-                <img src="assets/img/logo/header-2.jpg" alt="Logo">
-            </td>
-            <td class="header-text">
-                <div class="header-title">HUN-REN TERMÉSZETTUDOMÁNYI KUTATÓKÖZPONT</div>
-                <div class="header-subtitle">1117 BUDAPEST, MAGYAR TUDÓSOK KÖRÚTJA 2.</div>
-            </td>
-            <td class="header-text">
-                <div class="header-title">LEVÉLCÍM: 1519 BUDAPEST, PF. 286.</div>
-                <div class="header-subtitle">www.ttk.hu</div>
-            </td>
-        </tr>
-    </table>
-
     <div class="section-title">Beutaló munkaköri orvosi alkalmassági vizsgálatra</div>
 
     <table class="table personal-data">

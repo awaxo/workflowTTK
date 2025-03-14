@@ -59,9 +59,15 @@
                     @php
                         $user = \App\Models\User::find(Auth::id());
                         $isWg910Or911User = true;
+                        $isCostCenterEditor = false;
+
+                        if ($user->hasRole('admin') || $user->hasRole('koltseghely_adatkarbantarto')) {
+                            $isCostCenterEditor = true;
+                        }
                     @endphp
                     <script>
                         window.isWg910Or911User = @json($isWg910Or911User);
+                        window.isCostCenterEditor = @json($isCostCenterEditor);
                     </script>
                     
                     <table class="datatables-costcenters table border-top">

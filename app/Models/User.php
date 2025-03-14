@@ -190,7 +190,7 @@ class User extends Authenticatable
         return $this->workgroup->leader;
     }
 
-    public function getDelegates(string $delegationType = null)
+    public function getDelegates(?string $delegationType = null)
     {
         // Helper function to filter users with any roles
         $filterUsersWithRoles = function ($users) {
@@ -282,7 +282,7 @@ class User extends Authenticatable
         $pagesForSecretaries = ['workflows-employee-recruitment-new'];
         $pagesForAdminOrWg915Leader = ['auxiliary-data-pages-user-list', 'auxiliary-data', 'auxiliary-data-external-access'];
         $pagesForWg912Leader = ['auxiliary-data', 'auxiliary-data-workgroup', 'auxiliary-data-institute'];
-        $pagesForWg910Wg911Users = ['auxiliary-data', 'auxiliary-data-costcenter'];
+        $canViewCostCenter = ['auxiliary-data', 'auxiliary-data-costcenter'];
         $pagesForWg910Wg911 = ['auxiliary-data', 'auxiliary-data-costcenter-type'];
         $pagesForWg908 = ['auxiliary-data', 'auxiliary-data-position'];
 
@@ -310,8 +310,10 @@ class User extends Authenticatable
             }
         }
 
-        if (in_array($menuItem, $pagesForWg910Wg911Users)) {
-            if ($this->hasRole('adminisztrator') || $this->workgroup->workgroup_number == 910 || $this->workgroup->workgroup_number == 911) {
+        if (in_array($menuItem, $canViewCostCenter)) {
+            if ($this->hasRole('adminisztrator') || 
+            $this->hasRole('koltseghely_adatkarbantarto') || 
+            in_array($this->workgroup->workgroup_number, ['900', '901', '903', '908', '910', '911', '912'])) {
                 return true;
             }
         }

@@ -101,11 +101,11 @@ $(function() {
             {
                 // Actions
                 targets: -1,
-                title: window.isWg910Or911User ? 'Műveletek' : '',
+                title: window.isCostCenterEditor ? 'Műveletek' : '',
                 orderable: false,
                 searchable: false,
                 render: function(data, type, full, meta) {
-                    if (window.isWg910Or911User) {
+                    if (window.isCostCenterEditor) {
                         return (
                             '<div class="d-inline-block">' +
                             '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
@@ -125,7 +125,7 @@ $(function() {
         order: [[1, 'asc']],
         displayLength: 10,
         lengthMenu: [10, 25, 50, 75, 100],
-        dom: window.isWg910Or911User 
+        dom: window.isCostCenterEditor 
             ? '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
             : '<"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [

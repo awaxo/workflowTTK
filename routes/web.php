@@ -38,7 +38,7 @@ Route::get('/folyamatok', [WorkflowController::class, 'index'])->middleware(['au
 Route::get('/segedadat/intezetek', [InstituteController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-institute');
 Route::get('/segedadat/csoportok', [WorkgroupController::class, 'manage'])->middleware(['check.wg912'])->name('auxiliary-data-workgroup');
 Route::get('/segedadat/hozzaferesi-jogosultsagok', [ExternalAccessController::class, 'manage'])->middleware(['check.wg915'])->name('auxiliary-data-external-access');
-Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['check.wg910Users.wg911Users'])->name('auxiliary-data-costcenter');
+Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])->middleware(['check.costcenter.viewers'])->name('auxiliary-data-costcenter');
 Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['check.wg910.wg911'])->name('auxiliary-data-costcenter-type');
 Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['check.wg908'])->name('auxiliary-data-position');
 Route::get('/segedadat/felhasznalok', [UserController::class, 'index'])->middleware(['check.wg915'])->name('auxiliary-data-pages-users');
@@ -109,14 +109,20 @@ Route::prefix('api')->middleware(['check.wg908'])->group(function () {
     Route::post('/position/create', [PositionController::class, 'create']);
 });
 
-// workgroup 910 or 911 users API routes
-Route::prefix('api')->middleware(['check.wg910Users.wg911Users'])->group(function () {
-    Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters']);
-    Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
-    Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
-    Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
-    Route::post('/costcenter/create', [CostCenterController::class, 'create']);
-    Route::post('/costcenter/import', [CostCenterController::class, 'import']);
+// Cost center API routes
+Route::prefix('api')->group(function () {
+    // Viewers can access the list
+    Route::get('/costcenters', [CostCenterController::class, 'getAllCostCenters'])
+        ->middleware(['check.costcenter.viewers']);
+    
+    // Editors can perform modifications
+    Route::middleware(['check.costcenter.editors'])->group(function () {
+        Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
+        Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
+        Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
+        Route::post('/costcenter/create', [CostCenterController::class, 'create']);
+        Route::post('/costcenter/import', [CostCenterController::class, 'import']);
+    });
 });
 
 // workgroup 910 or 911 API routes

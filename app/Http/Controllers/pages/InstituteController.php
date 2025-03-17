@@ -36,9 +36,9 @@ class InstituteController extends Controller
                 'group_level' => $institute->group_level,
                 'deleted' => $institute->deleted,
                 'created_at' => $institute->created_at,
-                'created_by_name' => $institute->createdBy->name,
+                'created_by_name' => optional($institute->createdBy)->name ?? 'Technikai felhasználó',
                 'updated_at' => $institute->updated_at,
-                'updated_by_name' => $institute->updatedBy->name,
+                'updated_by_name' => optional($institute->updatedBy)->name ?? 'Technikai felhasználó',
             ];
         });
         return response()->json(['data' => $institutes]);

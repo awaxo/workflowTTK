@@ -26,9 +26,9 @@ class ExternalAccessController extends Controller
                 'admin_group_name' => $externalAccess->workgroup->workgroup_number . ' - ' . $externalAccess->workgroup->name,
                 'deleted' => $externalAccess->deleted,
                 'created_at' => $externalAccess->created_at,
-                'created_by_name' => $externalAccess->createdBy->name,
+                'created_by_name' => optional($externalAccess->createdBy)->name ?? 'Technikai felhasználó',
                 'updated_at' => $externalAccess->updated_at,
-                'updated_by_name' => $externalAccess->updatedBy->name,
+                'updated_by_name' => optional($externalAccess->updatedBy)->name ?? 'Technikai felhasználó',
             ];
         });
         return response()->json(['data' => $externalAcceses]);

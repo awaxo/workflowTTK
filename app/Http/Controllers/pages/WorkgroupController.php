@@ -38,9 +38,9 @@ class WorkgroupController extends Controller
                 'labor_administrator_name' => optional($workgroup->laborAdministrator)->name ?? '',
                 'deleted' => $workgroup->deleted,
                 'created_at' => $workgroup->created_at,
-                'created_by_name' => $workgroup->createdBy->name,
+                'created_by_name' => optional($workgroup->createdBy)->name ?? 'Technikai felhasználó',
                 'updated_at' => $workgroup->updated_at,
-                'updated_by_name' => $workgroup->updatedBy->name
+                'updated_by_name' => optional($workgroup->updatedBy)->name ?? 'Technikai felhasználó'
             ];
         });
         return response()->json(['data' => $workgroups]);

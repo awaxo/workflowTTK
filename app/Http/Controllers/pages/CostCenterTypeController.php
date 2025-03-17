@@ -25,9 +25,9 @@ class CostCenterTypeController extends Controller
                 'clause_template' => $costcenterType->clause_template,
                 'deleted' => $costcenterType->deleted,
                 'created_at' => $costcenterType->created_at,
-                'created_by_name' => $costcenterType->createdBy->name,
+                'created_by_name' => optional($costcenterType->createdBy)->name ?? 'Technikai felhasználó',
                 'updated_at' => $costcenterType->updated_at,
-                'updated_by_name' => $costcenterType->updatedBy->name,
+                'updated_by_name' => optional($costcenterType->updatedBy)->name ?? 'Technikai felhasználó',
             ];
         });
         return response()->json(['data' => $costcenterTypes]);

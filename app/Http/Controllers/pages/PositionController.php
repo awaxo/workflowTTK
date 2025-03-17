@@ -22,9 +22,9 @@ class PositionController extends Controller
                 'type' => $position->type,
                 'deleted' => $position->deleted,
                 'created_at' => $position->created_at,
-                'created_by_name' => $position->createdBy->name,
+                'created_by_name' => optional($position->createdBy)->name ?? 'Technikai felhasználó',
                 'updated_at' => $position->updated_at,
-                'updated_by_name' => $position->updatedBy->name,
+                'updated_by_name' => optional($position->updatedBy)->name ?? 'Technikai felhasználó',
             ];
         });
         return response()->json(['data' => $positions]);

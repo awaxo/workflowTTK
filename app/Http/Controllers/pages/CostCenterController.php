@@ -79,9 +79,9 @@ class CostCenterController extends Controller
                 'valid_procurement' => $costCenter->valid_procurement,
                 'deleted' => $costCenter->deleted,
                 'created_at' => $costCenter->created_at,
-                'created_by_name' => $costCenter->createdBy->name,
+                'created_by_name' => optional($costCenter->createdBy)->name ?? 'Technikai felhasználó',
                 'updated_at' => $costCenter->updated_at,
-                'updated_by_name' => $costCenter->updatedBy->name,
+                'updated_by_name' => optional($costCenter->updatedBy)->name ?? 'Technikai felhasználó',
             ];
         });
 

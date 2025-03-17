@@ -5,6 +5,7 @@ namespace Modules\EmployeeRecruitment\App\Listeners;
 use App\Events\StateChangedEvent;
 use App\Models\User;
 use Modules\EmployeeRecruitment\App\Notifications\OperationsCoordinatorNotification;
+use Modules\EmployeeRecruitment\App\Notifications\RecruitmentCreatorNotification;
 
 class HrLeadApprovedListener
 {
@@ -29,6 +30,8 @@ class HrLeadApprovedListener
             foreach ($operationsCoordinators as $user) {
                 $user->notify(new OperationsCoordinatorNotification($event->workflow));
             }
+
+            $event->workflow->createdBy->notify(new RecruitmentCreatorNotification ($event->workflow));
         }
     }
 }

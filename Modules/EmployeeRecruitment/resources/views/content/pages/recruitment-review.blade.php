@@ -54,7 +54,8 @@
         'resources/js/app.js',
         'resources/assets/js/form-wizard-numbered.js',
         'resources/assets/js/form-basic-inputs.js',
-        'Modules/EmployeeRecruitment/resources/assets/js/employee-recruitment.js'
+        'Modules/EmployeeRecruitment/resources/assets/js/employee-recruitment.js',
+        'Modules/EmployeeRecruitment/resources/assets/js/validation-indicators.js'
     ])
 @endsection
 

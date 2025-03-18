@@ -8,6 +8,7 @@ use App\Events\CancelledEvent;
 use App\Events\RejectedEvent;
 use App\Events\StateChangedEvent;
 use App\Events\SuspendedEvent;
+use App\Events\WorkflowStartedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\pages\UserController;
 use App\Models\ChemicalPathogenicFactor;
@@ -235,6 +236,7 @@ class EmployeeRecruitmentController extends Controller
 
         try {
             $recruitment->save();
+            event(new WorkflowStartedEvent($recruitment));
             return response()->json(['url' => route('workflows-employee-recruitment-opened')]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -1294,8 +1296,25 @@ class EmployeeRecruitmentController extends Controller
             'student_status_verification_file' => 'nullable|string',
             'certificates_file' => 'required|string',
             'commute_support_form_file' => 'nullable|string',
-            'obligee_number_year' => 'required|integer',
-            'obligee_number_sequence' => 'required|string',
+            'obligee_number_year' => [
+                function ($attribute, $value, $fail) {
+                    if (request()->has('obligee_number_year') && request('obligee_number_year') !== null && request('obligee_number_year') !== '') {
+                        if (!is_numeric($value) || !is_int((int)$value)) {
+                            $fail('Kérjük, csak egész számot adj meg');
+                        }
+                    }
+                },
+            ],
+            'obligee_number_sequence' => [
+                function ($attribute, $value, $fail) {
+                    // If year is provided, sequence is required
+                    if (request()->has('obligee_number_year') && request('obligee_number_year') !== null && request('obligee_number_year') !== '') {
+                        if (empty($value)) {
+                            $fail('Kérjük, add meg a kötelezettségvállalási szám sorszámát');
+                        }
+                    }
+                },
+            ],
         ], [
             'name.required' => 'A név megadása kötelező',
             'name.string' => 'A név érvénytelen',
@@ -1361,9 +1380,6 @@ class EmployeeRecruitmentController extends Controller
             'student_status_verification_file.required' => 'Kérjük, töltsd fel a hallgatói jogviszony igazolást',
             'certificates_file.required' => 'Kérjük, töltsd fel a bizonyítványokat',
             'commute_support_form_file.required' => 'Kérjük, töltsd fel a munkába járási adatlapot',
-            'obligee_number_year.required' => 'Kérjük, add meg a kötelezettségvállalási szám évét',
-            'obligee_number_year.integer' => 'Kérjük, csak egész számot adj meg',
-            'obligee_number_sequence.required' => 'Kérjük, add meg a kötelezettségvállalási szám sorszámát',
         ]);
     }    
 }

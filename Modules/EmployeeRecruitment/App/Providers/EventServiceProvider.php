@@ -7,6 +7,7 @@ use App\Events\CancelledEvent;
 use App\Events\RejectedEvent;
 use App\Events\StateChangedEvent;
 use App\Events\SuspendedEvent;
+use App\Events\WorkflowStartedEvent;
 use App\Listeners\StateChangedListener;
 use Modules\EmployeeRecruitment\App\Listeners\ApproverAssignedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -14,6 +15,7 @@ use Modules\EmployeeRecruitment\App\Listeners\CancelledListener;
 use Modules\EmployeeRecruitment\App\Listeners\DirectorApprovedListener;
 use Modules\EmployeeRecruitment\App\Listeners\HrLeadApprovedListener;
 use Modules\EmployeeRecruitment\App\Listeners\ObligeeApprovedListener;
+use Modules\EmployeeRecruitment\App\Listeners\RecruitmentStartedListener;
 use Modules\EmployeeRecruitment\App\Listeners\RejectedListener;
 use Modules\EmployeeRecruitment\App\Listeners\SuspendedListener;
 
@@ -25,6 +27,9 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
+        WorkflowStartedEvent::class => [
+            RecruitmentStartedListener::class,
+        ],
         ApproverAssignedEvent::class => [
             ApproverAssignedListener::class,
         ],

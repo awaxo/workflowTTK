@@ -6,6 +6,8 @@ var fv;
 $(function() {
     const instances = GLOBALS.initNumberInputs();
 
+    fv = validateWorkgroup();
+
     function waitForIntl(callback) {
         if (typeof $.fn.dataTable.ext.order.intl === 'function') {
             callback();
@@ -256,6 +258,9 @@ $(function() {
         $('#new_workgroup #leader_id').val(workgroup.leader_id).trigger('change');
         $('#new_workgroup #labor_administrator').val(workgroup.labor_administrator).trigger('change');
         $('.data-submit').attr('data-workgroup-id', workgroup.id);
+
+        fv.revalidateField('workgroup_number');
+        fv.revalidateField('name');
     });
 
     // submit workgroup
@@ -264,13 +269,7 @@ $(function() {
         var url = workgroupId ? '/api/workgroup/' + workgroupId + '/update' : '/api/workgroup/create';
 
         $('.invalid-feedback').remove();
-        fv = validateWorkgroup();
-
-        $('#workgroup_number, #name').on('change', function() {
-            fv.revalidateField('workgroup_number');
-            fv.revalidateField('name');
-        });
-
+        
         fv.validate().then(function(status) {
             if(status === 'Valid') {
                 // Disable the button to prevent double clicks
@@ -296,16 +295,42 @@ $(function() {
                             window.location.href = '/login';
                         }
                         
-                        bootstrap.Offcanvas.getInstance(document.getElementById('new_workgroup')).hide();
-                        $('.data-submit').attr('data-workgroup-id', null);
                         var errors = jqXHR.responseJSON.errors;
-                        var errorMessages = "";
-                        for (var key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                errorMessages += errors[key] + '<br>';
+                        if (errors) {
+                            // Enable the button again
+                            $(".data-submit").prop('disabled', false);
+                            
+                            // Validációs hibák megjelenítése a formon
+                            Object.keys(errors).forEach(function(field) {
+                                var inputField = $('#' + field);
+                                if (inputField.length) {
+                                    // Add invalid class to the input
+                                    inputField.addClass('is-invalid');
+                                    
+                                    // Add feedback div after the input
+                                    inputField.after('<div class="invalid-feedback">' + errors[field][0] + '</div>');
+                                }
+                            });
+                            
+                            // Focus on the first field with error
+                            var firstErrorField = Object.keys(errors)[0];
+                            $('#' + firstErrorField).focus();
+                        } else {
+                            bootstrap.Offcanvas.getInstance(document.getElementById('new_workgroup')).hide();
+                            $('.data-submit').attr('data-workgroup-id', null);
+                            
+                            var errorMessages = "";
+                            if (jqXHR.responseJSON && jqXHR.responseJSON.errors) {
+                                for (var key in jqXHR.responseJSON.errors) {
+                                    if (jqXHR.responseJSON.errors.hasOwnProperty(key)) {
+                                        errorMessages += jqXHR.responseJSON.errors[key] + '<br>';
+                                    }
+                                }
+                            } else {
+                                errorMessages = "Hiba történt a mentés során!";
                             }
+                            GLOBALS.AJAX_ERROR(errorMessages, jqXHR, textStatus, errorThrown);
                         }
-                        GLOBALS.AJAX_ERROR(errorMessages, jqXHR, textStatus, errorThrown);
                     }
                 });
             }
@@ -334,9 +359,22 @@ function validateWorkgroup() {
                         notEmpty: {
                             message: 'Kérjük, add meg a csoportszámot'
                         },
-                        stringLength: {
-                            max: 5,
-                            message: 'A csoportszám maximum 5 karakter hosszú lehet'
+                        between: {
+                            min: 100,
+                            max: 999,
+                            message: 'A csoportszámnak 100 és 999 között kell lennie'
+                        },
+                        remote: {
+                            url: '/api/workgroup/check-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    workgroup_number: GLOBALS.cleanNumber($('#workgroup_number').val()),
+                                    workgroup_id: $('.data-submit').data('workgroup-id') || null
+                                };
+                            },
+                            message: 'Ez a csoportszám már használatban van'
                         }
                     }
                 },
@@ -349,11 +387,34 @@ function validateWorkgroup() {
                             max: 255,
                             message: 'A csoport neve maximum 255 karakter hosszú lehet'
                         },
+                        regexp: {
+                            regexp: /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s,-]+$/,
+                            message: 'A csoport neve csak betűket, szóközt, vesszőt és kötőjelet tartalmazhat'
+                        },
+                        remote: {
+                            url: '/api/workgroup/check-name-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    name: $('#name').val(),
+                                    workgroup_id: $('.data-submit').data('workgroup-id') || null
+                                };
+                            },
+                            message: 'Ez a csoport név már használatban van'
+                        }
                     }
                 }
             },
             plugins: {
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        workgroup_number: 'blur',
+                        name: 'blur'
+                    },
+                }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
             },
         }
     );

@@ -46,6 +46,40 @@ class WorkgroupController extends Controller
         return response()->json(['data' => $workgroups]);
     }
 
+    public function checkWorkgroupNumberUnique()
+    {
+        $workgroupNumber = request()->input('workgroup_number');
+        $workgroupId = request()->input('workgroup_id');
+        
+        $query = Workgroup::where('workgroup_number', $workgroupNumber)
+            ->where('deleted', 0);
+        
+        if ($workgroupId) {
+            $query->where('id', '!=', $workgroupId);
+        }
+        
+        $exists = $query->exists();
+        
+        return response()->json(['valid' => !$exists]);
+    }
+    
+    public function checkWorkgroupNameUnique()
+    {
+        $name = request()->input('name');
+        $workgroupId = request()->input('workgroup_id');
+        
+        $query = Workgroup::where('name', $name)
+            ->where('deleted', 0);
+        
+        if ($workgroupId) {
+            $query->where('id', '!=', $workgroupId);
+        }
+        
+        $exists = $query->exists();
+        
+        return response()->json(['valid' => !$exists]);
+    }
+
     public function delete($id)
     {
         $workgroup = Workgroup::find($id);
@@ -95,44 +129,73 @@ class WorkgroupController extends Controller
 
     private function validateRequest()
     {
-        $labor_administrators = User::where('deleted', 0)
-            ->whereHas('workgroup', function ($query) {
-                $query->where('workgroup_number', 908);
-            })
+        // Get active users with at least one role
+        $activeUsers = User::where('deleted', 0)
+            ->whereHas('roles') // Users with at least one role
             ->get()
             ->pluck('id');
+        
+        // Get existing active workgroup numbers for unique validation
+        $existingNumbers = Workgroup::where('deleted', 0);
+        if (request()->input('workgroupId')) {
+            $existingNumbers = $existingNumbers->where('id', '!=', request()->input('workgroupId'));
+        }
+        $existingNumbers = $existingNumbers->pluck('workgroup_number')->toArray();
+        
+        // Get existing active workgroup names for unique validation
+        $existingNames = Workgroup::where('deleted', 0);
+        if (request()->input('workgroupId')) {
+            $existingNames = $existingNames->where('id', '!=', request()->input('workgroupId'));
+        }
+        $existingNames = $existingNames->pluck('name')->toArray();
 
         return request()->validate([
-            'name' => 'required|max:255',
+            'name' => [
+                'required',
+                'max:255',
+                'regex:/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s,-]+$/',
+                function (string $attribute, mixed $value, Closure $fail) use ($existingNames) {
+                    if (in_array($value, $existingNames)) {
+                        $fail("A csoport neve már foglalt");
+                    }
+                },
+            ],
             'workgroup_number' => [
                 'required',
                 'numeric',
-                Rule::unique('wf_workgroup', 'workgroup_number')->ignore(request()->input('workgroupId')),
+                'min:100',
+                'max:999',
+                function (string $attribute, mixed $value, Closure $fail) use ($existingNumbers) {
+                    if (in_array($value, $existingNumbers)) {
+                        $fail("A csoportszám már foglalt");
+                    }
+                },
             ],
-            'leader_id' => 'required|numeric|exists:wf_user,id',
+            'leader_id' => [
+                'required',
+                'numeric',
+                Rule::in($activeUsers->toArray()),
+            ],
             'labor_administrator' => [
                 'required',
                 'numeric',
-                Rule::exists('wf_user', 'id')->whereIn('id', $labor_administrators->toArray()),
-                function (string $attribute, mixed $value, Closure $fail) use ($labor_administrators) {
-                    if (!in_array($value, $labor_administrators->toArray())) {
-                        $fail("Munkaügyi ügyintéző csak ilyen jogú felhasználó lehet");
-                    }
-                }
+                Rule::in($activeUsers->toArray()),
             ],
         ],
         [
             'name.required' => 'A név kötelező',
             'name.max' => 'A név maximum 255 karakter lehet',
+            'name.regex' => 'A név csak betűket, szóközt, vesszőt és kötőjelet tartalmazhat',
             'workgroup_number.required' => 'A csoportszám kötelező',
             'workgroup_number.numeric' => 'A csoportszám csak szám lehet',
-            'workgroup_number.unique' => 'A csoportszám már foglalt',
+            'workgroup_number.min' => 'A csoportszám minimum 100 lehet',
+            'workgroup_number.max' => 'A csoportszám maximum 999 lehet',
             'leader_id.required' => 'A csoportvezető kötelező',
             'leader_id.numeric' => 'A csoportvezető id csak szám lehet',
-            'leader_id.exists' => 'A csoportvezető nem létezik',
+            'leader_id.in' => 'A csoportvezető csak aktív, szerepkörrel rendelkező felhasználó lehet',
             'labor_administrator.required' => 'A munkaügyi ügyintéző kötelező',
             'labor_administrator.numeric' => 'A munkaügyi ügyintéző id csak szám lehet',
-            'labor_administrator.exists' => 'A munkaügyi ügyintéző nem létezik',
+            'labor_administrator.in' => 'A munkaügyi ügyintéző csak aktív, szerepkörrel rendelkező felhasználó lehet',
         ]);
     }
 }

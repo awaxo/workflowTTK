@@ -137,6 +137,8 @@ Route::prefix('api')->middleware(['check.wg910.wg911'])->group(function () {
 // workgroup 912 API routes
 Route::prefix('api')->middleware(['check.wg912'])->group(function () {
     Route::get('/workgroups', [WorkgroupController::class, 'getAllWorkgroups']);
+    Route::post('/workgroup/check-unique', [WorkgroupController::class, 'checkWorkgroupNumberUnique']);
+    Route::post('/workgroup/check-name-unique', [WorkgroupController::class, 'checkWorkgroupNameUnique']);
     Route::post('/workgroup/{id}/delete', [WorkgroupController::class, 'delete']);
     Route::post('/workgroup/{id}/restore', [WorkgroupController::class, 'restore']);
     Route::post('/workgroup/{id}/update', [WorkgroupController::class, 'update']);

@@ -30,6 +30,7 @@
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
+    'resources/assets/vendor/libs/@form-validation/trigger.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
     'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
 ])

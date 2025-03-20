@@ -15,10 +15,15 @@ class WorkgroupController extends Controller
 {
     public function manage()
     {
-        $users = User::nonAdmin()->where('deleted', 0)->get();
-        $labor_administrators = User::nonAdmin()->where('deleted', 0)
+        $users = User::nonAdmin()
+            ->where('deleted', 0)
+            ->whereHas('roles')
+            ->get();
+        $labor_administrators = User::nonAdmin()
+            ->where('deleted', 0)
+            ->whereHas('roles')
             ->whereHas('workgroup', function ($query) {
-                $query->where('workgroup_number', 908);
+            $query->where('workgroup_number', 908);
             })
             ->get();
 

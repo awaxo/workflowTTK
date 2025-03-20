@@ -157,6 +157,8 @@ Route::prefix('api')->middleware(['check.wg915'])->group(function () {
 
     Route::get('/users', [UserController::class, 'getAllUsers']);
     Route::get('/users/role/{roleName}', [UserController::class, 'getUsersByRole']);
+    Route::post('/user/check-email-unique', [UserController::class, 'checkEmailUnique']);
+    Route::post('/user/check-name-unique', [UserController::class, 'checkNameUnique']);
     Route::post('/user/{id}/delete', [UserController::class, 'delete']);
     Route::post('/user/{id}/restore', [UserController::class, 'restore']);
     Route::post('/user/{id}/update', [UserController::class, 'update']);

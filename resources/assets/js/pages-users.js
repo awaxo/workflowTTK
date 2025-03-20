@@ -4,6 +4,8 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
+    fv = validateUser();
+
     let apiEndpoint = $('.datatables-users').data('api-endpoint');
 
     // set locale for sorting
@@ -248,20 +250,15 @@ $(function() {
         $('#workgroup_id').val(user.workgroup_id).trigger('change');
         $('#roles').val(user.role_names).trigger('change');
         $('.data-submit').attr('data-user-id', user.id);
+
+        fv.revalidateField('name');
+        fv.revalidateField('email');
     });
 
     // submit user
     $('.data-submit').on('click', function() {
         var userId = $(this).data('user-id');
         var url = userId ? '/api/user/' + userId + '/update' : '/api/user/create';
-
-        $('.invalid-feedback').remove();
-        fv = validateUser();
-
-        $('#name, #email').on('change', function() {
-            fv.revalidateField('name');
-            fv.revalidateField('email');
-        });
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
@@ -285,16 +282,40 @@ $(function() {
                             window.location.href = '/login';
                         }
                         
-                        bootstrap.Offcanvas.getInstance(document.getElementById('new_user')).hide();
-                        $('.data-submit').attr('data-user-id', null);
                         var errors = jqXHR.responseJSON.errors;
-                        var errorMessage = "";
-                        for (var key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                errorMessage += errors[key] + '<br>';
+                        if (errors) {
+                            $(".data-submit").prop('disabled', false);
+                            
+                            Object.keys(errors).forEach(function(field) {
+                                var inputField = $('#' + field);
+                                if (inputField.length) {
+                                    // Add invalid class to the input
+                                    inputField.addClass('is-invalid');
+                                    
+                                    // Add feedback div after the input
+                                    inputField.after('<div class="invalid-feedback">' + errors[field][0] + '</div>');
+                                }
+                            });
+                            
+                            // Focus on the first field with error
+                            var firstErrorField = Object.keys(errors)[0];
+                            $('#' + firstErrorField).focus();
+                        } else {
+                            bootstrap.Offcanvas.getInstance(document.getElementById('new_user')).hide();
+                            $('.data-submit').attr('data-user-id', null);
+                            
+                            var errorMessages = "";
+                            if (jqXHR.responseJSON && jqXHR.responseJSON.errors) {
+                                for (var key in jqXHR.responseJSON.errors) {
+                                    if (jqXHR.responseJSON.errors.hasOwnProperty(key)) {
+                                        errorMessages += jqXHR.responseJSON.errors[key] + '<br>';
+                                    }
+                                }
+                            } else {
+                                errorMessages = "Hiba történt a mentés során!";
                             }
+                            GLOBALS.AJAX_ERROR(errorMessages, jqXHR, textStatus, errorThrown);
                         }
-                        GLOBALS.AJAX_ERROR(errorMessage, jqXHR, textStatus, errorThrown);
                     }
                 });
             }
@@ -326,6 +347,22 @@ function validateUser() {
                         stringLength: {
                             max: 255,
                             message: 'A név nem lehet hosszabb 255 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s\-\.]+$/,
+                            message: 'A név csak betűket, szóközt, kötőjelet és pontot tartalmazhat'
+                        },
+                        remote: {
+                            url: '/api/user/check-name-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    name: $('#name').val(),
+                                    user_id: $('.data-submit').data('user-id') || null
+                                };
+                            },
+                            message: 'Ez a név már használatban van'
                         }
                     }
                 },
@@ -334,18 +371,38 @@ function validateUser() {
                         notEmpty: {
                             message: 'Kérjük, add meg a felhasználó email címét'
                         },
-                        emailAddress: {
-                            message: 'Kérjük, valós email címet adj meg'
-                        },
                         stringLength: {
                             max: 255,
                             message: 'Az email nem lehet hosszabb 255 karakternél'
+                        },
+                        regexp: {
+                            regexp: /^[_a-zA-Z0-9\-]+([_a-zA-Z0-9.\-]+)*@ttk.hu$/,
+                            message: 'Az email címnek ttk.hu végződésűnek kell lennie és csak megengedett karaktereket tartalmazhat'
+                        },
+                        remote: {
+                            url: '/api/user/check-email-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    email: $('#email').val(),
+                                    user_id: $('.data-submit').data('user-id') || null
+                                };
+                            },
+                            message: 'Ez az email cím már használatban van'
                         }
                     }
-                },
+                }
             },
             plugins: {
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        name: 'blur',
+                        email: 'blur'
+                    },
+                }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
             },
         }
     );

@@ -268,8 +268,6 @@ $(function() {
         var workgroupId = $(this).data('workgroup-id');
         var url = workgroupId ? '/api/workgroup/' + workgroupId + '/update' : '/api/workgroup/create';
 
-        $('.invalid-feedback').remove();
-        
         fv.validate().then(function(status) {
             if(status === 'Valid') {
                 // Disable the button to prevent double clicks

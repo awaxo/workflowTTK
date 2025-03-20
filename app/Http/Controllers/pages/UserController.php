@@ -10,6 +10,7 @@ use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Closure;
 
 class UserController extends Controller
 {
@@ -68,6 +69,40 @@ class UserController extends Controller
             });
 
         return response()->json(['data' => $users]);
+    }
+
+    public function checkEmailUnique()
+    {
+        $email = request()->input('email');
+        $userId = request()->input('user_id');
+        
+        $query = User::where('email', $email)
+            ->where('deleted', 0);
+        
+        if ($userId) {
+            $query->where('id', '!=', $userId);
+        }
+        
+        $exists = $query->exists();
+        
+        return response()->json(['valid' => !$exists]);
+    }
+    
+    public function checkNameUnique()
+    {
+        $name = request()->input('name');
+        $userId = request()->input('user_id');
+        
+        $query = User::where('name', $name)
+            ->where('deleted', 0);
+        
+        if ($userId) {
+            $query->where('id', '!=', $userId);
+        }
+        
+        $exists = $query->exists();
+        
+        return response()->json(['valid' => !$exists]);
     }
 
     public function delete($id)
@@ -220,25 +255,58 @@ class UserController extends Controller
 
     private function validateRequest()
     {
+        $activeWorkgroups = Workgroup::where('deleted', 0)
+            ->pluck('id');
+        
+        $activeRoles = Role::pluck('id');
+        
+        $existingNames = User::where('deleted', 0);
+        if (request()->input('userId')) {
+            $existingNames = $existingNames->where('id', '!=', request()->input('userId'));
+        }
+        $existingNames = $existingNames->pluck('name')->toArray();
+        
+        $existingEmails = User::where('deleted', 0);
+        if (request()->input('userId')) {
+            $existingEmails = $existingEmails->where('id', '!=', request()->input('userId'));
+        }
+        $existingEmails = $existingEmails->pluck('email')->toArray();
+
         return request()->validate([
-            'name' => 'required|max:255',
+            'name' => [
+                'required',
+                'max:255',
+                'regex:/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s\-\.]+$/',
+                function (string $attribute, mixed $value, Closure $fail) use ($existingNames) {
+                    if (in_array($value, $existingNames)) {
+                        $fail("A felhasználónév már foglalt");
+                    }
+                },
+            ],
             'email' => [
                 'required',
-                'email',
                 'max:255',
-                Rule::unique('wf_user', 'email')->ignore(request()->input('userId')),
+                'regex:/^[_a-zA-Z0-9\-]+([_a-zA-Z0-9.\-]+)*@ttk.hu$/',
+                function (string $attribute, mixed $value, Closure $fail) use ($existingEmails) {
+                    if (in_array($value, $existingEmails)) {
+                        $fail("Ez az email cím már foglalt");
+                    }
+                },
             ],
-            'workgroup_id' => 'required|exists:wf_workgroup,id',
+            'workgroup_id' => [
+                'required',
+                Rule::in($activeWorkgroups->toArray()),
+            ],
         ],
         [
             'name.required' => 'Név kötelező',
             'name.max' => 'Név maximum 255 karakter lehet',
+            'name.regex' => 'A név csak betűket, szóközt, kötőjelet és pontot tartalmazhat',
             'email.required' => 'Email kötelező',
-            'email.email' => 'Valós email címet adj meg',
-            'email.unique' => 'Ez az email cím már foglalt',
+            'email.regex' => 'Az email címnek ttk.hu végződésűnek kell lennie és csak megengedett karaktereket tartalmazhat',
             'email.max' => 'Email maximum 255 karakter lehet',
             'workgroup_id.required' => 'Csoport kötelező',
-            'workgroup_id.exists' => 'A megadott csoport nem létezik',
+            'workgroup_id.in' => 'Csak aktív csoport választható',
         ]);
     }
 }

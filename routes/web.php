@@ -165,6 +165,7 @@ Route::prefix('api')->middleware(['check.wg915'])->group(function () {
     Route::post('/user/create', [UserController::class, 'create']);
 
     Route::get('/external-access', [ExternalAccessController::class, 'getAllExternalAccess']);
+    Route::post('/external-access/check-active-group', [ExternalAccessController::class, 'checkActiveGroup']);
     Route::post('/external-access/{id}/delete', [ExternalAccessController::class, 'delete']);
     Route::post('/external-access/{id}/restore', [ExternalAccessController::class, 'restore']);
     Route::post('/external-access/{id}/update', [ExternalAccessController::class, 'update']);

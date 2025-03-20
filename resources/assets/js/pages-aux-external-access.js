@@ -323,8 +323,33 @@ function validateExternalAccess() {
                     }
                 }
             },
+            admin_group_number: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük válassz admin csoportot'
+                    },
+                    remote: {
+                        url: '/api/external-access/check-active-group',
+                        method: 'POST',
+                        data: function() {
+                            return {
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                                admin_group_number: $('#admin_group_number').val()
+                            };
+                        },
+                        message: 'Csak aktív csoport választható'
+                    }
+                }
+            },
             plugins: {
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        external_system: 'blur',
+                        admin_group_number: 'change'
+                    },
+                }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
             },
         }
     );

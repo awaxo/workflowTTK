@@ -145,6 +145,9 @@ Route::prefix('api')->middleware(['check.wg912'])->group(function () {
     Route::post('/workgroup/create', [WorkgroupController::class, 'create']);
 
     Route::get('/institutes', [InstituteController::class, 'getAllInstitutes']);
+    Route::post('/institute/check-group-level-unique', [InstituteController::class, 'checkGroupLevelUnique']);
+    Route::post('/institute/check-name-unique', [InstituteController::class, 'checkNameUnique']);
+    Route::post('/institute/check-abbreviation-unique', [InstituteController::class, 'checkAbbreviationUnique']);
     Route::post('/institute/{id}/delete', [InstituteController::class, 'delete']);
     Route::post('/institute/{id}/restore', [InstituteController::class, 'restore']);
     Route::post('/institute/{id}/update', [InstituteController::class, 'update']);

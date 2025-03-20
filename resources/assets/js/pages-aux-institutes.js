@@ -4,6 +4,8 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
+    fv = validateInstitute();
+
     const instances = GLOBALS.initNumberInputs();
 
     // set locale for sorting
@@ -246,21 +248,16 @@ $(function() {
         $('#name').val(institute.name);
         $('#abbreviation').val(institute.abbreviation);
         $('.data-submit').attr('data-institute-id', institute.id);
+
+        fv.revalidateField('group_level');
+        fv.revalidateField('name');
+        fv.revalidateField('abbreviation');
     });
 
     // submit institute
     $('.data-submit').on('click', function() {
         var instituteId = $(this).data('institute-id');
         var url = instituteId ? '/api/institute/' + instituteId + '/update' : '/api/institute/create';
-
-        $('.invalid-feedback').remove();
-        fv = validateInstitute();
-
-        $('#group_level, #name, #abbreviation').on('change', function() {
-            fv.revalidateField('group_level');
-            fv.revalidateField('name');
-            fv.revalidateField('abbreviation');
-        });
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
@@ -321,6 +318,23 @@ function validateInstitute() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, add meg az intézet számát'
+                        },
+                        between: {
+                            min: 1,
+                            max: 9,
+                            message: 'Az intézet számának 1 és 9 között kell lennie'
+                        },
+                        remote: {
+                            url: '/api/institute/check-group-level-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    group_level: $('#group_level').val(),
+                                    institute_id: $('.data-submit').data('institute-id') || null
+                                };
+                            },
+                            message: 'Ez az intézet szám már használatban van'
                         }
                     }
                 },
@@ -332,6 +346,22 @@ function validateInstitute() {
                         stringLength: {
                             max: 255,
                             message: 'Az intézet neve legfeljebb 255 karakter hosszú lehet'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s,-]+$/,
+                            message: 'Az intézet neve csak betűket, szóközt, vesszőt és kötőjelet tartalmazhat'
+                        },
+                        remote: {
+                            url: '/api/institute/check-name-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    name: $('#name').val(),
+                                    institute_id: $('.data-submit').data('institute-id') || null
+                                };
+                            },
+                            message: 'Ez az intézet név már használatban van'
                         }
                     }
                 },
@@ -341,14 +371,38 @@ function validateInstitute() {
                             message: 'Kérjük, add meg az intézet rövidítését'
                         },
                         stringLength: {
-                            max: 255,
-                            message: 'Az intézet rövidítése legfeljebb 255 karakter hosszú lehet'
+                            max: 5,
+                            message: 'Az intézet rövidítése legfeljebb 5 karakter hosszú lehet'
+                        },
+                        regexp: {
+                            regexp: /^[A-ZÁÉÍÓÖŐÚÜŰ]+$/,
+                            message: 'Az intézet rövidítése csak nagybetűket tartalmazhat'
+                        },
+                        remote: {
+                            url: '/api/institute/check-abbreviation-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    abbreviation: $('#abbreviation').val(),
+                                    institute_id: $('.data-submit').data('institute-id') || null
+                                };
+                            },
+                            message: 'Ez az intézet rövidítés már használatban van'
                         }
                     }
                 }
             },
             plugins: {
-                bootstrap: new FormValidation.plugins.Bootstrap5()
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        group_level: 'blur',
+                        name: 'blur',
+                        abbreviation: 'blur'
+                    },
+                }),
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
             },
         }
     );

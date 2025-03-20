@@ -4,6 +4,8 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
+    fv = validateExternalAccess();
+
     // set locale for sorting
     $.fn.dataTable.ext.order.intl('hu', {
         sensitivity: 'base'
@@ -244,19 +246,14 @@ $(function() {
         $('#admin_group_number').trigger('change');
 
         $('.data-submit').attr('data-external-access-id', externalAccess.id);
+
+        fv.revalidateField('external_system');
     });
 
     // submit external access
     $('.data-submit').on('click', function() {
         var externalAccessId = $(this).data('external-access-id');
         var url = externalAccessId ? '/api/external-access/' + externalAccessId + '/update' : '/api/external-access/create';
-
-        $('.invalid-feedback').remove();
-        fv = validateExternalAccess();
-
-        $('#external_system').on('change', function() {
-            fv.revalidateField('external_system');
-        });
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {

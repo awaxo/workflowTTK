@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Institute;
 use App\Models\Workgroup;
@@ -102,6 +103,9 @@ class InstituteController extends Controller
         $institute = Institute::find($id);
         $institute->deleted = 1;
         $institute->save();
+
+        event(new ModelChangedEvent($institute, 'deleted'));
+
         return response()->json(['message' => 'Institute deleted successfully']);
     }
 
@@ -110,6 +114,9 @@ class InstituteController extends Controller
         $institute = Institute::find($id);
         $institute->deleted = 0;
         $institute->save();
+
+        event(new ModelChangedEvent($institute, 'restored'));
+
         return response()->json(['message' => 'Institute restored successfully']);
     }
 
@@ -121,6 +128,8 @@ class InstituteController extends Controller
         $institute->fill($validatedData);
         $institute->updated_by = Auth::id();
         $institute->save();
+
+        event(new ModelChangedEvent($institute, 'updated'));
 
         return response()->json(['message' => 'Institute updated successfully']);
     }
@@ -134,6 +143,8 @@ class InstituteController extends Controller
         $institute->created_by = Auth::id();
         $institute->updated_by = Auth::id();
         $institute->save();
+
+        event(new ModelChangedEvent($institute, 'created'));
         
         return response()->json(['message' => 'Institute created successfully']);
     }

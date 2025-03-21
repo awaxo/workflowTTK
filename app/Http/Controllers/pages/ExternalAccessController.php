@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\ExternalAccessRight;
 use App\Models\Workgroup;
@@ -51,6 +52,9 @@ class ExternalAccessController extends Controller
         $externalAccess = ExternalAccessRight::find($id);
         $externalAccess->deleted = 1;
         $externalAccess->save();
+
+        event(new ModelChangedEvent($externalAccess, 'deleted'));
+
         return response()->json(['success' => 'External access right deleted successfully']);
     }
 
@@ -59,6 +63,9 @@ class ExternalAccessController extends Controller
         $externalAccess = ExternalAccessRight::find($id);
         $externalAccess->deleted = 0;
         $externalAccess->save();
+
+        event(new ModelChangedEvent($externalAccess, 'restored'));
+
         return response()->json(['success' => 'External access right restored successfully']);
     }
 
@@ -69,6 +76,9 @@ class ExternalAccessController extends Controller
         $externalAccess = ExternalAccessRight::find($id);
         $externalAccess->fill($validatedData);
         $externalAccess->save();
+
+        event(new ModelChangedEvent($externalAccess, 'updated'));
+
         return response()->json(['success' => 'External access right updated successfully']);
     }
 
@@ -81,6 +91,8 @@ class ExternalAccessController extends Controller
         $externalAccess->created_by = Auth::id();
         $externalAccess->updated_by = Auth::id();
         $externalAccess->save();
+
+        event(new ModelChangedEvent($externalAccess, 'created'));
 
         return response()->json(['success' => 'External access right created successfully']);
     }

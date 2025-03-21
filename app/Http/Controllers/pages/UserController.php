@@ -110,6 +110,9 @@ class UserController extends Controller
         $user = User::find($id);
         $user->deleted = 1;
         $user->save();
+
+        event(new ModelChangedEvent($user, 'deleted'));
+
         return response()->json(['message' => 'User deleted successfully']);
     }
 
@@ -118,6 +121,9 @@ class UserController extends Controller
         $user = User::find($id);
         $user->deleted = 0;
         $user->save();
+
+        event(new ModelChangedEvent($user, 'restored'));
+
         return response()->json(['message' => 'User restored successfully']);
     }
 

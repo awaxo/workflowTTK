@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Position;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,9 @@ class PositionController extends Controller
         $position = Position::find($id);
         $position->deleted = 1;
         $position->save();
+
+        event(new ModelChangedEvent($position, 'deleted'));
+
         return response()->json(['message' => 'Position deleted successfully']);
     }
 
@@ -43,6 +47,9 @@ class PositionController extends Controller
         $position = Position::find($id);
         $position->deleted = 0;
         $position->save();
+
+        event(new ModelChangedEvent($position, 'restored'));
+
         return response()->json(['message' => 'Position restored successfully']);
     }
 
@@ -55,6 +62,8 @@ class PositionController extends Controller
         $position->type = request('type');
         $position->updated_by = Auth::id();
         $position->save();
+
+        event(new ModelChangedEvent($position, 'updated'));
 
         return response()->json(['message' => 'Position updated successfully']);
     }
@@ -69,6 +78,8 @@ class PositionController extends Controller
         $position->created_by = Auth::id();
         $position->updated_by = Auth::id();
         $position->save();
+
+        event(new ModelChangedEvent($position, 'created'));
 
         return response()->json(['message' => 'Position created successfully']);
     }

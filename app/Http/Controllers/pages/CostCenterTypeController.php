@@ -57,6 +57,9 @@ class CostCenterTypeController extends Controller
         $costcenterType = CostCenterType::find($id);
         $costcenterType->deleted = 1;
         $costcenterType->save();
+
+        event(new ModelChangedEvent($costcenterType, 'deleted'));
+
         return response()->json(['message' => 'Cost center type deleted successfully']);
     }
 
@@ -65,6 +68,9 @@ class CostCenterTypeController extends Controller
         $costcenterType = CostCenterType::find($id);
         $costcenterType->deleted = 0;
         $costcenterType->save();
+
+        event(new ModelChangedEvent($costcenterType, 'restored'));
+        
         return response()->json(['message' => 'Cost center type restored successfully']);
     }
 

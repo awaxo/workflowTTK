@@ -91,6 +91,8 @@ class WorkgroupController extends Controller
         $workgroup->deleted = 1;
         $workgroup->save();
 
+        event(new ModelChangedEvent($workgroup, 'deleted'));
+
         return response()->json(['success' => 'Workgroup deleted successfully']);
     }
 
@@ -99,6 +101,8 @@ class WorkgroupController extends Controller
         $workgroup = Workgroup::find($id);
         $workgroup->deleted = 0;
         $workgroup->save();
+
+        event(new ModelChangedEvent($workgroup, 'restored'));
 
         return response()->json(['success' => 'Workgroup restored successfully']);
     }

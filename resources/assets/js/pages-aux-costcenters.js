@@ -6,6 +6,7 @@ var fv;
 
 $(function() {
     const instances = GLOBALS.initNumberInputs();
+    fv = validateCostCenter();
 
     $('#due_date').datepicker({
         format: "yyyy.mm.dd",
@@ -314,22 +315,19 @@ $(function() {
             $('#valid_procurement').prop('checked', false);
         }
         $('.data-submit').attr('data-costcenter-id', costcenter.id);
+
+        fv.revalidateField('cost_center_code');
+        fv.revalidateField('name');
+        fv.revalidateField('due_date');
+        fv.revalidateField('minimal_order_limit');
+        fv.revalidateField('lead_user_id');
+        fv.revalidateField('project_coordinator_user_id');
     });
 
     // submit costcenter
     $('.data-submit').on('click', function() {
         var costcenterId = $(this).data('costcenter-id');
         var url = costcenterId ? '/api/costcenter/' + costcenterId + '/update' : '/api/costcenter/create';
-
-        $('.invalid-feedback').remove();
-        fv = validateCostCenter();
-
-        $('#cost_center_code, #name, #due_date, #minimal_order_limit').on('change', function() {
-            fv.revalidateField('cost_center_code');
-            fv.revalidateField('name');
-            fv.revalidateField('due_date');
-            fv.revalidateField('minimal_order_limit');
-        });
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
@@ -454,6 +452,31 @@ function validateCostCenter() {
                         stringLength: {
                             max: 50,
                             message: 'A költséghely maximum 50 karakter lehet'
+                        },
+                        regexp: {
+                            regexp: /^\d{4}-\d{2}\s\d{3}$/,
+                            message: 'A költséghely formátuma nem megfelelő. Elvárt formátum: 4 számjegy, kötőjel, 2 számjegy, szóköz, 3 számjegy'
+                        },
+                        remote: {
+                            url: '/api/costcenter/validate-cost-center-code',
+                            method: 'POST',
+                            data: function() {
+                                const costCenterCode = $('#cost_center_code').val();
+                                let workgroupNumber = '';
+                                
+                                // Csak ha helyes formátumú, akkor küldjük el a workgroup_number-t
+                                if (/^\d{4}-\d{2}\s\d{3}$/.test(costCenterCode)) {
+                                    workgroupNumber = costCenterCode.substring(costCenterCode.length - 3);
+                                }
+                                
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    cost_center_code: costCenterCode,
+                                    workgroup_number: workgroupNumber,
+                                    costcenter_id: $('.data-submit').data('costcenter-id') || null
+                                };
+                            },
+                            message: 'A költséghely ellenőrzése sikertelen'
                         }
                     }
                 },
@@ -465,6 +488,62 @@ function validateCostCenter() {
                         stringLength: {
                             max: 255,
                             message: 'A megnevezés maximum 255 karakter lehet'
+                        }
+                    }
+                },
+                lead_user_id: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válassz témavezetőt'
+                        },
+                        callback: {
+                            message: 'A témavezetőnek a költséghely csoportszámával megegyező csoportból kell lennie',
+                            callback: function(value) {
+                                if (!value) return true;
+                                
+                                const costCenterCode = $('#cost_center_code').val();
+                                
+                                // Check if the cost center is in the correct format
+                                if (!/^\d{4}-\d{2}\s\d{3}$/.test(costCenterCode)) return true;
+                                
+                                // Get the last 3 digits of the cost center
+                                const workgroupNumber = costCenterCode.substring(costCenterCode.length - 3);
+                                
+                                let isValid = false;
+                                $.ajax({
+                                    url: '/api/costcenter/check-user-in-workgroup',
+                                    method: 'POST',
+                                    async: false,
+                                    data: {
+                                        _token: $('meta[name="csrf-token"]').attr('content'),
+                                        user_id: value,
+                                        workgroup_number: workgroupNumber
+                                    },
+                                    success: function(response) {
+                                        isValid = response.valid;
+                                    }
+                                });
+                                
+                                return isValid;
+                            }
+                        }
+                    }
+                },
+                project_coordinator_user_id: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válassz projektkoordinátort'
+                        },
+                        remote: {
+                            url: '/api/costcenter/check-project-coordinator',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    user_id: $('#project_coordinator_user_id').val()
+                                };
+                            },
+                            message: 'A projektkoordinátornak a 910 vagy 911 csoportból kell lennie'
                         }
                     }
                 },
@@ -485,6 +564,16 @@ function validateCostCenter() {
                 },
             },
             plugins: {
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        cost_center_code: 'blur change',
+                        name: 'blur',
+                        lead_user_id: 'change',
+                        project_coordinator_user_id: 'change',
+                        due_date: 'blur change',
+                        minimal_order_limit: 'blur'
+                    },
+                }),
                 transformer: new FormValidation.plugins.Transformer({
                     minimal_order_limit: {
                         integer: function(field, element, validator) {
@@ -493,6 +582,7 @@ function validateCostCenter() {
                     }
                 }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
             },
         }
     );

@@ -30,6 +30,7 @@
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
     'resources/assets/vendor/libs/@form-validation/auto-focus.js',
     'resources/assets/vendor/libs/@form-validation/transformer.js',
+    'resources/assets/vendor/libs/@form-validation/trigger.js',
     'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js',
     'resources/assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.hu.min.js',
     'resources/assets/vendor/libs/cleavejs/cleave.js',
@@ -61,7 +62,7 @@
                         $isWg910Or911User = true;
                         $isCostCenterEditor = false;
 
-                        if ($user->hasRole('admin') || $user->hasRole('koltseghely_adatkarbantarto')) {
+                        if ($user->hasRole('adminisztrator') || $user->hasRole('koltseghely_adatkarbantarto')) {
                             $isCostCenterEditor = true;
                         }
                     @endphp

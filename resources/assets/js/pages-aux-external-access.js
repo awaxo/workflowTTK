@@ -318,25 +318,25 @@ function validateExternalAccess() {
                             message: 'A külső rendszer megnevezése maximum 255 karakter lehet'
                         }
                     }
-                }
-            },
-            admin_group_number: {
-                validators: {
-                    notEmpty: {
-                        message: 'Kérjük válassz admin csoportot'
-                    },
-                    remote: {
-                        url: '/api/external-access/check-active-group',
-                        method: 'POST',
-                        data: function() {
-                            return {
-                                _token: $('meta[name="csrf-token"]').attr('content'),
-                                admin_group_number: $('#admin_group_number').val()
-                            };
+                },
+                admin_group_number: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük válassz admin csoportot'
                         },
-                        message: 'Csak aktív csoport választható'
+                        remote: {
+                            url: '/api/external-access/check-active-group',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    admin_group_number: $('#admin_group_number').val()
+                                };
+                            },
+                            message: 'Csak aktív csoport választható'
+                        }
                     }
-                }
+                },
             },
             plugins: {
                 trigger: new FormValidation.plugins.Trigger({

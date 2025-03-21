@@ -7,11 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Models\CostCenter;
 use App\Models\CostCenterType;
 use App\Models\User;
+use App\Models\Workgroup;
 use App\Services\Import\CostCenterImporter;
 use App\Services\Import\ImportManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Closure;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class CostCenterController extends Controller
 {
@@ -50,10 +54,14 @@ class CostCenterController extends Controller
     public function manage()
     {
         $costcenterTypes = CostCenterType::where('deleted', 0)->get();
-        $users = User::nonAdmin()->where('deleted', 0)->get();
+        $users = User::nonAdmin()->where('deleted', 0)
+            ->whereHas('roles')
+            ->get();
         $projectCoordinators = User::nonAdmin()->where('deleted', 0)
+            ->whereHas('roles')
             ->whereHas('workgroup', function ($query) {
-                $query->whereIn('workgroup_number', [910, 911]);
+                $query->whereIn('workgroup_number', [910, 911])
+                    ->where('deleted', 0);
             })
             ->get();
 
@@ -88,11 +96,102 @@ class CostCenterController extends Controller
         return response()->json(['data' => $costCenters]);
     }
 
+    /**
+     * Egy endpoint a költséghely kód teljes validációjára:
+     * - Egyediség ellenőrzése
+     * - Aktív csoport ellenőrzése
+     */
+    public function validateCostCenterCode(Request $request)
+    {
+        $costCenterCode = $request->input('cost_center_code');
+        $workgroupNumber = $request->input('workgroup_number');
+        $costCenterId = $request->input('costcenter_id');
+        
+        // Formátum ellenőrzése (bár ezt már a regexp validátor kezeli a kliens oldalon)
+        if (!preg_match('/^\d{4}-\d{2}\s\d{3}$/', $costCenterCode)) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'A költséghely formátuma nem megfelelő.'
+            ]);
+        }
+        
+        // Egyediség ellenőrzése
+        $query = CostCenter::where('cost_center_code', $costCenterCode)
+            ->where('deleted', 0);
+        
+        if ($costCenterId) {
+            $query->where('id', '!=', $costCenterId);
+        }
+        
+        $exists = $query->exists();
+        
+        if ($exists) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Ez a költséghely már használatban van.'
+            ]);
+        }
+        
+        // Aktív csoport ellenőrzése
+        $workgroupExists = Workgroup::where('workgroup_number', $workgroupNumber)
+            ->where('deleted', 0)
+            ->exists();
+        
+        if (!$workgroupExists) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'A költséghely utolsó 3 számjegyének meg kell egyeznie egy létező és aktív csoportszámmal.'
+            ]);
+        }
+        
+        return response()->json(['valid' => true]);
+    }
+
+    public function checkUserInWorkgroup(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $workgroupNumber = $request->input('workgroup_number');
+        
+        $user = User::find($userId);
+        
+        if (!$user) {
+            return response()->json(['valid' => false]);
+        }
+        
+        $inWorkgroup = $user->workgroup && 
+                      $user->workgroup->workgroup_number == $workgroupNumber && 
+                      $user->workgroup->deleted == 0 &&
+                      $user->roles->count() > 0;
+        
+        return response()->json(['valid' => $inWorkgroup]);
+    }
+
+    public function checkProjectCoordinator(Request $request)
+    {
+        $userId = $request->input('user_id');
+        
+        $user = User::find($userId);
+        
+        if (!$user) {
+            return response()->json(['valid' => false]);
+        }
+        
+        $isProjectCoordinator = $user->workgroup && 
+                               in_array($user->workgroup->workgroup_number, [910, 911]) && 
+                               $user->workgroup->deleted == 0 &&
+                               $user->roles->count() > 0;
+        
+        return response()->json(['valid' => $isProjectCoordinator]);
+    }
+
     public function delete($id)
     {
         $costCenter = CostCenter::find($id);
         $costCenter->deleted = 1;
         $costCenter->save();
+
+        event(new ModelChangedEvent($costCenter, 'deleted'));
+
         return response()->json(['message' => 'Cost center deleted successfully']);
     }
 
@@ -101,6 +200,9 @@ class CostCenterController extends Controller
         $costCenter = CostCenter::find($id);
         $costCenter->deleted = 0;
         $costCenter->save();
+
+        event(new ModelChangedEvent($costCenter, 'restored'));
+
         return response()->json(['message' => 'Cost center restored successfully']);
     }
 
@@ -137,7 +239,7 @@ class CostCenterController extends Controller
         return response()->json(['message' => 'Cost center created successfully']);
     }
 
-    private function validateRequest($id = null, $costCenterCode = null)
+    private function validateRequest()
     {
         $input = request()->all();
         if (isset($input['minimal_order_limit'])) {
@@ -145,36 +247,116 @@ class CostCenterController extends Controller
             request()->replace($input);
         }
 
-        $checkUnique = true;
-        if ($id && $costCenterCode) {
-            $costCenter = CostCenter::find($id);
-            if ($costCenter->cost_center_code == $costCenterCode) {
-                $checkUnique = false;
+        // Költséghely ellenőrzése egyediségre
+        $costCenterId = request('costcenter_id');
+        $costCenterCodeRule = 'required|max:50|regex:/^\d{4}-\d{2}\s\d{3}$/';
+        
+        if (!$costCenterId) {
+            // Új létrehozásnál ellenőrizzük az egyediséget
+            $existingCostCenter = CostCenter::where('cost_center_code', request('cost_center_code'))
+                ->where('deleted', 0)
+                ->first();
+            
+            if ($existingCostCenter) {
+                throw ValidationException::withMessages([
+                    'cost_center_code' => ['A megadott költséghely (' . request('cost_center_code') . ') már létezik'],
+                ]);
+            }
+        } else {
+            // Módosításnál csak akkor ellenőrizzük az egyediséget, ha változott a kód
+            $existingCostCenter = CostCenter::find($costCenterId);
+            if ($existingCostCenter && $existingCostCenter->cost_center_code != request('cost_center_code')) {
+                $duplicateCostCenter = CostCenter::where('cost_center_code', request('cost_center_code'))
+                    ->where('deleted', 0)
+                    ->where('id', '!=', $costCenterId)
+                    ->first();
+                
+                if ($duplicateCostCenter) {
+                    throw ValidationException::withMessages([
+                        'cost_center_code' => ['A megadott költséghely (' . request('cost_center_code') . ') már létezik'],
+                    ]);
+                }
+            }
+        }
+        
+        // Ellenőrizzük, hogy a költséghely utolsó 3 számjegye egy aktív csoportszám
+        if (preg_match('/^\d{4}-\d{2}\s(\d{3})$/', request('cost_center_code'), $matches)) {
+            $workgroupNumber = $matches[1];
+            $workgroupExists = Workgroup::where('workgroup_number', $workgroupNumber)
+                ->where('deleted', 0)
+                ->exists();
+            
+            if (!$workgroupExists) {
+                throw ValidationException::withMessages([
+                    'cost_center_code' => ['A költséghely utolsó 3 számjegye (' . $workgroupNumber . ') nem létező vagy inaktív csoportszám'],
+                ]);
+            }
+            
+            // Témavezető ellenőrzése, hogy a költséghely csoportszámához tartozik-e
+            $leadUser = User::find(request('lead_user_id'));
+            if ($leadUser) {
+                $isInWorkgroup = $leadUser->workgroup && 
+                                $leadUser->workgroup->workgroup_number == $workgroupNumber && 
+                                $leadUser->workgroup->deleted == 0 &&
+                                $leadUser->roles->count() > 0;
+                
+                if (!$isInWorkgroup) {
+                    throw ValidationException::withMessages([
+                        'lead_user_id' => ['A témavezetőnek a költséghely csoportszámához (' . $workgroupNumber . ') tartozó aktív felhasználónak kell lennie'],
+                    ]);
+                }
+            }
+        }
+        
+        // Projektkoordinátor ellenőrzése, hogy 910 vagy 911-es csoportba tartozik-e
+        $projectCoordinatorUser = User::find(request('project_coordinator_user_id'));
+        if ($projectCoordinatorUser) {
+            $isProjectCoordinator = $projectCoordinatorUser->workgroup && 
+                                  in_array($projectCoordinatorUser->workgroup->workgroup_number, [910, 911]) && 
+                                  $projectCoordinatorUser->workgroup->deleted == 0 &&
+                                  $projectCoordinatorUser->roles->count() > 0;
+            
+            if (!$isProjectCoordinator) {
+                throw ValidationException::withMessages([
+                    'project_coordinator_user_id' => ['A projektkoordinátornak a 910 vagy 911-es csoportba tartozó aktív felhasználónak kell lennie'],
+                ]);
             }
         }
 
+        // Aktív felhasználók, akiknek van legalább egy szerepkörük
+        $activeUserIds = User::where('deleted', 0)
+            ->whereHas('roles')
+            ->pluck('id')
+            ->toArray();
+
         return request()->validate([
-            'cost_center_code' => $checkUnique ? 'required|max:50|unique:wf_cost_center,cost_center_code' : 'required|max:50',
+            'cost_center_code' => $costCenterCodeRule,
             'name' => 'required|max:255',
             'type_id' => 'required|exists:wf_cost_center_type,id',
-            'lead_user_id' => 'required|exists:wf_user,id',
-            'project_coordinator_user_id' => 'required|exists:wf_user,id',
+            'lead_user_id' => [
+                'required',
+                Rule::in($activeUserIds)
+            ],
+            'project_coordinator_user_id' => [
+                'required',
+                Rule::in($activeUserIds)
+            ],
             'due_date' => $input['due_date'] != '' ? 'date_format:Y.m.d' : '',
             'minimal_order_limit' => 'required|numeric',
         ],
         [
             'cost_center_code.required' => 'Költséghely kód kötelező',
             'cost_center_code.max' => 'Költséghely kód maximum 50 karakter lehet',
-            'cost_center_code.unique' => 'A megadott költséghely (' . $input['cost_center_code'] . ') már létezik',
+            'cost_center_code.regex' => 'A költséghely kód formátuma nem megfelelő. Elvárt formátum: 4 számjegy, kötőjel, 2 számjegy, szóköz, 3 számjegy (pl. 0004-24 908)',
             'name.required' => 'Megnevezés kötelező',
             'name.max' => 'Megnevezés maximum 255 karakter lehet',
             'type_id.required' => 'Típus kötelező',
-            'type_id.exists' => 'Típus nem létezik',
+            'type_id.exists' => 'Típus nem létezik vagy inaktív',
             'lead_user_id.required' => 'Témavezető kötelező',
-            'lead_user_id.exists' => 'Témavezető nem létezik',
+            'lead_user_id.in' => 'A témavezetőnek aktív, szerepkörrel rendelkező felhasználónak kell lennie',
             'project_coordinator_user_id.required' => 'Projektkoordinátor kötelező',
-            'project_coordinator_user_id.exists' => 'Projektkoordinátor nem létezik',
-            'due_date.date' => 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD',
+            'project_coordinator_user_id.in' => 'A projektkoordinátornak aktív, szerepkörrel rendelkező felhasználónak kell lennie',
+            'due_date.date_format' => 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD',
             'minimal_order_limit.required' => 'Minimális rendelési limit kötelező',
             'minimal_order_limit.numeric' => 'Minimum rendelési limit csak szám lehet',
         ]);

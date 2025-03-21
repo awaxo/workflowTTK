@@ -117,6 +117,9 @@ Route::prefix('api')->group(function () {
     
     // Editors can perform modifications
     Route::middleware(['check.costcenter.editors'])->group(function () {
+        Route::post('/costcenter/validate-cost-center-code', [CostCenterController::class, 'validateCostCenterCode']);
+        Route::post('/costcenter/check-user-in-workgroup', [CostCenterController::class, 'checkUserInWorkgroup']);
+        Route::post('/costcenter/check-project-coordinator', [CostCenterController::class, 'checkProjectCoordinator']);
         Route::post('/costcenter/{id}/delete', [CostCenterController::class, 'delete']);
         Route::post('/costcenter/{id}/restore', [CostCenterController::class, 'restore']);
         Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);

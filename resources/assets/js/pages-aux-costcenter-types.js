@@ -4,6 +4,8 @@ import GLOBALS from '../../js/globals.js';
 var fv;
 
 $(function() {
+    fv = validateCostCenterType();
+
     // set locale for sorting
     $.fn.dataTable.ext.order.intl('hu', {
         sensitivity: 'base'
@@ -259,19 +261,14 @@ $(function() {
         $('#financial_countersign').val(costcenterType.financial_countersign);
         $('#clause_template').val(costcenterType.clause_template);
         $('.data-submit').attr('data-costcenter-type-id', costcenterType.id);
+
+        fv.revalidateField('name');
     });
 
     // submit costcenter type
     $('.data-submit').on('click', function() {
         var costcenterTypeId = $(this).data('costcenter-type-id');
         var url = costcenterTypeId ? '/api/costcenter-type/' + costcenterTypeId + '/update' : '/api/costcenter-type/create';
-
-        $('.invalid-feedback').remove();
-        fv = validateCostCenterType();
-
-        $('#name').on('change', function() {
-            fv.revalidateField('name');
-        });
 
         fv.validate().then(function(status) {
             if(status === 'Valid') {
@@ -338,6 +335,22 @@ function validateCostCenterType() {
                         stringLength: {
                             max: 255,
                             message: 'A költséghely típus neve maximum 255 karakter lehet'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s,-]+$/,
+                            message: 'A költséghely típus neve csak betűket, szóközt, vesszőt és kötőjelet tartalmazhat'
+                        },
+                        remote: {
+                            url: '/api/costcenter-type/check-name-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    name: $('#name').val(),
+                                    costcenter_type_id: $('.data-submit').data('costcenter-type-id') || null
+                                };
+                            },
+                            message: 'Ez a költséghely típus név már használatban van'
                         }
                     }
                 },
@@ -350,7 +363,14 @@ function validateCostCenterType() {
                 },
             },
             plugins: {
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        name: 'blur change',
+                        financial_countersign: 'change'
+                    },
+                }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
             },
         }
     );

@@ -6,6 +6,8 @@ use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\CostCenterType;
 use Illuminate\Support\Facades\Auth;
+use Closure;
+use Illuminate\Validation\ValidationException;
 
 class CostCenterTypeController extends Controller
 {
@@ -31,6 +33,23 @@ class CostCenterTypeController extends Controller
             ];
         });
         return response()->json(['data' => $costcenterTypes]);
+    }
+
+    public function checkNameUnique()
+    {
+        $name = request()->input('name');
+        $costcenterTypeId = request()->input('costcenter_type_id');
+        
+        $query = CostCenterType::where('name', $name)
+            ->where('deleted', 0);
+        
+        if ($costcenterTypeId) {
+            $query->where('id', '!=', $costcenterTypeId);
+        }
+        
+        $exists = $query->exists();
+        
+        return response()->json(['valid' => !$exists]);
     }
 
     public function delete($id)
@@ -84,13 +103,32 @@ class CostCenterTypeController extends Controller
 
     private function validateRequest()
     {
+        $existingNames = CostCenterType::where('deleted', 0);
+        $id = request('id');
+        
+        if ($id) {
+            $existingNames = $existingNames->where('id', '!=', $id);
+        }
+        
+        $existingNames = $existingNames->pluck('name')->toArray();
+
         return request()->validate([
-            'name' => 'required|max:255',
+            'name' => [
+                'required',
+                'max:255',
+                'regex:/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s,-]+$/',
+                function (string $attribute, mixed $value, Closure $fail) use ($existingNames) {
+                    if (in_array($value, $existingNames)) {
+                        $fail("A költséghely típus neve már foglalt");
+                    }
+                },
+            ],
             'financial_countersign' => 'required|in:pénzügyi osztályvezető,projektkooridinációs osztályvezető',
         ],
         [
             'name.required' => 'Költséghely típus név kötelező',
             'name.max' => 'Költséghely típus név maximum 255 karakter lehet',
+            'name.regex' => 'A költséghely típus neve csak betűket, szóközt, vesszőt és kötőjelet tartalmazhat',
             'financial_countersign.required' => 'Pénzügyi ellenjegyző kötelező',
             'financial_countersign.in' => 'Pénzügyi ellenjegyző értéke nem megfelelő',
         ]);

@@ -131,6 +131,7 @@ Route::prefix('api')->group(function () {
 // workgroup 910 or 911 API routes
 Route::prefix('api')->middleware(['check.wg910.wg911'])->group(function () {
     Route::get('/costcenter-types', [CostCenterTypeController::class, 'getAllCostCenterTypes']);
+    Route::post('/costcenter-type/check-name-unique', [CostCenterTypeController::class, 'checkNameUnique']);
     Route::post('/costcenter-type/{id}/delete', [CostCenterTypeController::class, 'delete']);
     Route::post('/costcenter-type/{id}/restore', [CostCenterTypeController::class, 'restore']);
     Route::post('/costcenter-type/{id}/update', [CostCenterTypeController::class, 'update']);

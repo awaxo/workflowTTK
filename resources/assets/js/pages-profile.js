@@ -117,7 +117,7 @@ $(function () {
     $('#save_delegation').on('click', function() {
         $('.invalid-feedback').remove();
         let fv = validateDelegation();
-
+    
         fv.validate().then(function(status) {
             if(status === 'Valid') {
                 $.ajax({
@@ -136,7 +136,7 @@ $(function () {
                         $('#delegation_end_date').val('');
                         $('#delegation_type').val(null).trigger('change');
                         $('#delegated_user').val(null).trigger('change');
-
+    
                         // Reload datatables
                         $('.datatables-delegates').DataTable().ajax.reload();
                     },
@@ -145,9 +145,34 @@ $(function () {
                             alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                             window.location.href = '/login';
                         }
-
+    
                         if (jqXHR.status === 409) {
-                            GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
+                            try {
+                                // Parse the response to get detailed information
+                                const response = JSON.parse(jqXHR.responseText);
+                                
+                                if (response.overlapping && response.overlapping.length > 0) {
+                                    // Format the dates for better readability
+                                    const formatDates = (overlapping) => {
+                                        return overlapping.map(item => {
+                                            // Create readable date format
+                                            const startDate = moment(item.start_date).format('YYYY.MM.DD');
+                                            const endDate = moment(item.end_date).format('YYYY.MM.DD');
+                                            return `${startDate} - ${endDate}`;
+                                        }).join(', ');
+                                    };
+                                    
+                                    const formattedDates = formatDates(response.overlapping);
+                                    const errorMessage = `Átfedő időszak! Már létezik helyettesítés a kiválasztott funkciókhoz és helyetteshez a következő időszakokban: ${formattedDates}`;
+                                    
+                                    GLOBALS.AJAX_ERROR(errorMessage, jqXHR, textStatus, errorThrown);
+                                } else {
+                                    GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
+                                }
+                            } catch (e) {
+                                // If parsing fails, fallback to the generic message
+                                GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
+                            }
                         } else {
                             GLOBALS.AJAX_ERROR('Hiba történt a helyettesítés mentése során!', jqXHR, textStatus, errorThrown);
                         }

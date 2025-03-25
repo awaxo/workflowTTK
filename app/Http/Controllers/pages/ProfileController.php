@@ -183,41 +183,62 @@ class ProfileController extends Controller
         
         $types = explode(',', $validatedData['type']);
         $successCount = 0;
+        $overlappingDelegations = [];
         
         foreach ($types as $type) {
-            // Check for existing record
+            // Check for overlapping time periods with the same type and delegate
             $exists = Delegation::where('original_user_id', Auth::id())
-                                ->where('delegate_user_id', $validatedData['delegate_user_id'])
-                                ->where('type', $type)
-                                ->where('start_date', $validatedData['start_date'])
-                                ->where('end_date', $validatedData['end_date'])
-                                ->where('deleted', 0)
-                                ->exists();
+                            ->where('delegate_user_id', $validatedData['delegate_user_id'])
+                            ->where('type', $type)
+                            ->where('deleted', 0)
+                            ->where(function ($query) use ($validatedData) {
+                                // Overlapping date ranges check:
+                                // (start1 <= end2) AND (end1 >= start2)
+                                $query->where(function ($q) use ($validatedData) {
+                                    $q->where('start_date', '<=', $validatedData['end_date'])
+                                    ->where('end_date', '>=', $validatedData['start_date']);
+                                });
+                            })
+                            ->first();
 
-            if (!$exists) {
-                $delegation = new Delegation();
-                $delegation->fill([
-                    'delegate_user_id' => $validatedData['delegate_user_id'],
+            if ($exists) {
+                // Keep track of overlapping delegations
+                $overlappingDelegations[] = [
                     'type' => $type,
-                    'start_date' => $validatedData['start_date'],
-                    'end_date' => $validatedData['end_date'],
-                ]);
-                $delegation->original_user_id = Auth::id();
-                $delegation->created_by = Auth::id();
-                $delegation->updated_by = Auth::id();
+                    'start_date' => $exists->start_date,
+                    'end_date' => $exists->end_date
+                ];
+                continue; // Skip creating this delegation
+            }
+            
+            $delegation = new Delegation();
+            $delegation->fill([
+                'delegate_user_id' => $validatedData['delegate_user_id'],
+                'type' => $type,
+                'start_date' => $validatedData['start_date'],
+                'end_date' => $validatedData['end_date'],
+            ]);
+            $delegation->original_user_id = Auth::id();
+            $delegation->created_by = Auth::id();
+            $delegation->updated_by = Auth::id();
 
-                try {
-                    $delegation->save();
-                    $successCount++;
-                } catch (QueryException $e) {
-                    // Continue to next item if one fails
-                    continue;
-                }
+            try {
+                $delegation->save();
+                $successCount++;
+            } catch (QueryException $e) {
+                // Continue to next item if one fails
+                continue;
             }
         }
         
         if ($successCount === 0) {
-            return response()->json(['message' => 'A similar delegation record already exists.'], 409);
+            if (!empty($overlappingDelegations)) {
+                return response()->json([
+                    'message' => 'Overlapping delegation record already exists for the same function and delegate.', 
+                    'overlapping' => $overlappingDelegations
+                ], 409);
+            }
+            return response()->json(['message' => 'Failed to create delegation records.'], 400);
         }
 
         return response()->json(['message' => 'Delegation added successfully']);

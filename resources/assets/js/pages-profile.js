@@ -115,11 +115,36 @@ $(function () {
 
     // Save delegation handler
     $('#save_delegation').on('click', function() {
+        // Clear any existing validation messages
         $('.invalid-feedback').remove();
+        $('.is-invalid').removeClass('is-invalid');
+        
         let fv = validateDelegation();
     
         fv.validate().then(function(status) {
             if(status === 'Valid') {
+                // Additional manual validation for end date
+                const startDate = $('#delegation_start_date').val();
+                const endDate = $('#delegation_end_date').val();
+                
+                if (startDate && endDate) {
+                    const startMoment = moment(startDate, 'YYYY.MM.DD');
+                    const maxEndDate = moment(startMoment).add(2, 'months');
+                    const endMoment = moment(endDate, 'YYYY.MM.DD');
+                    
+                    // Check date order
+                    if (endDate < startDate) {
+                        showEndDateError('A helyettesítés vége nem lehet korábban a helyettesítés kezdténél');
+                        return;
+                    }
+                    
+                    // Check 2 month limit
+                    if (endMoment.isAfter(maxEndDate)) {
+                        showEndDateError('A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumnál');
+                        return;
+                    }
+                }
+                
                 $.ajax({
                     url: 'api/delegation/create',
                     type: 'POST',
@@ -172,6 +197,24 @@ $(function () {
                             } catch (e) {
                                 // If parsing fails, fallback to the generic message
                                 GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
+                            }
+                        } else if (jqXHR.status === 422) {
+                            try {
+                                // Parse validation errors
+                                const response = JSON.parse(jqXHR.responseText);
+                                
+                                if (response.errors && response.errors.end_date) {
+                                    // Display specific error about 2-month limit
+                                    const errorMessage = response.errors.end_date[0];
+                                    GLOBALS.AJAX_ERROR(errorMessage, jqXHR, textStatus, errorThrown);
+                                    
+                                    // Also show error in the form
+                                    showEndDateError(errorMessage);
+                                } else {
+                                    GLOBALS.AJAX_ERROR(response.message || 'Érvénytelen adatok!', jqXHR, textStatus, errorThrown);
+                                }
+                            } catch (e) {
+                                GLOBALS.AJAX_ERROR('Érvénytelen adatok!', jqXHR, textStatus, errorThrown);
                             }
                         } else {
                             GLOBALS.AJAX_ERROR('Hiba történt a helyettesítés mentése során!', jqXHR, textStatus, errorThrown);
@@ -272,69 +315,149 @@ $(function () {
     });
 });
 
+// Helper function to show end date error with custom message
+function showEndDateError(message) {
+    // Remove any existing error message
+    $('#delegation_end_date_error').remove();
+    
+    // Add the error message
+    const errorDiv = $('<div>')
+        .attr('id', 'delegation_end_date_error')
+        .addClass('invalid-feedback')
+        .text(message);
+    
+    // Add error class to input
+    $('#delegation_end_date').addClass('is-invalid');
+    
+    // Append error message after the input
+    $('#delegation_end_date').after(errorDiv);
+}
+
 /**
  * Validate delegation form fields
  * @returns {object} FormValidation instance
  */
 function validateDelegation() {
-    return FormValidation.formValidation(
-        document.getElementById('navs-pills-delegations'),
-        {
-            fields: {
-                delegation_type: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük válassz helyettesített funkciót'
-                        }
-                    }
-                },
-                delegated_user: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük válassz helyettesítőt'
-                        }
-                    }
-                },
-                delegation_start_date: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük add meg a helyettesítés kezdetét'
-                        },
-                        date: {
-                            format: 'YYYY.MM.DD',
-                            message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
-                        }
-                    }
-                },
-                delegation_end_date: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Kérjük add meg a helyettesítés végét'
-                        },
-                        date: {
-                            format: 'YYYY.MM.DD',
-                            message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
-                        },
-                        callback: {
-                            message: 'A helyettesítés vége nem lehet korábban a helyettesítés kezdténél',
-                            callback: function(input) {
-                                if (input.value === '') {
-                                    return true;
-                                }
-
-                                return input.value >= $('#delegation_start_date').val();
-                            }
-                        }
+    // Define validation rules
+    const validationRules = {
+        fields: {
+            delegation_type: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük válassz helyettesített funkciót'
                     }
                 }
             },
-            plugins: {
-                bootstrap: new FormValidation.plugins.Bootstrap5(),
+            delegated_user: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük válassz helyettesítőt'
+                    }
+                }
             },
+            delegation_start_date: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük add meg a helyettesítés kezdetét'
+                    },
+                    date: {
+                        format: 'YYYY.MM.DD',
+                        message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
+                    }
+                }
+            },
+            delegation_end_date: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük add meg a helyettesítés végét'
+                    },
+                    date: {
+                        format: 'YYYY.MM.DD',
+                        message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
+                    },
+                    // We'll handle these validations separately, but keep a basic callback
+                    // for the FormValidation framework
+                    callback: {
+                        message: 'A helyettesítés vége érvénytelen',
+                        callback: function(input) {
+                            // Clear any existing custom error messages
+                            $('#delegation_end_date_error').remove();
+                            
+                            if (input.value === '') {
+                                return true;
+                            }
+                            
+                            const startDateValue = $('#delegation_start_date').val();
+                            if (startDateValue === '') {
+                                return true;
+                            }
+                            
+                            // Check date order
+                            if (input.value < startDateValue) {
+                                showEndDateError('A helyettesítés vége nem lehet korábban a helyettesítés kezdténél');
+                                return false;
+                            }
+                            
+                            // Check 2 month limit
+                            const startDate = moment(startDateValue, 'YYYY.MM.DD');
+                            const maxEndDate = moment(startDate).add(2, 'months');
+                            const endDate = moment(input.value, 'YYYY.MM.DD');
+                            
+                            if (endDate.isAfter(maxEndDate)) {
+                                showEndDateError('A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumtól');
+                                return false;
+                            }
+                            
+                            return true;
+                        }
+                    }
+                }
+            }
+        },
+        plugins: {
+            bootstrap: new FormValidation.plugins.Bootstrap5(),
+        },
+    };
+    
+    // Add event listeners for date changes
+    $('#delegation_start_date, #delegation_end_date').on('change', function() {
+        const startDate = $('#delegation_start_date').val();
+        const endDate = $('#delegation_end_date').val();
+        
+        // Clear any existing error
+        $('#delegation_end_date_error, div[data-field="delegation_end_date"]').remove();
+        $('#delegation_end_date').removeClass('is-invalid');
+        
+        // Skip validation if either date is empty
+        if (!startDate || !endDate) {
+            return;
         }
-    ).on('core.field.invalid', function(field) {
-        $(`#${field}`).next().addClass('is-invalid');
-    }).on('core.field.valid', function(field) {
-        $(`#${field}`).next().removeClass('is-invalid');
+        
+        // Check date order
+        if (endDate < startDate) {
+            showEndDateError('A helyettesítés vége nem lehet korábban a helyettesítés kezdténél');
+            return;
+        }
+        
+        // Check 2 month limit
+        const startMoment = moment(startDate, 'YYYY.MM.DD');
+        const maxEndDate = moment(startMoment).add(2, 'months');
+        const endMoment = moment(endDate, 'YYYY.MM.DD');
+        
+        if (endMoment.isAfter(maxEndDate)) {
+            showEndDateError('A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumtól');
+        }
     });
+    
+    // Initialize FormValidation
+    const fv = FormValidation.formValidation(
+        document.getElementById('navs-pills-delegations'),
+        validationRules
+    ).on('core.field.invalid', function(field) {
+        $(`#${field}`).addClass('is-invalid');
+    }).on('core.field.valid', function(field) {
+        $(`#${field}`).removeClass('is-invalid');
+    });
+    
+    return fv;
 }

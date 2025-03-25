@@ -159,7 +159,7 @@ class ProfileController extends Controller
         return response()->json(['data' => $result]);
     }
 
-    public function create() 
+    public function create()
     {
         $validatedData = request()->validate([
             'type' => 'required',
@@ -178,8 +178,22 @@ class ProfileController extends Controller
         ]);
 
         // Convert the dates to the 'Y-m-d' format
-        $validatedData['start_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['start_date'])));
-        $validatedData['end_date'] = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['end_date'])));
+        $startDate = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['start_date'])));
+        $endDate = date('Y-m-d', strtotime(str_replace('.', '-', $validatedData['end_date'])));
+        
+        $validatedData['start_date'] = $startDate;
+        $validatedData['end_date'] = $endDate;
+        
+        // Check if end date is not more than 2 months after start date
+        $maxEndDate = date('Y-m-d', strtotime($startDate . ' + 2 months'));
+        if ($endDate > $maxEndDate) {
+            return response()->json([
+                'message' => 'A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumtól',
+                'errors' => [
+                    'end_date' => ['A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumtól']
+                ]
+            ], 422);
+        }
         
         $types = explode(',', $validatedData['type']);
         $successCount = 0;

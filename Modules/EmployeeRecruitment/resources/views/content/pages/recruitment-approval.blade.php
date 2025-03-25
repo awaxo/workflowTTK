@@ -83,7 +83,7 @@
 
                     <!-- Approval controls -->
                     <input type="hidden" id="state" value="{{ $recruitment->state }}">
-                    @if($recruitment->state == 'group_lead_approval' && Auth::user() == $recruitment->workgroup1->leader)
+                    @if($recruitment->state == 'group_lead_approval')
                         @include('EmployeeRecruitment::content._partials.group-lead-approval', ['chemicalFactors' => $chemicalFactors, 'medical' => $medical])
                     @endif
                     @if($recruitment->state == 'hr_lead_approval')
@@ -268,7 +268,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
-                <button type="button" id="confirm_approve" data-recruitment-id="{{ $recruitment->id }}" data-is-workgroup1-leader="{{ Auth::user() == $recruitment->workgroup1->leader }}" class="btn btn-primary">Jóváhagyás</button>
+                <button type="button" id="confirm_approve" data-recruitment-id="{{ $recruitment->id }}" class="btn btn-primary">Jóváhagyás</button>
             </div>
         </div>
     </div>

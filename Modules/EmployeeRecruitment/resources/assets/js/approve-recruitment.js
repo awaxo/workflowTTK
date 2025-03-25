@@ -75,10 +75,9 @@ $(function () {
     });
 
     $('#confirm_approve').on('click', function () {
-        const recruitmentId = $(this).data('recruitment-id');
-        const isWorkgroup1Leader = parseInt($(this).data('is-workgroup1-leader')) === 1;
+        var recruitmentId = $(this).data('recruitment-id');
 
-        if ($('#state').val() === 'group_lead_approval' && isWorkgroup1Leader) {
+        if ($('#state').val() === 'group_lead_approval') {
             let fv = validateHealthAllowance();
             fv.validate().then(function(status) {
                 if(status === 'Valid') {
@@ -97,6 +96,14 @@ $(function () {
                         }
                     });
     
+                    // Ellenőrizzük, hogy van-e a DOM-ban data-medical attribútum
+                    var healthAllowanceElement = document.getElementById('health_allowance');
+                    console.log('health_allowance elem:', healthAllowanceElement);
+                    console.log('data-medical attribútum:', healthAllowanceElement.getAttribute('data-medical'));
+                    
+                    // Naplózzuk, hogy mit küldünk
+                    console.log('Elküldendő adatok:', formData);
+                    
                     $.ajax({
                         url: '/employee-recruitment/' + recruitmentId + '/approve',
                         type: 'POST',
@@ -331,7 +338,7 @@ function revalidateOnChange(fv, targetId) {
 
 function validateHealthAllowance() {
     return FormValidation.formValidation(
-        document.querySelector('.card-body#health_allowance'),
+        document.getElementById('health_allowance'),
         {
             fields: {
                 manual_handling: {
@@ -345,9 +352,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                // Helyes lekérdezés a name attribútum alapján
-                                const parentValue = $('input[name="manual_handling"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#manual_handling').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -365,8 +370,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="manual_handling"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#manual_handling').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -384,8 +388,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="manual_handling"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#manual_handling').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -410,8 +413,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="increased_accident_risk"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -429,8 +431,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="increased_accident_risk"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -448,8 +449,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="increased_accident_risk"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -467,8 +467,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="increased_accident_risk"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#increased_accident_risk').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -521,8 +520,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="stressful_workplace_climate"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#stressful_workplace_climate').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -540,8 +538,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="stressful_workplace_climate"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#stressful_workplace_climate').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -608,8 +605,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="dust_exposure"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#dust_exposure').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -634,8 +630,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="chemicals_exposure"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#chemicals_exposure').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'
@@ -723,8 +718,7 @@ function validateHealthAllowance() {
                     validators: {
                         callback: {
                             callback: function(input) {
-                                const parentValue = $('input[name="others"]:checked').val();
-                                if (parentValue && parentValue !== 'nincs') {
+                                if ($('#others').val() !== 'nincs') {
                                     return {
                                         valid: trim(input.value) !== '',
                                         message: 'A mező kitöltése kötelező'

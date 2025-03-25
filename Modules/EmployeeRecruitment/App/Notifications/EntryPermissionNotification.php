@@ -14,13 +14,15 @@ class EntryPermissionNotification extends Notification
     use Queueable;
 
     public $workflow;
+    private $displaySocialSecurityNumber;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(RecruitmentWorkflow $workflow)
+    public function __construct(RecruitmentWorkflow $workflow, bool $displaySocialSecurityNumber = false)
     {
         $this->workflow = $workflow;
+        $this->displaySocialSecurityNumber = $displaySocialSecurityNumber;
     }
 
     /**
@@ -68,7 +70,9 @@ class EntryPermissionNotification extends Notification
                     ->line('Rendszám: ' . $this->workflow->license_plate)
                     ->line('Dolgozószoba: ' . $this->workflow->employee_room)
                     ->line('Telefon mellék: ' . $this->workflow->phone_extension)
-                    ->line('TAJ szám: ' . preg_replace('/(\d{3}) \d{3} (\d{3})/', '$1 XXX $2', $this->workflow->social_security_number))
+                    ->when($this->displaySocialSecurityNumber, function ($mailMessage) {
+                        return $mailMessage->line('TAJ szám: ' . $this->workflow->social_security_number);
+                    })
                     ->line('')
                     ->action('Ügy megtekintése', $url)
                     ->line('')

@@ -4,6 +4,8 @@ namespace Modules\EmployeeRecruitment\App\Listeners;
 
 use App\Events\StateChangedEvent;
 use App\Models\User;
+use App\Models\Workgroup;
+use Modules\EmployeeRecruitment\App\Notifications\EntryPermissionNotification;
 use Modules\EmployeeRecruitment\App\Notifications\OperationsCoordinatorNotification;
 use Modules\EmployeeRecruitment\App\Notifications\RecruitmentCreatorNotification;
 
@@ -32,6 +34,9 @@ class HrLeadApprovedListener
             }
 
             $event->workflow->createdBy->notify(new RecruitmentCreatorNotification ($event->workflow));
+
+            $operationLeadUser = Workgroup::where('workgroup_number', 914)->first()->leader;
+            $operationLeadUser->notify(new EntryPermissionNotification($event->workflow));
         }
     }
 }

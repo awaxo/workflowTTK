@@ -118,6 +118,40 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Helyettesként megbízva szekció -->
+                <div class="content-header mt-5 mb-3">
+                    <h5 class="mb-0">Helyettesként megbízva</h5>
+                    <small>Az alábbi funkciókban vagy megbízva helyettesítőként</small>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="form-check form-switch show-deleted-delegations">
+                            <input class="form-check-input" type="checkbox" role="switch" id="show_deleted_delegations">
+                            <label class="form-check-label" for="show_deleted_delegations">Törölt helyettesítések megjelenítése</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-datatable table-responsive pt-0">
+                            <table class="datatables-delegated-to-me table border-top">
+                                <thead>
+                                    <tr style="background-color: rgba(105,108,255,.16)">
+                                        <th></th>
+                                        <th>Megbízó</th>
+                                        <th>Funkció</th>
+                                        <th>Kezdete</th>
+                                        <th>Vége</th>
+                                        <th>Státusz</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane fade" id="navs-pills-noticitation-settings" role="tabpanel">

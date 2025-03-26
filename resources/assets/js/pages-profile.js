@@ -65,6 +65,55 @@ $(function () {
         language: GLOBALS.DATATABLE_TRANSLATION
     });
 
+    // Initialize delegated to me DataTable
+    const delegatedToMeTable = $('.datatables-delegated-to-me').DataTable({
+        ajax: {
+            url: '/api/delegations/delegations-to-me',
+            data: function (d) {
+                d.show_deleted = $('#show_deleted_delegations').is(':checked');
+            }
+        },
+        autoWidth: false,
+        dom: 'rtip',
+        columns: [
+            { data: 'id', visible: false, searchable: false },
+            { data: 'original_user_name' },
+            { data: 'readable_type' },
+            { 
+                data: 'start_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            {
+                data: 'end_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            { 
+                data: 'status',
+                render: function(data, type, row) {
+                    if (data === 'Törölt') {
+                        return '<span class="badge bg-label-danger">Törölt</span>';
+                    } else {
+                        return '<span class="badge bg-label-success">Aktív</span>';
+                    }
+                }
+            }
+        ],
+        order: [[1, 'asc']],
+        buttons: [],
+        displayLength: 10,
+        lengthMenu: [5, 10, 25],
+        language: GLOBALS.DATATABLE_TRANSLATION
+    });
+
+    // Handle checkbox change for deleted delegations
+    $('#show_deleted_delegations').on('change', function() {
+        delegatedToMeTable.ajax.reload();
+    });
+
     // Filter form control to default size
     // ? setTimeout used for multilingual table initialization
     setTimeout(() => {

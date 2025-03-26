@@ -88,6 +88,7 @@ Route::prefix('api')->middleware(['auth:dynamic'])->group(function () {
 
     Route::get('/delegations', [ProfileController::class, 'getAllDelegations']);
     Route::get('/delegates/{type}', [ProfileController::class, 'getDelegates']);
+    Route::get('/delegations/delegations-to-me', [ProfileController::class, 'getDelegatedToMe']);
     Route::post('/delegation/create', [ProfileController::class, 'create']);
     Route::post('/delegation/{id}/delete', [ProfileController::class, 'delete']);
     Route::post('/notification-settings/update', [ProfileController::class, 'notificationUpdate']);

@@ -159,6 +159,64 @@ class ProfileController extends Controller
         return response()->json(['data' => $result]);
     }
 
+    public function getDelegatedToMe()
+    {
+        $showDeleted = request('show_deleted', false) === 'true';
+        
+        $query = Delegation::where('delegate_user_id', Auth::id())
+                           ->with('originalUser');
+        
+        // Include deleted delegations if requested
+        if (!$showDeleted) {
+            $query->where('deleted', 0);
+        }
+        
+        // Get delegations where end date is today or in the future
+        $delegations = $query->whereDate('end_date', '>=', now())
+                             ->get();
+        
+        $service = new DelegationService();
+        $result = [];
+        
+        foreach ($delegations as $delegation) {
+            // Get readable type from service
+            $readableType = $delegation->type;
+            $allDelegations = $service->getAllDelegations($delegation->originalUser);
+            
+            foreach ($allDelegations as $delegationGroup) {
+                if (isset($delegationGroup['type']) && $delegationGroup['type'] === $delegation->type) {
+                    $readableType = $delegationGroup['readable_name'];
+                    break;
+                } elseif (is_array($delegationGroup)) {
+                    foreach ($delegationGroup as $delegationItem) {
+                        if (isset($delegationItem['type']) && $delegationItem['type'] === $delegation->type) {
+                            $readableType = $delegationItem['readable_name'];
+                            break 2;
+                        }
+                    }
+                }
+            }
+            
+            // Determine group type and readable name
+            if (preg_match('/^draft_contract_labor_administrator_\d+$/', $delegation->type)) {
+                $readableType = 'Munkaügyi ügyintéző';
+            } elseif (preg_match('/^project_coordinator_workgroup_\d+$/', $delegation->type)) {
+                $readableType = 'Projektkoordinátor';
+            }
+            
+            $result[] = [
+                'id' => $delegation->id,
+                'original_user_name' => $delegation->originalUser->name,
+                'readable_type' => $readableType,
+                'start_date' => $delegation->start_date,
+                'end_date' => $delegation->end_date,
+                'status' => $delegation->deleted ? 'Törölt' : 'Aktív'
+            ];
+        }
+        
+        return response()->json(['data' => $result]);
+    }
+
     public function create() 
     {
         $validatedData = request()->validate([

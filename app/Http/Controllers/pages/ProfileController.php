@@ -159,7 +159,7 @@ class ProfileController extends Controller
         return response()->json(['data' => $result]);
     }
 
-    public function create()
+    public function create() 
     {
         $validatedData = request()->validate([
             'type' => 'required',
@@ -198,6 +198,7 @@ class ProfileController extends Controller
         $types = explode(',', $validatedData['type']);
         $successCount = 0;
         $overlappingDelegations = [];
+        $savedDelegations = [];
         
         foreach ($types as $type) {
             // Check for overlapping time periods with the same type and delegate
@@ -239,9 +240,17 @@ class ProfileController extends Controller
             try {
                 $delegation->save();
                 $successCount++;
+                $savedDelegations[] = $delegation;
             } catch (QueryException $e) {
                 // Continue to next item if one fails
                 continue;
+            }
+        }
+        
+        // Send notification for each successfully created delegation
+        if ($successCount > 0) {
+            foreach ($savedDelegations as $delegation) {
+                event(new \App\Events\DelegationCreatedEvent($delegation));
             }
         }
         

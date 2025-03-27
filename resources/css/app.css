@@ -60,6 +60,8 @@ ul.menu-sub {
 
 .app-brand .layout-menu-toggle i {
     line-height: 1 !important;
+    width: 1.6rem !important;
+    height: 1.6rem !important;
 }
 
 td.day {

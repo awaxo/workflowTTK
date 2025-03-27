@@ -16,7 +16,8 @@ class Delegation extends Model
         'delegate_user_id',
         'type',
         'start_date',
-        'end_date'
+        'end_date',
+        'status',
     ];
 
     protected $casts = [

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\pages;
 
+use App\Events\DelegationAcceptedEvent;
+use App\Events\DelegationRejectedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Delegation;
 use App\Models\User;
@@ -11,6 +13,17 @@ use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class ProfileController extends Controller
 {
+    protected $statusTranslation = [
+        'waiting_to_accept' => 'Elfogadásra vár',
+        'valid' => 'Érvényes',
+        'invalid' => 'Érvénytelen'
+    ];
+
+    protected function translateStatus($dbStatus)
+    {
+        return $this->statusTranslation[$dbStatus] ?? $dbStatus;
+    }
+
     public function index()
     {
         $service = new DelegationService();
@@ -18,7 +31,7 @@ class ProfileController extends Controller
         
         // Group similar delegation types
         $delegations = $this->groupSimilarDelegations($originalDelegations);
-        
+
         $approval_notification = json_decode(Auth::user()->notification_preferences)->email?->recruitment->approval_notification;
 
         return view('content.pages.profile', compact('delegations', 'approval_notification'));
@@ -81,11 +94,18 @@ class ProfileController extends Controller
 
     public function getAllDelegations()
     {
-        $delegations = Delegation::where('original_user_id', Auth::id())
-                        ->where('deleted', 0)
+        $showDeleted = request('show_deleted', false) === 'true';
+        
+        $query = Delegation::where('original_user_id', Auth::id())
                         ->whereDate('end_date', '>=', now())
-                        ->with('delegateUser')
-                        ->get();
+                        ->with('delegateUser');
+        
+        // Include deleted delegations if requested
+        if (!$showDeleted) {
+            $query->where('deleted', 0);
+        }
+        
+        $delegations = $query->get();
         
         // Group delegations by delegate, type pattern, dates
         $groupedDelegations = [];
@@ -132,6 +152,9 @@ class ProfileController extends Controller
             // Create a unique key for the group
             $groupKey = $delegateId . '|' . $groupType . '|' . $startDate . '|' . $endDate;
             
+            $dbStatus = $delegation->deleted == 1 ? 'invalid' : ($delegation->status ?: 'waiting_to_accept');
+            $displayStatus = $this->translateStatus($dbStatus);
+            
             if (!isset($groupedDelegations[$groupKey])) {
                 $groupedDelegations[$groupKey] = [
                     'id' => $delegation->id, // Use the first delegation's ID for the group
@@ -140,7 +163,10 @@ class ProfileController extends Controller
                     'start_date' => $startDate,
                     'end_date' => $endDate,
                     'delegate_user_id' => $delegateId,
-                    'delegations' => []
+                    'delegations' => [],
+                    'status' => $displayStatus,
+                    'db_status' => $dbStatus,
+                    'deleted' => $delegation->deleted,
                 ];
             }
             
@@ -164,7 +190,7 @@ class ProfileController extends Controller
         $showDeleted = request('show_deleted', false) === 'true';
         
         $query = Delegation::where('delegate_user_id', Auth::id())
-                           ->with('originalUser');
+                        ->with('originalUser');
         
         // Include deleted delegations if requested
         if (!$showDeleted) {
@@ -173,7 +199,7 @@ class ProfileController extends Controller
         
         // Get delegations where end date is today or in the future
         $delegations = $query->whereDate('end_date', '>=', now())
-                             ->get();
+                            ->get();
         
         $service = new DelegationService();
         $result = [];
@@ -204,13 +230,19 @@ class ProfileController extends Controller
                 $readableType = 'Projektkoordinátor';
             }
             
+            $dbStatus = $delegation->deleted == 1 ? 'invalid' : ($delegation->status ?: 'waiting_to_accept');
+            $displayStatus = $this->translateStatus($dbStatus);
+            
             $result[] = [
                 'id' => $delegation->id,
                 'original_user_name' => $delegation->originalUser->name,
+                'original_user_id' => $delegation->original_user_id,
                 'readable_type' => $readableType,
                 'start_date' => $delegation->start_date,
                 'end_date' => $delegation->end_date,
-                'status' => $delegation->deleted ? 'Törölt' : 'Aktív'
+                'status' => $displayStatus,
+                'db_status' => $dbStatus,
+                'deleted' => $delegation->deleted
             ];
         }
         
@@ -348,6 +380,49 @@ class ProfileController extends Controller
         $delegation->deleted = 1;
         $delegation->save();
         return response()->json(['message' => 'Delegation deleted successfully']);
+    }
+
+    public function acceptDelegation($id)
+    {
+        $delegation = Delegation::find($id);
+        
+        if (!$delegation) {
+            return response()->json(['message' => 'Delegation not found'], 404);
+        }
+        
+        // Check if user is the delegate of this delegation
+        if ($delegation->delegate_user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+        
+        $delegation->status = 'valid'; // Angol név az adatbázisban
+        $delegation->save();
+        
+        event(new DelegationAcceptedEvent($delegation));
+        
+        return response()->json(['message' => 'Delegation accepted successfully']);
+    }
+
+    public function rejectDelegation($id)
+    {
+        $delegation = Delegation::find($id);
+        
+        if (!$delegation) {
+            return response()->json(['message' => 'Delegation not found'], 404);
+        }
+        
+        // Check if user is the delegate of this delegation
+        if ($delegation->delegate_user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+        
+        $delegation->deleted = 1;
+        $delegation->status = 'invalid'; // Angol név az adatbázisban
+        $delegation->save();
+        
+        event(new DelegationRejectedEvent($delegation));
+        
+        return response()->json(['message' => 'Delegation rejected successfully']);
     }
 
     public function notificationUpdate()

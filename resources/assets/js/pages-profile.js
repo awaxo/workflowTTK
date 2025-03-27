@@ -19,9 +19,59 @@ $(function () {
         sensitivity: 'base'
     });
 
+    // Status handling utility
+    const StatusUtils = {
+        // Map status codes to display status
+        getStatusDisplay: function(status, deleted) {
+            // Ha deleted = 1, akkor mindig "Érvénytelen"
+            if (deleted === 1) {
+                return 'Érvénytelen';
+            }
+            
+            // Ha nincs státusz, alapértelmezetten "Elfogadásra vár"
+            if (!status) {
+                return 'Elfogadásra vár';
+            }
+            
+            // A státusz már lefordított formátumban érkezik a szervertől
+            return status;
+        },
+        
+        // Get badge class based on status
+        getStatusBadgeClass: function(status) {
+            if (status === 'Érvényes') {
+                return 'bg-label-success';
+            } else if (status === 'Érvénytelen') {
+                return 'bg-label-danger';
+            } else {
+                return 'bg-label-warning';
+            }
+        },
+        
+        // Check if status is valid
+        isStatusValid: function(status) {
+            return status === 'Érvényes';
+        },
+        
+        // Check if status is invalid or delegation is deleted
+        isStatusInvalid: function(status, deleted) {
+            return status === 'Érvénytelen' || deleted === 1;
+        },
+        
+        // Check if status is waiting for acceptance
+        isStatusWaiting: function(status, deleted) {
+            return status === 'Elfogadásra vár' && deleted !== 1;
+        }
+    };
+
     // Initialize delegates DataTable
     const delegatesTable = $('.datatables-delegates').DataTable({
-        ajax: '/api/delegations',
+        ajax: {
+            url: '/api/delegations', 
+            data: function (d) {
+                d.show_deleted = $('#show_deleted_my_delegations').is(':checked');
+            }
+        },
         autoWidth: false,
         dom: 'rtip',
         columns: [
@@ -40,6 +90,14 @@ $(function () {
                     return moment(data).format('YYYY.MM.DD');
                 }
             },
+            { 
+                data: 'status',
+                render: function(data, type, row) {
+                    const status = StatusUtils.getStatusDisplay(data, row.deleted);
+                    const badgeClass = StatusUtils.getStatusBadgeClass(status);
+                    return '<span class="badge ' + badgeClass + '">' + status + '</span>';
+                }
+            },
             { data: '' }
         ],
         columnDefs: [
@@ -50,6 +108,11 @@ $(function () {
                 orderable: false,
                 searchable: false,
                 render: function(data, type, full, meta) {
+                    // Ha a státusz érvénytelen vagy törölt, ne jelenítsen meg gombot
+                    if (StatusUtils.isStatusInvalid(full.status, full.deleted)) {
+                        return '';
+                    }
+                    
                     return (
                         '<div class="d-inline-block">' +
                         '<a href="javascript:;" class="btn btn-sm text-danger btn-icon delete-delegation"><i class="bx bx-trash"></i></a>' +
@@ -94,11 +157,41 @@ $(function () {
             { 
                 data: 'status',
                 render: function(data, type, row) {
-                    if (data === 'Törölt') {
-                        return '<span class="badge bg-label-danger">Törölt</span>';
-                    } else {
-                        return '<span class="badge bg-label-success">Aktív</span>';
+                    const status = StatusUtils.getStatusDisplay(data, row.deleted);
+                    const badgeClass = StatusUtils.getStatusBadgeClass(status);
+                    return '<span class="badge ' + badgeClass + '">' + status + '</span>';
+                }
+            },
+            { 
+                data: '',  
+                render: function(data, type, full, meta) {
+                    // Ha a státusz érvénytelen vagy törölt, ne jelenítsen meg gombot
+                    if (StatusUtils.isStatusInvalid(full.status, full.deleted)) {
+                        return '';
                     }
+                    
+                    // Ha a státusz érvényes, csak a törlés gomb jelenjen meg
+                    if (StatusUtils.isStatusValid(full.status)) {
+                        return (
+                            '<div class="d-inline-block">' +
+                            '<a href="javascript:;" class="btn btn-sm text-danger btn-icon reject-delegation" data-bs-toggle="tooltip" title="Törlés">' +
+                            '<i class="bx bx-trash"></i>' +
+                            '</a>' +
+                            '</div>'
+                        );
+                    }
+                    
+                    // Ha elfogadásra vár, mindkét gomb jelenjen meg
+                    return (
+                        '<div class="d-inline-block">' +
+                        '<a href="javascript:;" class="btn btn-sm text-success btn-icon accept-delegation me-1" data-bs-toggle="tooltip" title="Elfogadás">' +
+                        '<i class="bx bx-check"></i>' +
+                        '</a>' +
+                        '<a href="javascript:;" class="btn btn-sm text-danger btn-icon reject-delegation" data-bs-toggle="tooltip" title="Törlés">' +
+                        '<i class="bx bx-trash"></i>' +
+                        '</a>' +
+                        '</div>'
+                    );
                 }
             }
         ],
@@ -106,7 +199,16 @@ $(function () {
         buttons: [],
         displayLength: 10,
         lengthMenu: [5, 10, 25],
-        language: GLOBALS.DATATABLE_TRANSLATION
+        language: GLOBALS.DATATABLE_TRANSLATION,
+        drawCallback: function() {
+            // Initialize tooltips after table is drawn
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        }
+    });
+
+    // Handle checkbox change for "Helyettesek beállítása" deleted delegations
+    $('#show_deleted_my_delegations').on('change', function() {
+        delegatesTable.ajax.reload();
     });
 
     // Handle checkbox change for deleted delegations
@@ -338,6 +440,77 @@ $(function () {
                     GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
                 });
         }
+    });
+
+    // Accept delegation handler
+    $(document).on('click', '.accept-delegation', function() {
+        var row = $(this).closest('tr');
+        var delegationId = delegatedToMeTable.row(row).data().id;
+
+        $('#action-confirmation-text').text('Biztosan elfogadod ezt a helyettesítést?');
+        $('#confirm_action').attr('data-delegation-id', delegationId);
+        $('#confirm_action').attr('data-action', 'accept');
+        $('#delegationActionConfirmation').modal('show');
+    });
+
+    // Reject delegation handler
+    $(document).on('click', '.reject-delegation', function() {
+        var row = $(this).closest('tr');
+        var delegationId = delegatedToMeTable.row(row).data().id;
+
+        $('#action-confirmation-text').text('Biztosan törlöd ezt a helyettesítést?');
+        $('#confirm_action').attr('data-delegation-id', delegationId);
+        $('#confirm_action').attr('data-action', 'reject');
+        $('#delegationActionConfirmation').modal('show');
+    });
+
+    // Confirm action handler (for accept/reject)
+    $('#confirm_action').on('click', function() {
+        let delegationId = $(this).attr('data-delegation-id');
+        let action = $(this).attr('data-action');
+        
+        let url = action === 'accept' 
+            ? '/api/delegation/' + delegationId + '/accept'
+            : '/api/delegation/' + delegationId + '/reject';
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $('#delegationActionConfirmation').modal('hide');
+                
+                // Reload both tables to reflect changes
+                delegatedToMeTable.ajax.reload();
+                delegatesTable.ajax.reload();
+                
+                // Show success message
+                const successMessage = action === 'accept' 
+                    ? 'Helyettesítés sikeresen elfogadva!'
+                    : 'Helyettesítés sikeresen törölve!';
+                    
+                Swal.fire({
+                    title: 'Sikeres művelet!',
+                    text: successMessage,
+                    icon: 'success',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
+                $('#delegationActionConfirmation').modal('hide');
+                GLOBALS.AJAX_ERROR('Hiba történt a művelet során!', jqXHR, textStatus, errorThrown);
+            }
+        });
     });
 
     // Save notification settings

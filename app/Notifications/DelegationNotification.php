@@ -4,10 +4,12 @@ namespace App\Notifications;
 
 use App\Models\Delegation;
 use App\Models\User;
+use App\Services\Interfaces\IDelegationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\App;
 
 class DelegationNotification extends Notification implements ShouldQueue
 {
@@ -15,14 +17,22 @@ class DelegationNotification extends Notification implements ShouldQueue
 
     public Delegation $delegation;
     public User $originalUser;
+    protected IDelegationService $delegationService;
 
     /**
      * Create a new notification instance.
+     *
+     * @param Delegation $delegation
+     * @param User $originalUser
      */
     public function __construct(Delegation $delegation, User $originalUser)
     {
         $this->delegation = $delegation;
         $this->originalUser = $originalUser;
+        
+        // Resolve the DelegationServiceInterface from the container
+        // since Notifications are not resolved from the container automatically
+        $this->delegationService = App::make(IDelegationService::class);
     }
 
     /**
@@ -37,12 +47,57 @@ class DelegationNotification extends Notification implements ShouldQueue
 
     /**
      * Get the mail representation of the notification.
+     *
+     * @param object $notifiable
+     * @return MailMessage
      */
     public function toMail(object $notifiable): MailMessage
     {
-        // Get readable delegation type
-        $service = new \Modules\EmployeeRecruitment\App\Services\DelegationService();
-        $allDelegations = $service->getAllDelegations($this->originalUser);
+        // Get readable delegation type using the service
+        $readable_type = $this->getReadableType();
+        
+        $url = url('https://ugyintezes.ttk.hu/profil');
+        $start_date = date('Y.m.d', strtotime($this->delegation->start_date));
+        $end_date = $this->delegation->end_date 
+            ? date('Y.m.d', strtotime($this->delegation->end_date))
+            : 'határozatlan idő';
+
+        return (new MailMessage)
+                    ->subject('Helyettesítési megbízás')
+                    ->greeting('Tisztelt ' . $notifiable->name . '!')
+                    ->line('')
+                    ->line($this->originalUser->name . ' helyettesítési megbízást adott Önnek az alábbiak szerint:')
+                    ->line('Helyettesített funkció: ' . $readable_type)
+                    ->line('Időszak: ' . $start_date . ' - ' . $end_date)
+                    ->line('')
+                    ->action('Profil megtekintése', $url)
+                    ->line('')
+                    ->line('Üdvözlettel,')
+                    ->line('Ügyintézési rendszer');
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param object $notifiable
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            //
+        ];
+    }
+    
+    /**
+     * Get readable delegation type
+     * 
+     * @return string
+     */
+    protected function getReadableType(): string
+    {
+        // Get readable delegation type using the service
+        $allDelegations = $this->delegationService->getAllDelegations($this->originalUser);
         
         $readable_type = $this->delegation->type;
         foreach ($allDelegations as $delegationItem) {
@@ -66,33 +121,6 @@ class DelegationNotification extends Notification implements ShouldQueue
             $readable_type = 'Projektkoordinátor';
         }
         
-        $url = url('https://ugyintezes.ttk.hu/profil');
-        $start_date = date('Y.m.d', strtotime($this->delegation->start_date));
-        $end_date = date('Y.m.d', strtotime($this->delegation->end_date));
-
-        return (new MailMessage)
-                    ->subject('Helyettesítési megbízás')
-                    ->greeting('Tisztelt ' . $notifiable->name . '!')
-                    ->line('')
-                    ->line($this->originalUser->name . ' helyettesítési megbízást adott Önnek az alábbiak szerint:')
-                    ->line('Helyettesített funkció: ' . $readable_type)
-                    ->line('Időszak: ' . $start_date . ' - ' . $end_date)
-                    ->line('')
-                    ->action('Profil megtekintése', $url)
-                    ->line('')
-                    ->line('Üdvözlettel,')
-                    ->line('Ügyintézési rendszer');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
+        return $readable_type;
     }
 }

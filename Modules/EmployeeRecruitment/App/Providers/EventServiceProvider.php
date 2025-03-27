@@ -4,12 +4,16 @@ namespace Modules\EmployeeRecruitment\App\Providers;
 
 use App\Events\ApproverAssignedEvent;
 use App\Events\CancelledEvent;
+use App\Events\DelegationAcceptedEvent;
 use App\Events\DelegationCreatedEvent;
+use App\Events\DelegationRejectedEvent;
 use App\Events\RejectedEvent;
 use App\Events\StateChangedEvent;
 use App\Events\SuspendedEvent;
 use App\Events\WorkflowStartedEvent;
+use App\Listeners\DelegationAcceptedListener;
 use App\Listeners\DelegationCreatedListener;
+use App\Listeners\DelegationRejectedListener;
 use App\Listeners\StateChangedListener;
 use Modules\EmployeeRecruitment\App\Listeners\ApproverAssignedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -54,6 +58,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         DelegationCreatedEvent::class => [
             DelegationCreatedListener::class,
+        ],
+        DelegationAcceptedEvent::class => [
+            DelegationAcceptedListener::class,
+        ],
+        DelegationRejectedEvent::class => [
+            DelegationRejectedListener::class,
         ],
     ];
 

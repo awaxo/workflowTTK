@@ -2,105 +2,71 @@
 
 namespace Modules\EmployeeRecruitment\App\Services;
 
-use App\Models\Delegation;
 use App\Models\User;
+use App\Services\AbstractDelegationService;
 use Illuminate\Support\Facades\Log;
 
-class DelegationService
+class DelegationService extends AbstractDelegationService
 {
     /**
-     * Get all delegations for the given user.
+     * The state classes used in the Employee Recruitment module.
+     * 
+     * @var array
      */
-    public function getAllDelegations(User $user)
+    protected array $stateClasses = [
+        'StateCompleted',
+        'StateDirectorApproval',
+        'StateDraftContractPending',
+        'StateEmployeeSignature',
+        'StateFinancialCounterpartyApproval',
+        'StateFinancialCountersignApproval',
+        'StateGroupLeadApproval',
+        'StateHrLeadApproval',
+        'StateItHeadApproval',
+        'StateObligeeApproval',
+        'StateObligeeSignature',
+        'StatePostFinancingApproval',
+        'StateProjectCoordinationLeadApproval',
+        'StateProofOfCoverage',
+        'StateRegistration',
+        'StateRequestReview',
+        'StateRequestToComplete',
+        'StateSupervisorApproval',
+        'StateSuspended'
+    ];
+
+    /**
+     * Get all delegations for the given user from all states in the Employee Recruitment module.
+     * 
+     * @param User $user
+     * @return array
+     */
+    public function getAllDelegations(User $user): array
     {
-        $states = [
-            'StateCompleted',
-            'StateDirectorApproval',
-            'StateDraftContractPending',
-            'StateEmployeeSignature',
-            'StateFinancialCounterpartyApproval',
-            'StateFinancialCountersignApproval',
-            'StateGroupLeadApproval',
-            'StateHrLeadApproval',
-            'StateItHeadApproval',
-            'StateObligeeApproval',
-            'StateObligeeSignature',
-            'StatePostFinancingApproval',
-            'StateProjectCoordinationLeadApproval',
-            'StateProofOfCoverage',
-            'StateRegistration',
-            'StateRequestReview',
-            'StateRequestToComplete',
-            'StateSupervisorApproval',
-            'StateSuspended'
-        ];
-
         $delegations = [];
-        foreach ($states as $state) {
-            $stateClass = "Modules\\EmployeeRecruitment\\App\\Models\\States\\" . $state;
+        $stateNamespace = "Modules\\EmployeeRecruitment\\App\\Models\\States\\";
 
-            if (class_exists($stateClass)) {
-                $stateInstance = new $stateClass();
-                $stateDelegations = $stateInstance->getDelegations($user);
+        foreach ($this->stateClasses as $stateClass) {
+            $fullyQualifiedStateClass = $stateNamespace . $stateClass;
 
-                $delegations = array_merge($delegations, $stateDelegations);
+            if (class_exists($fullyQualifiedStateClass)) {
+                try {
+                    $stateInstance = new $fullyQualifiedStateClass();
+                    $stateDelegations = $stateInstance->getDelegations($user);
+
+                    if (is_array($stateDelegations) && !empty($stateDelegations)) {
+                        $delegations = array_merge($delegations, $stateDelegations);
+                    }
+                } catch (\Throwable $e) {
+                    // Log the error but continue processing other states
+                    Log::error(
+                        "Error getting delegations from state {$stateClass}: " . $e->getMessage(),
+                        ['exception' => $e]
+                    );
+                }
             }
         }
 
         return $delegations;
-    }
-
-    /**
-     * Check if the user is a delegate for the given delegation type.
-     */
-    public function isDelegate(User $user, string $delegationType)
-    {
-        if (!$user || !$delegationType) {
-            Log::error('DelegationService::isDelegate called with invalid parameters');
-            return false;
-        }
-
-        return Delegation::where('delegate_user_id', $user->id)
-            ->where('type', $delegationType)
-            ->where('deleted', 0)
-            ->where(function ($query) {
-                $query->where(function ($subquery) {
-                    $subquery->whereNotNull('end_date')
-                    ->whereDate('end_date', '>=', now());
-                })->orWhere(function ($subquery) {
-                    $subquery->whereNull('end_date')
-                    ->whereDate('start_date', '<=', now());
-                });
-            })
-            ->count() > 0;
-    }
-
-    /**
-     * Get delegate users for the given user and delegation type.
-     */
-    public function getDelegates(User $user, string $delegationType)
-    {
-        if (!$user || !$delegationType) {
-            Log::error('DelegationService::getDelegates called with invalid parameters');
-            return null;
-        }
-
-        return Delegation::where('original_user_id', $user->id)
-            ->where('type', $delegationType)
-            ->where('deleted', 0)
-            ->where(function ($query) {
-                $query->where(function ($subquery) {
-                    $subquery->whereNotNull('end_date')
-                        ->whereDate('end_date', '>=', now());
-                })->orWhere(function ($subquery) {
-                    $subquery->whereNull('end_date')
-                        ->whereDate('start_date', '<=', now());
-                });
-            })
-            ->get()
-            ->pluck('delegate_user_id')
-            ->map(function ($delegateUserId) {
-                return User::find($delegateUserId);
-            });
     }
 }

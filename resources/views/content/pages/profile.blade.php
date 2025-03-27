@@ -61,12 +61,14 @@
         
         <div class="tab-content">
             <div class="tab-pane fade show active" id="navs-pills-delegations" role="tabpanel">
+                <!-- Helyettesek beállítása szekció -->
                 <div class="content-header mb-3">
                     <h5 class="mb-0">Helyettesek beállítása</h5>
                     <small>Add meg a helyettesíteni kívánt funkciót és a helyettest</small>
                 </div>
 
                 <div class="row">
+                    <!-- Bal oldali űrlap -->
                     <div class="col-sm-4">
                         <div class="row">
                             <div class="col-sm-12 mb-3">
@@ -98,10 +100,25 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Nyíl ikon -->
                     <div class="col-sm-1 d-flex align-items-center justify-content-center">
                         <a href="javascript:" id="save_delegation"><i class="fas fa-angles-right text-success mt-4 fa-3x"></i></a>
                     </div>
-                    <div class="col-sm-7 d-flex align-items-center">
+                    
+                    <!-- Jobb oldali táblázat rész -->
+                    <div class="col-sm-7">
+                        <!-- Törölt helyettesítések kapcsoló -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="form-check form-switch show-deleted-my-delegations">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="show_deleted_my_delegations">
+                                    <label class="form-check-label" for="show_deleted_my_delegations">Törölt helyettesítések megjelenítése</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Táblázat -->
                         <div class="card-datatable table-responsive pt-0">
                             <table class="datatables-delegates table border-top">
                                 <thead>
@@ -111,6 +128,7 @@
                                         <th>Funkció</th>
                                         <th>Kezdete</th>
                                         <th>Vége</th>
+                                        <th>Státusz</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -146,6 +164,7 @@
                                         <th>Kezdete</th>
                                         <th>Vége</th>
                                         <th>Státusz</th>
+                                        <th>Elfogadás/Törlés</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -187,6 +206,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
                     <button type="button" id="confirm_delete" data-delegation-id="" class="btn btn-primary">Törlés</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delegation action confirmation modal -->
+    <div class="modal fade" id="delegationActionConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="actionModalLabel">Megerősítés</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="action-confirmation-text">Biztosan szeretnéd elvégezni ezt a műveletet?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                    <button type="button" id="confirm_action" data-delegation-id="" data-action="" class="btn btn-primary">Megerősítés</button>
                 </div>
             </div>
         </div>

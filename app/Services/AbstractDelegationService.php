@@ -61,23 +61,15 @@ abstract class AbstractDelegationService implements IDelegationService
             return null;
         }
 
-        return Delegation::where('original_user_id', $user->id)
+        $delegateUserIds = Delegation::where('original_user_id', $user->id)
             ->where('type', $delegationType)
             ->where('deleted', 0)
-            ->where(function ($query) {
-                $query->where(function ($subquery) {
-                    $subquery->whereNotNull('end_date')
-                        ->whereDate('end_date', '>=', now());
-                })->orWhere(function ($subquery) {
-                    $subquery->whereNull('end_date')
-                        ->whereDate('start_date', '<=', now());
-                });
-            })
-            ->get()
-            ->pluck('delegate_user_id')
-            ->map(function ($delegateUserId) {
-                return User::find($delegateUserId);
-            });
+            ->where($this->getActiveDelegationsCondition())
+            ->pluck('delegate_user_id');
+        
+        return empty($delegateUserIds) 
+            ? new Collection() 
+            : User::whereIn('id', $delegateUserIds)->get();
     }
 
     /**

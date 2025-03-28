@@ -70,7 +70,7 @@
                 <div class="tab-pane fade active show" id="tab_decision" role="tabpanel">
                     <!-- Recruitment details -->
                     <div class="accordion" id="accordion_process_details">
-                        @if ($isITHead)
+                        @if ($isITHead && !$hasNonITHeadPermission)
                             @include('EmployeeRecruitment::content._partials.it-head-approval', ['recruitment' => $recruitment])
                         @else
                             @include('EmployeeRecruitment::content._partials.all-approval', ['recruitment' => $recruitment])

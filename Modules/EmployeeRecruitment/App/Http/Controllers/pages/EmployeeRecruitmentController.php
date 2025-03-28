@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
+use Modules\EmployeeRecruitment\App\Services\RecruitmentWorkflowService;
 
 class EmployeeRecruitmentController extends Controller
 {
@@ -356,11 +357,14 @@ class EmployeeRecruitmentController extends Controller
         $externalSystemsList = implode(', ', $externalSystems);
 
         $delegationService = new DelegationService();
+        $recruitmentService = new RecruitmentWorkflowService();
+
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
             'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
             'isHRHead' => $workgroup908 && ($workgroup908->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'hr_head')),
+            'hasNonITHeadPermission' => $recruitmentService->hasNonITHeadPermission($recruitment, Auth::user()),
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
             'amountToCover' => $this->getAmountToCover($recruitment),
@@ -412,6 +416,7 @@ class EmployeeRecruitmentController extends Controller
             $externalSystemsList = implode(', ', $externalSystems);
 
             $delegationService = new DelegationService();
+            $recruitmentService = new RecruitmentWorkflowService();
 
             $medicalData = null;
             if (!is_null($recruitment->medical_eligibility_data)) {
@@ -427,6 +432,7 @@ class EmployeeRecruitmentController extends Controller
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
+                'hasNonITHeadPermission' => $recruitmentService->hasNonITHeadPermission($recruitment, Auth::user()),
                 'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),
@@ -730,10 +736,13 @@ class EmployeeRecruitmentController extends Controller
             $externalSystemsList = implode(', ', $externalSystems);
 
             $delegationService = new DelegationService();
+            $recruitmentService = new RecruitmentWorkflowService();
+
             return view('employeerecruitment::content.pages.recruitment-restore', [
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
+                'hasNonITHeadPermission' => $recruitmentService->hasNonITHeadPermission($recruitment, Auth::user()),
                 'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),

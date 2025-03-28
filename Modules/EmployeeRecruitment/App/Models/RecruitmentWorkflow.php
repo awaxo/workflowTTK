@@ -338,6 +338,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'contract',
             'contract_registration_number',
             'obligee_number',
+            'comment',
             'medical_eligibility_data'
         ]);
 

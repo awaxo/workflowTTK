@@ -411,6 +411,9 @@
                     <span class="fw-bold ms-1 text-break">-</span>
                 @endif
             </div>
+            <div class="d-flex">
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->initiator_comment ?: 'Nincs megjegyzés' }}</span>
+            </div>
         </div>
     </div>
 </div>

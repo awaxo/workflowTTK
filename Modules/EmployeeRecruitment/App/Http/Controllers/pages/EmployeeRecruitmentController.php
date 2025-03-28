@@ -227,6 +227,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->certificates = $this->getNewFileName($validatedData['name'], 'Bizonyítványok', $validatedData['certificates_file']);
         $recruitment->requires_commute_support = request('requires_commute_support') == 'true' ? 1 : 0;
         $recruitment->commute_support_form = isset($validatedData['commute_support_form_file']) ? $this->getNewFileName($validatedData['name'], 'MunkábaJárásiAdatlap', $validatedData['commute_support_form_file']) : null;
+        $recruitment->initiator_comment = $validatedData['initiator_comment'] ?? null;
 
         $service = new WorkflowService();
         if ($old_state == 'request_review') {
@@ -1324,6 +1325,7 @@ class EmployeeRecruitmentController extends Controller
                     }
                 },
             ],
+            'initiator_comment' => 'nullable|string|max:2000',
         ], [
             'name.required' => 'A név megadása kötelező',
             'name.string' => 'A név érvénytelen',
@@ -1389,6 +1391,7 @@ class EmployeeRecruitmentController extends Controller
             'student_status_verification_file.required' => 'Kérjük, töltsd fel a hallgatói jogviszony igazolást',
             'certificates_file.required' => 'Kérjük, töltsd fel a bizonyítványokat',
             'commute_support_form_file.required' => 'Kérjük, töltsd fel a munkába járási adatlapot',
+            'initiator_comment.max' => 'A megjegyzés nem lehet hosszabb 2000 karakternél',
         ]);
     }    
 }

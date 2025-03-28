@@ -738,6 +738,11 @@
                                 </form>
                                 <input type="hidden" id="commute_support_form_file" data-original-name="" name="commute_support_form_file" />
                             </div>
+                            <div class="col-sm-12">
+                                <label class="form-label" for="initiator_comment">Megjegyzés</label>
+                                <textarea id="initiator_comment" class="form-control" name="initiator_comment" rows="3">{{ $recruitment->initiator_comment ?? '' }}</textarea>
+                                <small class="text-muted">Maximum 2000 karakter</small>
+                            </div>
                         
                             <div class="nav-align-top">
                                 <!-- placeholder for error messages -->

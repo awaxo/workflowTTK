@@ -142,7 +142,8 @@ $(function () {
                 probation_period: $('#probation_period').val(),
                 post_financed_application: $('#post_financed_application').val(),
                 contract_file: $('#contract_file').val(),
-                message: $('#message').val()
+                message: $('#message').val(),
+                initiator_comment: $('#initiator_comment').val()
             };
 
             // Add social_security_number if present

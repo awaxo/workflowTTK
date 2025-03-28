@@ -46,3 +46,7 @@
     <label class="form-label col-6 col-md-3">Telefon mellék</label>
     <span class="fw-bold ms-1 text-break">{{ $recruitment->phone_extension ? $recruitment->phone_extension : '-' }}</span>
 </div>
+<div class="d-flex">
+    <label class="form-label col-6 col-md-3">Kezdeményező megjegyzése</label>
+    <span class="fw-bold ms-1 text-break">{{ $recruitment->initiator_comment ?: 'Nincs megjegyzés' }}</span>
+</div>

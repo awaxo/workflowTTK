@@ -336,6 +336,7 @@ $(function () {
         revalidateOnChange(fv, 'student_status_verification_file');
         revalidateOnChange(fv, 'certificates_file');
         revalidateOnChange(fv, 'commute_support_form_file');
+        revalidateOnChange(fv, 'initiator_comment');
         
 
         // enable/disable validators based on other field values
@@ -1615,6 +1616,14 @@ function validateEmployeeRecruitment() {
                     validators: {
                         notEmpty: {
                             message: 'Kérjük, töltsd fel a munkába járási adatlapot'
+                        }
+                    }
+                },
+                initiator_comment: {
+                    validators: {
+                        stringLength: {
+                            max: 2000,
+                            message: 'A megjegyzés nem lehet hosszabb 2000 karakternél'
                         }
                     }
                 },

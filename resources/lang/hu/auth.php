@@ -17,6 +17,7 @@ return [
         'utofinanszirozas_fedezetigazolo' => 'Utófinanszírozás fedezetigazoló',
         'koltseghely_adatkarbantarto' => 'Költséghely adatkarbantartó',
         'uzemeltetesi_ugyintezo' => 'Üzemeltetési ügyintéző',
+        'sugarvedelmi_szolgalat' => 'Sugárvédelmi szolgálat',
     ],
     'permissions' => [
         'update_global_settings' => 'Globális beállítások módosítása',

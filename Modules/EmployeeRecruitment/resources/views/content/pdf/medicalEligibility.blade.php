@@ -39,10 +39,17 @@
             font-size: 0.6em;
         }
         
-        .stamp {
-            text-align: right;
+        .signature-table {
+            width: 100%;
             margin-top: 50px;
             font-size: 0.6em;
+            border-collapse: collapse;
+        }
+        
+        .signature-table td {
+            width: 50%;
+            text-align: center;
+            vertical-align: top;
         }
         
         .checkboxes td {
@@ -285,10 +292,25 @@
     <div class="signature">
         Budapest, {{ date('Y') }}.{{ date('m') }}.{{ date('d') }}.
     </div>
-    <div class="stamp">
-        ..............................................................<br />
-        Munkáltató aláírása, hiteles bélyegzője
-    </div>
+
+    <table class="signature-table">
+        <tr>
+            @if(isset($medical['ionizing_radiation_exposure']) && in_array($medical['ionizing_radiation_exposure'], ['resz', 'egesz']))
+            <td>
+                ..............................................................
+                <br>
+                Sugárvédelmi Szolgálat aláírása, bélyegzője
+            </td>
+            @else
+            <td></td>
+            @endif
+            <td>
+                ..............................................................
+                <br>
+                Munkáltató aláírása, hiteles bélyegzője
+            </td>
+        </tr>
+    </table>
 
 </body>
 </html>

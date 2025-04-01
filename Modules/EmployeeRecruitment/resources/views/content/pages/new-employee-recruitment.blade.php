@@ -171,6 +171,10 @@
                                     <input class="form-check-input" type="checkbox" role="switch" id="has_current_volunteer_contract">
                                     <label class="form-check-label" for="has_current_volunteer_contract">Jelenleg van önkéntes szerződéses jogviszonya a Kutatóközponttal?</label>
                                 </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="is_retired">
+                                    <label class="form-check-label" for="is_retired">Jelenleg nyugdíjas?</label>
+                                </div>
                             </div>
                             <div class="col-sm-4">
                                 <label for="applicants_female_count" class="form-label">Álláshirdetésre jelentkezett nők száma</label>

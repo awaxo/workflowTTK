@@ -62,6 +62,10 @@ use App\Models\ExternalAccessRight;
                     <td>{{ $recruitment->has_current_volunteer_contract ? 'Igen' : 'Nem' }}</td>
                 </tr>
                 <tr>
+                    <td>Jelenleg nyugdíjas</td>
+                    <td>{{ $recruitment->is_retired ? 'Igen' : 'Nem' }}</td>
+                </tr>
+                <tr>
                     <td>Állampolgárság</td>
                     <td>{{ $recruitment->citizenship }}</td>
                 </tr>

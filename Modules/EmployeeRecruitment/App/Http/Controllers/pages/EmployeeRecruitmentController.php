@@ -134,6 +134,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->job_ad_exists = request('job_ad_exists') == 'true' ? 1 : 0;
         $recruitment->has_prior_employment = request('has_prior_employment') == 'true' ? 1 : 0;
         $recruitment->has_current_volunteer_contract = request('has_current_volunteer_contract') == 'true' ? 1 : 0;
+        $recruitment->is_retired = request('is_retired') == 'true' ? 1 : 0;
         $recruitment->applicants_female_count = str_replace(' ', '', $validatedData['applicants_female_count']) == '' ? null : str_replace(' ', '', $validatedData['applicants_female_count']);
         $recruitment->applicants_male_count = str_replace(' ', '', $validatedData['applicants_male_count']) == '' ? null : str_replace(' ', '', $validatedData['applicants_male_count']);
         $recruitment->citizenship = request('citizenship');

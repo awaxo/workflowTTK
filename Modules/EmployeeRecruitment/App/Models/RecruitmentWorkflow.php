@@ -283,6 +283,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'applicants_male_count',
             'has_prior_employment',
             'has_current_volunteer_contract',
+            'is_retired',
             'citizenship',
             'workgroup_id_1',
             'workgroup_id_2',
@@ -346,6 +347,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'job_ad_exists' => 'boolean',
             'has_prior_employment' => 'boolean',
             'has_current_volunteer_contract' => 'boolean',
+            'is_retired' => 'boolean',
             'requires_commute_support' => 'boolean',
         ]);
 

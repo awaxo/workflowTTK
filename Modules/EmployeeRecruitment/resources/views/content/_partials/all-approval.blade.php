@@ -63,6 +63,16 @@
                 </span>
             </div>
             <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Jelenleg nyugdíjas</label>
+                <span class="fw-bold ms-1 text-break">
+                    @if($recruitment->is_retired)
+                        <span class="badge bg-success">Igen</span>
+                    @else
+                        <span class="badge bg-secondary">Nincs</span>
+                    @endif
+                </span>
+            </div>
+            <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Állampolgárság</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->citizenship }}</span>
             </div>

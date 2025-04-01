@@ -81,6 +81,15 @@
                         </div>
                     </div>
                     <div class="col-12">
+                        <div class="col-3">
+                            <label for="employer_contribution" class="form-label">Szociális hozzájárulási adó</label>
+                            <div class="d-flex align-items-center">
+                                <input class="form-control numeral-mask" type="text" id="employer_contribution" value="{{ $options['employer_contribution'] }}" name="employer_contribution" />
+                                <span class="ms-2">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
                         <button class="btn btn-success btn-submit-generic">Mentés</button>
                     </div>
                 </div>

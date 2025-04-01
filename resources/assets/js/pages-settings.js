@@ -23,7 +23,14 @@ $(function() {
             GLOBALS.AJAX_ERROR('Az API URL formátuma érvénytelen. Kérjük, adjon meg egy érvényes URL-t (pl. https://example.com/api).');
             return;
         }
-
+    
+        // Get employer contribution value and validate
+        const employerContribution = GLOBALS.cleanNumber($('#employer_contribution').val());
+        if (employerContribution < 0 || employerContribution > 100) {
+            GLOBALS.AJAX_ERROR('A szociális hozzájárulási adó értéke 0 és 100 között kell legyen.');
+            return;
+        }
+    
         $.ajax({
             url: '/api/settings/update',
             type: 'POST',
@@ -33,6 +40,7 @@ $(function() {
                     recruitment_auto_suspend_threshold: GLOBALS.cleanNumber($('#recruitment_auto_suspend_threshold').val()),
                     recruitment_director_approve_salary_threshold: GLOBALS.cleanNumber($('#recruitment_director_approve_salary_threshold').val()),
                     notification_api_url: apiUrl,
+                    employer_contribution: employerContribution,
                 },
             },
             success: function(response) {
@@ -43,7 +51,7 @@ $(function() {
                     alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                     window.location.href = '/login';
                 }
-
+    
                 GLOBALS.AJAX_ERROR('Hiba történt a beállítások mentése során!', jqXHR, textStatus, errorThrown);
             }
         });
@@ -55,6 +63,18 @@ $(function() {
             $(this).addClass('is-invalid');
             $(this).next('.invalid-feedback').remove();
             $(this).after('<div class="invalid-feedback">Kérjük, adjon meg egy érvényes URL-t (pl. https://example.com/api).</div>');
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
+
+    $('#employer_contribution').on('blur', function() {
+        const value = GLOBALS.cleanNumber($(this).val());
+        if (value < 0 || value > 100) {
+            $(this).addClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+            $(this).after('<div class="invalid-feedback">A százalékérték 0 és 100 között kell legyen.</div>');
         } else {
             $(this).removeClass('is-invalid');
             $(this).next('.invalid-feedback').remove();

@@ -126,6 +126,10 @@
                 <label class="form-label col-6 col-md-3">Jogviszony vége</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->employment_end_date }}</span>
             </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Munkáltatói járulék</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->employer_contribution }} %</span>
+            </div>
         </div>
     </div>
 </div>

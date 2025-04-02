@@ -154,6 +154,9 @@ class EmployeeRecruitmentController extends Controller
         }
         $recruitment->employment_start_date = $validatedData['employment_start_date'];
         $recruitment->employment_end_date = $validatedData['employment_end_date'];
+        
+        $employerContributionOption = Option::where('option_name', 'employer_contribution')->first();
+        $recruitment->employer_contribution = $employerContributionOption ? (float)$employerContributionOption->option_value : null;
 
         // data section 3
         $recruitment->base_salary_cost_center_1 = $validatedData['base_salary_cost_center_1'];
@@ -896,7 +899,14 @@ class EmployeeRecruitmentController extends Controller
 
     private function getAmountToCover($recruitment)
     {
-        $employerContribution = $recruitment->is_retired ? 0 : Option::where('option_name', 'employer_contribution')->first()->option_value;
+        // Determine employer contribution rate: use record-specific value if exists, otherwise use default
+        if ($recruitment->is_retired) {
+            $employerContribution = 0; // No contribution for retired employees
+        } else if ($recruitment->employer_contribution !== null) {
+            $employerContribution = $recruitment->employer_contribution; // Use record-specific value
+        } else {
+            $employerContribution = Option::where('option_name', 'employer_contribution')->first()->option_value; // Use default
+        }
         $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
         
         // Fix for handling '0000-00-00' end date
@@ -940,8 +950,14 @@ class EmployeeRecruitmentController extends Controller
 
     private function getTotalAmountToCover($recruitment)
     {
-        // Set employer contribution to 0 if employee is retired
-        $employerContributionRate = $recruitment->is_retired ? 0 : Option::where('option_name', 'employer_contribution')->first()->option_value;
+        // Determine employer contribution rate
+        if ($recruitment->is_retired) {
+            $employerContributionRate = 0; // No contribution for retired employees
+        } else if ($recruitment->employer_contribution !== null) {
+            $employerContributionRate = $recruitment->employer_contribution; // Use record-specific value
+        } else {
+            $employerContributionRate = Option::where('option_name', 'employer_contribution')->first()->option_value; // Use default
+        }
         $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
 
         $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
@@ -986,7 +1002,6 @@ class EmployeeRecruitmentController extends Controller
 
         return number_format($totalAmountToCover, 0, '', ' ');
     }
-
 
     private function validateFields(RecruitmentWorkflow $recruitment, Request $request)
     {

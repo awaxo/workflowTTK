@@ -111,6 +111,10 @@ use App\Models\ExternalAccessRight;
                     <td>{{ $recruitment->employment_end_date }}</td>
                 </tr>
                 <tr>
+                    <td>Munkáltatói járulék</td>
+                    <td>{{ $recruitment->employer_contribution }} %</td>
+                </tr>
+                <tr>
                     <td>Próbaidő hossza</td>
                     <td>{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</td>
                 </tr>

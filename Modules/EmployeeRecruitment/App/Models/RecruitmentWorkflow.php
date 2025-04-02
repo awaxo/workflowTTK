@@ -293,6 +293,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'task',
             'employment_start_date',
             'employment_end_date',
+            'employer_contribution',
             'base_salary_cost_center_1',
             'base_salary_monthly_gross_1',
             'base_salary_cost_center_2',
@@ -349,6 +350,7 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'has_current_volunteer_contract' => 'boolean',
             'is_retired' => 'boolean',
             'requires_commute_support' => 'boolean',
+            'employer_contribution' => 'decimal:1',
         ]);
 
         $this->attributes = array_merge($this->attributes, [

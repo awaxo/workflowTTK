@@ -5,6 +5,7 @@ import { min } from 'lodash';
 
 var cleaveInstances = {};
 var fv;
+var employerContributionRate = 13;
 
 $(function () {
     cleaveInstances = GLOBALS.initNumberInputs();
@@ -506,6 +507,25 @@ $(function () {
             $('#totalGross').text(getGrossSalarySum().toLocaleString('en-US', {maximumFractionDigits: 2}).replace(/,/g, ' '));
         });
     });
+
+    if ($('#employer_contribution').length) {
+        employerContributionRate = parseFloat($('#employer_contribution').val());
+    }
+    
+    // Fedezetigazolandó összeg táblázat inicializálása
+    initCoverageTable();
+    
+    // Értékek átvétele a szerverről, ha szerkesztés módban vagyunk
+    if ($('#recruitment_id').val() !== '') {
+        setTimeout(function() {
+            updateCoverageTable();
+        }, 600); // Kicsit később futtatjuk, mint a többi inicializálást (400ms után), hogy a többi érték már be legyen töltve
+    }
+
+    $('#management_allowance_end_date, #extra_pay_1_end_date, #extra_pay_2_end_date').on('change', function() {
+        console.log('Allowance end date changed:', $(this).attr('id'), $(this).val());
+        updateCoverageTable();
+    });
 });
 
 function toggleApplicantCountInputs(isChecked) {
@@ -687,6 +707,371 @@ function filterExternalAccess() {
     }
 }
 // End of filtering by workgroups
+
+// Employer contribution rate
+function initCoverageTable() {
+    console.log('Initializing coverage table');
+    
+    // Évek beállítása a táblázat fejlécében
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 4; i++) {
+        $(`#year-header-${i}`).text(currentYear + i);
+    }
+
+    // Eseménykezelők hozzáadása minden fizetésmező és költséghely változásához
+    const salaryFields = [
+        'base_salary_monthly_gross_1', 'base_salary_monthly_gross_2', 'base_salary_monthly_gross_3',
+        'health_allowance_monthly_gross_4', 'management_allowance_monthly_gross_5',
+        'extra_pay_1_monthly_gross_6', 'extra_pay_2_monthly_gross_7'
+    ];
+    
+    const costCenterFields = [
+        'base_salary_cost_center_1', 'base_salary_cost_center_2', 'base_salary_cost_center_3',
+        'health_allowance_cost_center_4', 'management_allowance_cost_center_5',
+        'extra_pay_1_cost_center_6', 'extra_pay_2_cost_center_7'
+    ];
+
+    // Nyugdíjas státusz változás figyelése
+    $('#is_retired').on('change', function() {
+        console.log('Retired status changed:', $(this).is(':checked'));
+        updateCoverageTable();
+    });
+    
+    // Foglalkoztatás típus változás figyelése
+    $('#employment_type').on('change', function() {
+        console.log('Employment type changed:', $(this).val());
+        updateCoverageTable();
+    });
+    
+    // Foglalkoztatás kezdő és vég dátum változás figyelése
+    $('#employment_start_date').on('change', function() {
+        console.log('Start date changed:', $(this).val());
+        updateCoverageTable();
+    });
+    
+    $('#employment_end_date').on('change', function() {
+        console.log('End date changed:', $(this).val());
+        updateCoverageTable();
+    });
+
+    // Fizetés mezők változásának figyelése
+    salaryFields.forEach(field => {
+        $(`#${field}`).on('change', function() {
+            console.log(`Salary field ${field} changed:`, $(this).val());
+            updateCoverageTable();
+        });
+    });
+
+    // Költséghely mezők változásának figyelése
+    costCenterFields.forEach(field => {
+        $(`#${field}`).on('change', function() {
+            console.log(`Cost center field ${field} changed:`, $(this).val());
+            updateCoverageTable();
+        });
+    });
+
+    // Alapértelmezett járulék érték beállítása
+    employerContributionRate = 13;  // Ha nincs megadva, 13% az alapértelmezett
+    
+    // Opcionális: a controllerből jövő járulék érték beállítása
+    if ($('#default_employer_contribution').length) {
+        employerContributionRate = parseFloat($('#default_employer_contribution').val());
+        console.log('Employer contribution rate set from server:', employerContributionRate);
+    }
+
+    // Első futtatás a tábla feltöltéséhez
+    updateCoverageTable();
+    
+    console.log('Coverage table initialized');
+}
+
+// Munkáltatói járulék értékének lekérése
+function getEmployerContribution() {
+    // Ha nyugdíjas, nincs járulék
+    if ($('#is_retired').is(':checked')) {
+        return 0;
+    }
+    
+    // Ha van egyedi érték megadva a rejtett mezőben
+    if ($('#employer_contribution').val() && $('#employer_contribution').val() !== '') {
+        return parseFloat($('#employer_contribution').val());
+    }
+    
+    // Alapértelmezett érték (ez jön az Option táblából a backend oldalon)
+    return employerContributionRate;
+}
+
+// Fedezetigazolandó összeg táblázat frissítése
+function updateCoverageTable() {
+    console.log('Updating coverage table...');
+    
+    // Alapvető adatok kiolvasása
+    const isRetired = $('#is_retired').is(':checked');
+    const employmentType = $('#employment_type').val();
+    
+    // Munkáltatói járulék lekérése a getEmployerContribution függvénnyel
+    let contributionRate = getEmployerContribution();
+    console.log('Contribution rate:', contributionRate);
+    
+    // Dátumok feldolgozása
+    let startDate = null;
+    if ($('#employment_start_date').val()) {
+        startDate = moment($('#employment_start_date').val(), 'YYYY.MM.DD');
+        console.log('Start date:', startDate.format('YYYY-MM-DD'));
+    } else {
+        console.log('No start date provided');
+        startDate = moment(); // Használjunk mai dátumot alapértelmezettként
+    }
+    
+    let endDate = null;
+    if (employmentType === 'Határozott' && $('#employment_end_date').val()) {
+        endDate = moment($('#employment_end_date').val(), 'YYYY.MM.DD');
+        console.log('End date:', endDate.format('YYYY-MM-DD'));
+    } else {
+        console.log('No end date or indefinite employment');
+    }
+    
+    // Költséghelyek és fizetések összegyűjtése
+    const costCentersAndSalaries = [
+        { 
+            costCenter: $('#base_salary_cost_center_1').val(), 
+            salary: parseSalaryValue('base_salary_monthly_gross_1'), 
+            name: $('#base_salary_cost_center_1 option:selected').text(),
+            endDate: null // Alap fizetésnek nincs vég dátuma
+        },
+        { 
+            costCenter: $('#base_salary_cost_center_2').val(), 
+            salary: parseSalaryValue('base_salary_monthly_gross_2'), 
+            name: $('#base_salary_cost_center_2 option:selected').text(),
+            endDate: null // Alap fizetésnek nincs vég dátuma
+        },
+        { 
+            costCenter: $('#base_salary_cost_center_3').val(), 
+            salary: parseSalaryValue('base_salary_monthly_gross_3'), 
+            name: $('#base_salary_cost_center_3 option:selected').text(),
+            endDate: null // Alap fizetésnek nincs vég dátuma
+        },
+        { 
+            costCenter: $('#health_allowance_cost_center_4').val(), 
+            salary: parseSalaryValue('health_allowance_monthly_gross_4'), 
+            name: $('#health_allowance_cost_center_4 option:selected').text(),
+            endDate: null // Egészségügyi pótléknak nincs vég dátuma
+        },
+        { 
+            costCenter: $('#management_allowance_cost_center_5').val(), 
+            salary: parseSalaryValue('management_allowance_monthly_gross_5'), 
+            name: $('#management_allowance_cost_center_5 option:selected').text(),
+            endDate: $('#management_allowance_end_date').val() ? moment($('#management_allowance_end_date').val(), 'YYYY.MM.DD') : null // Vezetői pótlék vég dátuma
+        },
+        { 
+            costCenter: $('#extra_pay_1_cost_center_6').val(), 
+            salary: parseSalaryValue('extra_pay_1_monthly_gross_6'), 
+            name: $('#extra_pay_1_cost_center_6 option:selected').text(),
+            endDate: $('#extra_pay_1_end_date').val() ? moment($('#extra_pay_1_end_date').val(), 'YYYY.MM.DD') : null // Bérpótlék 1 vég dátuma
+        },
+        { 
+            costCenter: $('#extra_pay_2_cost_center_7').val(), 
+            salary: parseSalaryValue('extra_pay_2_monthly_gross_7'), 
+            name: $('#extra_pay_2_cost_center_7 option:selected').text(),
+            endDate: $('#extra_pay_2_end_date').val() ? moment($('#extra_pay_2_end_date').val(), 'YYYY.MM.DD') : null // Bérpótlék 2 vég dátuma
+        }
+    ];
+    
+    // Debug: Kiírjuk a költséghelyeket és a fizetéseket
+    costCentersAndSalaries.forEach(item => {
+        if (item.costCenter && item.salary > 0) {
+            console.log('Cost Center:', item.costCenter, 'Name:', item.name, 'Salary:', item.salary);
+        }
+    });
+    
+    // Csak azok a költséghelyek, ahol van érték és ki van választva költséghely
+    const validCostCenters = costCentersAndSalaries.filter(item => 
+        item.costCenter && item.salary > 0
+    );
+    
+    console.log('Valid cost centers:', validCostCenters.length);
+    
+    // Ha nincs egyetlen költséghely sem, akkor üres táblázat
+    if (validCostCenters.length === 0) {
+        $('#coverageSummaryBody').html('');
+        updateTotals([0, 0, 0, 0]);
+        return;
+    }
+    
+    // Költséghelyenkénti összegek számítása a 4 évre
+    const costCenterYearlyAmounts = {};
+    const yearlyTotals = [0, 0, 0, 0];
+    
+    validCostCenters.forEach(item => {
+        if (!costCenterYearlyAmounts[item.costCenter]) {
+            costCenterYearlyAmounts[item.costCenter] = {
+                name: item.name,
+                amounts: [0, 0, 0, 0],
+                total: 0
+            };
+        }
+        
+        // Éves bontás kiszámítása a 4 évre
+        const yearlyAmounts = calculateYearlyAmounts(
+            startDate, 
+            endDate, 
+            parseFloat(item.salary), 
+            contributionRate,
+            item.endDate // Adjuk át a pótlék vég dátumát is
+        );
+        
+        console.log('Yearly amounts for', item.name, ':', yearlyAmounts);
+        
+        // Összegek hozzáadása a költséghelyhez
+        for (let i = 0; i < 4; i++) {
+            costCenterYearlyAmounts[item.costCenter].amounts[i] += yearlyAmounts[i];
+            yearlyTotals[i] += yearlyAmounts[i];
+            costCenterYearlyAmounts[item.costCenter].total += yearlyAmounts[i];
+        }
+    });
+    
+    // Táblázat tartalmának generálása
+    let tableContent = '';
+    Object.keys(costCenterYearlyAmounts).forEach(costCenter => {
+        const data = costCenterYearlyAmounts[costCenter];
+        
+        tableContent += `<tr>
+            <td>${data.name}</td>
+            <td>${formatNumber(data.amounts[0])} Ft</td>
+            <td>${formatNumber(data.amounts[1])} Ft</td>
+            <td>${formatNumber(data.amounts[2])} Ft</td>
+            <td>${formatNumber(data.amounts[3])} Ft</td>
+            <td>${formatNumber(data.total)} Ft</td>
+        </tr>`;
+    });
+    
+    $('#coverageSummaryBody').html(tableContent);
+    console.log('Table content updated');
+    
+    // Összesítések frissítése
+    updateTotals(yearlyTotals);
+}
+
+// Segédfüggvény a fizetés értékek beolvasásához
+function parseSalaryValue(fieldId) {
+    const field = $('#' + fieldId);
+    
+    // Ha van Cleave példány a mezőhöz
+    if (cleaveInstances[fieldId] && typeof cleaveInstances[fieldId].getRawValue === 'function') {
+        const rawValue = cleaveInstances[fieldId].getRawValue();
+        return rawValue ? parseInt(rawValue) : 0;
+    }
+    
+    // Fallback: egyszerű értékolvasás és tisztítás
+    const value = field.val();
+    if (!value) return 0;
+    
+    // Szóközök és egyéb nem numerikus karakterek eltávolítása
+    return parseInt(value.replace(/\s+/g, '').replace(/[^\d]/g, '')) || 0;
+}
+
+// Éves bontás számítása egy költséghelyhez
+function calculateYearlyAmounts(startDate, endDate, monthlySalary, contributionRate, itemEndDate) {
+    console.log('Calculating yearly amounts:', 
+                'start:', startDate ? startDate.format('YYYY-MM-DD') : 'none', 
+                'end:', endDate ? endDate.format('YYYY-MM-DD') : 'none',
+                'item end:', itemEndDate ? itemEndDate.format('YYYY-MM-DD') : 'none',
+                'monthly:', monthlySalary, 
+                'rate:', contributionRate);
+    
+    const amounts = [0, 0, 0, 0];
+    const currentYear = new Date().getFullYear();
+    
+    // Ha nincs értelmezhető startDate, nem tudjuk kiszámolni
+    if (!startDate || !startDate.isValid()) {
+        console.log('Invalid start date');
+        return amounts;
+    }
+    
+    // Határozott idejű szerződés vagy pótlék időszak kalkuláció
+    // Itt a szerződés vég dátuma (endDate) és a pótlék vég dátuma (itemEndDate) közül
+    // mindig a korábbit használjuk, ha mindkettő létezik
+    let effectiveEndDate = null;
+    
+    if (endDate && endDate.isValid()) {
+        effectiveEndDate = endDate;
+    }
+    
+    if (itemEndDate && itemEndDate.isValid()) {
+        // Ha a vezetői pótlék/bérpótlék vég dátuma hamarabb van mint a szerződés vége
+        // vagy nincs szerződés vég dátum (határozatlan idejű)
+        if (!effectiveEndDate || itemEndDate.isBefore(effectiveEndDate)) {
+            effectiveEndDate = itemEndDate;
+            console.log('Using item end date as effective end date');
+        }
+    }
+    
+    // Számítás a tényleges vég dátummal
+    for (let i = 0; i < 4; i++) {
+        const yearStart = currentYear + i;
+        const yearEnd = currentYear + i + 1;
+        
+        // Az adott év első napja
+        let firstDayOfYear = moment([yearStart, 0, 1]);
+        // Az adott év utolsó napja
+        let lastDayOfYear = moment([yearStart, 11, 31]);
+        
+        // Ha a foglalkoztatás későbbi, mint az adott év utolsó napja, akkor nincs munkavégzés ebben az évben
+        if (startDate.isAfter(lastDayOfYear)) {
+            amounts[i] = 0;
+            continue;
+        }
+        
+        // Ha a tényleges vég dátum létezik és korábbi, mint az adott év első napja, akkor nincs munkavégzés ebben az évben
+        if (effectiveEndDate && effectiveEndDate.isBefore(firstDayOfYear)) {
+            amounts[i] = 0;
+            continue;
+        }
+        
+        // A tényleges kezdő dátum ebben az évben
+        let effectiveStartForYear = startDate.isAfter(firstDayOfYear) ? startDate : firstDayOfYear;
+        
+        // A tényleges záró dátum ebben az évben
+        let effectiveEndForYear = effectiveEndDate;
+        if (!effectiveEndForYear) {
+            effectiveEndForYear = lastDayOfYear;
+        } else if (effectiveEndForYear.isAfter(lastDayOfYear)) {
+            effectiveEndForYear = lastDayOfYear;
+        }
+        
+        // A foglalkoztatás hónapjainak száma ebben az évben
+        let months = effectiveEndForYear.diff(effectiveStartForYear, 'months', true);
+        months = Math.max(0, Math.min(12, months));
+        
+        console.log(`Year ${yearStart}: ${months.toFixed(2)} months, from ${effectiveStartForYear.format('YYYY-MM-DD')} to ${effectiveEndForYear.format('YYYY-MM-DD')}`);
+        
+        // Összeg számítása
+        amounts[i] = Math.round(monthlySalary * months * (1 + contributionRate / 100));
+    }
+    
+    console.log('Calculated yearly amounts:', amounts);
+    return amounts;
+}
+
+// Összesítő számok frissítése
+function updateTotals(yearlyTotals) {
+    console.log('Updating totals with:', yearlyTotals);
+    
+    let grandTotal = 0;
+    
+    for (let i = 0; i < 4; i++) {
+        $(`#year-total-${i}`).text(formatNumber(yearlyTotals[i]) + ' Ft');
+        grandTotal += yearlyTotals[i];
+    }
+    
+    $('#grand-total').text(formatNumber(grandTotal) + ' Ft');
+}
+
+// Szám formázása ezres elválasztóval
+function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+// End of employer contribution rate
 
 // Setting working hours
 function setWorkingHoursWeekdays() {

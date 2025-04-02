@@ -93,7 +93,8 @@ class EmployeeRecruitmentController extends Controller
             'positions' => $positions,
             'costcenters' => $costCenters,
             'rooms' => $rooms,
-            'externalAccessRights' => $externalAccessRights
+            'externalAccessRights' => $externalAccessRights,
+            'employerContributionRate' => Option::where('option_name', 'employer_contribution')->first()?->option_value,
         ]);
     }
 
@@ -509,7 +510,8 @@ class EmployeeRecruitmentController extends Controller
             'costcenters' => $costCenters,
             'rooms' => $rooms,
             'externalAccessRights' => $externalAccessRights,
-            'externalSystemsList' => $externalSystemsList
+            'externalSystemsList' => $externalSystemsList,
+            'employerContributionRate' => Option::where('option_name', 'employer_contribution')->first()?->option_value,
         ]);
     }
 

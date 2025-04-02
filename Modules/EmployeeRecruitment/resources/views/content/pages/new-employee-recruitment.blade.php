@@ -572,6 +572,40 @@
                             <div class="col-12">
                                 <div>
                                     <span><strong>Bruttó munkabér összesen: <span id="totalGross">0</span> Ft / hó</strong></span>
+                                    <input type="hidden" id="employer_contribution" name="employer_contribution" value="{{ $employerContributionRate }}">
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <div>
+                                    <span><strong>Fedezetigazolandó összeg:</strong></span>
+                                </div>
+                                <div class="table-responsive mt-2">
+                                    <table id="coverageSummaryTable" class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Költséghely</th>
+                                                <th id="year-header-0"></th>
+                                                <th id="year-header-1"></th>
+                                                <th id="year-header-2"></th>
+                                                <th id="year-header-3"></th>
+                                                <th>Összesen</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="coverageSummaryBody">
+                                            <!-- Itt lesznek a költséghelyenkénti sorok dinamikusan generálva -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="table-secondary">
+                                                <th>Éves összesen</th>
+                                                <th id="year-total-0">0 Ft</th>
+                                                <th id="year-total-1">0 Ft</th>
+                                                <th id="year-total-2">0 Ft</th>
+                                                <th id="year-total-3">0 Ft</th>
+                                                <th id="grand-total">0 Ft</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
                             </div>
 

@@ -896,61 +896,43 @@ class EmployeeRecruitmentController extends Controller
 
     private function getAmountToCover($recruitment)
     {
-        $employerContribution = Option::where('option_name', 'employer_contribution')->first()->option_value;
+        $employerContribution = $recruitment->is_retired ? 0 : Option::where('option_name', 'employer_contribution')->first()->option_value;
         $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
-        $employmentEndDate = $recruitment->employment_end_date ? Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date) : null;
+        
+        // Fix for handling '0000-00-00' end date
+        $employmentEndDate = null;
+        if ($recruitment->employment_end_date && $recruitment->employment_end_date !== '0000-00-00') {
+            $employmentEndDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date);
+        }
 
         $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
 
         $amountsByYear = [];
         $currentYear = $employmentStartDate->year;
 
-        if ($recruitment->employment_type === 'Határozott') {
-            // Calculate for each year within the employment period
-            for ($i = 0; $i < 4; $i++) {
-                $startOfYear = Carbon::create($currentYear + $i, 1, 1);
-                $endOfYear = Carbon::create($currentYear + $i, 12, 31);
-    
-                if ($i == 0) {
-                    $startOfYear = $employmentStartDate;
-                }
-    
-                if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
-                    $endOfYear = $employmentEndDate;
-                }
-    
-                if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
-                    $amountForYear = 0;
-                } else {
-                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
-                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
-                }
-    
-                $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
+        // Both employment types use the same calculation logic, so we can simplify
+        for ($i = 0; $i < 4; $i++) {
+            $startOfYear = Carbon::create($currentYear + $i, 1, 1);
+            $endOfYear = Carbon::create($currentYear + $i, 12, 31);
+
+            if ($i == 0) {
+                $startOfYear = $employmentStartDate;
             }
-        } else {
-            // Calculate for indefinite term
-            for ($i = 0; $i < 4; $i++) {
-                $startOfYear = Carbon::create($currentYear + $i, 1, 1);
-                $endOfYear = Carbon::create($currentYear + $i, 12, 31);
 
-                if ($i == 0) {
-                    $startOfYear = $employmentStartDate;
-                }
-
-                if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
-                    $endOfYear = $employmentEndDate;
-                }
-
-                if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
-                    $amountForYear = 0;
-                } else {
-                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
-                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
-                }
-
-                $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
+            if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
+                $endOfYear = $employmentEndDate;
             }
+
+            // Only check if there's a valid end date that's before the current year
+            if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
+                $amountForYear = 0;
+            } else {
+                // Calculate months in this year
+                $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
+                $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
+            }
+
+            $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
         }
 
         return $amountsByYear;
@@ -958,17 +940,26 @@ class EmployeeRecruitmentController extends Controller
 
     private function getTotalAmountToCover($recruitment)
     {
-        $employerContributionRate = Option::where('option_name', 'employer_contribution')->first()->option_value;
+        // Set employer contribution to 0 if employee is retired
+        $employerContributionRate = $recruitment->is_retired ? 0 : Option::where('option_name', 'employer_contribution')->first()->option_value;
         $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
 
         $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
-        $employmentEndDate = $recruitment->employment_end_date ? Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date) : null;
+        
+        // Fix for handling '0000-00-00' end date
+        $employmentEndDate = null;
+        if ($recruitment->employment_end_date && $recruitment->employment_end_date !== '0000-00-00') {
+            $employmentEndDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date);
+        }
 
-        if ($recruitment->employment_type === 'Határozott') {
+        if ($recruitment->employment_type === 'Határozott' && $employmentEndDate) {
+            // For fixed-term employment with valid end date
             $months = $employmentEndDate->diffInMonths($employmentStartDate) + 1;
             $totalAmountToCover = $totalMonthlyGrossSalary * $months * (1 + $employerContributionRate / 100);
         } else {
+            // For indefinite term or fixed-term without valid end date, calculate for 4 years
             $totalAmountToCover = 0;
+            
             for ($i = 0; $i < 4; $i++) {
                 $startOfYear = Carbon::create($employmentStartDate->year + $i, 1, 1);
                 $endOfYear = Carbon::create($employmentStartDate->year + $i, 12, 31);
@@ -981,6 +972,7 @@ class EmployeeRecruitmentController extends Controller
                     $endOfYear = $employmentEndDate;
                 }
 
+                // Only check if there's a valid end date that's before the current year
                 if ($employmentEndDate && $employmentEndDate->year < $employmentStartDate->year + $i) {
                     $amountForYear = 0;
                 } else {
@@ -994,6 +986,7 @@ class EmployeeRecruitmentController extends Controller
 
         return number_format($totalAmountToCover, 0, '', ' ');
     }
+
 
     private function validateFields(RecruitmentWorkflow $recruitment, Request $request)
     {

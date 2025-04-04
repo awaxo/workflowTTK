@@ -68,7 +68,7 @@
                     @if($recruitment->is_retired)
                         <span class="badge bg-success">Igen</span>
                     @else
-                        <span class="badge bg-secondary">Nincs</span>
+                        <span class="badge bg-secondary">Nem</span>
                     @endif
                 </span>
             </div>

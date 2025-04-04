@@ -912,6 +912,8 @@ class EmployeeRecruitmentController extends Controller
         } else {
             $employerContribution = Option::where('option_name', 'employer_contribution')->first()->option_value; // Use default
         }
+        
+        // Get original dates
         $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
         
         // Fix for handling '0000-00-00' end date
@@ -919,40 +921,48 @@ class EmployeeRecruitmentController extends Controller
         if ($recruitment->employment_end_date && $recruitment->employment_end_date !== '0000-00-00') {
             $employmentEndDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date);
         }
-
+    
         $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
-
+        
+        // Calculate one month value with contributions (for the payment shift adjustment)
+        $oneMonthValue = $totalMonthlyGrossSalary * (1 + $employerContribution / 100);
+    
         $amountsByYear = [];
         $currentYear = $employmentStartDate->year;
-
-        // Both employment types use the same calculation logic, so we can simplify
+    
+        // Both employment types use the same calculation logic
         for ($i = 0; $i < 4; $i++) {
             $startOfYear = Carbon::create($currentYear + $i, 1, 1);
             $endOfYear = Carbon::create($currentYear + $i, 12, 31);
-
+    
             if ($i == 0) {
                 $startOfYear = $employmentStartDate;
             }
-
+    
             if ($employmentEndDate && $employmentEndDate->year == $currentYear + $i) {
                 $endOfYear = $employmentEndDate;
             }
-
+    
             // Only check if there's a valid end date that's before the current year
             if ($employmentEndDate && $employmentEndDate->year < $currentYear + $i) {
                 $amountForYear = 0;
             } else {
-                // Calculate months in this year
-                $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
-                $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
+                // Calculate months in this year with precise calculation
+                $monthsInYear = $this->calculateMonthsInPeriod($startOfYear, $endOfYear);
+                
+                // Calculate amount before adjustment
+                $amountBeforeAdjustment = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContribution / 100);
+                
+                // Apply payment shift adjustment: subtract one month value
+                $amountForYear = max(0, $amountBeforeAdjustment - $oneMonthValue);
             }
-
+    
             $amountsByYear[] = [$currentYear + $i, number_format($amountForYear, 0, '', ' ')];
         }
-
+    
         return $amountsByYear;
     }
-
+    
     private function getTotalAmountToCover($recruitment)
     {
         // Determine employer contribution rate
@@ -963,8 +973,8 @@ class EmployeeRecruitmentController extends Controller
         } else {
             $employerContributionRate = Option::where('option_name', 'employer_contribution')->first()->option_value; // Use default
         }
-        $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
-
+        
+        // Get original dates
         $employmentStartDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_start_date);
         
         // Fix for handling '0000-00-00' end date
@@ -972,11 +982,20 @@ class EmployeeRecruitmentController extends Controller
         if ($recruitment->employment_end_date && $recruitment->employment_end_date !== '0000-00-00') {
             $employmentEndDate = Carbon::createFromFormat('Y-m-d', $recruitment->employment_end_date);
         }
-
+    
+        $totalMonthlyGrossSalary = $this->getSumOfSallaries($recruitment);
+        
+        // Calculate one month value with contributions (for the payment shift adjustment)
+        $oneMonthValue = $totalMonthlyGrossSalary * (1 + $employerContributionRate / 100);
+    
         if ($recruitment->employment_type === 'Határozott' && $employmentEndDate) {
             // For fixed-term employment with valid end date
-            $months = $employmentEndDate->diffInMonths($employmentStartDate) + 1;
-            $totalAmountToCover = $totalMonthlyGrossSalary * $months * (1 + $employerContributionRate / 100);
+            // Calculate months and amount before adjustment
+            $months = $this->calculateMonthsInPeriod($employmentStartDate, $employmentEndDate);
+            $amountBeforeAdjustment = $totalMonthlyGrossSalary * $months * (1 + $employerContributionRate / 100);
+            
+            // Apply payment shift adjustment: subtract one month value
+            $totalAmountToCover = max(0, $amountBeforeAdjustment - $oneMonthValue);
         } else {
             // For indefinite term or fixed-term without valid end date, calculate for 4 years
             $totalAmountToCover = 0;
@@ -984,28 +1003,90 @@ class EmployeeRecruitmentController extends Controller
             for ($i = 0; $i < 4; $i++) {
                 $startOfYear = Carbon::create($employmentStartDate->year + $i, 1, 1);
                 $endOfYear = Carbon::create($employmentStartDate->year + $i, 12, 31);
-
+    
                 if ($i == 0) {
                     $startOfYear = $employmentStartDate;
                 }
-
+    
                 if ($employmentEndDate && $employmentEndDate->year == $employmentStartDate->year + $i) {
                     $endOfYear = $employmentEndDate;
                 }
-
+    
                 // Only check if there's a valid end date that's before the current year
                 if ($employmentEndDate && $employmentEndDate->year < $employmentStartDate->year + $i) {
                     $amountForYear = 0;
                 } else {
-                    $monthsInYear = $endOfYear->diffInMonths($startOfYear) + 1;
-                    $amountForYear = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContributionRate / 100);
+                    // Calculate months and amount before adjustment
+                    $monthsInYear = $this->calculateMonthsInPeriod($startOfYear, $endOfYear);
+                    $amountBeforeAdjustment = $totalMonthlyGrossSalary * $monthsInYear * (1 + $employerContributionRate / 100);
+                    
+                    // In the first year, apply payment shift adjustment
+                    if ($i == 0) {
+                        $amountForYear = max(0, $amountBeforeAdjustment - $oneMonthValue);
+                    } else {
+                        $amountForYear = $amountBeforeAdjustment;
+                    }
                 }
-
+    
                 $totalAmountToCover += $amountForYear;
             }
         }
-
+    
         return number_format($totalAmountToCover, 0, '', ' ');
+    }
+    
+    /**
+     * Calculate the number of months between two dates more precisely
+     * 
+     * @param Carbon $startDate
+     * @param Carbon $endDate
+     * @return float
+     */
+    private function calculateMonthsInPeriod(Carbon $startDate, Carbon $endDate)
+    {
+        // If dates are the same, return 0
+        if ($startDate->eq($endDate)) {
+            return 0;
+        }
+        
+        // If end date is before start date, return 0
+        if ($endDate->lt($startDate)) {
+            return 0;
+        }
+        
+        // If dates span an entire year (Jan 1 to Dec 31)
+        if ($startDate->day == 1 && $startDate->month == 1 && 
+            $endDate->day == 31 && $endDate->month == 12 && 
+            $startDate->year == $endDate->year) {
+            return 12;
+        }
+        
+        // Calculate whole months between
+        $startClone = clone $startDate;
+        $startOfMonth = $startClone->startOfMonth();
+        
+        $endClone = clone $endDate;
+        $endOfMonth = $endClone->startOfMonth();
+        
+        $wholeMonths = $endOfMonth->diffInMonths($startOfMonth);
+        
+        // Calculate start month partial
+        $daysInStartMonth = $startDate->daysInMonth;
+        $remainingDaysInStartMonth = $daysInStartMonth - $startDate->day + 1;
+        $startMonthFraction = $remainingDaysInStartMonth / $daysInStartMonth;
+        
+        // Calculate end month partial
+        $daysInEndMonth = $endDate->daysInMonth;
+        $endMonthFraction = $endDate->day / $daysInEndMonth;
+        
+        // If in the same month
+        if ($startDate->year == $endDate->year && $startDate->month == $endDate->month) {
+            $dayCount = $endDate->day - $startDate->day + 1;
+            return $dayCount / $daysInStartMonth;
+        }
+        
+        // Add fractions to whole months
+        return ($wholeMonths - 1) + $startMonthFraction + $endMonthFraction;
     }
 
     private function validateFields(RecruitmentWorkflow $recruitment, Request $request)

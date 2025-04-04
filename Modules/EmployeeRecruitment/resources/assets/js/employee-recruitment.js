@@ -972,12 +972,15 @@ function parseSalaryValue(fieldId) {
 
 // Éves bontás számítása egy költséghelyhez
 function calculateYearlyAmounts(startDate, endDate, monthlySalary, contributionRate, itemEndDate) {
-    console.log('Calculating yearly amounts:', 
-                'start:', startDate ? startDate.format('YYYY-MM-DD') : 'none', 
+    console.log('Original dates - start:', startDate ? startDate.format('YYYY-MM-DD') : 'none', 
                 'end:', endDate ? endDate.format('YYYY-MM-DD') : 'none',
                 'item end:', itemEndDate ? itemEndDate.format('YYYY-MM-DD') : 'none',
                 'monthly:', monthlySalary, 
                 'rate:', contributionRate);
+    
+    // Egy teljes hónapnyi érték kiszámítása a munkáltatói járulékkal együtt
+    const oneMonthValue = monthlySalary * (1 + contributionRate / 100);
+    console.log('One month value with contribution:', oneMonthValue);
     
     const amounts = [0, 0, 0, 0];
     const currentYear = new Date().getFullYear();
@@ -994,22 +997,21 @@ function calculateYearlyAmounts(startDate, endDate, monthlySalary, contributionR
     let effectiveEndDate = null;
     
     if (endDate && endDate.isValid()) {
-        effectiveEndDate = endDate;
+        effectiveEndDate = moment(endDate);
     }
     
     if (itemEndDate && itemEndDate.isValid()) {
-        // Ha a vezetői pótlék/bérpótlék vég dátuma hamarabb van mint a szerződés vége
-        // vagy nincs szerződés vég dátum (határozatlan idejű)
         if (!effectiveEndDate || itemEndDate.isBefore(effectiveEndDate)) {
-            effectiveEndDate = itemEndDate;
+            effectiveEndDate = moment(itemEndDate);
             console.log('Using item end date as effective end date');
         }
     }
     
-    // Számítás a tényleges vég dátummal
+    let hasAppliedDeduction = false;  // Követjük, hogy alkalmaztuk-e már a levonást
+    
+    // Számítás évenkénti bontásban
     for (let i = 0; i < 4; i++) {
         const yearStart = currentYear + i;
-        const yearEnd = currentYear + i + 1;
         
         // Az adott év első napja
         let firstDayOfYear = moment([yearStart, 0, 1]);
@@ -1029,24 +1031,90 @@ function calculateYearlyAmounts(startDate, endDate, monthlySalary, contributionR
         }
         
         // A tényleges kezdő dátum ebben az évben
-        let effectiveStartForYear = startDate.isAfter(firstDayOfYear) ? startDate : firstDayOfYear;
+        let startForYear = startDate.isAfter(firstDayOfYear) ? moment(startDate) : moment(firstDayOfYear);
         
         // A tényleges záró dátum ebben az évben
-        let effectiveEndForYear = effectiveEndDate;
-        if (!effectiveEndForYear) {
-            effectiveEndForYear = lastDayOfYear;
-        } else if (effectiveEndForYear.isAfter(lastDayOfYear)) {
-            effectiveEndForYear = lastDayOfYear;
+        let endForYear;
+        if (!effectiveEndDate) {
+            endForYear = moment(lastDayOfYear);
+        } else if (effectiveEndDate.isAfter(lastDayOfYear)) {
+            endForYear = moment(lastDayOfYear);
+        } else {
+            endForYear = moment(effectiveEndDate);
         }
         
-        // A foglalkoztatás hónapjainak száma ebben az évben
-        let months = effectiveEndForYear.diff(effectiveStartForYear, 'months', true);
-        months = Math.max(0, Math.min(12, months));
+        // Hónapok számának változója
+        let months = 0;
         
-        console.log(`Year ${yearStart}: ${months.toFixed(2)} months, from ${effectiveStartForYear.format('YYYY-MM-DD')} to ${effectiveEndForYear.format('YYYY-MM-DD')}`);
+        // Ha teljes évről van szó (jan 1 - dec 31)
+        if (startForYear.isSame(firstDayOfYear, 'day') && endForYear.isSame(lastDayOfYear, 'day')) {
+            months = 12;
+        } 
+        // Egyébként pontos hónap számítás
+        else {
+            // Számoljuk ki hány teljes hónap van
+            let fullMonths = 0;
+            
+            // Kezdjük a kezdő hónappal, majd haladjunk hónapról hónapra
+            let currentDate = moment(startForYear).startOf('month');
+            let endOfPeriod = moment(endForYear).endOf('day');
+            
+            // Haladjunk végig az összes releváns hónapon
+            while (currentDate.isBefore(endOfPeriod)) {
+                // Ha ez a kezdő hónap
+                if (currentDate.month() === startForYear.month() && currentDate.year() === startForYear.year()) {
+                    // A hónap végéig hátralévő napok száma (kezdőnapot is beleszámolva)
+                    const daysInMonth = startForYear.daysInMonth();
+                    const remainingDays = daysInMonth - startForYear.date() + 1;
+                    fullMonths += remainingDays / daysInMonth;
+                }
+                // Ha ez a záró hónap
+                else if (currentDate.month() === endForYear.month() && currentDate.year() === endForYear.year()) {
+                    // A hónap elejétől a záró napig tartó napok száma (zárónapot is beleszámolva)
+                    const daysInMonth = endForYear.daysInMonth();
+                    fullMonths += endForYear.date() / daysInMonth;
+                }
+                // Ha ez egy teljes hónap a kezdő és záró hónap között
+                else if (currentDate.isAfter(startForYear, 'month') && currentDate.isBefore(endForYear, 'month')) {
+                    fullMonths += 1;
+                }
+                
+                // Lépjünk a következő hónapra
+                currentDate.add(1, 'month');
+            }
+            
+            // Ha a kezdő és záró dátum ugyanabban a hónapban van
+            if (startForYear.month() === endForYear.month() && startForYear.year() === endForYear.year()) {
+                const daysInMonth = startForYear.daysInMonth();
+                const daysInPeriod = endForYear.date() - startForYear.date() + 1;
+                fullMonths = daysInPeriod / daysInMonth;
+            }
+            
+            months = fullMonths;
+        }
         
-        // Összeg számítása
-        amounts[i] = Math.round(monthlySalary * months * (1 + contributionRate / 100));
+        console.log(`Year ${yearStart} before adjustment: ${months.toFixed(2)} months, from ${startForYear.format('YYYY-MM-DD')} to ${endForYear.format('YYYY-MM-DD')}`);
+        
+        // Összeg számítása az eredeti időszakra
+        const yearValueBeforeAdjustment = monthlySalary * months * (1 + contributionRate / 100);
+        
+        // Fizetési eltolás miatti korrekció: kivonunk egy havi értéket a legelső nem-nulla évből
+        let adjustedYearValue = yearValueBeforeAdjustment;
+        
+        // Az első nem-nulla évre alkalmazzuk a levonást
+        if (!hasAppliedDeduction && yearValueBeforeAdjustment > 0) {
+            console.log(`Applying deduction to year ${yearStart} - original value: ${yearValueBeforeAdjustment}`);
+            adjustedYearValue = yearValueBeforeAdjustment - oneMonthValue;
+            // Ha az eredmény negatív lenne, nullára állítjuk
+            adjustedYearValue = Math.max(0, adjustedYearValue);
+            hasAppliedDeduction = true;  // Megjegyezzük, hogy már alkalmaztuk a levonást
+            console.log(`After deduction: ${adjustedYearValue}`);
+        }
+        
+        console.log(`Year ${yearStart} final amount: ${adjustedYearValue.toFixed(2)}`);
+        
+        // Kerekítés egész számra
+        amounts[i] = Math.round(adjustedYearValue);
     }
     
     console.log('Calculated yearly amounts:', amounts);

@@ -107,8 +107,19 @@ $(function () {
         // set datepicker date fields start
         $("#citizenship").on('change', function() {
             $("#employment_start_date, #employment_end_date").val('');
-
-            var startDate = $(this).val() == 'Harmadik országbeli' ? '+60D' : '+21D';
+        
+            // Ellenőrizzük, hogy a kiválasztott munkakör egyetemi hallgató-e
+            let selectedPositionName = $('#position_id option:selected').text();
+            let startDate;
+            
+            if (selectedPositionName === 'egyetemi hallgató') {
+                // Egyetemi hallgató esetén mindig +3 hét
+                startDate = '+21D';
+            } else {
+                // Más munkakörök esetén az állampolgárság szerint
+                startDate = $(this).val() == 'Harmadik országbeli' ? '+60D' : '+21D';
+            }
+            
             $("#employment_start_date").datepicker('destroy').datepicker({
                 format: "yyyy.mm.dd",
                 startDate: startDate,
@@ -135,13 +146,15 @@ $(function () {
             autoclose: true,
         });
         
-        // Eseménykezelő a kezdődátum változtatásakor
-        $("#employment_start_date").on('change', function() {
-            updateEndDateBasedOnPosition();
+        $("#citizenship").on('change', function() {
+            updateStartDateSettings();
         });
-
-        // Eseménykezelő a munkakör változtatásakor
+        
         $('#position_id').on('change', function() {
+            updateStartDateSettings();
+        });
+        
+        $("#employment_start_date").on('change', function() {
             updateEndDateBasedOnPosition();
         });
         // set datepicker date fields end
@@ -247,13 +260,15 @@ $(function () {
             autoclose: true,
         });
 
-        // Eseménykezelő a kezdődátum változtatásakor
-        $("#employment_start_date").on('change', function() {
-            updateEndDateBasedOnPosition();
+        $("#citizenship").on('change', function() {
+            updateStartDateSettings();
         });
-
-        // Eseménykezelő a munkakör változtatásakor
+        
         $('#position_id').on('change', function() {
+            updateStartDateSettings();
+        });
+        
+        $("#employment_start_date").on('change', function() {
             updateEndDateBasedOnPosition();
         });
         // set datepicker date fields end
@@ -1328,10 +1343,51 @@ function getGrossSalarySum() {
     return sum;
 }
 
+// Közös függvény a kezdő dátum beállításához
+function updateStartDateSettings() {
+    let selectedPositionName = $('#position_id option:selected').text();
+    let citizenship = $("#citizenship").val();
+    let startDate;
+    
+    if (selectedPositionName === 'egyetemi hallgató') {
+        // Egyetemi hallgató esetén mindig +3 hét
+        startDate = '+21D';
+    } else {
+        // Más munkakörök esetén az állampolgárság szerint
+        startDate = citizenship == 'Harmadik országbeli' ? '+60D' : '+21D';
+    }
+    
+    // A már meglévő dátumot mentsük
+    let currentDate = $("#employment_start_date").datepicker('getDate');
+    
+    // Állítsuk be az új kezdő dátum feltételeket
+    $("#employment_start_date").datepicker('destroy').datepicker({
+        format: "yyyy.mm.dd",
+        startDate: startDate,
+        endDate: '+30Y',
+        language: 'hu',
+        weekStart: 1,
+        autoclose: true,
+    });
+    
+    // Ha volt korábban beállított dátum és az még mindig valid, állítsuk vissza
+    if (currentDate) {
+        try {
+            $("#employment_start_date").datepicker('setDate', currentDate);
+        } catch (e) {
+            // Ha nem valid a korábbi dátum, töröljük
+            $("#employment_start_date").datepicker('setDate', null);
+        }
+    }
+    
+    // Frissítsük a végdátumot is
+    updateEndDateBasedOnPosition();
+}
+
+// Függvény a végdátum frissítéséhez
 function updateEndDateBasedOnPosition() {
-    var startDate = $("#employment_start_date").datepicker('getDate');
+    let startDate = $("#employment_start_date").datepicker('getDate');
     if (startDate) {
-        // Ellenőrizzük, hogy a kiválasztott munkakör egyetemi hallgató-e
         let selectedPositionName = $('#position_id option:selected').text();
         let endDate;
         
@@ -1339,7 +1395,7 @@ function updateEndDateBasedOnPosition() {
             // Egyetemi hallgató esetén 1 hónap - 1 nap
             endDate = moment(startDate).add(1, 'months').subtract(1, 'days').toDate();
         } else {
-            // Egyéb munkakörök esetén marad a 6 hónap - 1 nap
+            // Egyéb munkakörök esetén 6 hónap - 1 nap
             endDate = moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
         }
         

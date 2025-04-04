@@ -134,13 +134,15 @@ $(function () {
             weekStart: 1,
             autoclose: true,
         });
+        
+        // Eseménykezelő a kezdődátum változtatásakor
         $("#employment_start_date").on('change', function() {
-            var startDate = $("#employment_start_date").datepicker('getDate');
-            if (startDate) {
-                var endDate = moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
-                $("#employment_end_date").datepicker('setDate', null);
-                $("#employment_end_date").datepicker('setStartDate', endDate);
-            }
+            updateEndDateBasedOnPosition();
+        });
+
+        // Eseménykezelő a munkakör változtatásakor
+        $('#position_id').on('change', function() {
+            updateEndDateBasedOnPosition();
         });
         // set datepicker date fields end
     } else {    // If editing an existing recruitment
@@ -245,13 +247,14 @@ $(function () {
             autoclose: true,
         });
 
+        // Eseménykezelő a kezdődátum változtatásakor
         $("#employment_start_date").on('change', function() {
-            var startDate = $("#employment_start_date").datepicker('getDate');
-            if (startDate) {
-                var endDate = moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
-                $("#employment_end_date").datepicker('setDate', null);
-                $("#employment_end_date").datepicker('setStartDate', endDate);
-            }
+            updateEndDateBasedOnPosition();
+        });
+
+        // Eseménykezelő a munkakör változtatásakor
+        $('#position_id').on('change', function() {
+            updateEndDateBasedOnPosition();
         });
         // set datepicker date fields end
     }
@@ -1325,6 +1328,25 @@ function getGrossSalarySum() {
     return sum;
 }
 
+function updateEndDateBasedOnPosition() {
+    var startDate = $("#employment_start_date").datepicker('getDate');
+    if (startDate) {
+        // Ellenőrizzük, hogy a kiválasztott munkakör egyetemi hallgató-e
+        let selectedPositionName = $('#position_id option:selected').text();
+        let endDate;
+        
+        if (selectedPositionName === 'egyetemi hallgató') {
+            // Egyetemi hallgató esetén 1 hónap - 1 nap
+            endDate = moment(startDate).add(1, 'months').subtract(1, 'days').toDate();
+        } else {
+            // Egyéb munkakörök esetén marad a 6 hónap - 1 nap
+            endDate = moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
+        }
+        
+        $("#employment_end_date").datepicker('setDate', null);
+        $("#employment_end_date").datepicker('setStartDate', endDate);
+    }
+}
 
 // before submit validation functions
 function validateCostCenterSum() {

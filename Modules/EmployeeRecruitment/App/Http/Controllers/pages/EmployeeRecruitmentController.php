@@ -94,7 +94,7 @@ class EmployeeRecruitmentController extends Controller
             'costcenters' => $costCenters,
             'rooms' => $rooms,
             'externalAccessRights' => $externalAccessRights,
-            'employerContributionRate' => Option::where('option_name', 'employer_contribution')->first()?->option_value,
+            'employerContributionRate' => $recruitment->employer_contribution ?? Option::where('option_name', 'employer_contribution')->first()?->option_value,
         ]);
     }
 
@@ -156,8 +156,11 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->employment_start_date = $validatedData['employment_start_date'];
         $recruitment->employment_end_date = $validatedData['employment_end_date'];
         
-        $employerContributionOption = Option::where('option_name', 'employer_contribution')->first();
-        $recruitment->employer_contribution = $employerContributionOption ? (float)$employerContributionOption->option_value : null;
+        // For retired employees, employer contribution is 0
+        // Otherwise, use the value from options
+        $recruitment->employer_contribution = request('is_retired') == 'true' ? 0.0 : 
+            (Option::where('option_name', 'employer_contribution')->first() ? 
+            (float)Option::where('option_name', 'employer_contribution')->first()->option_value : null);
 
         // data section 3
         $recruitment->base_salary_cost_center_1 = $validatedData['base_salary_cost_center_1'];
@@ -511,7 +514,7 @@ class EmployeeRecruitmentController extends Controller
             'rooms' => $rooms,
             'externalAccessRights' => $externalAccessRights,
             'externalSystemsList' => $externalSystemsList,
-            'employerContributionRate' => Option::where('option_name', 'employer_contribution')->first()?->option_value,
+            'employerContributionRate' => $recruitment->employer_contribution ?? Option::where('option_name', 'employer_contribution')->first()?->option_value,
         ]);
     }
 

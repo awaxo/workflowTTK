@@ -97,6 +97,17 @@
                                 <span class="fst-italic">Felfüggesztéskor és elutasításkor a próbaidő nem kerül mentésre</span>
                             </div>
                         </div>
+                        
+                        @php
+                            $startDate = \Carbon\Carbon::parse($recruitment->created_at);
+                            $daysSinceCreation = $startDate->diffInDays(now());
+                            $isOverdue = $daysSinceCreation > 8;
+                        @endphp
+                        <div class="mb-3">
+                            <span class="{{ $isOverdue ? 'text-danger' : '' }}">
+                                Az ügy indítása ({{ $startDate->format('Y-m-d') }}) óta {{ $daysSinceCreation }} nap telt el.
+                            </span>
+                        </div>
                     @endif
                     @if($recruitment->state == 'proof_of_coverage' &&
                         (($recruitment->base_salary_cc1 && $recruitment->base_salary_cc1->leadUser == Auth::user() && $recruitment->base_salary_cc1->type && ($recruitment->base_salary_cc1->type->tender || $recruitment->base_salary_cc1->type->name == "Vállalkozási tevékenység")) ||

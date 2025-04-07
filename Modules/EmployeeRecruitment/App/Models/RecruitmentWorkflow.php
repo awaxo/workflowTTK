@@ -11,7 +11,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
@@ -19,7 +18,13 @@ class RecruitmentWorkflow extends AbstractWorkflow
 {
     use WorkflowTrait;
 
-    public static function baseQuery(): Builder
+    /**
+     * Get base query for recruitment workflows with optional permission exclusions
+     * 
+     * @param array $excludePermissions Array of permission keys to exclude from the check or complex exclusion data
+     * @return Builder
+     */
+    public static function baseQuery(array $excludePermissions = []): Builder
     {
         $user = User::find(Auth::id());
         $workgroup901 = Workgroup::where('workgroup_number', 901)->first();
@@ -53,43 +58,64 @@ class RecruitmentWorkflow extends AbstractWorkflow
         $recruitmentsQuery = self::query();
         $orQueries = collect();
 
-        if ($user && $user->hasRole('adminisztrator') ||
-            $user->workgroup->workgroup_number == 908 ||
-            $workgroup901 && $workgroup901->leader_id === $user->id ||
-            $delegations->contains(function ($delegation) use ($workgroup901) {
-                return $delegation->type === 'obligee_approver' && $delegation->original_user_id === $workgroup901->leader_id;
-            }) ||
-            $workgroup903 && $workgroup903->leader_id === $user->id ||
-            $delegations->contains(function ($delegation) use ($workgroup903) {
-                return $delegation->type === 'financial_countersign_approver' && $delegation->original_user_id === $workgroup903->leader_id;
-            }) ||
-            $workgroup910 && $workgroup910->leader_id === $user->id ||
-            $workgroup911 && $workgroup911->leader_id === $user->id ||
-            $delegations->contains(function ($delegation) use ($workgroup911) {
-                return $delegation->type === 'project_coordination_lead' && $delegation->original_user_id === $workgroup911->leader_id;
-            }) ||
-            $workgroup915 && $workgroup915->leader_id === $user->id ||
-            $delegations->contains(function ($delegation) use ($workgroup915) {
-                return $delegation->type === 'it_head' && $delegation->original_user_id === $workgroup915->leader_id;
-            }) ||
-            $user && $user->hasRole('titkar_9_fi') ||
-            $delegations->contains(function ($delegation) {
-                return $delegation->type === 'secretary_9_fi';
-            }) ||
-            $user && $user->hasRole('titkar_9_gi') ||
-            $delegations->contains(function ($delegation) {
-                return $delegation->type === 'secretary_9_gi';
-            }) ||
-            $user && $user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto') ||
-            $delegations->contains(function ($delegation) {
-                return $delegation->type === 'registrator';
-            })) {
-            
-            // return all rows
+        // Define permission checks with keys that can be excluded
+        $permissionChecks = [
+            'administrator' => $user && $user->hasRole('adminisztrator'),
+            'hr' => $user->workgroup->workgroup_number == 908,
+            'obligee_approver' => (!in_array('obligee_approver', $excludePermissions) && 
+                $workgroup901 && $workgroup901->leader_id === $user->id) ||
+                (!in_array('obligee_approver', $excludePermissions) && 
+                    $delegations->contains(function ($delegation) use ($workgroup901) {
+                        return $delegation->type === 'obligee_approver' && $delegation->original_user_id === $workgroup901->leader_id;
+                    })),
+            'financial_countersign_approver' => (!in_array('financial_countersign_approver', $excludePermissions) && 
+                $workgroup903 && $workgroup903->leader_id === $user->id) ||
+                (!in_array('financial_countersign_approver', $excludePermissions) && 
+                    $delegations->contains(function ($delegation) use ($workgroup903) {
+                        return $delegation->type === 'financial_countersign_approver' && $delegation->original_user_id === $workgroup903->leader_id;
+                    })),
+            'workgroup_910_leader' => !in_array('workgroup_910_leader', $excludePermissions) && 
+                $workgroup910 && $workgroup910->leader_id === $user->id,
+            'project_coordination_lead' => (!in_array('project_coordination_lead', $excludePermissions) && 
+                $workgroup911 && $workgroup911->leader_id === $user->id) ||
+                (!in_array('project_coordination_lead', $excludePermissions) && 
+                    $delegations->contains(function ($delegation) use ($workgroup911) {
+                        return $delegation->type === 'project_coordination_lead' && $delegation->original_user_id === $workgroup911->leader_id;
+                    })),
+            'it_head' => (!in_array('it_head', $excludePermissions) && 
+                $workgroup915 && $workgroup915->leader_id === $user->id) ||
+                (!in_array('it_head', $excludePermissions) && 
+                    $delegations->contains(function ($delegation) use ($workgroup915) {
+                        return $delegation->type === 'it_head' && $delegation->original_user_id === $workgroup915->leader_id;
+                    })),
+            'secretary_9_fi' => (!in_array('secretary_9_fi', $excludePermissions) && 
+                $user && $user->hasRole('titkar_9_fi')) ||
+                (!in_array('secretary_9_fi', $excludePermissions) && 
+                    $delegations->contains(function ($delegation) {
+                        return $delegation->type === 'secretary_9_fi';
+                    })),
+            'secretary_9_gi' => (!in_array('secretary_9_gi', $excludePermissions) && 
+                $user && $user->hasRole('titkar_9_gi')) ||
+                (!in_array('secretary_9_gi', $excludePermissions) && 
+                    $delegations->contains(function ($delegation) {
+                        return $delegation->type === 'secretary_9_gi';
+                    })),
+            'registrator' => (!in_array('registrator', $excludePermissions) && 
+                $user && $user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto')) ||
+                (!in_array('registrator', $excludePermissions) && 
+                    $delegations->contains(function ($delegation) {
+                        return $delegation->type === 'registrator';
+                    })),
+        ];
+
+        // If any of the permission checks pass and we're not excluding all permissions, return all workflows
+        if (!in_array('all_special_permissions', $excludePermissions) && in_array(true, $permissionChecks, true)) {
             return self::query();
         }
 
-        if (!empty($titkarRoleNumbers)) {
+        // Check if specific permission is not excluded AND the condition for that permission is met
+        // For titkar roles
+        if (!in_array('titkar_roles', $excludePermissions) && !empty($titkarRoleNumbers)) {
             foreach ($titkarRoleNumbers as $number) {
                 $orQueries->push(function ($query) use ($number) {
                     $query->WhereHas('workgroup1', function ($query) use ($number) {
@@ -101,16 +127,35 @@ class RecruitmentWorkflow extends AbstractWorkflow
             }
         }
 
-        if (Workgroup::where('workgroup_number', 'like', '%00')
-                                ->where('leader_id', $user->id)
-                                ->exists() || 
-                $delegations->contains(function ($delegation) {
-                    return strpos($delegation->type, 'director_') === 0;
-                })) {
-            $leaderWorkgroups = Workgroup::where('leader_id', $user->id)->get();
+        // For directors of specific workgroups
+        $allowedDirectorWorkgroups = ['100', '300', '400', '500', '600', '700', '800', '901', '903'];
+        
+        $hasDirectorRole = Workgroup::whereIn('workgroup_number', $allowedDirectorWorkgroups)
+                ->where('leader_id', $user->id)
+                ->exists() || 
+            $delegations->contains(function ($delegation) use ($allowedDirectorWorkgroups) {
+                if (strpos($delegation->type, 'director_') !== 0) {
+                    return false;
+                }
+                
+                // Extract the numeric part from the delegation type
+                $number = filter_var($delegation->type, FILTER_SANITIZE_NUMBER_INT);
+                return in_array($number, $allowedDirectorWorkgroups);
+            });
+                
+        if (!in_array('director', $excludePermissions) && $hasDirectorRole) {
+            
+            $leaderWorkgroups = Workgroup::where('leader_id', $user->id)
+                ->whereIn('workgroup_number', $allowedDirectorWorkgroups)
+                ->get();
 
-            $delegateWorkgroupNumbers = $delegations->filter(function ($delegation) {
-                return strpos($delegation->type, 'director_') === 0;
+            $delegateWorkgroupNumbers = $delegations->filter(function ($delegation) use ($allowedDirectorWorkgroups) {
+                if (strpos($delegation->type, 'director_') !== 0) {
+                    return false;
+                }
+                // Extract the numeric part from the delegation type
+                $number = filter_var($delegation->type, FILTER_SANITIZE_NUMBER_INT);
+                return in_array($number, $allowedDirectorWorkgroups);
             })->map(function ($delegation) {
                 // Extract the numeric part from the delegation type
                 $number = filter_var($delegation->type, FILTER_SANITIZE_NUMBER_INT);
@@ -140,14 +185,38 @@ class RecruitmentWorkflow extends AbstractWorkflow
             });
         }
 
-        if (Workgroup::where('leader_id', $user->id)->exists() || 
-                $delegations->contains(function ($delegation) {
-                    return strpos($delegation->type, 'grouplead_') === 0;
-                })) {
-            $leaderWorkgroups = Workgroup::where('leader_id', $user->id)->get();
+        // For group leaders with optional workgroup exclusion
+        $excludedWorkgroupNumbers = $excludePermissions['excluded_workgroups'] ?? [];
+        
+        $hasGroupLeadRole = Workgroup::where('leader_id', $user->id)
+            ->when(!empty($excludedWorkgroupNumbers), function($query) use ($excludedWorkgroupNumbers) {
+                return $query->whereNotIn('workgroup_number', $excludedWorkgroupNumbers);
+            })
+            ->exists() || 
+            $delegations->contains(function ($delegation) use ($excludedWorkgroupNumbers) {
+                if (strpos($delegation->type, 'grouplead_') !== 0) {
+                    return false;
+                }
+                // Extract the numeric part from the delegation type
+                $number = filter_var($delegation->type, FILTER_SANITIZE_NUMBER_INT);
+                return !in_array($number, $excludedWorkgroupNumbers);
+            });
+                
+        if (!in_array('grouplead', $excludePermissions) && $hasGroupLeadRole) {
+            
+            $leaderWorkgroups = Workgroup::where('leader_id', $user->id)
+                ->when(!empty($excludedWorkgroupNumbers), function($query) use ($excludedWorkgroupNumbers) {
+                    return $query->whereNotIn('workgroup_number', $excludedWorkgroupNumbers);
+                })
+                ->get();
 
-            $delegateWorkgroupNumbers = $delegations->filter(function ($delegation) {
-                return strpos($delegation->type, 'grouplead_') === 0;
+            $delegateWorkgroupNumbers = $delegations->filter(function ($delegation) use ($excludedWorkgroupNumbers) {
+                if (strpos($delegation->type, 'grouplead_') !== 0) {
+                    return false;
+                }
+                // Extract the numeric part from the delegation type
+                $number = filter_var($delegation->type, FILTER_SANITIZE_NUMBER_INT);
+                return !in_array($number, $excludedWorkgroupNumbers);
             })->map(function ($delegation) {
                 // Extract the numeric part from the delegation type
                 $number = filter_var($delegation->type, FILTER_SANITIZE_NUMBER_INT);
@@ -171,11 +240,33 @@ class RecruitmentWorkflow extends AbstractWorkflow
             });
         }
 
-        if (CostCenter::where('lead_user_id', $user->id)->exists() || 
-                $delegations->contains(function ($delegation) {
-                    return strpos($delegation->type, 'supervisor_workgroup_') === 0;
-                })) {
-            $leadCostCenters = CostCenter::where('lead_user_id', $user->id)->get();
+        // For cost center leads with optional cost center exclusion
+        $excludedCostCenterIds = $excludePermissions['excluded_costcenter_lead_ids'] ?? [];
+        
+        $hasCostCenterLeadRole = CostCenter::where('lead_user_id', $user->id)
+            ->when(!empty($excludedCostCenterIds), function($query) use ($excludedCostCenterIds) {
+                return $query->whereNotIn('id', $excludedCostCenterIds);
+            })
+            ->exists() || 
+            $delegations->contains(function ($delegation) use ($excludedCostCenterIds) {
+                if (strpos($delegation->type, 'supervisor_workgroup_') !== 0) {
+                    return false;
+                }
+                $originalUserId = $delegation->original_user_id;
+                return CostCenter::where('lead_user_id', $originalUserId)
+                    ->when(!empty($excludedCostCenterIds), function($query) use ($excludedCostCenterIds) {
+                        return $query->whereNotIn('id', $excludedCostCenterIds);
+                    })
+                    ->exists();
+            });
+                
+        if (!in_array('costcenter_lead', $excludePermissions) && $hasCostCenterLeadRole) {
+            
+            $leadCostCenters = CostCenter::where('lead_user_id', $user->id)
+                ->when(!empty($excludedCostCenterIds), function($query) use ($excludedCostCenterIds) {
+                    return $query->whereNotIn('id', $excludedCostCenterIds);
+                })
+                ->get();
 
             $delegateOriginalUserIds = $delegations->filter(function ($delegation) {
                 return strpos($delegation->type, 'supervisor_workgroup_') === 0;
@@ -185,7 +276,11 @@ class RecruitmentWorkflow extends AbstractWorkflow
             
             $delegateCostCenters = collect();
             foreach ($delegateOriginalUserIds as $originalUserId) {
-                $costcenters = CostCenter::where('lead_user_id', $originalUserId)->get();
+                $costcenters = CostCenter::where('lead_user_id', $originalUserId)
+                    ->when(!empty($excludedCostCenterIds), function($query) use ($excludedCostCenterIds) {
+                        return $query->whereNotIn('id', $excludedCostCenterIds);
+                    })
+                    ->get();
                 if ($costcenters->isNotEmpty()) {
                     $delegateCostCenters = $delegateCostCenters->merge($costcenters);
                 }
@@ -205,11 +300,33 @@ class RecruitmentWorkflow extends AbstractWorkflow
             });
         }
         
-        if (CostCenter::where('project_coordinator_user_id', $user->id)->exists() || 
-                $delegations->contains(function ($delegation) {
-                    return strpos($delegation->type, 'project_coordinator_workgroup_') === 0;
-                })) {
-            $projectCoordinatorCostCenters = CostCenter::where('project_coordinator_user_id', $user->id)->get();
+        // For project coordinators with optional cost center exclusion
+        $excludedProjectCoordinatorIds = $excludePermissions['excluded_project_coordinator_ids'] ?? [];
+        
+        $hasProjectCoordinatorRole = CostCenter::where('project_coordinator_user_id', $user->id)
+            ->when(!empty($excludedProjectCoordinatorIds), function($query) use ($excludedProjectCoordinatorIds) {
+                return $query->whereNotIn('id', $excludedProjectCoordinatorIds);
+            })
+            ->exists() || 
+            $delegations->contains(function ($delegation) use ($excludedProjectCoordinatorIds) {
+                if (strpos($delegation->type, 'project_coordinator_workgroup_') !== 0) {
+                    return false;
+                }
+                $originalUserId = $delegation->original_user_id;
+                return CostCenter::where('project_coordinator_user_id', $originalUserId)
+                    ->when(!empty($excludedProjectCoordinatorIds), function($query) use ($excludedProjectCoordinatorIds) {
+                        return $query->whereNotIn('id', $excludedProjectCoordinatorIds);
+                    })
+                    ->exists();
+            });
+                
+        if (!in_array('project_coordinator', $excludePermissions) && $hasProjectCoordinatorRole) {
+            
+            $projectCoordinatorCostCenters = CostCenter::where('project_coordinator_user_id', $user->id)
+                ->when(!empty($excludedProjectCoordinatorIds), function($query) use ($excludedProjectCoordinatorIds) {
+                    return $query->whereNotIn('id', $excludedProjectCoordinatorIds);
+                })
+                ->get();
 
             $delegateOriginalUserIds = $delegations->filter(function ($delegation) {
                 return strpos($delegation->type, 'project_coordinator_workgroup_') === 0;
@@ -219,7 +336,11 @@ class RecruitmentWorkflow extends AbstractWorkflow
             
             $delegateCostCenters = collect();
             foreach ($delegateOriginalUserIds as $originalUserId) {
-                $costcenters = CostCenter::where('project_coordinator_user_id', $originalUserId)->get();
+                $costcenters = CostCenter::where('project_coordinator_user_id', $originalUserId)
+                    ->when(!empty($excludedProjectCoordinatorIds), function($query) use ($excludedProjectCoordinatorIds) {
+                        return $query->whereNotIn('id', $excludedProjectCoordinatorIds);
+                    })
+                    ->get();
                 if ($costcenters->isNotEmpty()) {
                     $delegateCostCenters = $delegateCostCenters->merge($costcenters);
                 }
@@ -239,10 +360,13 @@ class RecruitmentWorkflow extends AbstractWorkflow
             });
         }
         
-        if ($user && $user->hasRole('utofinanszirozas_fedezetigazolo') ||
-                $delegations->contains(function ($delegation) {
-                    return $delegation->type === 'post_financing_approver';
-                })) {
+        // For post financing approvers
+        $hasPostFinancingRole = $user && $user->hasRole('utofinanszirozas_fedezetigazolo') ||
+            $delegations->contains(function ($delegation) {
+                return $delegation->type === 'post_financing_approver';
+            });
+            
+        if (!in_array('post_financing_approver', $excludePermissions) && $hasPostFinancingRole) {
 
             $orQueries->push(function ($query) {
                 $query->whereJsonLength('meta_data->additional_fields', '>', 0)

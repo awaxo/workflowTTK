@@ -368,12 +368,33 @@ class EmployeeRecruitmentController extends Controller
         $delegationService = new DelegationService();
         $recruitmentService = new RecruitmentWorkflowService();
 
+Log::info($recruitmentService->isProjectCoordinator(Auth::user()));
+Log::info(RecruitmentWorkflow::baseQuery([
+    'project_coordinator' => true, 
+    'project_coordination_lead' => true])->where('id', $id)->exists());
+Log::info($recruitmentService->isFinancingOrRegistrator(Auth::user()));
+Log::info(RecruitmentWorkflow::baseQuery([
+    'registrator' => true, 
+    'post_financing_approver' => true, 
+    'excluded_workgroups' => [910]])->where('id', $id)->exists());
+
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),
             'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
             'isHRHead' => $workgroup908 && ($workgroup908->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'hr_head')),
-            'hasNonITHeadPermission' => $recruitmentService->hasNonITHeadPermission($recruitment, Auth::user()),
+            'hasNonITHeadPermission' => RecruitmentWorkflow::baseQuery([
+                'it_head' => true, 
+                'it_head_delegate' => true])->where('id', $id)->exists(),
+            'isProjectCoordinator' => $recruitmentService->isProjectCoordinator(Auth::user()),
+            'hasNonProjectCoordinatorPermission' => RecruitmentWorkflow::baseQuery([
+                'project_coordinator' => true, 
+                'project_coordination_lead' => true])->where('id', $id)->exists(),
+            'isFinancingOrRegistrator' => $recruitmentService->isFinancingOrRegistrator(Auth::user()),
+            'hasNonFinancingOrRegistratorPermission' => RecruitmentWorkflow::baseQuery([
+                'registrator' => true, 
+                'post_financing_approver' => true, 
+                'excluded_workgroups' => [910]])->where('id', $id)->exists(),
             'usersToApprove' => implode(', ', $usersToApproveName),
             'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
             'amountToCover' => $this->getAmountToCover($recruitment),
@@ -441,7 +462,18 @@ class EmployeeRecruitmentController extends Controller
                 'id' => $id,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
-                'hasNonITHeadPermission' => $recruitmentService->hasNonITHeadPermission($recruitment, Auth::user()),
+                'hasNonITHeadPermission' => RecruitmentWorkflow::baseQuery([
+                    'it_head' => true, 
+                    'it_head_delegate' => true])->where('id', $id)->exists(),
+                'isProjectCoordinator' => $recruitmentService->isProjectCoordinator(Auth::user()),
+                'hasNonProjectCoordinatorPermission' => RecruitmentWorkflow::baseQuery([
+                    'project_coordinator' => true, 
+                    'project_coordination_lead' => true])->where('id', $id)->exists(),
+                'isFinancingOrRegistrator' => $recruitmentService->isFinancingOrRegistrator(Auth::user()),
+                'hasNonFinancingOrRegistratorPermission' => RecruitmentWorkflow::baseQuery([
+                    'registrator' => true, 
+                    'post_financing_approver' => true, 
+                    'excluded_workgroups' => [910]])->where('id', $id)->exists(),
                 'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),
@@ -752,7 +784,18 @@ class EmployeeRecruitmentController extends Controller
                 'recruitment' => $recruitment,
                 'history' => $this->getHistory($recruitment),
                 'isITHead' => $workgroup915 && ($workgroup915->leader_id === Auth::id() || $delegationService->isDelegate(Auth::user(), 'it_head')),
-                'hasNonITHeadPermission' => $recruitmentService->hasNonITHeadPermission($recruitment, Auth::user()),
+                'hasNonITHeadPermission' => RecruitmentWorkflow::baseQuery([
+                    'it_head' => true, 
+                    'it_head_delegate' => true])->where('id', $id)->exists(),
+                'isProjectCoordinator' => $recruitmentService->isProjectCoordinator(Auth::user()),
+                'hasNonProjectCoordinatorPermission' => RecruitmentWorkflow::baseQuery([
+                    'project_coordinator' => true, 
+                    'project_coordination_lead' => true])->where('id', $id)->exists(),
+                'isFinancingOrRegistrator' => $recruitmentService->isFinancingOrRegistrator(Auth::user()),
+                'hasNonFinancingOrRegistratorPermission' => RecruitmentWorkflow::baseQuery([
+                    'registrator' => true, 
+                    'post_financing_approver' => true, 
+                    'excluded_workgroups' => [910]])->where('id', $id)->exists(),
                 'usersToApprove' => implode(', ', $usersToApproveName),
                 'monthlyGrossSalariesSum' => $this->getSumOfSallariesFormatted($recruitment),
                 'amountToCover' => $this->getAmountToCover($recruitment),

@@ -56,6 +56,10 @@
                     <div class="accordion" id="accordion_process_details">
                         @if ($isITHead && !$hasNonITHeadPermission)
                             @include('EmployeeRecruitment::content._partials.it-head-approval', ['recruitment' => $recruitment])
+                        @elseif ($isProjectCoordinator && !$hasNonProjectCoordinatorPermission)
+                            @include('EmployeeRecruitment::content._partials.project-coordinator-approval', ['recruitment' => $recruitment])
+                        @elseif ($isFinancingOrRegistrator && !$hasNonFinancingOrRegistratorPermission)
+                            @include('EmployeeRecruitment::content._partials.financing-registrator-aproval', ['recruitment' => $recruitment])
                         @else
                             @include('EmployeeRecruitment::content._partials.all-approval', ['recruitment' => $recruitment])
                         @endif

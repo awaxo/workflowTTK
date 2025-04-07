@@ -5,84 +5,104 @@ namespace Modules\EmployeeRecruitment\App\Services;
 use App\Models\User;
 use App\Models\Workgroup;
 use App\Models\CostCenter;
-use Illuminate\Support\Facades\Log;
-use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
 class RecruitmentWorkflowService
 {
     /**
-     * Check if user has any permission that overrides the IT Head's limited access
+     * Check if the user is a project coordinator or project coordination leader in general
      *
-     * @param RecruitmentWorkflow $recruitment
-     * @param User $user
+     * @param User $user The user to check
      * @return bool
      */
-    public function hasNonITHeadPermission(RecruitmentWorkflow $recruitment, User $user)
+    public function isProjectCoordinator(User $user)
     {
-        $userId = $user->id;
+        // Ellenőrizzük, hogy a felhasználó bármely költséghely projektkoordinátora-e
+        $isCoordinator = CostCenter::where('project_coordinator_user_id', $user->id)
+            ->where('deleted', 0)
+            ->exists();
+        
+        if ($isCoordinator) {
+            return true;
+        }
 
-        try {
-            // Check if user is a leader or laborAdministrator of workgroup1 or workgroup2
-            if (
-                ($recruitment->workgroup1_id && $this->isLeaderOrLabAdmin($recruitment->workgroup1_id, $userId)) ||
-                ($recruitment->workgroup2_id && $this->isLeaderOrLabAdmin($recruitment->workgroup2_id, $userId))
-            ) {
-                return true;
-            }
+        // Ellenőrizzük, hogy a felhasználó a 911-es munkacsoport vezetője-e
+        $isWorkgroupLeader = Workgroup::where('workgroup_number', 911)
+            ->where('leader_id', $user->id)
+            ->where('deleted', 0)
+            ->exists();
+        
+        if ($isWorkgroupLeader) {
+            return true;
+        }
 
-            // Check if user is a leadUser of any cost center related to the recruitment
-            $costCenterFields = [
-                'base_salary_cc1_id',
-                'base_salary_cc2_id',
-                'base_salary_cc3_id',
-                'health_allowance_cc_id',
-                'management_allowance_cc_id',
-                'extra_pay_1_cc_id',
-                'extra_pay_2_cc_id'
-            ];
-
-            foreach ($costCenterFields as $field) {
-                if (!empty($recruitment->$field)) {
-                    $costCenter = CostCenter::find($recruitment->$field);
-                    if ($costCenter && $costCenter->lead_user_id === $userId) {
-                        return true;
-                    }
+        // Ellenőrizzük, hogy a felhasználó rendelkezik-e helyettesítési joggal
+        $delegationService = new DelegationService();
+        $delegations = $delegationService->getAllDelegations($user);
+        
+        foreach ($delegations as $delegation) {
+            if (isset($delegation['type'])) {
+                // Ellenőrizzük a projekt koordinátor helyettesítést
+                if (preg_match('/^project_coordinator_workgroup_\d+$/', $delegation['type'])) {
+                    return true;
+                }
+                
+                // Ellenőrizzük a 911-es munkacsoport vezető helyettesítést
+                if ($delegation['type'] === 'project_coordination_lead') {
+                    return true;
                 }
             }
-
-            // Check if user is a leader of specific workgroups
-            $specificWorkgroupNumbers = [900, 901, 903, 908, 910, 911, 912, 914];
-            $userWorkgroups = Workgroup::whereIn('workgroup_number', $specificWorkgroupNumbers)
-                ->where('leader_id', $userId)
-                ->exists();
-
-            if ($userWorkgroups) {
-                return true;
-            }
-
-            return false;
-        } catch (\Exception $e) {
-            Log::error('Error in hasNonITHeadPermission: ' . $e->getMessage());
-            return false;
         }
+
+        return false;
     }
 
     /**
-     * Check if user is leader or laborAdministrator of a workgroup
+     * Check if the user is a financing approver or registrator
      *
-     * @param int $workgroupId
-     * @param int $userId
+     * @param User $user The user to check
      * @return bool
      */
-    private function isLeaderOrLabAdmin($workgroupId, $userId)
+    public function isFinancingOrRegistrator(User $user)
     {
-        $workgroup = Workgroup::find($workgroupId);
-        
-        if (!$workgroup) {
-            return false;
+        // Ellenőrizzük, hogy a felhasználó rendelkezik-e a szükséges szerepkörökkel
+        if ($user->hasRole('munkaber_kotelezettsegvallalas_nyilvantarto') || 
+            $user->hasRole('utofinanszirozas_fedezetigazolo')) {
+            return true;
         }
+
+        // Ellenőrizzük, hogy a felhasználó a 910-es munkacsoport vezetője-e
+        $isWorkgroupLeader = Workgroup::where('workgroup_number', 910)
+            ->where('leader_id', $user->id)
+            ->where('deleted', 0)
+            ->exists();
         
-        return $workgroup->leader_id === $userId || 
-               $workgroup->labor_administrator_id === $userId;
+        if ($isWorkgroupLeader) {
+            return true;
+        }
+
+        // Ellenőrizzük, hogy a felhasználó helyettesítési joggal rendelkezik-e
+        $delegationService = new DelegationService();
+        $delegations = $delegationService->getAllDelegations($user);
+        
+        foreach ($delegations as $delegation) {
+            if (isset($delegation['type'])) {
+                // Ellenőrizzük a kötelezettségvállalás nyilvántartó helyettesítést
+                if ($delegation['type'] === 'munkaber_kotelezettsegvallalas_nyilvantarto') {
+                    return true;
+                }
+                
+                // Ellenőrizzük az utófinanszírozás fedezetigazoló helyettesítést
+                if ($delegation['type'] === 'utofinanszirozas_fedezetigazolo') {
+                    return true;
+                }
+                
+                // Ellenőrizzük a 910-es munkacsoport vezető helyettesítést
+                if ($delegation['type'] === 'grouplead_910') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Modules\EmployeeRecruitment\App\Console\Commands\CheckDelegationDeadlines;
+use Modules\EmployeeRecruitment\App\Console\Commands\CheckExpiredCostCenters;
 use Modules\EmployeeRecruitment\App\Console\Commands\CheckStateDeadlines;
 use Modules\EmployeeRecruitment\App\Console\Commands\CheckSuspendedDeadline;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
@@ -55,6 +56,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         CommandRegistry::registerCommand(CheckSuspendedDeadline::class, 'daily');
         CommandRegistry::registerCommand(CheckStateDeadlines::class, 'daily');
         CommandRegistry::registerCommand(CheckDelegationDeadlines::class, 'hourly');
+        CommandRegistry::registerCommand(CheckExpiredCostCenters::class, 'dailyAt', ['01:00']);
     }
 
     /**

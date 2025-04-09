@@ -90,6 +90,7 @@ class User extends Authenticatable
         'contract_expiration' => 'date',
         'password' => 'hashed',
         'deleted' => 'boolean',
+        'featured' => 'boolean',
     ];
 
     /**
@@ -99,6 +100,7 @@ class User extends Authenticatable
      */
     protected $attributes = [
         'deleted' => 0,
+        'featured' => 0,
         'notification_preferences' => '{"email":{"recruitment":{"approval_notification":true}}}'
     ];
 

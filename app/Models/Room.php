@@ -13,6 +13,17 @@ class Room extends Model
 
     public $timestamps = false;
 
+    /**
+     * Nincs elsődleges kulcs a táblában, ez a beállítás megakadályozza,
+     * hogy a Laravel automatikusan keressen egyet
+     */
+    public $incrementing = false;
+
+    /**
+     * Jelezzük, hogy nincs elsődleges kulcs
+     */
+    protected $primaryKey = null;
+
     protected $fillable = [
         'workgroup_number',
         'room_number',

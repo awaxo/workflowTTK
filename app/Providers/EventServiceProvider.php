@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\ModelChangedEvent;
+use App\Listeners\ModelDeletedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        ModelChangedEvent::class => [
+            ModelDeletedListener::class,
         ],
     ];
 

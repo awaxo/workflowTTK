@@ -20,6 +20,6 @@ class ModelChangedEvent
     public function __construct(Model $model, string $operation)
     {
         $this->model = $model;
-        $this->operation = $operation; // 'created' or 'updated'
+        $this->operation = $operation; // 'created', 'updated', 'deleted'
     }
 }

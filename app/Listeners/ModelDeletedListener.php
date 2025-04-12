@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ModelChangedEvent;
+use App\Models\User;
 use App\Models\Workgroup;
 use App\Services\CascadeDeleteService;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -84,6 +85,12 @@ class ModelDeletedListener implements ShouldQueue
                     Log::info("ModelDeletedListener: Processing workgroup deletion, ID: " . $event->model->id);
                     $this->cascadeDeleteService->handleWorkgroupDeletion($event->model);
                     break;
+
+                case $event->model instanceof User:
+                    Log::info("ModelDeletedListener: Processing user deletion, ID: " . $event->model->id);
+                    $this->cascadeDeleteService->handleUserDeletion($event->model);
+                    break;
+
                 default:
                     Log::info("ModelDeletedListener: No cascade delete handler for " . get_class($event->model));
                     break;

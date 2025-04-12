@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\ModelChangedEvent;
 use App\Models\CostCenter;
+use App\Models\Delegation;
 use App\Models\ExternalAccessRight;
 use App\Models\User;
 use App\Models\Workgroup;
@@ -84,6 +85,93 @@ class CascadeDeleteService
             
             Log::error("CascadeDeleteService: Failed cascade delete for workgroup {$workgroup->workgroup_number}", [
                 'workgroup_id' => $workgroup->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Re-throw the exception to be caught by the listener
+            throw $e;
+        }
+    }
+
+    /**
+     * Handle the deletion of a user and related cascade operations
+     *
+     * @param User $user
+     * @return void
+     */
+    public function handleUserDeletion(User $user)
+    {
+        Log::info("CascadeDeleteService: Starting cascade delete for user: {$user->name} (ID: {$user->id})");
+
+        // Start a transaction to ensure data consistency
+        DB::beginTransaction();
+
+        try {
+            // 1. Check if user is a lead user in any active cost centers
+            $leadCostCenters = CostCenter::where('lead_user_id', $user->id)
+                ->where('deleted', 0)
+                ->get();
+
+            // 2. Check if user is a project coordinator in any active cost centers
+            $coordinatorCostCenters = CostCenter::where('project_coordinator_user_id', $user->id)
+                ->where('deleted', 0)
+                ->get();
+
+            // 3. Check if user is a leader of any active workgroups
+            $leadWorkgroups = Workgroup::where('leader_id', $user->id)
+                ->where('deleted', 0)
+                ->get();
+
+            // 4. Check if user is a labor administrator of any active workgroups
+            $laborAdminWorkgroups = Workgroup::where('labor_administrator', $user->id)
+                ->where('deleted', 0)
+                ->get();
+
+            // 5. Check if user is an original user in any active delegations
+            $originalDelegations = Delegation::where('original_user_id', $user->id)
+                ->where('deleted', 0)
+                ->get();
+
+            // 6. Check if user is a delegate user in any active delegations
+            $delegateDelegations = Delegation::where('delegate_user_id', $user->id)
+                ->where('deleted', 0)
+                ->get();
+
+            // 7. Set delegations as deleted
+            $this->deleteDelegations($originalDelegations);
+            $this->deleteDelegations($delegateDelegations);
+
+            Log::info("CascadeDeleteService: Found relationships for deleted user {$user->name}:", [
+                'lead_cost_centers_count' => $leadCostCenters->count(),
+                'coordinator_cost_centers_count' => $coordinatorCostCenters->count(),
+                'lead_workgroups_count' => $leadWorkgroups->count(),
+                'labor_admin_workgroups_count' => $laborAdminWorkgroups->count(),
+                'original_delegations_count' => $originalDelegations->count(),
+                'delegate_delegations_count' => $delegateDelegations->count()
+            ]);
+
+            // Commit the transaction
+            DB::commit();
+
+            // 8. Send notifications (outside of transaction to avoid rollback if sending fails)
+            $this->notificationService->sendUserDeletionNotifications(
+                $user,
+                $leadCostCenters,
+                $coordinatorCostCenters,
+                $leadWorkgroups,
+                $laborAdminWorkgroups,
+                $originalDelegations,
+                $delegateDelegations
+            );
+
+            Log::info("CascadeDeleteService: Cascade delete for user {$user->name} completed successfully");
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of failure
+            DB::rollBack();
+            
+            Log::error("CascadeDeleteService: Failed cascade delete for user {$user->name}", [
+                'user_id' => $user->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -211,5 +299,32 @@ class CascadeDeleteService
         }
         
         return $accessRights;
+    }
+
+    /**
+     * Delete delegations
+     *
+     * @param Collection $delegations
+     * @return void
+     */
+    protected function deleteDelegations(Collection $delegations): void
+    {
+        if ($delegations->isEmpty()) {
+            return;
+        }
+        
+        $systemUser = User::withFeatured()->where('featured', 1)->first();
+        $systemUserId = $systemUser ? $systemUser->id : null;
+        
+        foreach ($delegations as $delegation) {
+            $delegation->deleted = 1;
+            $delegation->updated_by = $systemUserId;
+            $delegation->save();
+            
+            // Trigger event for each delegation to ensure any related cascades happen
+            event(new ModelChangedEvent($delegation, 'deleted'));
+            
+            Log::info("CascadeDeleteService: Delegation (ID: {$delegation->id}) marked as deleted");
+        }
     }
 }

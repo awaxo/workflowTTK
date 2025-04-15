@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ModelChangedEvent;
+use App\Models\Institute;
 use App\Models\User;
 use App\Models\Workgroup;
 use App\Services\CascadeDeleteService;
@@ -89,6 +90,11 @@ class ModelDeletedListener implements ShouldQueue
                 case $event->model instanceof User:
                     Log::info("ModelDeletedListener: Processing user deletion, ID: " . $event->model->id);
                     $this->cascadeDeleteService->handleUserDeletion($event->model);
+                    break;
+
+                case $event->model instanceof Institute:
+                    Log::info("ModelDeletedListener: Processing institute deletion, ID: " . $event->model->id);
+                    $this->cascadeDeleteService->handleInstituteDeletion($event->model);
                     break;
 
                 default:

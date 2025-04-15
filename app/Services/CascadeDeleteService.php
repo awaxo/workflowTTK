@@ -6,6 +6,7 @@ use App\Events\ModelChangedEvent;
 use App\Models\CostCenter;
 use App\Models\Delegation;
 use App\Models\ExternalAccessRight;
+use App\Models\Institute;
 use App\Models\User;
 use App\Models\Workgroup;
 use App\Services\NotificationService;
@@ -182,6 +183,75 @@ class CascadeDeleteService
     }
 
     /**
+     * Handle the deletion of an institute and related cascade operations
+     *
+     * @param Institute $institute
+     * @return void
+     */
+    public function handleInstituteDeletion(Institute $institute)
+    {
+        Log::info("CascadeDeleteService: Starting cascade delete for institute: {$institute->name} (ID: {$institute->id})");
+
+        // Start a transaction to ensure data consistency
+        DB::beginTransaction();
+
+        try {
+            // 1. Find all active workgroups that belong to this institute
+            $workgroups = $institute->workgroups()->get();
+
+            if ($workgroups->isEmpty()) {
+                Log::info("CascadeDeleteService: No active workgroups found for institute {$institute->name}");
+                DB::commit();
+                return;
+            }
+
+            Log::info("CascadeDeleteService: Found {$workgroups->count()} active workgroups for institute {$institute->name}");
+            
+            // 2. Get system user for tracking changes
+            $systemUser = User::withFeatured()->where('featured', 1)->first();
+            $systemUserId = $systemUser ? $systemUser->id : null;
+            
+            if (!$systemUserId) {
+                Log::error("CascadeDeleteService: System user not found for institute deletion operations");
+                throw new \RuntimeException("System user not found. Cannot proceed with institute deletion cascade.");
+            }
+
+            // 3. Mark each workgroup as deleted and process cascade operations
+            foreach ($workgroups as $workgroup) {
+                Log::info("CascadeDeleteService: Processing workgroup {$workgroup->workgroup_number} - {$workgroup->name} for deletion");
+                
+                $workgroup->deleted = 1;
+                $workgroup->updated_by = $systemUserId;
+                $workgroup->save();
+                
+                // 4. Trigger the workgroup deletion event to handle cascading
+                // This will ensure all the workgroup deletion logic is applied
+                event(new ModelChangedEvent($workgroup, 'deleted'));
+                
+                Log::info("CascadeDeleteService: Workgroup {$workgroup->workgroup_number} marked as deleted and event triggered");
+            }
+            
+            // Commit the transaction
+            DB::commit();
+            
+            Log::info("CascadeDeleteService: Successfully completed cascade delete for institute {$institute->name}");
+            
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of failure
+            DB::rollBack();
+            
+            Log::error("CascadeDeleteService: Failed cascade delete for institute {$institute->name}", [
+                'institute_id' => $institute->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Re-throw the exception to be caught by the listener
+            throw $e;
+        }
+    }
+
+    /**
      * Delete users related to the given workgroup
      *
      * @param Workgroup $workgroup
@@ -198,6 +268,11 @@ class CascadeDeleteService
         
         $systemUser = User::withFeatured()->where('featured', 1)->first();
         $systemUserId = $systemUser ? $systemUser->id : null;
+
+        if (!$systemUserId) {
+            Log::error("CascadeDeleteService: System user not found for institute deletion operations");
+            throw new \RuntimeException("System user not found. Cannot proceed with institute deletion cascade.");
+        }
         
         if ($users->isEmpty()) {
             Log::info("CascadeDeleteService: No active users found for workgroup {$workgroup->workgroup_number}");
@@ -240,6 +315,11 @@ class CascadeDeleteService
         
         $systemUser = User::withFeatured()->where('featured', 1)->first();
         $systemUserId = $systemUser ? $systemUser->id : null;
+
+        if (!$systemUserId) {
+            Log::error("CascadeDeleteService: System user not found for institute deletion operations");
+            throw new \RuntimeException("System user not found. Cannot proceed with institute deletion cascade.");
+        }
         
         if ($costCenters->isEmpty()) {
             Log::info("CascadeDeleteService: No active cost centers found for workgroup {$workgroup->workgroup_number}");
@@ -279,6 +359,11 @@ class CascadeDeleteService
         
         $systemUser = User::withFeatured()->where('featured', 1)->first();
         $systemUserId = $systemUser ? $systemUser->id : null;
+
+        if (!$systemUserId) {
+            Log::error("CascadeDeleteService: System user not found for institute deletion operations");
+            throw new \RuntimeException("System user not found. Cannot proceed with institute deletion cascade.");
+        }
         
         if ($accessRights->isEmpty()) {
             Log::info("CascadeDeleteService: No active external access rights found for workgroup {$workgroup->workgroup_number}");
@@ -315,6 +400,11 @@ class CascadeDeleteService
         
         $systemUser = User::withFeatured()->where('featured', 1)->first();
         $systemUserId = $systemUser ? $systemUser->id : null;
+
+        if (!$systemUserId) {
+            Log::error("CascadeDeleteService: System user not found for institute deletion operations");
+            throw new \RuntimeException("System user not found. Cannot proceed with institute deletion cascade.");
+        }
         
         foreach ($delegations as $delegation) {
             $delegation->deleted = 1;

@@ -43,5 +43,11 @@ class Institute extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    // Additional methods related to this model can be added here
+    /**
+     * Get the workgroups that belong to this institute.
+     */
+    public function workgroups()
+    {
+        return Workgroup::whereRaw('LEFT(workgroup_number, 1) = ?', [$this->group_level])->where('deleted', 0);
+    }
 }

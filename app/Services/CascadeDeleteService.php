@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\ModelChangedEvent;
 use App\Models\CostCenter;
+use App\Models\CostCenterType;
 use App\Models\Delegation;
 use App\Models\ExternalAccessRight;
 use App\Models\Institute;
@@ -252,6 +253,48 @@ class CascadeDeleteService
     }
 
     /**
+     * Handle the deletion of a cost center type and related cascade operations
+     *
+     * @param CostCenterType $costCenterType
+     * @return void
+     */
+    public function handleCostCenterTypeDeletion(CostCenterType $costCenterType)
+    {
+        Log::info("CascadeDeleteService: Starting cascade delete for cost center type: {$costCenterType->name} (ID: {$costCenterType->id})");
+
+        // Start a transaction to ensure data consistency
+        DB::beginTransaction();
+
+        try {
+            // 1. Delete related cost centers
+            $deletedCostCenters = $this->deleteRelatedCostCentersByType($costCenterType);
+            
+            // Commit the transaction
+            DB::commit();
+            
+            // 2. Send notifications (outside of transaction to avoid rollback if sending fails)
+            if (!$deletedCostCenters->isEmpty()) {
+                $this->notificationService->sendCostCenterDeletionNotification($deletedCostCenters);
+            }
+
+            Log::info("CascadeDeleteService: Cascade delete for cost center type {$costCenterType->name} completed successfully");
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of failure
+            DB::rollBack();
+            
+            Log::error("CascadeDeleteService: Failed cascade delete for cost center type {$costCenterType->name}", [
+                'cost_center_type_id' => $costCenterType->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Re-throw the exception to be caught by the listener
+            throw $e;
+        }
+    }
+
+
+    /**
      * Delete users related to the given workgroup
      *
      * @param Workgroup $workgroup
@@ -327,6 +370,48 @@ class CascadeDeleteService
         }
         
         Log::info("CascadeDeleteService: Found {$costCenters->count()} active cost centers to delete for workgroup {$workgroup->workgroup_number}");
+        
+        foreach ($costCenters as $costCenter) {
+            $costCenter->deleted = 1;
+            $costCenter->updated_by = $systemUserId;
+            $costCenter->save();
+            
+            // Trigger event for each cost center to ensure any related cascades happen
+            event(new ModelChangedEvent($costCenter, 'deleted'));
+            
+            Log::info("CascadeDeleteService: Cost center {$costCenter->cost_center_code} (ID: {$costCenter->id}) marked as deleted");
+        }
+        
+        return $costCenters;
+    }
+
+    /**
+     * Delete cost centers related to the given cost center type
+     *
+     * @param CostCenterType $costCenterType
+     * @return Collection
+     */
+    protected function deleteRelatedCostCentersByType(CostCenterType $costCenterType): Collection
+    {
+        Log::info("CascadeDeleteService: Finding cost centers to delete for cost center type {$costCenterType->name}");
+        
+        // Find active cost centers with the given type
+        $costCenters = $costCenterType->costCenters()->get();
+        
+        $systemUser = User::withFeatured()->where('featured', 1)->first();
+        $systemUserId = $systemUser ? $systemUser->id : null;
+
+        if (!$systemUserId) {
+            Log::error("CascadeDeleteService: System user not found for cost center type deletion operations");
+            throw new \RuntimeException("System user not found. Cannot proceed with cost center type deletion cascade.");
+        }
+        
+        if ($costCenters->isEmpty()) {
+            Log::info("CascadeDeleteService: No active cost centers found for cost center type {$costCenterType->name}");
+            return new Collection();
+        }
+        
+        Log::info("CascadeDeleteService: Found {$costCenters->count()} active cost centers to delete for cost center type {$costCenterType->name}");
         
         foreach ($costCenters as $costCenter) {
             $costCenter->deleted = 1;

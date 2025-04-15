@@ -46,4 +46,9 @@ class CostCenterType extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function costCenters()
+    {
+        return $this->hasMany(CostCenter::class, 'type_id')->where('deleted', 0);
+    }
 }

@@ -103,7 +103,7 @@ class NotificationService
      * @param Collection $deletedCostCenters
      * @return void
      */
-    protected function sendCostCenterDeletionNotification(Collection $deletedCostCenters): void
+    public function sendCostCenterDeletionNotification(Collection $deletedCostCenters): void
     {
         if ($deletedCostCenters->isEmpty()) {
             Log::info("NotificationService: No cost centers to notify about");
@@ -152,7 +152,7 @@ class NotificationService
      * @param Workgroup $workgroup
      * @return void
      */
-    protected function sendDeletedUsersNotification(Collection $deletedUsers, Workgroup $workgroup): void
+    public function sendDeletedUsersNotification(Collection $deletedUsers, Workgroup $workgroup): void
     {
         if ($deletedUsers->isEmpty()) {
             Log::info("NotificationService: No users to notify about");
@@ -189,7 +189,7 @@ class NotificationService
      * @param Workgroup $workgroup
      * @return void
      */
-    protected function sendRoomsAssignmentNotification(Workgroup $workgroup): void
+    public function sendRoomsAssignmentNotification(Workgroup $workgroup): void
     {
         // Get all users with 'uzemeltetesi_ugyintezo' role
         $operationsUsers = User::role('uzemeltetesi_ugyintezo')
@@ -231,7 +231,7 @@ class NotificationService
      * @param Workgroup $workgroup
      * @return void
      */
-    protected function sendStoreGasCylinderAssignmentNotification(Workgroup $workgroup): void
+    public function sendStoreGasCylinderAssignmentNotification(Workgroup $workgroup): void
     {
         try {
             // Keressünk egy admin felhasználót, aki feladóként szerepelhet
@@ -274,7 +274,7 @@ class NotificationService
      * @param Collection $coordinatorCostCenters
      * @return void
      */
-    protected function sendCostCenterUserNotifications(
+    public function sendCostCenterUserNotifications(
         User $user,
         Collection $leadCostCenters,
         Collection $coordinatorCostCenters
@@ -318,7 +318,7 @@ class NotificationService
      * @param Collection $leadWorkgroups
      * @return void
      */
-    protected function sendWorkgroupLeaderNotifications(
+    public function sendWorkgroupLeaderNotifications(
         User $user,
         Collection $leadWorkgroups
     ): void {
@@ -357,7 +357,7 @@ class NotificationService
      * @param Collection $laborAdminWorkgroups
      * @return void
      */
-    protected function sendLaborAdminNotifications(
+    public function sendLaborAdminNotifications(
         User $user,
         Collection $laborAdminWorkgroups
     ): void {
@@ -396,7 +396,7 @@ class NotificationService
      * @param Collection $delegateDelegations
      * @return void
      */
-    protected function sendDelegationNotifications(
+    public function sendDelegationNotifications(
         User $user,
         Collection $delegateDelegations
     ): void {

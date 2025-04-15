@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ModelChangedEvent;
+use App\Models\CostCenterType;
 use App\Models\Institute;
 use App\Models\User;
 use App\Models\Workgroup;
@@ -95,6 +96,10 @@ class ModelDeletedListener implements ShouldQueue
                 case $event->model instanceof Institute:
                     Log::info("ModelDeletedListener: Processing institute deletion, ID: " . $event->model->id);
                     $this->cascadeDeleteService->handleInstituteDeletion($event->model);
+                    break;
+                case $event->model instanceof CostCenterType:
+                    Log::info("ModelDeletedListener: Processing cost center type deletion, ID: " . $event->model->id);
+                    $this->cascadeDeleteService->handleCostCenterTypeDeletion($event->model);
                     break;
 
                 default:

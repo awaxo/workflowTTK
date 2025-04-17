@@ -122,7 +122,7 @@ $(function () {
             
             $("#employment_start_date").datepicker('destroy').datepicker({
                 format: "yyyy.mm.dd",
-                startDate: startDate,
+                startDate: isTitkar9Role ? null : startDate,
                 language: 'hu',
                 weekStart: 1,
             });
@@ -131,7 +131,7 @@ $(function () {
         var startDate = $("#citizenship").val() == 'Harmadik országbeli' ? '+60D' : '+21D';
         $("#employment_start_date").datepicker({
             format: "yyyy.mm.dd",
-            startDate: startDate,
+            startDate: isTitkar9Role ? new Date() : startDate,
             endDate: '+30Y',
             language: 'hu',
             weekStart: 1,
@@ -139,7 +139,7 @@ $(function () {
         });
         $("#employment_end_date").datepicker({
             format: "yyyy.mm.dd",
-            startDate: '+200D',
+            startDate: isTitkar9Role ? null : '+200D',
             endDate: '+30Y',
             language: 'hu',
             weekStart: 1,
@@ -240,7 +240,9 @@ $(function () {
         });
 
         // Initialize with recruitmentCreatedAt if available
-        var initialStartDate = calculateStartDate().format('YYYY.MM.DD');
+        var initialStartDate = isTitkar9Role ? 
+            null : 
+            calculateStartDate().format('YYYY.MM.DD');
         $("#employment_start_date").datepicker({
             format: "yyyy.mm.dd",
             startDate: initialStartDate,
@@ -250,7 +252,9 @@ $(function () {
             autoclose: true,
         });
 
-        var initialEndDate = moment(baseDate).add(6, 'months').format('YYYY.MM.DD');
+        var initialEndDate = isTitkar9Role ? 
+            null : 
+            moment(baseDate).add(6, 'months').format('YYYY.MM.DD');
         $("#employment_end_date").datepicker({
             format: "yyyy.mm.dd",
             startDate: initialEndDate,
@@ -1363,7 +1367,7 @@ function updateStartDateSettings() {
     // Állítsuk be az új kezdő dátum feltételeket
     $("#employment_start_date").datepicker('destroy').datepicker({
         format: "yyyy.mm.dd",
-        startDate: startDate,
+        startDate: isTitkar9Role ? null : startDate,
         endDate: '+30Y',
         language: 'hu',
         weekStart: 1,
@@ -1393,10 +1397,14 @@ function updateEndDateBasedOnPosition() {
         
         if (selectedPositionName === 'egyetemi hallgató') {
             // Egyetemi hallgató esetén 1 hónap - 1 nap
-            endDate = moment(startDate).add(1, 'months').subtract(1, 'days').toDate();
+            endDate = isTitkar9Role ? 
+                    moment(startDate).add(1, 'days').toDate() : 
+                    moment(startDate).add(1, 'months').subtract(1, 'days').toDate();
         } else {
             // Egyéb munkakörök esetén 6 hónap - 1 nap
-            endDate = moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
+            endDate = isTitkar9Role ? 
+                    moment(startDate).add(1, 'days').toDate() : 
+                    moment(startDate).add(6, 'months').subtract(1, 'days').toDate();
         }
         
         $("#employment_end_date").datepicker('setDate', null);
@@ -1623,6 +1631,20 @@ function validateEmployeeRecruitment() {
                         date: {
                             format: 'YYYY.MM.DD',
                             message: 'Kérjük, valós dátumot adj meg',
+                        },
+                        callback: {
+                            message: 'A dátum nem lehet korábbi az aktuális dátumnál',
+                            callback: function(input) {
+                                var startDate = moment(input.value, 'YYYY.MM.DD');
+                                if (isTitkar9Role) {
+                                    var minDate = moment().startOf('day');
+                                    return startDate.isSameOrAfter(minDate);
+                                } else {
+                                    var minDate = $("#citizenship").val() == 'Harmadik országbeli' ? 
+                                        moment().add(60, 'days') : moment().add(21, 'days');
+                                    return startDate.isSameOrAfter(minDate);
+                                }
+                            }
                         }
                     }
                 },
@@ -1634,6 +1656,15 @@ function validateEmployeeRecruitment() {
                         date: {
                             format: 'YYYY.MM.DD',
                             message: 'Kérjük, valós dátumot adj meg',
+                        },
+                        callback: {
+                            message: 'A jogviszony vége nem lehet korábbi, mint a jogviszony kezdete',
+                            callback: function(input) {
+                                var startDate = moment($("#employment_start_date").val(), 'YYYY.MM.DD');
+                                var endDate = moment(input.value, 'YYYY.MM.DD');
+                                
+                                return endDate.isAfter(startDate);
+                            }
                         }
                     }
                 },

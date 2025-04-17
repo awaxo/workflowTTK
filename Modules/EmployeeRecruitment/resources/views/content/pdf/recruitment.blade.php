@@ -1,3 +1,7 @@
+@php
+use App\Models\ExternalAccessRight;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

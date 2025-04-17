@@ -56,6 +56,10 @@
         'resources/assets/js/form-basic-inputs.js',
         'Modules/EmployeeRecruitment/resources/assets/js/employee-recruitment.js'
     ])
+
+    <script>
+        const isTitkar9Role = {{ auth()->user()->hasRole('titkar_9_fi') || auth()->user()->hasRole('titkar_9_gi') ? 'true' : 'false' }};
+    </script>
 @endsection
 
 @section('content')

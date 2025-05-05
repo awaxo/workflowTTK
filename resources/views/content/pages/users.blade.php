@@ -66,6 +66,7 @@
                                 <th>Email</th>
                                 <th>Csoport</th>
                                 <th>Szerepkörök</th>
+                                <th>Külsős jogok</th>
                                 <th>Aktív</th>
                                 <th>Utolsó módosító</th>
                                 <th>Utolsó módosítás</th>
@@ -119,6 +120,16 @@
                     </select>
                     <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
+                <div class="col-sm-12 fv-plugins-icon-container">
+                    <label class="form-label" for="external_privileges">Külsős jogok</label>
+                    <select class="form-select select2" id="external_privileges" name="external_privileges" multiple>
+                        @foreach($externalPrivileges as $privilege)
+                            <option value="{{ $privilege->id }}">{{ $privilege->name }}</option>
+                        @endforeach
+                    </select>
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+
                 <div class="col-sm-12">
                     <button type="button" class="btn btn-primary data-submit me-sm-3 me-1" data-user-id="">Mentés</button>
                     <button type="reset" class="btn btn-outline-secondary cancel" data-bs-dismiss="offcanvas">Mégse</button>

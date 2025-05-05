@@ -21,6 +21,7 @@ $(function() {
             { data: 'email' },
             { data: 'workgroup_name' },
             { data: 'roles' },
+            { data: 'external_privileges' },
             { 
                 data: 'deleted',
                 render: function(data, type, row) {
@@ -242,15 +243,16 @@ $(function() {
     $(document).on('click', '.modify-user', function() {
         var row = $(this).closest('tr');
         var user = $('.datatables-users').DataTable().row(row).data();
-
+    
         $('#new_user_label').text('Felhasználó módosítás');
-
+    
         $('#name').val(user.name);
         $('#email').val(user.email);
         $('#workgroup_id').val(user.workgroup_id).trigger('change');
         $('#roles').val(user.role_names).trigger('change');
+        $('#external_privileges').val(user.external_privilege_ids).trigger('change'); // Új sor
         $('.data-submit').attr('data-user-id', user.id);
-
+    
         fv.revalidateField('name');
         fv.revalidateField('email');
     });
@@ -271,6 +273,7 @@ $(function() {
                         email: $('#email').val(),
                         workgroup_id: $('#workgroup_id').val(),
                         roles: $('#roles').val(),
+                        external_privileges: $('#external_privileges').val(),
                         userId: userId
                     },
                     success: function (response) {
@@ -328,6 +331,7 @@ $(function() {
         $('#name').val('');
         $('#email').val('');
         $('#roles').val(null).trigger('change');
+        $('#external_privileges').val(null).trigger('change');
         $('#workgroup_id').val($('#workgroup_id option:first').val()).trigger('change');
         
         fv?.resetForm(true);

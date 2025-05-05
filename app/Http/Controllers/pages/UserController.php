@@ -4,6 +4,7 @@ namespace App\Http\Controllers\pages;
 
 use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
+use App\Models\ExternalPrivilege;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Workgroup;
@@ -23,7 +24,9 @@ class UserController extends Controller
             return $role;
         });
 
-        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles'));
+        $externalPrivileges = ExternalPrivilege::all();
+
+        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles', 'externalPrivileges'));
     }
 
     public function indexByRole($roleName)
@@ -36,7 +39,9 @@ class UserController extends Controller
             return $role;
         });
 
-        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles'));
+        $externalPrivileges = ExternalPrivilege::all();
+
+        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles', 'externalPrivileges'));
     }
 
     public function getAllAndFeaturedUsers()
@@ -87,7 +92,7 @@ class UserController extends Controller
         
         return response()->json(['valid' => !$exists]);
     }
-    
+
     public function checkNameUnique()
     {
         $name = request()->input('name');
@@ -135,6 +140,11 @@ class UserController extends Controller
         $user->fill($validatedData);
         $user->workgroup_id = request('workgroup_id');
         $user->syncRoles(request('roles'));
+
+        if (method_exists($user, 'externalPrivileges')) {
+            $user->externalPrivileges()->sync(request('external_privileges', []));
+        }
+
         $user->updated_by = Auth::id();
         $user->save();
 
@@ -154,6 +164,10 @@ class UserController extends Controller
         $user->created_by = Auth::id();
         $user->updated_by = Auth::id();
         $user->save();
+
+        if (method_exists($user, 'externalPrivileges')) {
+            $user->externalPrivileges()->sync(request('external_privileges', []));
+        }
 
         event(new ModelChangedEvent($user, 'created'));
 
@@ -232,7 +246,7 @@ class UserController extends Controller
         }
 
         try {
-            return [
+            $userData = [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
@@ -246,6 +260,8 @@ class UserController extends Controller
                 'roles' => $user->roles ? $user->roles->map(function ($role) {
                     return __('auth.roles.' . $role->name);
                 })->implode(', ') : '',
+                'external_privileges' => '',
+                'external_privilege_ids' => [],
                 'deleted' => $user->deleted,
                 'featured' => $user->featured,
                 'created_at' => $user->created_at,
@@ -253,6 +269,13 @@ class UserController extends Controller
                 'updated_at' => $user->updated_at,
                 'updated_by_name' => $user->updatedBy ? $user->updatedBy->name : null,
             ];
+
+            if (method_exists($user, 'externalPrivileges') && $user->externalPrivileges) {
+                $userData['external_privileges'] = $user->externalPrivileges->pluck('name')->implode(', ');
+                $userData['external_privilege_ids'] = $user->externalPrivileges->pluck('id')->toArray();
+            }
+            
+            return $userData;
         } catch (\Exception $e) {
             Log::error('Error formatting user data for user ID: ' . $user->id . '. Error: ' . $e->getMessage());
             return null;
@@ -261,43 +284,27 @@ class UserController extends Controller
 
     private function validateRequest()
     {
+        $userId = request()->input('userId');
+        
         $activeWorkgroups = Workgroup::where('deleted', 0)
             ->pluck('id');
         
-        $activeRoles = Role::pluck('id');
-        
-        $existingNames = User::where('deleted', 0);
-        if (request()->input('userId')) {
-            $existingNames = $existingNames->where('id', '!=', request()->input('userId'));
-        }
-        $existingNames = $existingNames->pluck('name')->toArray();
-        
-        $existingEmails = User::where('deleted', 0);
-        if (request()->input('userId')) {
-            $existingEmails = $existingEmails->where('id', '!=', request()->input('userId'));
-        }
-        $existingEmails = $existingEmails->pluck('email')->toArray();
-
         return request()->validate([
             'name' => [
                 'required',
                 'max:255',
                 'regex:/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s\-\.]+$/',
-                function (string $attribute, mixed $value, Closure $fail) use ($existingNames) {
-                    if (in_array($value, $existingNames)) {
-                        $fail("A felhasználónév már foglalt");
-                    }
-                },
+                Rule::unique('wf_user')->where(function ($query) {
+                    return $query->where('deleted', 0);
+                })->ignore(request()->input('userId')),
             ],
             'email' => [
                 'required',
                 'max:255',
                 'regex:/^[_a-zA-Z0-9\-]+([_a-zA-Z0-9.\-]+)*@ttk.hu$/',
-                function (string $attribute, mixed $value, Closure $fail) use ($existingEmails) {
-                    if (in_array($value, $existingEmails)) {
-                        $fail("Ez az email cím már foglalt");
-                    }
-                },
+                Rule::unique('wf_user')->where(function ($query) {
+                    return $query->where('deleted', 0);
+                })->ignore(request()->input('userId')),
             ],
             'workgroup_id' => [
                 'required',
@@ -308,9 +315,11 @@ class UserController extends Controller
             'name.required' => 'Név kötelező',
             'name.max' => 'Név maximum 255 karakter lehet',
             'name.regex' => 'A név csak betűket, szóközt, kötőjelet és pontot tartalmazhat',
+            'name.unique' => 'Ez a név már foglalt',
             'email.required' => 'Email kötelező',
             'email.regex' => 'Az email címnek ttk.hu végződésűnek kell lennie és csak megengedett karaktereket tartalmazhat',
             'email.max' => 'Email maximum 255 karakter lehet',
+            'email.unique' => 'Ez az email cím már foglalt',
             'workgroup_id.required' => 'Csoport kötelező',
             'workgroup_id.in' => 'Csak aktív csoport választható',
         ]);

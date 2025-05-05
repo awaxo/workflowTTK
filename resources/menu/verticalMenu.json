@@ -76,7 +76,7 @@
                 "slug": "auxiliary-data-pages-user-list",
                 "authorize": "true"
             },
-{
+            {
                 "url": "/segedadat/hozzaferesi-jogosultsagok",
                 "name": "Hozzáférési jog",
                 "slug": "auxiliary-data-external-access",
@@ -110,6 +110,12 @@
                 "url": "/segedadat/szerepkorok",
                 "name": "Szerepkör",
                 "slug": "auxiliary-data-authorizations-permissions",
+                "authorize": "true"
+            },
+            {
+                "url": "/segedadat/kulsos-jogok",
+                "name": "Külsős jog",
+                "slug": "auxiliary-data-external-privilege",
                 "authorize": "true"
             }
         ]

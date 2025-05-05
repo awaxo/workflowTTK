@@ -136,6 +136,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the external privileges assigned to the user.
+     */
+    public function externalPrivileges()
+    {
+        return $this->belongsToMany(ExternalPrivilege::class, 'wf_external_privilege_user', 'user_id', 'external_privilege_id')
+                    ->withTimestamps();
+    }
+
+    /**
      * Route notifications for the mail channel.
      *
      * @return  array<string, string>|string
@@ -282,7 +291,7 @@ class User extends Authenticatable
 
         $pagesForAdminOnly = ['settings', 'auxiliary-data-authorizations-permissions'];
         $pagesForSecretaries = ['workflows-employee-recruitment-new'];
-        $pagesForAdminOrWg915Leader = ['auxiliary-data-pages-user-list', 'auxiliary-data', 'auxiliary-data-external-access'];
+        $pagesForAdminOrWg915Leader = ['auxiliary-data-pages-user-list', 'auxiliary-data', 'auxiliary-data-external-access', 'auxiliary-data-external-privilege'];
         $pagesForWg912Leader = ['auxiliary-data', 'auxiliary-data-workgroup', 'auxiliary-data-institute'];
         $canViewCostCenter = ['auxiliary-data', 'auxiliary-data-costcenter'];
         $pagesForWg910Wg911 = ['auxiliary-data', 'auxiliary-data-costcenter-type'];

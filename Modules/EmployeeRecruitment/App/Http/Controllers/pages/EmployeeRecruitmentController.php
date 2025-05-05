@@ -368,16 +368,6 @@ class EmployeeRecruitmentController extends Controller
         $delegationService = new DelegationService();
         $recruitmentService = new RecruitmentWorkflowService();
 
-Log::info($recruitmentService->isProjectCoordinator(Auth::user()));
-Log::info(RecruitmentWorkflow::baseQuery([
-    'project_coordinator' => true, 
-    'project_coordination_lead' => true])->where('id', $id)->exists());
-Log::info($recruitmentService->isFinancingOrRegistrator(Auth::user()));
-Log::info(RecruitmentWorkflow::baseQuery([
-    'registrator' => true, 
-    'post_financing_approver' => true, 
-    'excluded_workgroups' => [910]])->where('id', $id)->exists());
-
         return view('employeerecruitment::content.pages.recruitment-view', [
             'recruitment' => $recruitment,
             'history' => $this->getHistory($recruitment),

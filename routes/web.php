@@ -8,6 +8,7 @@ use App\Http\Controllers\pages\CostCenterController;
 use App\Http\Controllers\pages\CostCenterTypeController;
 use App\Http\Controllers\pages\DashboardController;
 use App\Http\Controllers\pages\ExternalAccessController;
+use App\Http\Controllers\pages\ExternalPrivilegeController;
 use App\Http\Controllers\pages\InstituteController;
 use App\Http\Controllers\pages\PermissionController;
 use App\Http\Controllers\pages\PositionController;
@@ -42,6 +43,7 @@ Route::get('/segedadat/koltseghelyek', [CostCenterController::class, 'manage'])-
 Route::get('/segedadat/koltseghely-tipusok', [CostCenterTypeController::class, 'manage'])->middleware(['check.wg910.wg911'])->name('auxiliary-data-costcenter-type');
 Route::get('/segedadat/munkakorok', [PositionController::class, 'manage'])->middleware(['check.wg908'])->name('auxiliary-data-position');
 Route::get('/segedadat/felhasznalok', [UserController::class, 'index'])->middleware(['check.wg915'])->name('auxiliary-data-pages-users');
+Route::get('/segedadat/kulsos-jogok', [ExternalPrivilegeController::class, 'manage'])->middleware(['check.wg915'])->name('auxiliary-data-external-privilege');
 Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['check.wg915'])->name('pages-users-role');
 Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['check.admin'])->name('settings');
 Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth:dynamic'])->name('profile');
@@ -180,4 +182,9 @@ Route::prefix('api')->middleware(['check.wg915'])->group(function () {
     Route::post('/external-access/{id}/restore', [ExternalAccessController::class, 'restore']);
     Route::post('/external-access/{id}/update', [ExternalAccessController::class, 'update']);
     Route::post('/external-access/create', [ExternalAccessController::class, 'create']);
+
+    Route::get('/external-privileges', [ExternalPrivilegeController::class, 'getAllExternalPrivileges']);
+    Route::post('/external-privilege/create', [ExternalPrivilegeController::class, 'create']);
+    Route::post('/external-privilege/{id}/update', [ExternalPrivilegeController::class, 'update']);
+    Route::post('/external-privilege/{id}/delete', [ExternalPrivilegeController::class, 'delete']);
 });

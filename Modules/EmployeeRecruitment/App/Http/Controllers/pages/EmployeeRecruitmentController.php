@@ -748,8 +748,89 @@ class EmployeeRecruitmentController extends Controller
         if(!RecruitmentWorkflow::baseQuery()->where('id', $id)->exists()) {
             return view('content.pages.misc-not-authorized');
         }
+        
         $service = new WorkflowService();
-        if ($recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment)) {
+        $delegationService = new DelegationService();
+        
+        // Ellenőrizzük, hogy a felhasználó a felfüggesztő-e
+        $isSuspender = $recruitment->state == 'suspended' && $service->isUserResponsible(Auth::user(), $recruitment);
+        
+        // Ellenőrizzük, hogy a felhasználó az indító intézet titkárnője-e
+        $initiatorInstituteCode = $recruitment->initiator_institute;
+        $isTitkarForInitiatorInstitute = false;
+        
+        if ($initiatorInstituteCode) {
+            $institute = Institute::find($recruitment->initiator_institute_id);
+            if ($institute) {
+                $groupLevel = $institute->group_level;
+                $isTitkarForInitiatorInstitute = User::find(Auth::id())->hasRole('titkar_' . $groupLevel . '_fi') || 
+                                                User::find(Auth::id())->hasRole('titkar_' . $groupLevel . '_gi') ||
+                                                $delegationService->isDelegate(Auth::user(), 'secretary_' . $groupLevel . '_fi') ||
+                                                $delegationService->isDelegate(Auth::user(), 'secretary_' . $groupLevel . '_gi');
+            }
+        }
+
+        // Ha a felhasználó a felfüggesztő vagy az indító intézet titkárnője
+        if ($recruitment->state == 'suspended' && ($isSuspender || $isTitkarForInitiatorInstitute)) {
+            // Munkacsoportok lekérdezése a review view számára
+            $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
+            $user = User::find(Auth::id());
+
+            $workgroups = collect();
+            foreach ($roles as $role) {
+                if ($user->hasRole($role)) {
+                    $workgroupNumber = substr($role, -1);
+                    $workgroupNumber = $workgroupNumber == 'i' ? 9 : $workgroupNumber;
+                    $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
+                    $workgroups = $workgroups->concat($workgroupsForRole);
+                }
+            }
+            $workgroup800 = Workgroup::where('workgroup_number', 800)->where('deleted', 0)->get();
+
+            $workgroups2 = $workgroups->unique('id')->map(function ($workgroup) {
+                $workgroup->leader_name = $workgroup->leader()->first()?->name;
+                return $workgroup;
+            });
+            $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
+                $workgroup->leader_name = $workgroup->leader()->first()?->name;
+                return $workgroup;
+            });
+            $positions = Position::where('deleted', 0)->get();
+            $costCenters = CostCenter::where('deleted', 0)
+                ->where('valid_employee_recruitment', 1)
+                ->get()
+                ->map(function ($costCenter) {
+                    $costCenter->leader_name = $costCenter->leadUser()->first()?->name;
+                    return $costCenter;
+                });
+            $rooms = Room::orderBy('room_number')->get();
+            $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
+            
+            // External access rights
+            $externalAccessRightsIds = explode(',', $recruitment->external_access_rights);
+            $externalAccessRights = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+            // Extract the external_system fields
+            $externalSystems = $externalAccessRights->pluck('external_system')->toArray();
+            $externalSystemsList = implode(', ', $externalSystems);
+            
+            // Munkáltató járulék mértéke
+            $employerContributionRate = $recruitment->employer_contribution ?? Option::where('option_name', 'employer_contribution')->first()?->option_value;
+
+            return view('employeerecruitment::content.pages.recruitment-review', [
+                'recruitment' => $recruitment,
+                'history' => $this->getHistory($recruitment),
+                'id' => $id,
+                'workgroups1' => $workgroups1,
+                'workgroups2' => $workgroups2,
+                'positions' => $positions,
+                'costcenters' => $costCenters,
+                'rooms' => $rooms,
+                'externalAccessRights' => $externalAccessRights,
+                'externalSystemsList' => $externalSystemsList,
+                'employerContributionRate' => $employerContributionRate,
+                'isSuspendedReview' => true
+            ]);
+        } else {
             $service = new WorkflowService();
             $usersToApprove = $service->getResponsibleUsers($recruitment, true);
             $usersToApproveName = [];
@@ -792,15 +873,21 @@ class EmployeeRecruitmentController extends Controller
                 'totalAmountToCover' => $this->getTotalAmountToCover($recruitment),
                 'externalSystemsList' => $externalSystemsList
             ]);
-        } else {
-            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem felfüggesztésének visszaállítására');
-            return view('content.pages.misc-not-authorized');
         }
     }
 
     public function restore(Request $request, $id)
     {
-        $recruitment = RecruitmentWorkflow::find($id);
+        $recruitment = RecruitmentWorkflow::findOrFail($id);
+
+        // Csak a fájlok és a kezdő dátum frissítése
+        $recruitment->employment_start_date             = $request->input('employment_start_date');
+        $recruitment->job_description                    = $request->input('job_description_file');
+        $recruitment->personal_data_sheet                = $request->input('personal_data_sheet_file');
+        $recruitment->student_status_verification        = $request->input('student_status_verification_file');
+        $recruitment->certificates                       = $request->input('certificates_file');
+        $recruitment->commute_support_form               = $request->input('commute_support_form_file');
+
         $service = new WorkflowService();
         
         if ($service->isUserResponsible(Auth::user(), $recruitment)) {            

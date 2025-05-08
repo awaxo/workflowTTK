@@ -275,7 +275,13 @@ $(function () {
         $("#employment_start_date").on('change', function() {
             updateEndDateBasedOnPosition();
         });
+
         // set datepicker date fields end
+
+        if (isSuspendedReview) {
+            // Minden input mező legyen readonly vagy disabled
+            $('input:not([type="hidden"]):not(.dz-hidden-input):not(#employment_start_date), select, textarea').attr('readonly', true).attr('disabled', true);
+        }
     }
     /**
      * End of Initialize form for New or Edit
@@ -443,16 +449,21 @@ $(function () {
                     formData[id] = value;
                 });
 
+                var url = isSuspendedReview
+                    ? '/employee-recruitment/' + $('#recruitment_id').val() + '/restore'
+                    : '/employee-recruitment';
+                
                 $.ajax({
-                    url: '/employee-recruitment',
+                    url: url,
                     type: 'POST',
                     data: formData,
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (data) {
-                        if (data.url) {
-                            window.location.href = data.url;
+                        var redirect = data.redirectUrl || data.url;
+                        if (redirect) {
+                            window.location.href = redirect;
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {

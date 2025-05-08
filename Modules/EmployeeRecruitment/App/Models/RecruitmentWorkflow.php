@@ -7,6 +7,7 @@ use App\Models\Position;
 use App\Models\Workgroup;
 use App\Models\CostCenter;
 use App\Models\Delegation;
+use App\Models\Institute;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -122,6 +123,11 @@ class RecruitmentWorkflow extends AbstractWorkflow
                         $query->where('workgroup_number', 'LIKE', "$number%");
                     })->orWhereHas('workgroup2', function ($query) use ($number) {
                         $query->where('workgroup_number', 'LIKE', "$number%");
+                    });
+                });
+                $orQueries->push(function (Builder $query) use ($number) {
+                    $query->whereHas('initiator_institute', function (Builder $q) use ($number) {
+                        $q->where('group_level', $number);
                     });
                 });
             }
@@ -374,6 +380,12 @@ class RecruitmentWorkflow extends AbstractWorkflow
             });
         }
 
+        // suspended by me
+        $orQueries->push(function (Builder $query) use ($user) {
+            $query->where('state', 'suspended')
+                  ->where('updated_by', $user->id);
+        });
+
         if ($orQueries->isEmpty()) {
             // return no rows
             return self::query()->whereRaw('1 = 0');
@@ -482,6 +494,11 @@ class RecruitmentWorkflow extends AbstractWorkflow
             'state' => 'new_request',
             'job_ad_exists' => true,
         ]);
+    }
+
+    public function initiator_institute()
+    {
+        return $this->belongsTo(Institute::class, 'initiator_institute_id');
     }
 
     public function workgroup1()

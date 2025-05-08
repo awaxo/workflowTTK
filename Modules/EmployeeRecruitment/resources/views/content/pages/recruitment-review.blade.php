@@ -60,6 +60,7 @@
 
     <script>
         const isTitkar9Role = {{ auth()->user()->hasRole('titkar_9_fi') || auth()->user()->hasRole('titkar_9_gi') ? 'true' : 'false' }};
+        const isSuspendedReview = {{ isset($isSuspendedReview) && $isSuspendedReview ? 'true' : 'false' }};
     </script>
 @endsection
 
@@ -864,7 +865,13 @@
                                                     <span class="align-middle d-sm-inline-block d-none">Vissza</span>
                                                 </button>
                                                 <button class="btn btn-danger btn-delete">Folyamat törlése</button>
-                                                <button class="btn btn-success btn-submit">Folyamat indítása</button>
+                                                <button class="btn btn-success btn-submit">
+                                                    @if(isset($isSuspendedReview) && $isSuspendedReview)
+                                                        Folyamat visszaállítása
+                                                    @else
+                                                        Folyamat indítása
+                                                    @endif
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

@@ -2,7 +2,7 @@
      data-medical="{{ $medical ? json_encode($medical) : '' }}">
 </div>
 <div class="card">
-    <div class="card-body" id="health_allowance">
+    <div class="card-body" id="health_allowance_card">
         <div class="content-header mb-3 d-flex justify-content-between align-items-center">
             <div>
                 <h5 class="mb-0">A munkakör (munkahely) főbb egészségkárosító kockázatai</h5>

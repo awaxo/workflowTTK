@@ -7,102 +7,135 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use App\Models\Workgroup;
+use App\Traits\WorkgroupLeadersTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-class StateRequestToComplete implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            if ($workflow->workgroup2) {
-                return $workflow->workgroup2->labor_administrator == Auth::id();
-            } else {
-                return $workflow->workgroup1->labor_administrator == Auth::id();
-            }
-        } else {
-            Log::error('StateRequestToComplete::isUserResponsible called with invalid workflow type');
+class StateRequestToComplete implements IStateResponsibility
+{
+    use WorkgroupLeadersTrait;
+
+    protected function getWorkgroupNumbers(): array
+    {
+        return [910];
+    }
+
+     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
+        if (! $workflow instanceof RecruitmentWorkflow) {
+            Log::error('StateRequestToComplete::isUserResponsible invalid workflow type');
             return false;
         }
+
+        if ($workflow->workgroup2) {
+            $isAdmin = $workflow->workgroup2->labor_administrator == $user->id;
+        } else {
+            $isAdmin = $workflow->workgroup1->labor_administrator == $user->id;
+        }
+
+        $isLeader = $this->isWorkgroupLeader($user);
+
+        return ($isAdmin || $isLeader)
+            && ! $workflow->isApprovedBy($user);
     }
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $service = new DelegationService();
-    
-            if ($workflow->workgroup2) {
-                return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup2->workgroup_number);
-            } else if ($workflow->workgroup1) {
-                return $service->isDelegate($user, 'draft_contract_labor_administrator_' . $workflow->workgroup1->workgroup_number);
-            }
-            return false;
-        } else {
-            Log::error('StateRequestToComplete::isUserResponsibleAsDelegate called with invalid workflow type');
+        if (! $workflow instanceof RecruitmentWorkflow) {
+            Log::error('StateRequestToComplete::isUserResponsibleAsDelegate invalid workflow type');
             return false;
         }
+
+        $service = new DelegationService();
+
+        $type = $workflow->workgroup2
+            ? 'draft_contract_labor_administrator_' . $workflow->workgroup2->workgroup_number
+            : 'draft_contract_labor_administrator_' . $workflow->workgroup1->workgroup_number;
+
+        $delegated = $service->isDelegate($user, $type);
+
+        if (! $delegated) {
+            $delegated = $service->isDelegate($user, 'grouplead_910');
+        }
+
+        return $delegated && ! $workflow->isApprovedBy($user);
     }
 
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $service = new DelegationService();
-    
-            // Get the labor administrator for the workflow
-            $laborAdminId = $workflow->workgroup2 ? $workflow->workgroup2->labor_administrator : $workflow->workgroup1->labor_administrator;
-            $laborAdmin = User::find($laborAdminId);
-    
-            // Get the delegate users
-            $delegateType = 'draft_contract_labor_administrator_' . ($workflow->workgroup2 ? $workflow->workgroup2->workgroup_number : $workflow->workgroup1->workgroup_number);
-            $delegateUsers = $service->getDelegates($laborAdmin, $delegateType);
-    
-            $responsibleUsers = array_merge([$laborAdmin], $delegateUsers->toArray());
-    
-            if ($notApprovedOnly) {
-                $responsibleUsers = array_filter($responsibleUsers, function ($user) use ($workflow) {
-                    $user = User::find($user['id']);
-                    return !$workflow->isApprovedBy($user);
-                });
-            }
-    
-            return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
-        } else {
-            Log::error('StateRequestToComplete::getResponsibleUsers called with invalid workflow type');
+        if (! $workflow instanceof RecruitmentWorkflow) {
+            Log::error('StateRequestToComplete::getResponsibleUsers invalid workflow type');
             return [];
         }
+
+        $service = new DelegationService();
+
+        if ($workflow->workgroup2) {
+            $adminId = $workflow->workgroup2->labor_administrator;
+            $type = 'draft_contract_labor_administrator_' . $workflow->workgroup2->workgroup_number;
+        } else {
+            $adminId = $workflow->workgroup1->labor_administrator;
+            $type = 'draft_contract_labor_administrator_' . $workflow->workgroup1->workgroup_number;
+        }
+        $admin = User::find($adminId);
+        $responsible = collect([$admin]);
+
+        $responsible = $responsible->concat($service->getDelegates($admin, $type));
+
+        $leaders = $this->getWorkgroupLeaderUsers();
+        $responsible = $responsible->concat($leaders);
+
+        foreach ($leaders as $leader) {
+            $responsible = $responsible->concat(
+                $service->getDelegates($leader, 'grouplead_910')
+            );
+        }
+
+        if ($notApprovedOnly) {
+            $responsible = $responsible->filter(function ($item) use ($workflow) {
+                $u = $item instanceof User ? $item : User::find($item['id']);
+                return ! $workflow->isApprovedBy($u);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsible->toArray(), 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow): bool
+    {
         return true;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         return 'to_completed';
     }
 
-    public function getDelegations(User $user): array {
-        $workgroups = Workgroup::where('deleted', 0)->where('labor_administrator', $user->id)->get();
+    public function getDelegations(User $user): array
+    {
+        $delegations = [];
+
+        $workgroups = Workgroup::where('deleted', 0)
+            ->where('labor_administrator', $user->id)
+            ->get();
         if ($workgroups->count() > 0) {
-            $instituteAbbreviations = [
-                1 => 'SZKI',
-                3 => 'AKI',
-                4 => 'MÉI',
-                5 => 'KPI',
-                6 => 'AKK',
-                7 => 'SZKK',
-                8 => 'GYIK',
-            ];
-
-            return $workgroups->map(function ($workgroup) {
-                $abbreviation = isset($instituteAbbreviations[substr($workgroup->workgroup_number, 0, 1)]) ? $instituteAbbreviations[substr($workgroup->workgroup_number, 0, 1)] : substr($workgroup->workgroup_number, 0, 1);
-
-                return [
-                    'type' => 'draft_contract_labor_administrator_' . $workgroup->workgroup_number,
+            foreach ($workgroups as $wg) {
+                $delegations[] = [
+                    'type' => 'draft_contract_labor_administrator_' . $wg->workgroup_number,
                     'readable_name' => 'Munkaügyi ügyintéző'
                 ];
-            })->toArray();
+            }
         }
 
-        return [];
+        if ($this->isWorkgroupLeader($user)) {
+            $delegations[] = [
+                'type' => 'grouplead_910',
+                'readable_name' => 'Pénzügyi osztályvezető'
+            ];
+        }
+
+        return $delegations;
     }
 }

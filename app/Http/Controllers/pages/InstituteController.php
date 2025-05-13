@@ -83,18 +83,22 @@ class InstituteController extends Controller
 
     public function checkAbbreviationUnique()
     {
-        $abbreviation = request()->input('abbreviation');
-        $instituteId = request()->input('institute_id');
-        
+        $abbreviation = trim(request()->input('abbreviation'));
+        $instituteId  = request()->input('institute_id');
+
+        if (mb_strlen($abbreviation) > 5) {
+            return response()->json(['valid' => false]);
+        }
+
         $query = Institute::where('abbreviation', $abbreviation)
-            ->where('deleted', 0);
-        
+                        ->where('deleted', 0);
+
         if ($instituteId) {
             $query->where('id', '!=', $instituteId);
         }
-        
+
         $exists = $query->exists();
-        
+
         return response()->json(['valid' => !$exists]);
     }
 
@@ -111,13 +115,29 @@ class InstituteController extends Controller
 
     public function restore($id)
     {
-        $institute = Institute::find($id);
+        $institute = Institute::findOrFail($id);
+
+        $conflictExists = Institute::where('deleted', 0)
+            ->where('id', '!=', $institute->id)
+            ->where(function ($q) use ($institute) {
+                $q->where('name', $institute->name)
+                ->orWhere('abbreviation', $institute->abbreviation)
+                ->orWhere('group_level', $institute->group_level);
+            })
+            ->exists();
+
+        if ($conflictExists) {
+            return response()->json([
+                'message' => 'Nem állítható vissza, mert ütközés van egy meglévő intézettel (azonos név, rövidítés vagy számszint).'
+            ], 422);
+        }
+
         $institute->deleted = 0;
         $institute->save();
 
         event(new ModelChangedEvent($institute, 'restored'));
 
-        return response()->json(['message' => 'Institute restored successfully']);
+        return response()->json(['message' => 'Intézet sikeresen visszaállítva']);
     }
 
     public function update($id)

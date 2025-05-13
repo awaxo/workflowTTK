@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\NonFeaturedScope;
+use App\Services\SecretaryRoleService;
 use App\Traits\ImapTrait;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -304,7 +305,7 @@ class User extends Authenticatable
         }
 
         if (in_array($menuItem, $pagesForSecretaries)) {
-            if ($this->hasAnyRole(['titkar_1', 'titkar_3', 'titkar_4', 'titkar_5', 'titkar_6', 'titkar_7', 'titkar_8', 'titkar_9_fi', 'titkar_9_gi'])) {
+            if (SecretaryRoleService::isSecretary($this)) {
                 return true;
             }
         }

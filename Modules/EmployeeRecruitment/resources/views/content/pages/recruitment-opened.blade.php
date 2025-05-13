@@ -44,9 +44,14 @@
                         $isSecretary = Auth::user()->roles->filter(function($role) {
                             return Str::startsWith($role->name, 'titkar');
                         })->isNotEmpty();
+                        
+                        $isLeader = App\Models\Workgroup::whereHas('leader', function($query) {
+                            $query->where('id', Auth::user()->id);
+                        })->exists();
                     @endphp
                     <script>
                         window.isSecretary = @json($isSecretary);
+                        window.isLeader = @json($isLeader);
                     </script>
 
                     <table class="datatables-recruitments table border-top">

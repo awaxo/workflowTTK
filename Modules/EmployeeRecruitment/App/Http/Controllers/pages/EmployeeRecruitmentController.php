@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\PdfService;
+use App\Services\SecretaryRoleService;
 use App\Services\WorkflowService;
 use Carbon\Carbon;
 use Exception;
@@ -54,7 +55,7 @@ class EmployeeRecruitmentController extends Controller
 
     public function index()
     {
-        $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
+        $roles = SecretaryRoleService::getAll();
         $user = User::find(Auth::id());
 
         $workgroups = collect();
@@ -485,7 +486,7 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-error');
         }
 
-        $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
+        $roles = SecretaryRoleService::getAll();
         $user = User::find(Auth::id());
 
         $workgroups = collect();
@@ -773,7 +774,7 @@ class EmployeeRecruitmentController extends Controller
         // Ha a felhasználó a felfüggesztő vagy az indító intézet titkárnője
         if ($recruitment->state == 'suspended' && ($isSuspender || $isTitkarForInitiatorInstitute)) {
             // Munkacsoportok lekérdezése a review view számára
-            $roles = ['titkar_9_fi','titkar_9_gi','titkar_1','titkar_3','titkar_4','titkar_5','titkar_6','titkar_7','titkar_8'];
+            $roles = SecretaryRoleService::getAll();
             $user = User::find(Auth::id());
 
             $workgroups = collect();

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
+use Modules\EmployeeRecruitment\App\Console\Commands\ArchiveOldDrafts;
 use Modules\EmployeeRecruitment\App\Console\Commands\CheckDelegationDeadlines;
 use Modules\EmployeeRecruitment\App\Console\Commands\CheckExpiredCostCenters;
 use Modules\EmployeeRecruitment\App\Console\Commands\CheckStateDeadlines;
@@ -57,6 +58,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         CommandRegistry::registerCommand(CheckStateDeadlines::class, 'daily');
         CommandRegistry::registerCommand(CheckDelegationDeadlines::class, 'hourly');
         CommandRegistry::registerCommand(CheckExpiredCostCenters::class, 'dailyAt', ['01:00']);
+        CommandRegistry::registerCommand(ArchiveOldDrafts::class, 'yearlyOn',  ['01-01', '03:00']);
     }
 
     /**

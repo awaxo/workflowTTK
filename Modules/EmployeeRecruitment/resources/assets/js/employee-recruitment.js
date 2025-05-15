@@ -180,6 +180,10 @@ $(function () {
             $('#deleteWorkflowConfirmation').modal('show');
         });
 
+        $('.btn-delete-draft').on('click', function(event) {
+            $('#deleteWorkflowDraftConfirmation').modal('show');
+        });
+
         setTimeout(function() {
             $('#position_id').val($('#position_id_value').val()).trigger('change');
 
@@ -203,14 +207,25 @@ $(function () {
             $('#available_tools').val(availableTools).trigger('change');
             
             var inventoryNumbersJson = $('#inventory_numbers_of_available_tools').val();
-            var inventoryNumbersArray = JSON.parse(inventoryNumbersJson);
+            var inventoryNumbersArray = [];
 
-            inventoryNumbersArray.forEach(function(item) {
-                for (let tool in item) {
-                    let inventoryNumber = item[tool];
-                    $('#inventory_numbers_of_available_tools_' + tool).val(inventoryNumber);
+            if (inventoryNumbersJson && inventoryNumbersJson.trim() !== '') {
+                try {
+                    inventoryNumbersArray = JSON.parse(inventoryNumbersJson);
+                } catch (e) {
+                    console.error('Hiba a leltári számok JSON feldolgozásakor:', e);
+                    inventoryNumbersArray = [];
                 }
-            });
+            }
+
+            if (Array.isArray(inventoryNumbersArray) && inventoryNumbersArray.length > 0) {
+                inventoryNumbersArray.forEach(function(item) {
+                    for (let tool in item) {
+                        let inventoryNumber = item[tool];
+                        $('#inventory_numbers_of_available_tools_' + tool).val(inventoryNumber);
+                    }
+                });
+            }
 
             $('#job_description_file').val($('#job_description_file').data('existing'));
             $('#personal_data_sheet_file').val($('#personal_data_sheet_file').data('existing'));
@@ -412,31 +427,24 @@ $(function () {
         });
         enableOnChange(fv, 'commute_support_form_file', 'requires_commute_support', function() { return $('#requires_commute_support').val() == true });
 
+        let validationErrors = [];
+
+        // Ellenőrzés: Bruttó bér összeg
         if (!validateCostCenterSum()) {
-            GLOBALS.AJAX_ERROR('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
-            
-            return;
-        } else {
-            $('.alert-danger').alert('close');
+            validationErrors.push('Teljes havi bruttó bér összegét ezerre kerekítve szükséges megadni!');
         }
 
+        // Ellenőrzés: Munkaidők sorrendje
         if (!validateWorkdayTimes()) {
-            GLOBALS.AJAX_ERROR('Munkanapok munkaideje kezdetének korábbinak kell lennie, mint a végének!');
-            
-            return;
-        } else {
-            $('.alert-danger').alert('close');
+            validationErrors.push('Munkanapok munkaideje kezdetének korábbinak kell lennie, mint a végének!');
         }
 
+        // Ellenőrzés: Munkaidők összege
         if (!validateWorkingHours()) {
-            GLOBALS.AJAX_ERROR('Munkanapok munkaidejének összege nem egyezik a heti munkaóraszámmal!');
-            
-            return;
-        } else {
-            $('.alert-danger').alert('close');
+            validationErrors.push('Munkanapok munkaidejének összege nem egyezik a heti munkaóraszámmal!');
         }
 
-        fv.validate().then(function(status) {
+        fv.validate().then(async function(status) {
             if(status === 'Valid') {
                 // Disable the button to prevent double clicks
                 $(".btn-submit").prop('disabled', true);
@@ -483,16 +491,70 @@ $(function () {
                     }
                 });
             } else if (status === 'Invalid') {
-                var fields = fv.getFields();
-                Object.keys(fields).forEach(function(name) {
-                    fv.validateField(name)
-                        .then(function(status) {
-                            if (status === 'Invalid') {
-                                console.log('Field:', name, 'Status:', status);
-                                GLOBALS.AJAX_ERROR('Hibás adat(ok) vagy hiányzó mező(k) vannak az űrlapon, kérjük ellenőrizd!');
-                            }
-                        });
-                });
+                const fields = fv.getFields();
+                for (const name of Object.keys(fields)) {
+                    try {
+                        const fieldStatus = await fv.validateField(name);
+                        if (fieldStatus === 'Invalid') {
+                        console.log('Field:', name, 'Status:', fieldStatus);
+                        validationErrors.push(
+                            'Hibás adat(ok) vagy hiányzó mező(k) vannak az űrlapon, kérjük ellenőrizd!'
+                        );
+                        break;
+                        }
+                    } catch (err) {
+                        console.error('Validation error on', name, err);
+                        throw err;
+                    }
+                }
+
+                GLOBALS.AJAX_ERROR(validationErrors.join('<br>'));
+            }
+        });
+    });
+
+    // Submit draft employee recruitment form
+    $('.btn-submit-draft').on('click', function (event) {
+        event.preventDefault();
+
+        // Disable the button to prevent double clicks
+        $(".btn-submit-draft").prop('disabled', true);
+
+        var formData = {};
+        formData['recruitment_id'] = $('#recruitment_id').val();
+        $('#new-recruitment :input').each(function() {
+            var id = $(this).attr('id');
+            var value = $(this).is(':checkbox') ? $(this).is(':checked') : $(this).val();
+            formData[id] = value;
+        });
+        
+        $.ajax({
+            url: '/employee-recruitment/draft',
+            type: 'POST',
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (data) {
+                var redirect = data.redirectUrl || data.url;
+                if (redirect) {
+                    window.location.href = redirect;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
+                var errors = jqXHR.responseJSON.errors;
+                var errorAlertMessage = '';
+                for (var key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        errorAlertMessage += errors[key] + '<br>';
+                    }
+                }
+                GLOBALS.AJAX_ERROR(errorAlertMessage, jqXHR, textStatus, errorThrown);
             }
         });
     });
@@ -521,6 +583,42 @@ $(function () {
                     window.location.href = '/login';
                 }
 
+                var errors = jqXHR.responseJSON.errors;
+                var errorAlertMessage = '';
+                for (var key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        errorAlertMessage += errors[key] + '<br>';
+                    }
+                }
+                GLOBALS.AJAX_ERROR(errorAlertMessage, jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
+
+    $('#confirm_delete_draft').on('click', function(event) {
+        $('#deleteWorkflowDraftConfirmation').modal('hide');
+        
+        var draftId = $('#recruitment_id').val();
+        
+        $(this).prop('disabled', true);
+        
+        $.ajax({
+            url: '/employee-recruitment/draft/' + draftId + '/delete',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.url) {
+                    window.location.href = data.url;
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+                
                 var errors = jqXHR.responseJSON.errors;
                 var errorAlertMessage = '';
                 for (var key in errors) {
@@ -1425,35 +1523,61 @@ function updateEndDateBasedOnPosition() {
 
 // before submit validation functions
 function validateCostCenterSum() {
-    return getGrossSalarySum() % 1000 === 0;
+    const raw = parseFloat(getGrossSalarySum()) || 0;
+    const sum = Math.round(raw);
+    return sum % 1000 === 0;
 }
 
 function validateWorkdayTimes() {
-    let workdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-    let isValid = true;
+    const workdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 
-    workdays.forEach(function(day) {
-        let start = moment($('#work_start_' + day).val(), 'HH:mm');
-        let end = moment($('#work_end_' + day).val(), 'HH:mm');
+    for (const day of workdays) {
+        const startVal = $('#work_start_' + day).val();
+        const endVal   = $('#work_end_'   + day).val();
 
-        if (start.isAfter(end)) {
-            isValid = false;
+        // Ha üres a mező, az is hibás
+        if (!startVal || !endVal) {
+            return false;
         }
-    });
 
-    return isValid;
+        // Pontos, strict formátum ellenőrzés
+        const start = moment(startVal, 'HH:mm', true);
+        const end   = moment(endVal,   'HH:mm', true);
+
+        // invalid date vagy fordított sorrend → false
+        if (!start.isValid() || !end.isValid() || start.isAfter(end)) {
+            return false;
+        }
+    }
+
+    // Ha végig semmi gond nem volt:
+    return true;
 }
 
 function validateWorkingHours() {
-    let sum = 0;
-    let fields = ['monday_duration', 'tuesday_duration', 'wednesday_duration', 'thursday_duration', 'friday_duration'];
-
-    fields.forEach(function(field) {
-        let duration = $('#' + field).val().split(':');
-        sum += parseInt(duration[0]) + parseInt(duration[1]) / 60;
+    const fields = [
+      'monday_duration', 'tuesday_duration',
+      'wednesday_duration', 'thursday_duration',
+      'friday_duration'
+    ];
+    // Összeg percben:
+    let sumMinutes = 0;
+    
+    fields.forEach(field => {
+      const val = $('#' + field).val() || "0:0";
+      const [hStr, mStr] = val.split(':');
+      const hours   = parseInt(hStr, 10) || 0;
+      const minutes = parseInt(mStr, 10) || 0;
+      sumMinutes += hours * 60 + minutes;
     });
 
-    return sum === parseInt($('#weekly_working_hours').val());
+    // Hétről is percekben:
+    const weeklyVal = ($('#weekly_working_hours').val() || "0:0").split(':');
+    const weeklyHours   = parseInt(weeklyVal[0], 10) || 0;
+    const weeklyMinutes = parseInt(weeklyVal[1], 10) || 0;
+    const expectedMinutes = weeklyHours * 60 + weeklyMinutes;
+
+    return sumMinutes === expectedMinutes;
 }
 
 // Fields to use numeric transformer for
@@ -1651,8 +1775,9 @@ function validateEmployeeRecruitment() {
                                     var minDate = moment().startOf('day');
                                     return startDate.isSameOrAfter(minDate);
                                 } else {
-                                    var minDate = $("#citizenship").val() == 'Harmadik országbeli' ? 
-                                        moment().add(60, 'days') : moment().add(21, 'days');
+                                    var minDate = $("#citizenship").val() == 'Harmadik országbeli'
+                                        ? moment().add(60, 'days').startOf('day')
+                                        : moment().add(21, 'days').startOf('day');
                                     return startDate.isSameOrAfter(minDate);
                                 }
                             }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Modules\EmployeeRecruitment\App\Http\Controllers\pages\EmployeeRecruitmentController;
 use Modules\EmployeeRecruitment\App\Middleware\CheckSecretary;
+use Modules\EmployeeRecruitment\App\Middleware\CheckSecretaryOrWorkgroupLeader;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,11 +19,13 @@ use Modules\EmployeeRecruitment\App\Middleware\CheckSecretary;
 */
 
 // Page routes
-Route::get('/hr/felveteli-kerelem/uj', [EmployeeRecruitmentController::class, 'index'])->middleware([CheckSecretary::class])->name('workflows-employee-recruitment-new');
+Route::get('/hr/felveteli-kerelem/uj', [EmployeeRecruitmentController::class, 'index'])->middleware([CheckSecretaryOrWorkgroupLeader::class])->name('workflows-employee-recruitment-new');
 Route::get('/hr/felveteli-kerelem', [EmployeeRecruitmentController::class, 'opened'])->middleware(['auth:dynamic'])->name('workflows-employee-recruitment-opened');
+Route::get('/hr/felveteli-kerelem/piszkozatok', [EmployeeRecruitmentController::class, 'drafts'])->middleware(['auth:dynamic'])->name('workflows-employee-recruitment-drafts');
 Route::get('/folyamat/jovahagyas/{id}', [EmployeeRecruitmentController::class, 'beforeApprove'])->middleware(['auth:dynamic'])->name('pages-approve-process');
 Route::get('/folyamat/visszaallitas/{id}', [EmployeeRecruitmentController::class, 'beforeRestore'])->middleware(['auth:dynamic'])->name('pages-restore-process');
 Route::get('/folyamat/megtekintes/{id}', [EmployeeRecruitmentController::class, 'view'])->middleware(['auth:dynamic'])->name('pages-restore-process');
+Route::get('/folyamat/megtekintes/piszkozat/{id}', [EmployeeRecruitmentController::class, 'reviewDraft'])->middleware(['auth:dynamic'])->name('pages-review-draft');
 
 // API routes
 Route::post('/employee-recruitment', [EmployeeRecruitmentController::class, 'store'])->middleware([CheckSecretary::class]);
@@ -33,8 +36,13 @@ Route::post('/employee-recruitment/{id}/restore', [EmployeeRecruitmentController
 Route::post('/employee-recruitment/{id}/delete', [EmployeeRecruitmentController::class, 'delete'])->middleware(['auth:dynamic']);
 Route::post('/employee-recruitment/{id}/cancel', [EmployeeRecruitmentController::class, 'cancel'])->middleware(['auth:dynamic']);
 
+Route::post('/employee-recruitment/draft', [EmployeeRecruitmentController::class, 'storeDraft'])->middleware([CheckSecretaryOrWorkgroupLeader::class]);
+Route::post('/employee-recruitment/draft/{id}/delete', [EmployeeRecruitmentController::class, 'deleteDraft'])->middleware([CheckSecretaryOrWorkgroupLeader::class]);
+
 Route::get('/employee-recruitment/opened', [EmployeeRecruitmentController::class, 'getAll'])->middleware(['auth:dynamic']);
 Route::get('/employee-recruitment/closed', [EmployeeRecruitmentController::class, 'getAllClosed'])->middleware(['auth:dynamic']);
+
+Route::get('/employee-recruitment/drafts/opened', [EmployeeRecruitmentController::class, 'getAllDrafts'])->middleware(['auth:dynamic']);
 
 Route::get('/generate-pdf/{id}', [EmployeeRecruitmentController::class, 'generatePDF'])->middleware(['auth:dynamic'])->name('generate.pdf');
 Route::get('/generate-medical-pdf/{id}', [EmployeeRecruitmentController::class, 'generateMedicalPDF'])->middleware(['auth:dynamic'])->name('generateMedical.pdf');

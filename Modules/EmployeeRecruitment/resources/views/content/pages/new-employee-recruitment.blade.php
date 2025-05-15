@@ -795,7 +795,16 @@
                                     <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                     <span class="align-middle d-sm-inline-block d-none">Vissza</span>
                                 </button>
-                                <button class="btn btn-success btn-submit">Folyamat indítása</button>
+                                @if ($isSecretary || $isWorkgroupLeader)
+                                    <button class="btn btn-primary me-2 btn-submit-draft" type="submit" name="draft">
+                                        Mentés piszkozatként
+                                    </button>
+                                @endif
+                                @if($isSecretary)
+                                    <button class="btn btn-success btn-submit">
+                                        Folyamat indítása
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>

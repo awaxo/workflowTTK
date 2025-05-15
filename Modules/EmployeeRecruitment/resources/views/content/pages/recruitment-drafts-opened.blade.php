@@ -1,0 +1,83 @@
+@extends('layouts/layoutMaster')
+
+@section('title', 'Piszkozatok')
+
+<!-- Vendor Styles -->
+@section('vendor-style')
+@vite([
+    'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.scss',
+    'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.scss',
+    'resources/assets/vendor/libs/@form-validation/form-validation.scss',
+    'resources/css/app.css'
+])
+@endsection
+
+<!-- Vendor Scripts -->
+@section('vendor-script')
+@vite([
+    'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
+    'resources/assets/vendor/libs/moment/moment.js',
+    'resources/assets/vendor/libs/@form-validation/popular.js',
+    'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
+    'resources/assets/vendor/libs/@form-validation/auto-focus.js',
+])
+@endsection
+
+@section('page-script')
+    @vite([
+        'resources/js/app.js',
+        'Modules/EmployeeRecruitment/resources/assets/js/recruitment-drafts-opened.js'
+    ])
+@endsection
+
+@section('content')
+    <h4 class="py-3 mb-4">Felvételi kérelem piszkozatok</h4>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Mentett piszkozatok</h5>
+                </div>
+                <div class="card-datatable table-responsive pt-0">
+                    <table class="datatables-drafts table border-top">
+                        <thead>
+                            <tr style="background-color: rgba(105,108,255,.16)">
+                                <th>ID</th>
+                                <th>Név</th>
+                                <th>Csoport 1</th>
+                                <th>Csoport 2</th>
+                                <th>Munkakör</th>
+                                <th>Létrehozás</th>
+                                <th>Utolsó módosítás</th>
+                                <th>Műveletek</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div class="modal fade" id="deleteConfirmation" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Megerősítés</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Biztosan szeretnéd törölni ezt a piszkozatot?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                    <button type="button" id="confirm_delete" data-draft-id="" class="btn btn-danger">Törlés</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

@@ -30,7 +30,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
+use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflowDraft;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 use Modules\EmployeeRecruitment\App\Services\RecruitmentWorkflowService;
 
@@ -87,6 +89,8 @@ class EmployeeRecruitmentController extends Controller
             });
         $rooms = Room::orderBy('room_number')->get();
         $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
+        $isWorkgroupLeader = Workgroup::where('leader_id', $user->id)->exists();
+        $isSecretary = $user->getRoleNames()->filter(fn($role) => str_starts_with($role, 'titkar_'))->isNotEmpty();
 
         return view('employeerecruitment::content.pages.new-employee-recruitment', [
             'workgroups1' => $workgroups1,
@@ -96,6 +100,8 @@ class EmployeeRecruitmentController extends Controller
             'rooms' => $rooms,
             'externalAccessRights' => $externalAccessRights,
             'employerContributionRate' => $recruitment->employer_contribution ?? Option::where('option_name', 'employer_contribution')->first()?->option_value,
+            'isWorkgroupLeader' => $isWorkgroupLeader,
+            'isSecretary' => $isSecretary,
         ]);
     }
 
@@ -106,7 +112,6 @@ class EmployeeRecruitmentController extends Controller
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
         $workgroup = User::find(Auth::id())->workgroup;
 
-        // Step 1: Check if recruitment_id is provided
         if ($request->has('recruitment_id') && !empty($request->input('recruitment_id'))) {
             $recruitment = RecruitmentWorkflow::find($request->input('recruitment_id'));
             if (!$recruitment) {
@@ -247,6 +252,16 @@ class EmployeeRecruitmentController extends Controller
 
         try {
             $recruitment->save();
+
+            if ($request->has('draft_id') && !empty($request->input('draft_id'))) {
+                $draft = RecruitmentWorkflowDraft::find($request->input('draft_id'));
+                if ($draft && $draft->created_by === Auth::id()) {
+                    $draft->deleted = 1;
+                    $draft->updated_by = Auth::id();
+                    $draft->save();
+                }
+            }
+
             event(new WorkflowStartedEvent($recruitment));
             return response()->json(['url' => route('workflows-employee-recruitment-opened')]);
         } catch (Exception $e) {
@@ -255,9 +270,190 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    public function storeDraft(Request $request)
+    {
+        $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
+        $user = User::find(Auth::id());
+        $workgroup = $user->workgroup;
+
+        if ($request->has('draft_id') && !empty($request->input('draft_id'))) {
+            $draft = RecruitmentWorkflowDraft::find($request->input('draft_id'));
+            if (!$draft) {
+                return response()->json(['error' => 'Draft not found.'], 404);
+            }
+        } else {
+            $draft = new RecruitmentWorkflowDraft();
+
+            $maxDraftPseudoId = RecruitmentWorkflowDraft::whereYear('created_at', date('Y'))->max('pseudo_id');
+            $draft->pseudo_id = $maxDraftPseudoId ? $maxDraftPseudoId + 1 : 1;
+        }
+
+        // generic data
+        $draft->workflow_type_id = $workflowType->id;
+        if ($workgroup) {
+            $firstLetter = substr($workgroup->workgroup_number, 0, 1);
+            $institute = Institute::where('group_level', $firstLetter)->first();
+            if ($institute) {
+                $draft->initiator_institute_id = $institute->id;
+            }
+        }
+        
+        $draft->created_by = Auth::id();
+        $draft->updated_by = Auth::id();
+
+        $draft->fill($request->all());
+
+        // data section 1
+        $draft->name = $request->input('name');
+        $draft->job_ad_exists = $request->input('job_ad_exists') == 'true' ? 1 : 0;
+        $draft->has_prior_employment = $request->input('has_prior_employment') == 'true' ? 1 : 0;
+        $draft->has_current_volunteer_contract = $request->input('has_current_volunteer_contract') == 'true' ? 1 : 0;
+        $draft->is_retired = $request->input('is_retired') == 'true' ? 1 : 0;
+        $draft->applicants_female_count = str_replace(' ', '', $request->input('applicants_female_count')) == '' ? null : str_replace(' ', '', $request->input('applicants_female_count'));
+        $draft->applicants_male_count = str_replace(' ', '', $request->input('applicants_male_count')) == '' ? null : str_replace(' ', '', $request->input('applicants_male_count'));
+        $draft->citizenship = $request->input('citizenship');
+        $draft->workgroup_id_1 = $request->input('workgroup_id_1');
+        $draft->workgroup_id_2 = $request->input('workgroup_id_2') == -1 ? null : $request->input('workgroup_id_2');
+
+        // data section 2
+        $draft->position_id = $request->input('position_id');
+        $draft->job_description = $request->input('job_description_file'); // Piszkozatnál egyszerűen mentjük a fájlnevet
+        $draft->employment_type = $request->input('employment_type');
+        $draft->task = $request->input('task') ?? '';
+        
+        // Dátumok kezelése
+        if (!empty($request->input('employment_start_date'))) {
+            $employment_start_date = date('Y-m-d', strtotime(str_replace('.', '-', $request->input('employment_start_date'))));
+            $draft->employment_start_date = $employment_start_date;
+        } else {
+            $draft->employment_start_date = null;
+        }
+        
+        if (!empty($request->input('employment_end_date'))) {
+            $employment_end_date = date('Y-m-d', strtotime(str_replace('.', '-', $request->input('employment_end_date'))));
+            $draft->employment_end_date = $employment_end_date;
+        } else {
+            $draft->employment_end_date = null;
+        }
+        
+        // For retired employees, employer contribution is 0
+        // Otherwise, use the value from options
+        $draft->employer_contribution = $request->input('is_retired') == 'true' ? 0.0 : 
+            (Option::where('option_name', 'employer_contribution')->first() ? 
+            (float)Option::where('option_name', 'employer_contribution')->first()->option_value : null);
+
+        // data section 3
+        $draft->base_salary_cost_center_1 = $request->input('base_salary_cost_center_1');
+        $draft->base_salary_monthly_gross_1 = !empty($request->input('base_salary_monthly_gross_1')) ? 
+            floatval(str_replace(' ', '', $request->input('base_salary_monthly_gross_1'))) : 0;
+        
+        $draft->base_salary_cost_center_2 = $request->input('base_salary_cost_center_2');
+        $draft->base_salary_monthly_gross_2 = !empty($request->input('base_salary_monthly_gross_2')) ? 
+            floatval(str_replace(' ', '', $request->input('base_salary_monthly_gross_2'))) : 0;
+        
+        $draft->base_salary_cost_center_3 = $request->input('base_salary_cost_center_3');
+        $draft->base_salary_monthly_gross_3 = !empty($request->input('base_salary_monthly_gross_3')) ? 
+            floatval(str_replace(' ', '', $request->input('base_salary_monthly_gross_3'))) : 0;
+        
+        $draft->health_allowance_cost_center_4 = $request->input('health_allowance_cost_center_4');
+        $draft->health_allowance_monthly_gross_4 = !empty($request->input('health_allowance_monthly_gross_4')) ? 
+            floatval(str_replace(' ', '', $request->input('health_allowance_monthly_gross_4'))) : 0;
+        
+        $draft->management_allowance_cost_center_5 = $request->input('management_allowance_cost_center_5');
+        $draft->management_allowance_monthly_gross_5 = !empty($request->input('management_allowance_monthly_gross_5')) ? 
+            floatval(str_replace(' ', '', $request->input('management_allowance_monthly_gross_5'))) : 0;
+        
+        if (!empty($request->input('management_allowance_end_date'))) {
+            $management_allowance_end_date = date('Y-m-d', strtotime(str_replace('.', '-', $request->input('management_allowance_end_date'))));
+            $draft->management_allowance_end_date = $management_allowance_end_date;
+        } else {
+            $draft->management_allowance_end_date = null;
+        }
+
+        $draft->extra_pay_1_cost_center_6 = $request->input('extra_pay_1_cost_center_6');
+        $draft->extra_pay_1_monthly_gross_6 = !empty($request->input('extra_pay_1_monthly_gross_6')) ? 
+            floatval(str_replace(' ', '', $request->input('extra_pay_1_monthly_gross_6'))) : 0;
+        
+        if (!empty($request->input('extra_pay_1_end_date'))) {
+            $extra_pay_1_end_date = date('Y-m-d', strtotime(str_replace('.', '-', $request->input('extra_pay_1_end_date'))));
+            $draft->extra_pay_1_end_date = $extra_pay_1_end_date;
+        } else {
+            $draft->extra_pay_1_end_date = null;
+        }
+
+        $draft->extra_pay_2_cost_center_7 = $request->input('extra_pay_2_cost_center_7');
+        $draft->extra_pay_2_monthly_gross_7 = !empty($request->input('extra_pay_2_monthly_gross_7')) ? 
+            floatval(str_replace(' ', '', $request->input('extra_pay_2_monthly_gross_7'))) : 0;
+        
+        if (!empty($request->input('extra_pay_2_end_date'))) {
+            $extra_pay_2_end_date = date('Y-m-d', strtotime(str_replace('.', '-', $request->input('extra_pay_2_end_date'))));
+            $draft->extra_pay_2_end_date = $extra_pay_2_end_date;
+        } else {
+            $draft->extra_pay_2_end_date = null;
+        }
+
+        // data section 4
+        $draft->weekly_working_hours = $request->input('weekly_working_hours');
+        $draft->work_start_monday = $request->input('work_start_monday');
+        $draft->work_end_monday = $request->input('work_end_monday');
+        $draft->work_start_tuesday = $request->input('work_start_tuesday');
+        $draft->work_end_tuesday = $request->input('work_end_tuesday');
+        $draft->work_start_wednesday = $request->input('work_start_wednesday');
+        $draft->work_end_wednesday = $request->input('work_end_wednesday');
+        $draft->work_start_thursday = $request->input('work_start_thursday');
+        $draft->work_end_thursday = $request->input('work_end_thursday');
+        $draft->work_start_friday = $request->input('work_start_friday');
+        $draft->work_end_friday = $request->input('work_end_friday');
+
+        // data section 5
+        $draft->email = $request->input('email');
+        $draft->entry_permissions = is_array($request->input('entry_permissions')) ? 
+            implode(',', $request->input('entry_permissions')) : $request->input('entry_permissions');
+        $draft->license_plate = $request->input('license_plate');
+        $draft->employee_room = $request->input('employee_room');
+        $draft->phone_extension = $request->input('phone_extension');
+        $draft->external_access_rights = $request->input('external_access_rights') && is_array($request->input('external_access_rights')) ? 
+            implode(',', $request->input('external_access_rights')) : null;
+        $draft->required_tools = $request->input('required_tools') && is_array($request->input('required_tools')) ? 
+            implode(',', $request->input('required_tools')) : null;
+        $draft->available_tools = $request->input('available_tools') && is_array($request->input('available_tools')) ? 
+            implode(',', $request->input('available_tools')) : null;
+        
+        // Leltári számok kezelése
+        $inventoryNumbers = [];
+        foreach ($request->all() as $key => $value) {
+            if (strpos($key, 'inventory_numbers_of_available_tools_') === 0) {
+                $toolName = substr($key, strlen('inventory_numbers_of_available_tools_'));
+                $inventoryNumbers[] = [$toolName => $value];
+            }
+        }
+        $draft->inventory_numbers_of_available_tools = !empty($inventoryNumbers) ? json_encode($inventoryNumbers) : null;
+
+        // data section 6
+        $draft->personal_data_sheet = $request->input('personal_data_sheet_file');
+        $draft->student_status_verification = $request->input('student_status_verification_file');
+        $draft->certificates = $request->input('certificates_file');
+        $draft->requires_commute_support = $request->input('requires_commute_support') == 'true' ? 1 : 0;
+        $draft->commute_support_form = $request->input('commute_support_form_file');
+        $draft->initiator_comment = $request->input('initiator_comment');
+
+        try {
+            $draft->save();
+            return response()->json(['url' => route('workflows-employee-recruitment-drafts')]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Hiba történt a piszkozat mentése közben: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function opened()
     {
         return view('employeerecruitment::content.pages.recruitment-opened');
+    }
+
+    public function drafts()
+    {
+        return view('employeerecruitment::content.pages.recruitment-drafts-opened');
     }
 
     public function closed()
@@ -300,6 +496,24 @@ class EmployeeRecruitmentController extends Controller
         });
 
         return response()->json(['data' => $recruitments]);
+    }
+
+    public function getAllDrafts()
+    {
+        $drafts = RecruitmentWorkflowDraft::baseQuery()->where('deleted', 0)->get()->map(function ($draft) {
+                return [
+                    'id' => $draft->id,
+                    'pseudo_id' => 'P' . $draft->pseudo_id,
+                    'name' => $draft->name,
+                    'workgroup1' => $draft->workgroup1?->name,
+                    'workgroup2' => $draft->workgroup2?->name,
+                    'position_name' => $draft->position?->name,
+                    'created_at' => $draft->created_at,
+                    'updated_at' => $draft->updated_at,
+                ];
+            });
+
+        return response()->json(['data' => $drafts]);
     }
 
     public function getAllClosed()
@@ -538,6 +752,114 @@ class EmployeeRecruitmentController extends Controller
             'externalAccessRights' => $externalAccessRights,
             'externalSystemsList' => $externalSystemsList,
             'employerContributionRate' => $recruitment->employer_contribution ?? Option::where('option_name', 'employer_contribution')->first()?->option_value,
+        ]);
+    }
+
+    public function reviewDraft($id)
+    {
+        $draft = RecruitmentWorkflowDraft::find($id);
+        if (!$draft) {
+            Log::error('Nem található a felvételi kérelem piszkozat (id: ' . $id . ')');
+            return view('content.pages.misc-error');
+        }
+
+        $user = User::find(Auth::id());
+        $isWorkgroupLeader = Workgroup::where('leader_id', $user->id)->exists();
+        $secretaryRoles = $user->getRoleNames()->filter(fn($role) => str_starts_with($role, 'titkar_'));
+        $hasSecretaryRole = $secretaryRoles->isNotEmpty();
+
+        $hasPermission = false;
+
+        // 1. Ha saját piszkozat, akkor van jogosultság
+        if ($draft->created_by === Auth::id()) {
+            $hasPermission = true;
+        }
+        // 2. Ha munkacsoport vezető, csak a saját csoportja piszkozatait nézheti
+        else if ($isWorkgroupLeader) {
+            $leaderWorkgroups = Workgroup::where('leader_id', $user->id)->pluck('id')->toArray();
+            $hasPermission = in_array($draft->workgroup_id_1, $leaderWorkgroups) || 
+                            (isset($draft->workgroup_id_2) && in_array($draft->workgroup_id_2, $leaderWorkgroups));
+        }
+        // 3. Ha titkár, csak a saját intézetéhez tartozó piszkozatokat nézheti
+        else if ($hasSecretaryRole) {
+            // Intézet csoport szintjének lekérdezése a draft-ból
+            $institute = Institute::find($draft->initiator_institute_id);
+            if ($institute) {
+                $instituteGroupLevel = $institute->group_level;
+                
+                // Ellenőrizzük, hogy a felhasználónak van-e megfelelő titkári jogosultsága
+                foreach ($secretaryRoles as $role) {
+                    $roleGroupLevel = Str::substr($role, 6, 1); // titkar_X_ formátumból az X kinyerése
+                    if ($roleGroupLevel == $instituteGroupLevel) {
+                        $hasPermission = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Ha nincs jogosultsága, nem tekintheti meg a piszkozatot
+        if (!$hasPermission) {
+            Log::error('Felhasználó (' . Auth::id() . ') nem jogosult megtekinteni a felvételi kérelem piszkozatot (id: ' . $id . ')');
+            return view('content.pages.misc-not-authorized');
+        }
+
+        $roles = SecretaryRoleService::getAll();
+        $user = User::find(Auth::id());
+
+        $workgroups = collect();
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                $workgroupNumber = substr($role, -1);
+                $workgroupNumber = $workgroupNumber == 'i' ? 9 : $workgroupNumber;
+                $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
+                $workgroups = $workgroups->concat($workgroupsForRole);
+            }
+        }
+        $workgroup800 = Workgroup::where('workgroup_number', 800)->where('deleted', 0)->get();
+
+        $workgroups2 = $workgroups->unique('id')->map(function ($workgroup) {
+            $workgroup->leader_name = $workgroup->leader()->first()?->name;
+            return $workgroup;
+        });
+        $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
+            $workgroup->leader_name = $workgroup->leader()->first()?->name;
+            return $workgroup;
+        });
+        $positions = Position::where('deleted', 0)->get();
+        $costCenters = CostCenter::where('deleted', 0)
+            ->where('valid_employee_recruitment', 1)
+            ->get()
+            ->map(function ($costCenter) {
+                $costCenter->leader_name = $costCenter->leadUser()->first()?->name;
+                return $costCenter;
+            });
+        $rooms = Room::orderBy('room_number')->get();
+        $externalAccessRights = ExternalAccessRight::where('deleted', 0)->get();
+
+        // External access rights
+        $externalAccessRightsIds = !empty($draft->external_access_rights) ? explode(',', $draft->external_access_rights) : [];
+        $externalAccessRightsData = ExternalAccessRight::whereIn('id', $externalAccessRightsIds)->get();
+        $externalSystems = $externalAccessRightsData->pluck('external_system')->toArray();
+        $externalSystemsList = implode(', ', $externalSystems);
+        
+        $isWorkgroupLeader = Workgroup::where('leader_id', $user->id)->exists();
+        $isSecretary = $user->getRoleNames()->filter(fn($role) => str_starts_with($role, 'titkar_'))->isNotEmpty();
+
+        return view('employeerecruitment::content.pages.recruitment-review-draft', [
+            'draft' => $draft,
+            'id' => $id,
+            'workgroups1' => $workgroups1,
+            'workgroups2' => $workgroups2,
+            'positions' => $positions,
+            'costcenters' => $costCenters,
+            'rooms' => $rooms,
+            'externalAccessRights' => $externalAccessRights,
+            'externalSystemsList' => $externalSystemsList,
+            'employerContributionRate' => $draft->employer_contribution ?? Option::where('option_name', 'employer_contribution')->first()?->option_value,
+            'isDraft' => true,
+            'isWorkgroupLeader' => $isWorkgroupLeader,
+            'isSecretary' => $isSecretary,
         ]);
     }
 
@@ -926,6 +1248,46 @@ class EmployeeRecruitmentController extends Controller
         } else {
             Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem törlésére');
             return view('content.pages.misc-not-authorized');
+        }
+    }
+
+    public function deleteDraft($id)
+    {
+        $draft = RecruitmentWorkflowDraft::find($id);
+        
+        if (!$draft) {
+            return response()->json(['error' => 'A piszkozat nem található.'], 404);
+        }
+        
+        if ($draft->created_by !== Auth::id()) {
+            return response()->json(['error' => 'Nincs jogosultságod törölni ezt a piszkozatot.'], 403);
+        }
+        
+        try {
+            // Ellenőrizzük, hogy vannak-e hozzá tartozó fájlok, és ha igen, töröljük őket
+            $filesToDelete = [
+                $draft->job_description,
+                $draft->personal_data_sheet,
+                $draft->student_status_verification,
+                $draft->certificates,
+                $draft->commute_support_form
+            ];
+            
+            foreach ($filesToDelete as $file) {
+                if (!empty($file) && Storage::exists('public/uploads/' . $file)) {
+                    Storage::delete('public/uploads/' . $file);
+                }
+            }
+            
+            $draft->updated_by = Auth::id();
+            $draft->deleted = 1;
+            
+            $draft->save();
+
+            return response()->json(['url' => route('workflows-all-open')]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Hiba történt a piszkozat törlése közben: ' . $e->getMessage()], 500);
         }
     }
 

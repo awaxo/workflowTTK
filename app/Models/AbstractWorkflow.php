@@ -22,7 +22,7 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
      * @return Builder
      */
     abstract public static function baseQuery(): Builder;
-    abstract protected static function newFactory();
+    //abstract protected static function newFactory();
 
     /**
      * Fetch active workflows.

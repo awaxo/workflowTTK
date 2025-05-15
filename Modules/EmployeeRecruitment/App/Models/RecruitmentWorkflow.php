@@ -398,10 +398,10 @@ class RecruitmentWorkflow extends AbstractWorkflow
         return $recruitmentsQuery;
     }
 
-    protected static function newFactory()
+    /*protected static function newFactory()
     {
         return RecruitmentWorkflowFactory::new();
-    }
+    }*/
 
     protected $table = 'recruitment_workflow';
 

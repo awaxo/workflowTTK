@@ -11,6 +11,7 @@ use App\Events\SuspendedEvent;
 use App\Events\WorkflowStartedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\pages\UserController;
+use App\Models\AbstractWorkflow;
 use App\Models\ChemicalPathogenicFactor;
 use App\Models\CostCenter;
 use App\Models\ExternalAccessRight;
@@ -437,6 +438,13 @@ class EmployeeRecruitmentController extends Controller
         $draft->commute_support_form = $request->input('commute_support_form_file');
         $draft->initiator_comment = $request->input('initiator_comment');
 
+        $service = new WorkflowService();
+        if ($request->has('draft_id') && !empty($request->input('draft_id'))) {
+            $service->storeMetadata($draft, 'Felvételi kérelem piszkozat módosítva', 'update');
+        } else {
+            $service->storeMetadata($draft, 'Felvételi kérelem piszkozat létrehozva', 'start');
+        }
+
         try {
             $draft->save();
             return response()->json(['url' => route('workflows-employee-recruitment-drafts')]);
@@ -848,6 +856,7 @@ class EmployeeRecruitmentController extends Controller
 
         return view('employeerecruitment::content.pages.recruitment-review-draft', [
             'draft' => $draft,
+            'history' => $this->getHistory($draft),
             'id' => $id,
             'workgroups1' => $workgroups1,
             'workgroups2' => $workgroups2,
@@ -1655,7 +1664,7 @@ class EmployeeRecruitmentController extends Controller
         $recruitment->state = $previousState;
     }
 
-    private function getHistory(RecruitmentWorkflow $recruitment) {
+    private function getHistory(AbstractWorkflow $recruitment) {
         $metaData = json_decode($recruitment->meta_data, true);
         $history = $metaData['history'] ?? [];
     

@@ -85,6 +85,9 @@
                     <li class="nav-item">
                         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab_review" role="tab" aria-selected="true">Adatok</button>
                     </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab_status_history" role="tab" aria-selected="false">Státusztörténet</button>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade active show" id="tab_review" role="tabpanel">
@@ -879,6 +882,52 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_status_history" role="tabpanel">
+                        <div id="status_history">
+                            <table class="table">
+                                <thead>
+                                    <tr style="background-color: rgba(105,108,255,.16)">
+                                        <th>Döntés</th>
+                                        <th>Dátum</th>
+                                        <th>Felhasználó</th>
+                                        <th>Státusz</th>
+                                        <th>Üzenet</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($history as $history_entry)
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-label-{{ 
+                                                $history_entry['decision'] == 'approve' ? 'success' : 
+                                                ($history_entry['decision'] == 'reject' ? 'danger' : 
+                                                ($history_entry['decision'] == 'suspend' ? 'warning' : 
+                                                ($history_entry['decision'] == 'start' ? 'success' : 
+                                                ($history_entry['decision'] == 'restart' ? 'success' : 
+                                                ($history_entry['decision'] == 'delete' ? 'danger' :
+                                                ($history_entry['decision'] == 'update' ? 'success' :  
+                                                ($history_entry['decision'] == 'cancel' ? 'danger' : 'info'))))))) }} me-1">
+                                                {{ 
+                                                    $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : 
+                                                    ($history_entry['decision'] == 'reject' ? 'Elutasítás' : 
+                                                    ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : 
+                                                    ($history_entry['decision'] == 'start' ? 'Indítás' : 
+                                                    ($history_entry['decision'] == 'restart' ? 'Újraindítás' : 
+                                                    ($history_entry['decision'] == 'delete' ? 'Törlés' : 
+                                                    ($history_entry['decision'] == 'update' ? 'Módosítás' : 
+                                                    ($history_entry['decision'] == 'cancel' ? 'Sztornózás' : 'Visszaállítás'))))))) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $history_entry['datetime'] }}</td>
+                                        <td>{{ $history_entry['user_name'] }}</td>
+                                        <td>{{ $history_entry['decision'] == 'update' ? 'Módosítás' : __('states.' . $history_entry['status']) }}</td>
+                                        <td>{{ $history_entry['message'] }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

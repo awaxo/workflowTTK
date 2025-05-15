@@ -154,7 +154,8 @@ class WorkflowService
                 ($decision == 'restart' ? 'restart' : 
                 ($decision == 'cancellations' ? 'cancel' : 
                 ($decision == 'deletion' ? 'delete' : 
-                'restore')))))),
+                ($decision == 'update' ? 'update' :
+                'restore'))))))),
             'status' => 
                 $decision == 'rejections' ? 'rejected' : 
                 ($decision == 'start' ? 'new_request' : 

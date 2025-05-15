@@ -119,7 +119,8 @@
                                             ($history_entry['decision'] == 'start' ? 'success' : 
                                             ($history_entry['decision'] == 'restart' ? 'success' : 
                                             ($history_entry['decision'] == 'delete' ? 'danger' : 
-                                            ($history_entry['decision'] == 'cancel' ? 'danger' : 'info')))))) }} me-1">
+                                            ($history_entry['decision'] == 'update' ? 'success' : 
+                                            ($history_entry['decision'] == 'cancel' ? 'danger' : 'info'))))))) }} me-1">
                                             {{ 
                                                 $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : 
                                                 ($history_entry['decision'] == 'reject' ? 'Elutasítás' : 
@@ -127,7 +128,8 @@
                                                 ($history_entry['decision'] == 'start' ? 'Indítás' : 
                                                 ($history_entry['decision'] == 'restart' ? 'Újraindítás' : 
                                                 ($history_entry['decision'] == 'delete' ? 'Törlés' : 
-                                                ($history_entry['decision'] == 'cancel' ? 'Sztornózás' : 'Visszaállítás')))))) }}
+                                                ($history_entry['decision'] == 'update' ? 'Módosítás' : 
+                                                ($history_entry['decision'] == 'cancel' ? 'Sztornózás' : 'Visszaállítás'))))))) }}
                                         </span>
                                     </td>
                                     <td>{{ $history_entry['datetime'] }}</td>

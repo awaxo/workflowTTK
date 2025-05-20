@@ -46,31 +46,13 @@
                 <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-generic-settings" aria-controls="navs-pills-generic-settings" aria-selected="true">Általános paraméterek</button>
             </li>
             <li class="nav-item">
-                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-workflow-deadlines" aria-controls="navs-pills-workflow-deadlines" aria-selected="false">Folyamat határidők</button>
+                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-workflow-deadlines" aria-controls="navs-pills-workflow-deadlines" aria-selected="false">Felvételi kérelem</button>
             </li>
         </ul>
         
         <div class="tab-content">
             <div class="tab-pane fade show active" id="navs-pills-generic-settings" role="tabpanel">
                 <div class="row g-3">
-                    <div class="col-12">
-                        <div class="col-3">
-                            <label for="recruitment_auto_suspend_threshold" class="form-label">Elutasítási küszöb felfüggesztett státuszban</label>
-                            <div class="d-flex align-items-center">
-                                <input class="form-control numeral-mask" type="text" id="recruitment_auto_suspend_threshold" value="{{ $options['recruitment_auto_suspend_threshold'] }}" name="recruitment_auto_suspend_threshold" />
-                                <span class="ms-2">Óra</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="col-3">
-                            <label for="recruitment_director_approve_salary_threshold" class="form-label">Igazgatói jóváhagyás alsó határa</label>
-                            <div class="d-flex align-items-center">
-                                <input class="form-control numeral-mask" type="text" id="recruitment_director_approve_salary_threshold" value="{{ $options['recruitment_director_approve_salary_threshold'] }}" name="recruitment_director_approve_salary_threshold" />
-                                <span class="ms-2">Ft</span>
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-12">
                         <div class="col-6">
                             <label for="notification_api_url" class="form-label">Értesítési API URL</label>
@@ -96,6 +78,24 @@
             </div>
             <div class="tab-pane fade" id="navs-pills-workflow-deadlines" role="tabpanel">
                 <div class="row g-3">
+                    <div class="col-12">
+                        <div class="col-3">
+                            <label for="recruitment_auto_suspend_threshold" class="form-label">Elutasítási küszöb felfüggesztett státuszban</label>
+                            <div class="d-flex align-items-center">
+                                <input class="form-control numeral-mask" type="text" id="recruitment_auto_suspend_threshold" value="{{ $options['recruitment_auto_suspend_threshold'] }}" name="recruitment_auto_suspend_threshold" />
+                                <span class="ms-2">Óra</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="col-3">
+                            <label for="recruitment_director_approve_salary_threshold" class="form-label">Igazgatói jóváhagyás alsó határa</label>
+                            <div class="d-flex align-items-center">
+                                <input class="form-control numeral-mask" type="text" id="recruitment_director_approve_salary_threshold" value="{{ $options['recruitment_director_approve_salary_threshold'] }}" name="recruitment_director_approve_salary_threshold" />
+                                <span class="ms-2">Ft</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-sm-4">
                         <label for="workflows" class="form-label">Folyamat</label>
                         <select class="form-select select2" id="workflows" name="workflows">

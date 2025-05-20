@@ -76,7 +76,7 @@ class StateRegistration implements IStateResponsibility
         );
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
         return true;
     }

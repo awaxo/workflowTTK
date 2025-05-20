@@ -920,7 +920,7 @@
                                                     ($history_entry['decision'] == 'cancel' ? 'Sztornózás' : 'Visszaállítás'))))))) }}
                                             </span>
                                         </td>
-                                        <td>{{ $history_entry['datetime'] }}</td>
+                                        <td>{{ date('Y-m-d H:i:s', strtotime($history_entry['datetime'])) }}</td>
                                         <td>{{ $history_entry['user_name'] }}</td>
                                         <td>{{ $history_entry['decision'] == 'update' ? 'Módosítás' : __('states.' . $history_entry['status']) }}</td>
                                         <td>{{ $history_entry['message'] }}</td>

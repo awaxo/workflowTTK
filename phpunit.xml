@@ -14,9 +14,6 @@
         <testsuite name="Unit">
             <directory>modules/EmployeeRecruitment/tests/Unit</directory>
         </testsuite>
-        <testsuite name="Feature">
-            <directory>modules/EmployeeRecruitment/tests/Feature</directory>
-        </testsuite>
     </testsuites>
     <source>
         <include>

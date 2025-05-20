@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateRequestReview implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         $role = 'titkar_' . $workflow->initiatorInstitute->group_level;
         
         if ($workflow->initiatorInstitute->group_level == 9) {
@@ -29,7 +30,8 @@ class StateRequestReview implements IStateResponsibility {
         }
     }
 
-    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
+    {
         $role = 'secretary_' . $workflow->initiatorInstitute->group_level;
 
         if ($workflow->initiatorInstitute->group_level == 9) {
@@ -74,15 +76,18 @@ class StateRequestReview implements IStateResponsibility {
         return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
         return true;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         return 'to_it_head_approval';
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         // returns empty because secretary_X delegations are already added in StateEmployeeSignature
         return [];
     }

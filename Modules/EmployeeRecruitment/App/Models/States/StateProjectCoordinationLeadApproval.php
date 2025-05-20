@@ -12,7 +12,8 @@ use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateProjectCoordinationLeadApproval implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         $workgroup911 = Workgroup::where('workgroup_number', 911)->first();
         return $workgroup911 && $workgroup911->leader_id === $user->id;
     }
@@ -45,37 +46,39 @@ class StateProjectCoordinationLeadApproval implements IStateResponsibility {
         return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
         return true;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $metaData = json_decode($workflow->meta_data, true);
-            $postFinancedExists = false;
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
+            return false;
+        }
 
-            if (isset($metaData['additional_fields']) && is_array($metaData['additional_fields'])) {
-                foreach ($metaData['additional_fields'] as $field) {
-                    if (isset($field['post_financed_application']) && $field['post_financed_application']) {
-                        $postFinancedExists = true;
-                        break;
-                    }
+        $metaData = json_decode($workflow->meta_data, true);
+        $postFinancedExists = false;
+
+        if (isset($metaData['additional_fields']) && is_array($metaData['additional_fields'])) {
+            foreach ($metaData['additional_fields'] as $field) {
+                if (isset($field['post_financed_application']) && $field['post_financed_application']) {
+                    $postFinancedExists = true;
+                    break;
                 }
             }
-
-            if ($postFinancedExists) {
-                return 'to_post_financing_approval';
-            } else {
-                return 'to_financial_counterparty_approval';
-            }
         }
-        else {
-            Log::error('StateProjectCoordinationLeadApproval::getNextTransition called with invalid workflow type');
-            return '';
+
+        if ($postFinancedExists) {
+            return 'to_post_financing_approval';
+        } else {
+            return 'to_financial_counterparty_approval';
         }
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         $workgroup911 = Workgroup::where('deleted', 0)->where('workgroup_number', 911)->first();
         if ($workgroup911 && $workgroup911->leader_id === $user->id) {
             return [[

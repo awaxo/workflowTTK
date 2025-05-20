@@ -26,7 +26,7 @@ interface IStateResponsibility {
     /**
      * Checks if all the necessary approvals are given.
      */
-    public function isAllApproved(IGenericWorkflow $workflow): bool;
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool;
 
     /**
      * Gets the next transition for the workflow.

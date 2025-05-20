@@ -147,17 +147,20 @@ class StateProofOfCoverage implements IStateResponsibility
         return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
-        if (! $workflow instanceof RecruitmentWorkflow) {
+        if (!$workflow instanceof RecruitmentWorkflow) {
             Log::error(__METHOD__ . ' invalid workflow type');
             return false;
         }
+        $userId = $userId ?: Auth::id();
 
         $metaData = json_decode($workflow->meta_data, true);
 
         $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
-        $approval_user_ids[] = Auth::id();
+        if (!in_array($userId, $approval_user_ids)) {
+            $approval_user_ids[] = $userId;
+        }
 
         $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
         $workflow->meta_data = json_encode($metaData);
@@ -174,7 +177,7 @@ class StateProofOfCoverage implements IStateResponsibility
 
         foreach ($cost_center_project_coordinator_ids as $key => $userId) {
             $delegation = Delegation::where('original_user_id', $userId)
-                ->where('delegate_user_id', Auth::id())
+                ->where('delegate_user_id', $userId)
                 ->where('start_date', '<=', now())
                 ->where('end_date', '>=', now())
                 ->where('deleted', 0)
@@ -182,13 +185,13 @@ class StateProofOfCoverage implements IStateResponsibility
                 ->first();
 
             if ($delegation) {
-                $cost_center_project_coordinator_ids[$key] = Auth::id();
+                $cost_center_project_coordinator_ids[$key] = $userId;
             }
         }
 
         $cost_center_project_coordinator_ids = array_unique($cost_center_project_coordinator_ids);
 
-        $workflow->updated_by = Auth::id();
+        $workflow->updated_by = $userId;
         $workflow->save();
 
         if (count(array_diff($cost_center_project_coordinator_ids, $approval_user_ids)) === 0) {
@@ -208,38 +211,37 @@ class StateProofOfCoverage implements IStateResponsibility
 
     public function getNextTransition(IGenericWorkflow $workflow): string
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            if (($workflow->base_salary_cc1 && $workflow->base_salary_cc1->type && $workflow->base_salary_cc1->type->tender) ||
-                ($workflow->base_salary_cc2 && $workflow->base_salary_cc2->type && $workflow->base_salary_cc2->type->tender) ||
-                ($workflow->base_salary_cc3 && $workflow->base_salary_cc3->type && $workflow->base_salary_cc3->type->tender) ||
-                ($workflow->health_allowance_cc && $workflow->health_allowance_cc->type && $workflow->health_allowance_cc->type->tender) ||
-                ($workflow->management_allowance_cc && $workflow->management_allowance_cc->type && $workflow->management_allowance_cc->type->tender) ||
-                ($workflow->extra_pay_1_cc && $workflow->extra_pay_1_cc->type && $workflow->extra_pay_1_cc->type->tender) ||
-                ($workflow->extra_pay_2_cc && $workflow->extra_pay_2_cc->type && $workflow->extra_pay_2_cc->type->tender)) {
-                return 'to_project_coordination_lead_approval';
-            } else {
-                $metaData = json_decode($workflow->meta_data, true);
-                $postFinancedExists = false;
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
+            return false;
+        }
 
-                if (isset($metaData['additional_fields']) && is_array($metaData['additional_fields'])) {
-                    foreach ($metaData['additional_fields'] as $field) {
-                        if (isset($field['post_financed_application']) && $field['post_financed_application'] === true) {
-                            $postFinancedExists = true;
-                            break;
-                        }
+        if (($workflow->base_salary_cc1 && $workflow->base_salary_cc1->type && $workflow->base_salary_cc1->type->tender) ||
+            ($workflow->base_salary_cc2 && $workflow->base_salary_cc2->type && $workflow->base_salary_cc2->type->tender) ||
+            ($workflow->base_salary_cc3 && $workflow->base_salary_cc3->type && $workflow->base_salary_cc3->type->tender) ||
+            ($workflow->health_allowance_cc && $workflow->health_allowance_cc->type && $workflow->health_allowance_cc->type->tender) ||
+            ($workflow->management_allowance_cc && $workflow->management_allowance_cc->type && $workflow->management_allowance_cc->type->tender) ||
+            ($workflow->extra_pay_1_cc && $workflow->extra_pay_1_cc->type && $workflow->extra_pay_1_cc->type->tender) ||
+            ($workflow->extra_pay_2_cc && $workflow->extra_pay_2_cc->type && $workflow->extra_pay_2_cc->type->tender)) {
+            return 'to_project_coordination_lead_approval';
+        } else {
+            $metaData = json_decode($workflow->meta_data, true);
+            $postFinancedExists = false;
+
+            if (isset($metaData['additional_fields']) && is_array($metaData['additional_fields'])) {
+                foreach ($metaData['additional_fields'] as $field) {
+                    if (isset($field['post_financed_application']) && $field['post_financed_application'] === true) {
+                        $postFinancedExists = true;
+                        break;
                     }
                 }
-
-                if ($postFinancedExists) {
-                    return 'to_post_financing_approval';
-                } else {
-                    return 'to_financial_counterparty_approval';
-                }
             }
-        }
-        else {
-            Log::error('StateProofOfCoverage::getNextTransition called with invalid workflow type');
-            return '';
+
+            if ($postFinancedExists) {
+                return 'to_post_financing_approval';
+            } else {
+                return 'to_financial_counterparty_approval';
+            }
         }
     }
 

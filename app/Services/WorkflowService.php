@@ -89,10 +89,24 @@ class WorkflowService
         return $stateHandler->getResponsibleUsers($workflow, $notApprovedOnly);
     }
 
+    public function isApprovedBy(AbstractWorkflow $workflow, string $workflowState, int $userId): bool
+    {
+        $metaData = json_decode($workflow->meta_data, true);
+        if (isset($metaData['approvals'][$workflowState]['approval_user_ids']) && 
+            in_array($userId, $metaData['approvals'][$workflowState]['approval_user_ids'])) {
+                return true;
+        }
+        return false;
+    }
+
     public function isAllApproved(AbstractWorkflow $workflow): bool
     {
         $stateHandler = $this->getStateHandler($workflow);
         return $stateHandler && $stateHandler->isAllApproved($workflow);
+    }
+
+    public function isAllApprovedForState(AbstractWorkflow $workflow, IStateResponsibility $stateHandler, ?int $userId = null): bool {
+        return $stateHandler->isAllApproved($workflow, $userId);
     }
 
     public function getNextTransition(AbstractWorkflow $workflow): string
@@ -134,37 +148,41 @@ class WorkflowService
      * @param string $decision The decision type (approvals, rejections, suspensions, etc.).
      * @param int $userId The user ID who made the decision.
      */
-    public function storeMetadata(AbstractWorkflow $workflow, ?string $message, string $decision, $userId = null) 
+    public function storeMetadata(AbstractWorkflow $workflow, ?string $message, string $decision, $userId = null, ?string $workflowState = null) 
     {
         if (!$userId) {
             $userId = Auth::id();
         }
+
+        $state = $workflowState ?? $workflow->state;
         
         $detail = [
             'user_id' => $userId,
-            'datetime' => now()->toDateTimeString(),
+            'datetime' => now()->format('Y-m-d H:i:s.u'),
             'message' => $message ? $message : '',
         ];
         $history = [
-            'decision' => 
-                $decision == 'approvals' ? 'approve' : 
-                ($decision == 'rejections' ? 'reject' : 
-                ($decision == 'suspensions' ? 'suspend' : 
-                ($decision == 'start' ? 'start' : 
-                ($decision == 'restart' ? 'restart' : 
-                ($decision == 'cancellations' ? 'cancel' : 
-                ($decision == 'deletion' ? 'delete' : 
-                ($decision == 'update' ? 'update' :
-                'restore'))))))),
-            'status' => 
-                $decision == 'rejections' ? 'rejected' : 
-                ($decision == 'start' ? 'new_request' : 
-                ($decision == 'restart' ? 'request_review' : 
-                ($decision == 'cancellations' ? 'cancelled' : 
-                ($decision == 'deletion' ? 'rejected' :
-                $workflow->state)))),
+            'decision' => match($decision) {
+                'approvals'     => 'approve',
+                'rejections'    => 'reject',
+                'suspensions'   => 'suspend',
+                'start'         => 'start',
+                'restart'       => 'restart',
+                'cancellations' => 'cancel',
+                'deletion'      => 'delete',
+                'update'        => 'update',
+                default         => 'restore',
+            },
+            'status'   => match($decision) {
+                'rejections'    => 'rejected',
+                'start'         => 'new_request',
+                'restart'       => 'request_review',
+                'cancellations' => 'cancelled',
+                'deletion'      => 'rejected',
+                default         => $state,
+            },
             'user_id' => $userId,
-            'datetime' => now()->toDateTimeString(),
+            'datetime' => now()->format('Y-m-d H:i:s.u'),
             'message' => $message ? $message : '',
         ];
 
@@ -173,14 +191,14 @@ class WorkflowService
             $metaData[$decision] = [];
         }
 
-        if (!isset($metaData[$decision][$workflow->state])) {
-            $metaData[$decision][$workflow->state] = [
+        if (!isset($metaData[$decision][$state])) {
+            $metaData[$decision][$state] = [
                 'approval_user_ids' => [],
                 'details' => [],
             ];
         }
 
-        $metaData[$decision][$workflow->state]['details'][] = $detail;
+        $metaData[$decision][$state]['details'][] = $detail;
         $metaData['history'][] = $history;
 
         $workflow->meta_data = json_encode($metaData);

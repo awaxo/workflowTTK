@@ -14,7 +14,8 @@ use Modules\EmployeeRecruitment\App\Services\DelegationService;
 class StateSuspended implements IStateResponsibility {
     private $stateClass = null;
 
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         $workflow_meta = json_decode($workflow->meta_data);
 
         if (!$workflow_meta || !isset($workflow_meta->history) || empty($workflow_meta->history)) {
@@ -110,16 +111,19 @@ class StateSuspended implements IStateResponsibility {
         return array_values($users);
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
         return true;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         // next transition depends on from where we get suspended
         return '';
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         return [];
     }
 }

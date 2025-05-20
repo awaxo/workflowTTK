@@ -22,7 +22,7 @@ class StateRequestToComplete implements IStateResponsibility
         return [910];
     }
 
-     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
     {
         if (! $workflow instanceof RecruitmentWorkflow) {
             Log::error('StateRequestToComplete::isUserResponsible invalid workflow type');
@@ -103,7 +103,7 @@ class StateRequestToComplete implements IStateResponsibility
         return Helpers::arrayUniqueMulti($responsible->toArray(), 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
         return true;
     }

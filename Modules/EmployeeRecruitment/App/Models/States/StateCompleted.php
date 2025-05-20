@@ -10,7 +10,8 @@ use App\Models\User;
  * The state of the recruitment process when the IT head has to approve the recruitment.
  */
 class StateCompleted implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         return false;
     }
 
@@ -24,15 +25,18 @@ class StateCompleted implements IStateResponsibility {
         return [];
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
         return false;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         return '';
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         return [];
     }
 }

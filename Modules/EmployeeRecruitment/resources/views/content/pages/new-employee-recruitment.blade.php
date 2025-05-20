@@ -60,6 +60,7 @@
 
     <script>
         const isTitkar9Role = {{ auth()->user()->hasRole('titkar_9_fi') || auth()->user()->hasRole('titkar_9_gi') ? 'true' : 'false' }};
+        const isSuspendedReview = {{ isset($isSuspendedReview) && $isSuspendedReview ? 'true' : 'false' }};
     </script>
 @endsection
 

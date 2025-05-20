@@ -34,6 +34,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflowDraft;
+use Modules\EmployeeRecruitment\App\Models\States\StateDirectorApproval;
+use Modules\EmployeeRecruitment\App\Models\States\StateGroupLeadApproval;
+use Modules\EmployeeRecruitment\App\Models\States\StateSupervisorApproval;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 use Modules\EmployeeRecruitment\App\Services\RecruitmentWorkflowService;
 
@@ -876,110 +879,204 @@ class EmployeeRecruitmentController extends Controller
     {
         $recruitment = RecruitmentWorkflow::find($id);
         $service = new WorkflowService();
+        $isRequestToComplete = $recruitment->state === 'request_to_complete';
+        $technicalUser = User::withFeatured()->where('featured', 1)->first();
 
-        if ($service->isUserResponsible(Auth::user(), $recruitment)) {
-            $isRequestToComplete = $recruitment->state === 'request_to_complete';
+        if (!$service->isUserResponsible(Auth::user(), $recruitment)) {
+            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem jóváhagyására');
+            return view('content.pages.misc-not-authorized');
+        }
 
-            if ($recruitment->state == 'group_lead_approval') {
-                // Collect client fields for medical eligibility
-                $medicalEligibilityData = $request->only([
-                    'manual_handling',
-                    'manual_handling_weight_5_20',
-                    'manual_handling_weight_20_50',
-                    'manual_handling_weight_over_50',
-                    'increased_accident_risk',
-                    'fire_and_explosion_risk',
-                    'live_electrical_work',
-                    'high_altitude_work',
-                    'other_risks_description',
-                    'other_risks',
-                    'forced_body_position',
-                    'sitting',
-                    'standing',
-                    'walking',
-                    'stressful_workplace_climate',
-                    'heat_exposure',
-                    'cold_exposure',
-                    'noise_exposure',
-                    'ionizing_radiation_exposure',
-                    'non_ionizing_radiation_exposure',
-                    'local_vibration_exposure',
-                    'whole_body_vibration_exposure',
-                    'ergonomic_factors_exposure',
-                    'dust_exposure_description',
-                    'dust_exposure',
-                    'chemicals_exposure',
-                    'chemical_hazards_exposure',
-                    'other_chemicals_description',
-                    'carcinogenic_substances_exposure',
-                    'planned_carcinogenic_substances_list',
-                    'epidemiological_interest_position',
-                    'infection_risk',
-                    'psychological_stress',
-                    'screen_time',
-                    'night_shift_work',
-                    'psychosocial_factors',
-                    'personal_protective_equipment_stress',
-                    'work_away_from_family',
-                    'working_alongside_pension',
-                    'others',
-                    'planned_other_health_risk_factors'
-                ]);
-                
-                // Encode as JSON and store in `medical_eligibility_data`
-                $recruitment->medical_eligibility_data = json_encode($medicalEligibilityData);
+        // ────────────────────────────────────────────
+        // Ha most fejeződik be az IT_HEAD_APPROVAL:
+        //    → lépjünk supervisor_approval-be,
+        //    → automatikus „technikai” supervisor jóváhagyások
+        //      azoknak, akik mind supervisor, mind group_lead approver-ek.
+        // ────────────────────────────────────────────
+        if ($recruitment->state === 'it_head_approval') {
+            $transition = $service->getNextTransition($recruitment);
+            $prevState  = $recruitment->state;
+            
+            $this->validateFields($recruitment, $request);
+            $service->storeMetadata($recruitment, $request->input('message'), 'approvals', null, 'it_head_approval');
+            $recruitment->workflow_apply($transition);
+            $recruitment->updated_by = Auth::id();
+            $recruitment->save();
+
+            // --- technikai jóváhagyás supervisor állapotra ---
+            $supervisorIds = collect((new StateSupervisorApproval())
+                ->getResponsibleUsers($recruitment))
+                ->pluck('id')
+                ->all();
+            $groupLeadIds  = collect((new StateGroupLeadApproval())
+                ->getResponsibleUsers($recruitment))
+                ->pluck('id')
+                ->all();
+
+            $common = array_intersect($supervisorIds, $groupLeadIds);
+            if (!empty($common)) {
+                $recruitment->updated_by = $technicalUser->id;
             }
+            foreach ($common as $userId) {
+                if (!$service->isApprovedBy($recruitment, 'supervisor_approval', $userId)) {
+                    $service->storeMetadata($recruitment, 'technikai jóváhagyás', 'approvals', $userId, 'supervisor_approval');
 
-            if ($service->isAllApproved($recruitment)) {
-                $transition = $service->getNextTransition($recruitment);
-                $previous_state = $recruitment->state;
-    
-                if ($transition) {
-                    $this->validateFields($recruitment, $request);
-                    $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
-                    $recruitment->workflow_apply($transition);
-                    $recruitment->updated_by = Auth::id();
-    
-                    // Create user if the previous state was request_to_complete
-                    if ($isRequestToComplete) {
-                        try {
-                            $userData = [
-                                'name' => $recruitment->name,
-                                'email' => $recruitment->email,
-                                'workgroup_id' => $recruitment->workgroup_id_1,
-                                'workflow_id' => $recruitment->id,
-                                'social_security_number' => $recruitment->social_security_number,
-                                'contract_expiration' => $recruitment->employment_end_date,
-                                'legal_relationship' => LegalRelationship::EMPLOYEE,
-                            ];
-    
-                            $userController = new UserController();
-                            $user = $userController->createUserFromData($userData);
-                        } catch (\Exception $e) {
-                            Log::error('Failed to create user from workflow: ' . $e->getMessage());
-                            throw new \Exception('Failed to create user from workflow: ' . $e->getMessage());
-                        }
+                    if ($service->isAllApprovedForState($recruitment, new StateSupervisorApproval(), $userId)) {
+                        $trans = $service->getNextTransition($recruitment);
+                        $recruitment->workflow_apply($trans);
+                        $recruitment->updated_by = $technicalUser->id;
                     }
-    
-                    $recruitment->save();
-                    $message = $request->input('message') ? $request->input('message') : '';
-                    event(new StateChangedEvent($recruitment, $previous_state, $recruitment->state, $message));
-                    event(new ApproverAssignedEvent($recruitment));
-                    
-                    return response()->json(['redirectUrl' => route('workflows-all-open')]);
-                } else {            
-                    Log::error('Nincs vagy nem pontosan 1 valós transition van az adott státuszból');
-                    throw new \Exception('No valid transition found');
-                }                    
+                }
             }
+
+            $recruitment->save();
+            $message = $request->input('message') ? $request->input('message') : '';
+            event(new StateChangedEvent($recruitment, $prevState, $recruitment->state, $message));
+            event(new ApproverAssignedEvent($recruitment));
+        }
+        // ────────────────────────────────────────────
+        // Ha group_lead_approval állapotban vagyunk:
+        //    a) először a manuális jóváhagyásodat mentjük,
+        //    b) aztán **mindig** generálunk director_approval
+        //       technikai jóváhagyást, ha ugyanaz a user director is,
+        //    c) és ha utána (illetve már eleve korábban is)
+        //       mindenki director_ként jóváhagyott,
+        //       akkor azonnal ugorjunk hr_lead_approval-re.
+        // ────────────────────────────────────────────
+        elseif ($recruitment->state === 'group_lead_approval') {
+            // Collect client fields for medical eligibility
+            $medicalEligibilityData = $request->only([
+                'manual_handling',
+                'manual_handling_weight_5_20',
+                'manual_handling_weight_20_50',
+                'manual_handling_weight_over_50',
+                'increased_accident_risk',
+                'fire_and_explosion_risk',
+                'live_electrical_work',
+                'high_altitude_work',
+                'other_risks_description',
+                'other_risks',
+                'forced_body_position',
+                'sitting',
+                'standing',
+                'walking',
+                'stressful_workplace_climate',
+                'heat_exposure',
+                'cold_exposure',
+                'noise_exposure',
+                'ionizing_radiation_exposure',
+                'non_ionizing_radiation_exposure',
+                'local_vibration_exposure',
+                'whole_body_vibration_exposure',
+                'ergonomic_factors_exposure',
+                'dust_exposure_description',
+                'dust_exposure',
+                'chemicals_exposure',
+                'chemical_hazards_exposure',
+                'other_chemicals_description',
+                'carcinogenic_substances_exposure',
+                'planned_carcinogenic_substances_list',
+                'epidemiological_interest_position',
+                'infection_risk',
+                'psychological_stress',
+                'screen_time',
+                'night_shift_work',
+                'psychosocial_factors',
+                'personal_protective_equipment_stress',
+                'work_away_from_family',
+                'working_alongside_pension',
+                'others',
+                'planned_other_health_risk_factors'
+            ]);
+            // Encode as JSON and store in `medical_eligibility_data`
+            $recruitment->medical_eligibility_data = json_encode($medicalEligibilityData);
+
+            // a) manuális meta
             $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
 
+            // b) technikai director jóváhagyás
+            $directorIds = collect((new StateDirectorApproval())
+                ->getResponsibleUsers($recruitment))
+                ->pluck('id')
+                ->all();
+
+            if (in_array(Auth::id(), $directorIds, true) && !$service->isApprovedBy($recruitment, 'director_approval', Auth::id())) {
+                $service->storeMetadata($recruitment, 'technikai jóváhagyás', 'approvals', Auth::id(), 'director_approval');
+            }
+
+            // c) ha a group_lead kör lezárult, lépjünk director-ba
+            if ($service->isAllApproved($recruitment)) {
+                $trans1    = $service->getNextTransition($recruitment);
+                $prev1     = $recruitment->state;
+                $recruitment->workflow_apply($trans1);
+                $recruitment->updated_by = Auth::id();
+
+                $recruitment->save();
+                $message = $request->input('message') ? $request->input('message') : '';
+                event(new StateChangedEvent($recruitment, $prev1, $recruitment->state, $message));
+                event(new ApproverAssignedEvent($recruitment));
+
+                // d) ha már director_approval is kész, ugorjunk hr_lead_approval-re
+                if ($service->isAllApprovedForState($recruitment, new StateDirectorApproval())) {
+                    $trans2 = $service->getNextTransition($recruitment);
+                    $prev2  = $recruitment->state;
+                    $recruitment->workflow_apply($trans2);
+                    $recruitment->updated_by = $technicalUser->id;
+
+                    $recruitment->save();
+                    event(new StateChangedEvent($recruitment, $prev2, $recruitment->state, ''));
+                    event(new ApproverAssignedEvent($recruitment));
+                }
+            }
+
+            $recruitment->save();
+            return response()->json(['redirectUrl' => route('workflows-all-open')]);
+        }
+        // ────────────────────────────────────────────
+        // A fenti esetektől eltérő összes többi approval esete
+        // ────────────────────────────────────────────
+        elseif ($service->isAllApproved($recruitment)) {
+            $transition = $service->getNextTransition($recruitment);
+            $previous_state = $recruitment->state;
+
+            $this->validateFields($recruitment, $request);
+            $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
+            $recruitment->workflow_apply($transition);
+            $recruitment->updated_by = Auth::id();
+
+            // Create user if the previous state was request_to_complete
+            if ($isRequestToComplete) {
+                try {
+                    $userData = [
+                        'name' => $recruitment->name,
+                        'email' => $recruitment->email,
+                        'workgroup_id' => $recruitment->workgroup_id_1,
+                        'workflow_id' => $recruitment->id,
+                        'social_security_number' => $recruitment->social_security_number,
+                        'contract_expiration' => $recruitment->employment_end_date,
+                        'legal_relationship' => LegalRelationship::EMPLOYEE,
+                    ];
+
+                    $userController = new UserController();
+                    $user = $userController->createUserFromData($userData);
+                } catch (\Exception $e) {
+                    Log::error('Failed to create user from workflow: ' . $e->getMessage());
+                    throw new \Exception('Failed to create user from workflow: ' . $e->getMessage());
+                }
+            }
+
+            $recruitment->save();
+            $message = $request->input('message') ? $request->input('message') : '';
+            event(new StateChangedEvent($recruitment, $previous_state, $recruitment->state, $message));
+            event(new ApproverAssignedEvent($recruitment));
+            
+            return response()->json(['redirectUrl' => route('workflows-all-open')]);
+        }
+        else {
+            $service->storeMetadata($recruitment, $request->input('message'), 'approvals');
             $recruitment->save();
 
             return response()->json(['redirectUrl' => route('workflows-all-open')]);
-        } else {
-            Log::warning('Felhasználó (' . User::find(Auth::id())->name . ') nem jogosult a felvételi kérelem jóváhagyására');
-            return view('content.pages.misc-not-authorized');
         }
     }
 
@@ -1674,10 +1771,10 @@ class EmployeeRecruitmentController extends Controller
             $history[$key]['user_name'] = $user->name;
         }
     
-        // order history by datetime descreasing
-        usort($history, function($a, $b) {
-            return strtotime($b['datetime']) - strtotime($a['datetime']);
-        });
+        $history = collect($history)
+            ->sortByDesc('datetime')
+            ->values()
+            ->all();
     
         return $history;
     }

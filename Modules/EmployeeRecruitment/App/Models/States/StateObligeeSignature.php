@@ -9,7 +9,8 @@ use App\Models\User;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateObligeeSignature implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         return $user->hasRole('titkar_9_fi');
     }
 
@@ -41,15 +42,18 @@ class StateObligeeSignature implements IStateResponsibility {
         return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
         return true;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         return 'to_employee_signature';
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         return $user->hasRole('titkar_9_fi')
             ? [[
                 'type' => 'obligee_signer',

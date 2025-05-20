@@ -18,162 +18,165 @@ use Modules\EmployeeRecruitment\App\Services\DelegationService;
 class StateGroupLeadApproval implements IStateResponsibility {
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            // Check if user is a workgroup leader
-            $workgroup_lead = 
-                ($workflow->workgroup1 && $workflow->workgroup1->leader_id == $user->id) ||
-                ($workflow->workgroup2 && $workflow->workgroup2->leader_id == $user->id);
-
-            return $workgroup_lead && !$workflow->isApprovedBy($user);
-        } else {
-            Log::error('StateGroupLeadApproval::isUserResponsible called with invalid workflow type');
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return false;
         }
+
+        // Check if user is a workgroup leader
+        $workgroup_lead = 
+            ($workflow->workgroup1 && $workflow->workgroup1->leader_id == $user->id) ||
+            ($workflow->workgroup2 && $workflow->workgroup2->leader_id == $user->id);
+
+        return $workgroup_lead && !$workflow->isApprovedBy($user);
     }
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $workgroups = [];
-            if ($workflow->workgroup1) {
-                $workgroups[] = 'grouplead_' . $workflow->workgroup1->workgroup_number;
-            }
-            if ($workflow->workgroup2) {
-                $workgroups[] = 'grouplead_' . $workflow->workgroup2->workgroup_number;
-            }
-
-            $workgroups = array_unique($workgroups);
-
-            $service = new DelegationService();
-            $isDelegate = false;
-            foreach ($workgroups as $workgroup) {
-                if ($service->isDelegate($user, $workgroup)) {
-                    $isDelegate = true;
-                    break;
-                }
-            }
-
-            return $isDelegate && !$workflow->isApprovedBy($user);
-        } else {
-            Log::error('StateGroupLeadApproval::isUserResponsibleAsDelegate called with invalid workflow type');
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return false;
         }
+
+        $workgroups = [];
+        if ($workflow->workgroup1) {
+            $workgroups[] = 'grouplead_' . $workflow->workgroup1->workgroup_number;
+        }
+        if ($workflow->workgroup2) {
+            $workgroups[] = 'grouplead_' . $workflow->workgroup2->workgroup_number;
+        }
+
+        $workgroups = array_unique($workgroups);
+
+        $service = new DelegationService();
+        $isDelegate = false;
+        foreach ($workgroups as $workgroup) {
+            if ($service->isDelegate($user, $workgroup)) {
+                $isDelegate = true;
+                break;
+            }
+        }
+
+        return $isDelegate && !$workflow->isApprovedBy($user);
     }
 
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $service = new DelegationService();
-
-            $leaders = [];
-            $workgroups = [];
-
-            // Get the leaders of the workgroups directly associated with the workflow
-            if ($workflow->workgroup1) {
-                $leaders[] = $workflow->workgroup1->leader;
-                $workgroups[] = $workflow->workgroup1;
-            }
-            if ($workflow->workgroup2) {
-                $leaders[] = $workflow->workgroup2->leader;
-                $workgroups[] = $workflow->workgroup2;
-            }
-
-            // Get all delegate users
-            $delegateUsers = collect();
-            foreach ($workgroups as $workgroup) {
-                $delegates = $service->getDelegates($workgroup->leader, 'grouplead_' . $workgroup->workgroup_number);
-                $delegateUsers = $delegateUsers->concat($delegates);
-            }
-
-            // Merge the leaders and delegate users
-            $responsibleUsers = collect($leaders)->concat($delegateUsers);
-
-            if ($notApprovedOnly) {
-                $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
-                    $user = User::find($user['id']);
-                    return !$workflow->isApprovedBy($user);
-                });
-            }
-
-            return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
-        } else {
-            Log::error('StateGroupLeadApproval::getResponsibleUsers called with invalid workflow type');
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return [];
         }
+
+        $service = new DelegationService();
+
+        $leaders = [];
+        $workgroups = [];
+
+        // Get the leaders of the workgroups directly associated with the workflow
+        if ($workflow->workgroup1) {
+            $leaders[] = $workflow->workgroup1->leader;
+            $workgroups[] = $workflow->workgroup1;
+        }
+        if ($workflow->workgroup2) {
+            $leaders[] = $workflow->workgroup2->leader;
+            $workgroups[] = $workflow->workgroup2;
+        }
+
+        // Get all delegate users
+        $delegateUsers = collect();
+        foreach ($workgroups as $workgroup) {
+            $delegates = $service->getDelegates($workgroup->leader, 'grouplead_' . $workgroup->workgroup_number);
+            $delegateUsers = $delegateUsers->concat($delegates);
+        }
+
+        // Merge the leaders and delegate users
+        $responsibleUsers = collect($leaders)->concat($delegateUsers);
+
+        if ($notApprovedOnly) {
+            $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                $user = User::find($user['id']);
+                return !$workflow->isApprovedBy($user);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $metaData = json_decode($workflow->meta_data, true);
-
-            $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
-            $approval_user_ids[] = Auth::id();
-
-            $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
-            $workflow->meta_data = json_encode($metaData);
-
-            $workgroup_leads = [
-                optional($workflow->workgroup1)->leader_id,
-                optional($workflow->workgroup2)->leader_id
-            ];
-
-            $workgroup_leads = array_filter($workgroup_leads);
-
-            foreach ($workgroup_leads as $key => $userId) {
-                $delegation = Delegation::where('original_user_id', $userId)
-                    ->where('delegate_user_id', Auth::id())
-                    ->where('start_date', '<=', now())
-                    ->where('end_date', '>=', now())
-                    ->where('deleted', 0)
-                    ->where('type', 'like', 'grouplead_%') // Check for any supervisor delegations
-                    ->first();
-
-                if ($delegation) {
-                    $workgroup_leads[$key] = Auth::id();
-                }
-            }
-
-            $workgroup_leads = array_unique($workgroup_leads);
-
-            $workflow->updated_by = Auth::id();
-            $workflow->save();
-
-            return count(array_diff($workgroup_leads, $approval_user_ids)) === 0;
-        } else {
-            Log::error('StateGroupLeadApproval::isAllApproved called with invalid workflow type');
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return false;
         }
+
+        $userId = $userId ?: Auth::id();
+
+        $metaData = json_decode($workflow->meta_data, true);
+
+        $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
+        if (!in_array($userId, $approval_user_ids)) {
+            $approval_user_ids[] = $userId;
+        }
+
+        $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
+        $workflow->meta_data = json_encode($metaData);
+
+        $workgroup_leads = [
+            optional($workflow->workgroup1)->leader_id,
+            optional($workflow->workgroup2)->leader_id
+        ];
+
+        $workgroup_leads = array_filter($workgroup_leads);
+
+        foreach ($workgroup_leads as $key => $userId) {
+            $delegation = Delegation::where('original_user_id', $userId)
+                ->where('delegate_user_id', $userId)
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->where('deleted', 0)
+                ->where('type', 'like', 'grouplead_%') // Check for any supervisor delegations
+                ->first();
+
+            if ($delegation) {
+                $workgroup_leads[$key] = $userId;
+            }
+        }
+
+        $workgroup_leads = array_unique($workgroup_leads);
+
+        $workflow->updated_by = $userId;
+        $workflow->save();
+
+        return count(array_diff($workgroup_leads, $approval_user_ids)) === 0;
     }
 
     public function getNextTransition(IGenericWorkflow $workflow): string
     {
         $salary_threshold = Option::where('option_name', 'recruitment_director_approve_salary_threshold')->first()->option_value;
 
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $employment_start_date = new DateTime($workflow->employment_start_date);
-            $employment_end_date = new DateTime($workflow->employment_end_date);
-            $months_of_employment = $employment_start_date->diff($employment_end_date)->m + ($employment_start_date->diff($employment_end_date)->y*12);
-
-            $gross_salary_sum = 
-                $workflow->base_salary_monthly_gross_1 + 
-                $workflow->base_salary_monthly_gross_2 + 
-                $workflow->base_salary_monthly_gross_3 + 
-                $workflow->health_allowance_monthly_gross_4 + 
-                $workflow->management_allowance_monthly_gross_5 + 
-                $workflow->extra_pay_1_monthly_gross_6 + 
-                $workflow->extra_pay_2_monthly_gross_7;
-
-            if ($workflow->employment_type == 'Határozatlan' || 
-                $workflow->employment_type == 'Határozott' && $gross_salary_sum * $months_of_employment >= $salary_threshold) {
-                return 'to_director_approval';
-            } else {
-                return 'to_hr_lead_approval';
-            }
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
+            return false;
         }
-        else {
-            Log::error('StateGroupLeadApproval::getNextTransition called with invalid workflow type');
-            return '';
+
+        $employment_start_date = new DateTime($workflow->employment_start_date);
+        $employment_end_date = new DateTime($workflow->employment_end_date);
+        $months_of_employment = $employment_start_date->diff($employment_end_date)->m + ($employment_start_date->diff($employment_end_date)->y*12);
+
+        $gross_salary_sum = 
+            $workflow->base_salary_monthly_gross_1 + 
+            $workflow->base_salary_monthly_gross_2 + 
+            $workflow->base_salary_monthly_gross_3 + 
+            $workflow->health_allowance_monthly_gross_4 + 
+            $workflow->management_allowance_monthly_gross_5 + 
+            $workflow->extra_pay_1_monthly_gross_6 + 
+            $workflow->extra_pay_2_monthly_gross_7;
+
+        if ($workflow->employment_type == 'Határozatlan' || 
+            $workflow->employment_type == 'Határozott' && $gross_salary_sum * $months_of_employment >= $salary_threshold) {
+            return 'to_director_approval';
+        } else {
+            return 'to_hr_lead_approval';
         }
     }
 

@@ -10,7 +10,8 @@ use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateFinancialCounterpartyApproval implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         $workgroup903 = Workgroup::where('workgroup_number', 903)->first();
         return $workgroup903 && $workgroup903->leader_id === $user->id;
     }
@@ -43,15 +44,18 @@ class StateFinancialCounterpartyApproval implements IStateResponsibility {
         return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
         return true;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         return 'to_obligee_approval';
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         $workgroup903 = Workgroup::where('deleted', 0)->where('workgroup_number', 903)->first();
         if ($workgroup903 && $workgroup903->leader_id === $user->id) {
             return [[

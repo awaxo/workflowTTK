@@ -7,7 +7,8 @@ use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 
 class StateCancelled implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
         return false;
     }
 
@@ -21,15 +22,18 @@ class StateCancelled implements IStateResponsibility {
         return [];
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
         return false;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         return '';
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         return [];
     }
 }

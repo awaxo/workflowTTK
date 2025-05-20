@@ -14,157 +14,165 @@ use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 class StateSupervisorApproval implements IStateResponsibility {
-    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $is_supervisor = 
-                ($workflow->base_salary_cc1 && $workflow->base_salary_cc1->lead_user_id == $user->id) ||
-                ($workflow->base_salary_cc2 && $workflow->base_salary_cc2->lead_user_id == $user->id) ||
-                ($workflow->base_salary_cc3 && $workflow->base_salary_cc3->lead_user_id == $user->id) ||
-                ($workflow->health_allowance_cc && $workflow->health_allowance_cc->lead_user_id == $user->id) ||
-                ($workflow->management_allowance_cc && $workflow->management_allowance_cc->lead_user_id == $user->id) ||
-                ($workflow->extra_pay_1_cc && $workflow->extra_pay_1_cc->lead_user_id == $user->id) ||
-                ($workflow->extra_pay_2_cc && $workflow->extra_pay_2_cc->lead_user_id == $user->id);
-
-            return $is_supervisor && !$workflow->isApprovedBy($user);
-        } else {
-            Log::error('StateSupervisorApproval::isUserResponsible called with invalid workflow type');
+    public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
+    {
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return false;
         }
+
+        $is_supervisor = 
+            ($workflow->base_salary_cc1 && $workflow->base_salary_cc1->lead_user_id == $user->id) ||
+            ($workflow->base_salary_cc2 && $workflow->base_salary_cc2->lead_user_id == $user->id) ||
+            ($workflow->base_salary_cc3 && $workflow->base_salary_cc3->lead_user_id == $user->id) ||
+            ($workflow->health_allowance_cc && $workflow->health_allowance_cc->lead_user_id == $user->id) ||
+            ($workflow->management_allowance_cc && $workflow->management_allowance_cc->lead_user_id == $user->id) ||
+            ($workflow->extra_pay_1_cc && $workflow->extra_pay_1_cc->lead_user_id == $user->id) ||
+            ($workflow->extra_pay_2_cc && $workflow->extra_pay_2_cc->lead_user_id == $user->id);
+
+        return $is_supervisor && !$workflow->isApprovedBy($user);
     }
 
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $costCenters = [
-                $workflow->base_salary_cc1,
-                $workflow->base_salary_cc2,
-                $workflow->base_salary_cc3,
-                $workflow->health_allowance_cc,
-                $workflow->management_allowance_cc,
-                $workflow->extra_pay_1_cc,
-                $workflow->extra_pay_2_cc
-            ];
-            
-            $workgroups = [];
-            foreach ($costCenters as $costCenter) {
-                if ($costCenter) {
-                    $code = substr($costCenter->cost_center_code, -3);
-                    $workgroups[] = 'supervisor_workgroup_' . $code;
-                }
-            }
-            $workgroups = array_unique($workgroups);
-
-            $service = new DelegationService();
-            $isDelegate = false;
-            foreach ($workgroups as $workgroup) {
-                if ($service->isDelegate($user, $workgroup)) {
-                    $isDelegate = true;
-                    break;
-                }
-            }
-
-            return $isDelegate && !$workflow->isApprovedBy($user);
-        } else {
-            Log::error('StateSupervisorApproval::isUserResponsibleAsDelegate called with invalid workflow type');
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return false;
         }
+
+        $costCenters = [
+            $workflow->base_salary_cc1,
+            $workflow->base_salary_cc2,
+            $workflow->base_salary_cc3,
+            $workflow->health_allowance_cc,
+            $workflow->management_allowance_cc,
+            $workflow->extra_pay_1_cc,
+            $workflow->extra_pay_2_cc
+        ];
+        
+        $workgroups = [];
+        foreach ($costCenters as $costCenter) {
+            if ($costCenter) {
+                $code = substr($costCenter->cost_center_code, -3);
+                $workgroups[] = 'supervisor_workgroup_' . $code;
+            }
+        }
+        $workgroups = array_unique($workgroups);
+
+        $service = new DelegationService();
+        $isDelegate = false;
+        foreach ($workgroups as $workgroup) {
+            if ($service->isDelegate($user, $workgroup)) {
+                $isDelegate = true;
+                break;
+            }
+        }
+
+        return $isDelegate && !$workflow->isApprovedBy($user);
     }
 
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $costCenters = [
-                $workflow->base_salary_cc1,
-                $workflow->base_salary_cc2,
-                $workflow->base_salary_cc3,
-                $workflow->health_allowance_cc,
-                $workflow->management_allowance_cc,
-                $workflow->extra_pay_1_cc,
-                $workflow->extra_pay_2_cc
-            ];
-    
-            $responsibleUsers = collect();
-            $service = new DelegationService();
-    
-            foreach ($costCenters as $costCenter) {
-                if ($costCenter && $costCenter->lead_user_id) {
-                    $user = User::find($costCenter->lead_user_id);
-                    if ($user) {
-                        $responsibleUsers->push($user);
-                    }
-    
-                    // Get delegate users
-                    $workgroup = 'supervisor_workgroup_' . substr($costCenter->cost_center_code, -3);
-                    $delegates = $service->getDelegates($user, $workgroup);
-                    $responsibleUsers = $responsibleUsers->concat($delegates);
-                }
-            }
-    
-            if ($notApprovedOnly) {
-                $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
-                    $user = User::find($user['id']);
-                    return !$workflow->isApprovedBy($user);
-                });
-            }
-    
-            return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
-        } else {
-            Log::error('StateSupervisorApproval::getResponsibleUsers called with invalid workflow type');
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return [];
         }
+
+        $costCenters = [
+            $workflow->base_salary_cc1,
+            $workflow->base_salary_cc2,
+            $workflow->base_salary_cc3,
+            $workflow->health_allowance_cc,
+            $workflow->management_allowance_cc,
+            $workflow->extra_pay_1_cc,
+            $workflow->extra_pay_2_cc
+        ];
+
+        $responsibleUsers = collect();
+        $service = new DelegationService();
+
+        foreach ($costCenters as $costCenter) {
+            if ($costCenter && $costCenter->lead_user_id) {
+                $user = User::find($costCenter->lead_user_id);
+                if ($user) {
+                    $responsibleUsers->push($user);
+                }
+
+                // Get delegate users
+                $workgroup = 'supervisor_workgroup_' . substr($costCenter->cost_center_code, -3);
+                $delegates = $service->getDelegates($user, $workgroup);
+                $responsibleUsers = $responsibleUsers->concat($delegates);
+            }
+        }
+
+        if ($notApprovedOnly) {
+            $responsibleUsers = $responsibleUsers->filter(function ($user) use ($workflow) {
+                $user = User::find($user['id']);
+                return !$workflow->isApprovedBy($user);
+            });
+        }
+
+        return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
-    public function isAllApproved(IGenericWorkflow $workflow): bool {
-        if ($workflow instanceof RecruitmentWorkflow) {
-            $metaData = json_decode($workflow->meta_data, true);
-
-            $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
-            $approval_user_ids[] = Auth::id();
-
-            $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
-            $workflow->meta_data = json_encode($metaData);
-
-            $cost_center_lead_user_ids = array_filter([
-                optional($workflow->base_salary_cc1)->lead_user_id,
-                optional($workflow->base_salary_cc2)->lead_user_id,
-                optional($workflow->base_salary_cc3)->lead_user_id,
-                optional($workflow->health_allowance_cc)->lead_user_id,
-                optional($workflow->management_allowance_cc)->lead_user_id,
-                optional($workflow->extra_pay_1_cc)->lead_user_id,
-                optional($workflow->extra_pay_2_cc)->lead_user_id,
-            ]);
-
-            foreach ($cost_center_lead_user_ids as $key => $userId) {
-                $delegation = Delegation::where('original_user_id', $userId)
-                    ->where('delegate_user_id', Auth::id())
-                    ->where('start_date', '<=', now())
-                    ->where('end_date', '>=', now())
-                    ->where('deleted', 0)
-                    ->where('type', 'like', 'supervisor_workgroup_%') // Check for any supervisor delegations
-                    ->first();
-
-                if ($delegation) {
-                    $cost_center_lead_user_ids[$key] = Auth::id();
-                }
-            }
-
-            $cost_center_lead_user_ids = array_unique($cost_center_lead_user_ids);
-
-            $workflow->updated_by = Auth::id();
-            $workflow->save();
-
-            return count(array_diff($cost_center_lead_user_ids, $approval_user_ids)) === 0;
-        } else {
-            Log::error('StateSupervisorApproval::isAllApproved called with invalid workflow type');
+    public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
+    {
+        if (!$workflow instanceof RecruitmentWorkflow) {
+            Log::error(__METHOD__ . ' invalid workflow type');
             return false;
         }
+
+        $userId = $userId ?: Auth::id();
+
+        $metaData = json_decode($workflow->meta_data, true);
+
+        $approval_user_ids = $metaData['approvals'][$workflow->state]['approval_user_ids'] ?? [];
+        if (!in_array($userId, $approval_user_ids)) {
+            $approval_user_ids[] = $userId;
+        }
+
+        $metaData['approvals'][$workflow->state]['approval_user_ids'] = $approval_user_ids;
+        $workflow->meta_data = json_encode($metaData);
+
+        $cost_center_lead_user_ids = array_filter([
+            optional($workflow->base_salary_cc1)->lead_user_id,
+            optional($workflow->base_salary_cc2)->lead_user_id,
+            optional($workflow->base_salary_cc3)->lead_user_id,
+            optional($workflow->health_allowance_cc)->lead_user_id,
+            optional($workflow->management_allowance_cc)->lead_user_id,
+            optional($workflow->extra_pay_1_cc)->lead_user_id,
+            optional($workflow->extra_pay_2_cc)->lead_user_id,
+        ]);
+
+        foreach ($cost_center_lead_user_ids as $key => $userId) {
+            $delegation = Delegation::where('original_user_id', $userId)
+                ->where('delegate_user_id', $userId)
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->where('deleted', 0)
+                ->where('type', 'like', 'supervisor_workgroup_%') // Check for any supervisor delegations
+                ->first();
+
+            if ($delegation) {
+                $cost_center_lead_user_ids[$key] = $userId;
+            }
+        }
+
+        $cost_center_lead_user_ids = array_unique($cost_center_lead_user_ids);
+
+        $workflow->updated_by = $userId;
+        $workflow->save();
+
+        return count(array_diff($cost_center_lead_user_ids, $approval_user_ids)) === 0;
     }
 
-    public function getNextTransition(IGenericWorkflow $workflow): string {
+    public function getNextTransition(IGenericWorkflow $workflow): string
+    {
         return 'to_group_lead_approval';
     }
 
-    public function getDelegations(User $user): array {
+    public function getDelegations(User $user): array
+    {
         $cost_center_codes = CostCenter::where('deleted', 0)->where('lead_user_id', $user->id)->pluck('cost_center_code')->toArray();
         $workgroup_numbers = array_map(function($code) {
             return substr($code, -3);

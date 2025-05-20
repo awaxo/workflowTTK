@@ -255,7 +255,7 @@
                                                 ($history_entry['decision'] == 'cancel' ? 'Sztornózás' : 'Visszaállítás')))))) }}
                                         </span>
                                     </td>
-                                    <td>{{ $history_entry['datetime'] }}</td>
+                                    <td>{{ date('Y-m-d H:i:s', strtotime($history_entry['datetime'])) }}</td>
                                     <td>{{ $history_entry['user_name'] }}</td>
                                     <td>{{ $history_entry['decision'] == 'start' ? 'Új kérelem' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztve' : ($history_entry['decision'] == 'restore' ? 'Visszaállítva' : ($history_entry['decision'] == 'reject' || $history_entry['decision'] == 'restart' ? 'Kérelem újraellenőrzésére vár' : ($history_entry['decision'] == 'cancel' ? 'Elutasítva' : __('states.' . $history_entry['status']))))) }}</td>
                                     <td>{{ $history_entry['message'] }}</td>

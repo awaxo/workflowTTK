@@ -29,8 +29,9 @@ class CheckStateDeadlines extends Command
             ->get()
             ->filter(function ($workflow) use ($options) {
                 $optionName = 'recruitment_process_' . $workflow->state . '_deadline';
-                $deadline = isset($options[$optionName]) ? $options[$optionName] : null;
-        
+                $deadlineValue = $options[$optionName] ?? null;
+                $deadline = ($deadlineValue !== null && $deadlineValue !== '') ? $deadlineValue : null;
+            
                 // check if the workflow was updated later than the given deadline
                 return $deadline && $workflow->updated_at->lt(now()->subHours($deadline));
             });

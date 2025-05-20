@@ -67,22 +67,30 @@ class EmployeeRecruitmentController extends Controller
         $workgroups = collect();
         foreach ($roles as $role) {
             if ($user->hasRole($role)) {
-                $workgroupNumber = substr($role, -1);
-                $workgroupNumber = $workgroupNumber == 'i' ? 9 : $workgroupNumber;
-                $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
+                if ($role === 'titkar_9_fi' || $role === 'titkar_9_gi') {
+                    $workgroupsForRole = Workgroup::where('deleted', 0)->get();
+                } else {
+                    $workgroupNumber = substr($role, strrpos($role, '_') + 1);
+                    $workgroupsForRole = Workgroup::where('workgroup_number', 'LIKE', $workgroupNumber.'%')->where('deleted', 0)->get();
+                }
                 $workgroups = $workgroups->concat($workgroupsForRole);
             }
         }
-        $workgroup800 = Workgroup::where('workgroup_number', 800)->where('deleted', 0)->get();
 
-        $workgroups2 = $workgroups->unique('id')->map(function ($workgroup) {
-            $workgroup->leader_name = $workgroup->leader()->first()?->name;
-            return $workgroup;
-        });
-        $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
-            $workgroup->leader_name = $workgroup->leader()->first()?->name;
-            return $workgroup;
-        });
+        $workgroups2 = $workgroups
+            ->unique('id')
+            ->reject(fn($wg) => $wg->workgroup_number == 800)
+            ->map(function ($workgroup) {
+                $workgroup->leader_name = $workgroup->leader()->first()?->name;
+                return $workgroup;
+            });
+        $workgroups1 = $workgroups
+            ->unique('id')
+            ->map(function ($workgroup) {
+                $workgroup->leader_name = $workgroup->leader()->first()?->name;
+                return $workgroup;
+            });
+            
         $positions = Position::where('deleted', 0)->get();
         $costCenters = CostCenter::where('deleted', 0)
             ->where('valid_employee_recruitment', 1)

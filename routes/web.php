@@ -130,6 +130,7 @@ Route::prefix('api')->group(function () {
         Route::post('/costcenter/{id}/update', [CostCenterController::class, 'update']);
         Route::post('/costcenter/create', [CostCenterController::class, 'create']);
         Route::post('/costcenter/import', [CostCenterController::class, 'import']);
+        Route::get('/costcenter/export', [CostCenterController::class, 'export']);
     });
 });
 

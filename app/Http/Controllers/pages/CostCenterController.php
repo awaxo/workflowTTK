@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\pages;
 
 use App\Events\ModelChangedEvent;
+use App\Exports\CostCenterExport;
 use App\Http\Controllers\Controller;
 use App\Models\CostCenter;
 use App\Models\CostCenterType;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Closure;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CostCenterController extends Controller
 {
@@ -49,6 +51,61 @@ class CostCenterController extends Controller
         }
     
         return response()->json(['message' => 'Import successful!'], 200);
+    }
+
+    /**
+     * Export cost centers to Excel
+     * 
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export()
+    {
+        // Költséghelyek lekérdezése az összes kapcsolódó adattal
+        $costCenters = CostCenter::with(['type', 'leadUser', 'projectCoordinatorUser', 'createdBy', 'updatedBy'])->get();
+        
+        // Adatok előkészítése az exporthoz
+        $data = $costCenters->map(function ($costCenter) {
+            return [
+                'cost_center_code' => $costCenter->cost_center_code,
+                'name' => $costCenter->name,
+                'type_name' => $costCenter->type->name,
+                'lead_user_name' => $costCenter->leadUser->name,
+                'project_coordinator_user_name' => $costCenter->projectCoordinatorUser->name,
+                'due_date' => $costCenter->due_date ? date('Y.m.d', strtotime($costCenter->due_date)) : '',
+                'minimal_order_limit' => number_format($costCenter->minimal_order_limit, 0, '.', ' '),
+                'valid_employee_recruitment' => $costCenter->valid_employee_recruitment ? 'Igen' : 'Nem',
+                'valid_procurement' => $costCenter->valid_procurement ? 'Igen' : 'Nem',
+                'active' => $costCenter->deleted ? 'Nem' : 'Igen',
+                'updated_by_name' => optional($costCenter->updatedBy)->name ?? 'Technikai felhasználó',
+                'updated_at' => date('Y.m.d H:i:s', strtotime($costCenter->updated_at)),
+                'created_by_name' => optional($costCenter->createdBy)->name ?? 'Technikai felhasználó',
+                'created_at' => date('Y.m.d H:i:s', strtotime($costCenter->created_at)),
+            ];
+        });
+        
+        // Fejlécek meghatározása
+        $headers = [
+            'Költséghely',
+            'Megnevezés',
+            'Típus',
+            'Témavezető',
+            'Projektkoordinátor',
+            'Lejárat',
+            'Minimális rendelési limit',
+            'Érvényes felvételi kérelem',
+            'Érvényes beszerzés',
+            'Aktív',
+            'Utolsó módosító',
+            'Utolsó módosítás',
+            'Létrehozó',
+            'Létrehozás',
+        ];
+        
+        // Fájlnév generálása az aktuális dátummal és idővel
+        $filename = 'koltseghelyek_' . date('Y-m-d_H-i-s') . '.xlsx';
+        
+        // Excel fájl letöltése
+        return Excel::download(new CostCenterExport($data, $headers), $filename);
     }
 
     public function manage()

@@ -131,6 +131,13 @@ $(function() {
             : '<"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
         buttons: [
             {
+                text: '<i class="bx bx-export me-1"></i> <span class="d-none d-lg-inline-block">Export</span>',
+                className: 'export-excel btn btn-primary me-2',
+                action: function(e, dt, button, config) {
+                    window.location.href = '/api/costcenter/export';
+                }
+            },
+            {
                 text: '<i class="bx bx-import me-1"></i> <span class="d-none d-lg-inline-block">Import</span>',
                 className: 'create-new btn btn-primary me-4',
                 attr: {

@@ -1,6 +1,12 @@
+import moment from 'moment';
 import GLOBALS from '../../js/globals.js';
 
 $(function() {
+    // Set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+
     let currentReportData = null;
     let currentReportType = null;
     let currentYear = null;
@@ -123,37 +129,14 @@ $(function() {
             value: reportType
         }));
 
-        // Create invisible iframe for download
-        const iframe = $('<iframe>', {
-            style: 'display: none;'
-        });
+        // Append to body and submit
+        form.appendTo('body').submit().remove();
 
-        // Append iframe to body
-        $('body').append(iframe);
-
-        // Set form target to iframe
-        form.attr('target', iframe.attr('name', 'download-iframe'));
-
-        // Handle iframe load event to detect download completion
-        iframe.on('load', function() {
-            setTimeout(function() {
-                exportBtn.prop('disabled', false).html(originalText);
-                iframe.remove();
-                GLOBALS.AJAX_SUCCESS('Excel fájl letöltése megkezdődött!');
-            }, 1000);
-        });
-
-        // Append form to iframe and submit
-        iframe.contents().find('body').append(form);
-        form.submit();
-        
-        // Fallback: reset button after 3 seconds
+        // Reset button after short delay
         setTimeout(function() {
-            if (exportBtn.prop('disabled')) {
-                exportBtn.prop('disabled', false).html(originalText);
-                iframe.remove();
-            }
-        }, 3000);
+            exportBtn.prop('disabled', false).html(originalText);
+            GLOBALS.AJAX_SUCCESS('Excel fájl letöltése megkezdődött!');
+        }, 1000);
     }
 
     /**
@@ -175,7 +158,11 @@ $(function() {
         };
         resultsTitle.text(`${reportTypeNames[reportType]} - ${year}`);
 
-        // Clear previous content
+        // Clear previous content and destroy existing DataTables
+        resultsContent.find('.dataTables_wrapper').each(function() {
+            const table = $(this).find('table').DataTable();
+            table.destroy();
+        });
         resultsContent.empty();
 
         // Generate content based on report type
@@ -218,7 +205,7 @@ $(function() {
     }
 
     /**
-     * Display chemical workers
+     * Display chemical workers with DataTable
      * @param {Array} data 
      * @param {jQuery} container 
      */
@@ -229,7 +216,9 @@ $(function() {
 
         if (data.length === 0) {
             tbody.append('<tr><td colspan="3" class="text-center">Nincs adat a megadott évhez</td></tr>');
+            container.append(content);
         } else {
+            // Populate table with data
             data.forEach(function(worker) {
                 const exposureLevelText = getExposureLevelText(worker.exposure_level);
                 const chemicalsText = worker.chemicals.join(', ') || 'Nincs megadva';
@@ -243,24 +232,67 @@ $(function() {
                 `);
                 tbody.append(row);
             });
-        }
 
-        container.append(content);
+            container.append(content);
 
-        // Initialize DataTable if there's data
-        if (data.length > 0) {
-            $('#chemical-workers-table').DataTable({
-                language: {
-                    url: '/assets/vendor/libs/datatables-bs5/language/hu.json'
-                },
-                pageLength: 25,
-                responsive: true
-            });
+            // Initialize DataTable
+            setTimeout(() => {
+                const table = $('#chemical-workers-table').DataTable({
+                    language: GLOBALS.DATATABLE_TRANSLATION,
+                    pageLength: 25,
+                    lengthMenu: [10, 25, 50, 75, 100],
+                    responsive: {
+                        details: {
+                            display: $.fn.dataTable.Responsive.display.modal({
+                                header: function(row) {
+                                    var data = row.data();
+                                    return 'Részletek - ' + data[0]; // Name column
+                                }
+                            }),
+                            type: 'column',
+                            renderer: function(api, rowIdx, columns) {
+                                var data = $.map(columns, function(col, i) {
+                                    return col.title !== ''
+                                    ? '<tr data-dt-row="' +
+                                        col.rowIndex +
+                                        '" data-dt-column="' +
+                                        col.columnIndex +
+                                        '">' +
+                                        '<td>' +
+                                        col.title +
+                                        ':' +
+                                        '</td> ' +
+                                        '<td>' +
+                                        col.data +
+                                        '</td>' +
+                                        '</tr>'
+                                    : '';
+                                }).join('');
+
+                                return data ? $('<table class="table"/><tbody />').append(data) : false;
+                            }
+                        }
+                    },
+                    order: [[0, 'asc']], // Sort by name
+                    columnDefs: [
+                        {
+                            targets: [1, 2], // Exposure level and chemicals columns
+                            orderable: false
+                        }
+                    ]
+                });
+
+                // Filter form control to default size
+                setTimeout(() => {
+                    $('.dataTables_filter .form-control').removeClass('form-control-sm');
+                    $('.dataTables_length .form-select').removeClass('form-select-sm');
+                }, 300);
+            }, 100);
         }
     }
 
     /**
-     * Display carcinogenic workers
+     * Display carcinogenic workers with DataTable
      * @param {Array} data 
      * @param {jQuery} container 
      */
@@ -271,7 +303,9 @@ $(function() {
 
         if (data.length === 0) {
             tbody.append('<tr><td colspan="3" class="text-center">Nincs adat a megadott évhez</td></tr>');
+            container.append(content);
         } else {
+            // Populate table with data
             data.forEach(function(worker) {
                 const exposureLevelText = getExposureLevelText(worker.exposure_level);
                 const substancesText = worker.substances || 'Nincs megadva';
@@ -285,19 +319,62 @@ $(function() {
                 `);
                 tbody.append(row);
             });
-        }
 
-        container.append(content);
+            container.append(content);
 
-        // Initialize DataTable if there's data
-        if (data.length > 0) {
-            $('#carcinogenic-workers-table').DataTable({
-                language: {
-                    url: '/assets/vendor/libs/datatables-bs5/language/hu.json'
-                },
-                pageLength: 25,
-                responsive: true
-            });
+            // Initialize DataTable
+            setTimeout(() => {
+                const table = $('#carcinogenic-workers-table').DataTable({
+                    language: GLOBALS.DATATABLE_TRANSLATION,
+                    pageLength: 25,
+                    lengthMenu: [10, 25, 50, 75, 100],
+                    responsive: {
+                        details: {
+                            display: $.fn.dataTable.Responsive.display.modal({
+                                header: function(row) {
+                                    var data = row.data();
+                                    return 'Részletek - ' + data[0]; // Name column
+                                }
+                            }),
+                            type: 'column',
+                            renderer: function(api, rowIdx, columns) {
+                                var data = $.map(columns, function(col, i) {
+                                    return col.title !== ''
+                                    ? '<tr data-dt-row="' +
+                                        col.rowIndex +
+                                        '" data-dt-column="' +
+                                        col.columnIndex +
+                                        '">' +
+                                        '<td>' +
+                                        col.title +
+                                        ':' +
+                                        '</td> ' +
+                                        '<td>' +
+                                        col.data +
+                                        '</td>' +
+                                        '</tr>'
+                                    : '';
+                                }).join('');
+
+                                return data ? $('<table class="table"/><tbody />').append(data) : false;
+                            }
+                        }
+                    },
+                    order: [[0, 'asc']], // Sort by name
+                    columnDefs: [
+                        {
+                            targets: [1, 2], // Exposure level and substances columns
+                            orderable: false
+                        }
+                    ]
+                });
+
+                // Filter form control to default size
+                setTimeout(() => {
+                    $('.dataTables_filter .form-control').removeClass('form-control-sm');
+                    $('.dataTables_length .form-select').removeClass('form-select-sm');
+                }, 300);
+            }, 100);
         }
     }
 

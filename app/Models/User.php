@@ -290,7 +290,7 @@ class User extends Authenticatable
         $workgroup912 = Workgroup::where('workgroup_number', 912)->first();
         $workgroup915 = Workgroup::where('workgroup_number', 915)->first();
 
-        $pagesForAdminOnly = ['settings', 'auxiliary-data-authorizations-permissions'];
+        $pagesForAdminOnly = ['settings', 'auxiliary-data-authorizations-permissions', 'reports'];
         $pagesForSecretaries = ['workflows-employee-recruitment-new'];
         $pagesForAdminOrWg915Leader = ['auxiliary-data-pages-user-list', 'auxiliary-data', 'auxiliary-data-external-access', 'auxiliary-data-external-privilege'];
         $pagesForWg912Leader = ['auxiliary-data', 'auxiliary-data-workgroup', 'auxiliary-data-institute'];

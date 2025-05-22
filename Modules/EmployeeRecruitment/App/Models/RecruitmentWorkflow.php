@@ -12,7 +12,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\EmployeeRecruitment\Database\Factories\RecruitmentWorkflowFactory;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
 class RecruitmentWorkflow extends AbstractWorkflow

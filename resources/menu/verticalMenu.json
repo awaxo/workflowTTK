@@ -63,6 +63,13 @@
         "authorize": "true"
     },
     {
+        "url": "/lekerdezesek",
+        "name": "Lekérdezések",
+        "icon": "menu-icon tf-icons bx bx-file",
+        "slug": "reports",
+        "authorize": "true"
+    },
+    {
         "url": "#",
         "name": "Segédadatok",
         "icon": "menu-icon tf-icons bx bx-data",

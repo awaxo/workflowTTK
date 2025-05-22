@@ -13,6 +13,7 @@ use App\Http\Controllers\pages\InstituteController;
 use App\Http\Controllers\pages\PermissionController;
 use App\Http\Controllers\pages\PositionController;
 use App\Http\Controllers\pages\ProfileController;
+use App\Http\Controllers\pages\ReportController;
 use App\Http\Controllers\pages\RoleController;
 use App\Http\Controllers\pages\SettingsController;
 use App\Http\Controllers\pages\UserController;
@@ -46,6 +47,7 @@ Route::get('/segedadat/felhasznalok', [UserController::class, 'index'])->middlew
 Route::get('/segedadat/kulsos-jogok', [ExternalPrivilegeController::class, 'manage'])->middleware(['check.wg915'])->name('auxiliary-data-external-privilege');
 Route::get('/felhasznalok/szerepkor/{role}', [UserController::class, 'indexByRole'])->middleware(['check.wg915'])->name('pages-users-role');
 Route::get('/beallitasok', [SettingsController::class, 'index'])->middleware(['check.admin'])->name('settings');
+Route::get('/lekerdezesek', [ReportController::class, 'index'])->middleware(['check.admin'])->name('reports');
 Route::get('/profil', [ProfileController::class, 'index'])->middleware(['auth:dynamic'])->name('profile');
 
 // locale
@@ -103,6 +105,9 @@ Route::prefix('api')->middleware(['check.admin'])->group(function () {
     Route::post('/settings/update', [SettingsController::class, 'settingsUpdate']);
     Route::get('/settings/{configName}/state/{state}/deadline', [SettingsController::class, 'getWorkflowStateDeadline']);
     Route::post('/settings/update-deadline', [SettingsController::class, 'deadlineUpdate']);
+
+    Route::post('/reports/generate', [ReportController::class, 'generateReport']);
+    Route::post('/reports/export', [ReportController::class, 'exportReport']);
 });
 
 // workgroup 908 API routes

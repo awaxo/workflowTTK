@@ -19,12 +19,6 @@ $(function() {
             { data: 'position_name' },
             { data: 'employment_type' },
             { data: 'employment_start_date' },
-            {
-                data: 'created_at',
-                render: function(data, type, row) {
-                    return moment(data).format('YYYY.MM.DD HH:mm:ss');
-                }
-            },
             { data: 'state' },
             {
                 data: 'is_manager_user', 
@@ -92,11 +86,22 @@ $(function() {
                 }
             },
             {
-                // State
-                targets: 10,
+                // State - now clickable for audit info
+                targets: 9,
                 responsivePriority: 3,
                 render: function(data, type, full, meta) {
-                    return `<span class="badge bg-label-secondary m-1">${data}</span>`;
+                    let pseudo_id = full['pseudo_id'];
+                    let year = moment(full['created_at']).format('YYYY');
+                    let displayValue = `${pseudo_id}/${year}`;
+
+                    return `<span class="badge bg-label-secondary m-1 audit-trigger" 
+                                  style="cursor: pointer;" 
+                                  data-pseudo-id="${displayValue}" 
+                                  data-created-by="${full['created_by_name'] || 'Ismeretlen'}" 
+                                  data-created-at="${full['created_at']}" 
+                                  data-updated-by="${full['updated_by_name'] || 'Ismeretlen'}" 
+                                  data-updated-at="${full['updated_at']}" 
+                                  title="Kattints az audit adatok megtekintéséhez">${data}</span>`;
                 }
             },
         ],
@@ -171,6 +176,30 @@ $(function() {
                 $('.datatables-recruitments').DataTable().draw();
             }).trigger('change');
         }
+    });
+
+    // Event handler for audit modal trigger
+    $(document).on('click', '.audit-trigger', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const pseudoId = $(this).data('pseudo-id');
+        const createdBy = $(this).data('created-by');
+        const createdAt = $(this).data('created-at');
+        const updatedBy = $(this).data('updated-by');
+        const updatedAt = $(this).data('updated-at');
+        
+        // Update modal title
+        $('#auditModalLabel').text(`Folyamat audit adatok - ${pseudoId}`);
+        
+        // Update modal content
+        $('#createdByName').text(createdBy || 'Ismeretlen');
+        $('#createdAtDate').text(moment(createdAt).format('YYYY.MM.DD HH:mm:ss'));
+        $('#updatedByName').text(updatedBy || 'Ismeretlen');
+        $('#updatedAtDate').text(moment(updatedAt).format('YYYY.MM.DD HH:mm:ss'));
+        
+        // Show modal
+        $('#auditModal').modal('show');
     });
 
     // refresh number of rows on show only own checkbox change

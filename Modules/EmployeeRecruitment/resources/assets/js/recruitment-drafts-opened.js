@@ -15,16 +15,20 @@ $(function() {
             { data: 'workgroup1' },
             { data: 'workgroup2' },
             { data: 'position_name' },
-            {
-                data: 'created_at',
-                render: function(data, type, row) {
-                    return moment(data).format('YYYY.MM.DD HH:mm:ss');
-                }
-            },
-            {
-                data: 'updated_at',
-                render: function(data, type, row) {
-                    return moment(data).format('YYYY.MM.DD HH:mm:ss');
+            { // Audit column
+                data: null,
+                orderable: false,
+                searchable: false,
+                render: function(data, type, full) {
+                    return `<button class="btn btn-sm btn-icon audit-trigger" 
+                                    data-pseudo-id="P${full['pseudo_id']}" 
+                                    data-created-by="${full['created_by_name'] || 'Ismeretlen'}" 
+                                    data-created-at="${full['created_at']}" 
+                                    data-updated-by="${full['updated_by_name'] || 'Ismeretlen'}" 
+                                    data-updated-at="${full['updated_at']}" 
+                                    title="Audit adatok megtekintése">
+                                <i class="bx bx-info-circle text-info"></i>
+                            </button>`;
                 }
             },
             { // Action column
@@ -78,7 +82,7 @@ $(function() {
                 type: 'column',
                 renderer: function(api, rowIdx, columns) {
                     var data = $.map(columns, function(col, i) {
-                        return col.title !== '' && col.columnIndex != 6 // Kihagyjuk a Műveletek oszlopot
+                        return col.title !== '' && col.columnIndex != 5 && col.columnIndex != 6 // Kihagyjuk a Audit és Műveletek oszlopokat
                         ? '<tr data-dt-row="' +
                             col.rowIndex +
                             '" data-dt-column="' +
@@ -100,6 +104,30 @@ $(function() {
             }
         },
         language: GLOBALS.DATATABLE_TRANSLATION
+    });
+
+    // Event handler for audit modal trigger
+    $(document).on('click', '.audit-trigger', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const pseudoId = $(this).data('pseudo-id');
+        const createdBy = $(this).data('created-by');
+        const createdAt = $(this).data('created-at');
+        const updatedBy = $(this).data('updated-by');
+        const updatedAt = $(this).data('updated-at');
+        
+        // Update modal title
+        $('#auditModalLabel').text(`Folyamat audit adatok - ${pseudoId}`);
+        
+        // Update modal content
+        $('#createdByName').text(createdBy || 'Ismeretlen');
+        $('#createdAtDate').text(moment(createdAt).format('YYYY.MM.DD HH:mm:ss'));
+        $('#updatedByName').text(updatedBy || 'Ismeretlen');
+        $('#updatedAtDate').text(moment(updatedAt).format('YYYY.MM.DD HH:mm:ss'));
+        
+        // Show modal
+        $('#auditModal').modal('show');
     });
 
     // Filter form control to default size

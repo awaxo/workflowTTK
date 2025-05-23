@@ -67,25 +67,7 @@ $(function() {
                 targets: 7,
                 responsivePriority: 4,
                 render: function(data, type, full, meta) {
-                    let $is_user_responsible = full['is_user_responsible'];
-
-                    var $row_output = '';
-
-                    if ($is_user_responsible) {
-                        if (full['state_name'] === 'suspended') {
-                            $row_output = `<a href="/folyamat/visszaallitas/${full['id']}"><span class="badge bg-label-info m-1">${data}</span></a>`;
-                        } else {
-                            $row_output = `<a href="/folyamat/jovahagyas/${full['id']}"<span class="badge bg-label-info m-1">${data}</span></a>`;
-                        }
-                    } else {
-                        if (full['is_initiator_role']) {
-                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-info m-1">${data}</span>`;
-                        } else {
-                            $row_output = `<a href="/folyamat/megtekintes/${full['id']}"><span class="badge bg-label-secondary m-1">${data}</span>`;
-                        }
-                    }
-
-                    return $row_output;
+                    return `<span class="badge bg-label-secondary m-1">${data}</span>`;
                 }
             },
         ],

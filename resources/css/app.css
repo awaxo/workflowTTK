@@ -71,3 +71,123 @@ td.day {
 .app-brand-text.demo {
     text-transform: none;
 }
+
+/* Sticky Horizontal Scrollbar Solution */
+
+/* 1. Create a scrollable container for the table area only */
+.horizontal-scroll {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: visible;
+    width: 100%;
+    /* Keep the table container scrollable */
+}
+
+/* 2. Create a sticky scrollbar that stays visible */
+.horizontal-scroll::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 17px; /* Height of scrollbar */
+    background: transparent;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 3. Alternative: Custom sticky scrollbar */
+.horizontal-scroll-container {
+    position: relative;
+}
+
+.sticky-scrollbar {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 17px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: rgba(0,0,0,0.1);
+    border-top: 1px solid #ddd;
+    z-index: 1000;
+}
+
+.sticky-scrollbar-content {
+    height: 1px;
+    /* Width will be set by JavaScript to match table width */
+}
+
+/* 4. Ensure table and controls have same width */
+.horizontal-scroll table {
+    min-width: 1200px;
+    width: max-content; /* Let table expand to content */
+}
+
+.horizontal-scroll table {
+    width: 100% !important;
+    min-width: 1200px !important;
+}
+
+/* 5. Make pagination area match table width */
+.horizontal-scroll .dataTables_wrapper {
+    width: 100% !important;
+}
+
+/* 6. Sync pagination with table width */
+.horizontal-scroll .dataTables_info,
+.horizontal-scroll .dataTables_paginate {
+    white-space: nowrap;
+}
+
+/* 7. Container adjustments */
+.horizontal-scroll .card-datatable {
+    overflow: visible;
+}
+
+.hidden-scroll .table-responsive {
+    overflow-x: hidden !important;
+}
+
+/* 8. Alternative approach: Fixed scrollbar at viewport bottom */
+/* High Performance CSS for Sticky Scrollbar */
+.fixed-bottom-scrollbar {
+    position: fixed;
+    bottom: 0;
+    left: 250px;
+    right: 0;
+    height: 17px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: rgba(255,255,255,0.95);
+    border-top: 2px solid #f4f5fb;
+    z-index: 1000;
+    display: none;
+    
+    /* Performance optimizations */
+    will-change: scroll-position;
+    backface-visibility: hidden;
+    transform: translateZ(0); /* Force hardware acceleration */
+    contain: layout style paint; /* CSS containment for performance */
+}
+
+.fixed-bottom-scrollbar-content {
+    height: 1px;
+    background: transparent;
+    pointer-events: none;
+    will-change: width;
+    contain: size layout style; /* CSS containment */
+}
+
+/* Optimize table scrolling */
+.horizontal-scroll {
+    will-change: scroll-position;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* 9. Show fixed scrollbar only when needed */
+.horizontal-scroll.needs-scroll ~ .fixed-bottom-scrollbar {
+    display: block;
+}

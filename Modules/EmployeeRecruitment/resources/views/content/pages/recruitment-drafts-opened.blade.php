@@ -38,11 +38,11 @@
 
     <div class="row">
         <div class="col-12 mb-4">
-            <div class="card">
+            <div class="card hidden-scroll">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Mentett piszkozatok</h5>
                 </div>
-                <div class="card-datatable table-responsive pt-0">
+                <div class="card-datatable table-responsive horizontal-scroll pt-0">
                     <table class="datatables-drafts table border-top">
                         <thead>
                             <tr style="background-color: rgba(105,108,255,.16)">

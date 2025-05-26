@@ -51,12 +51,12 @@
 
     <div class="row">
         <div class="col-12 mb-4">
-            <div class="card">
+            <div class="card hidden-scroll">
                 <div class="nav-align-top">
                     <!-- placeholder for error messages -->
                 </div>
 
-                <div class="card-datatable table-responsive pt-0">
+                <div class="card-datatable table-responsive horizontal-scroll pt-0">
                     @php
                         $user = \App\Models\User::find(Auth::id());
                         $isWg910Or911User = true;

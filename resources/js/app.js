@@ -61,7 +61,7 @@ $(function() {
     });
 });
 
-// HIGH PERFORMANCE STICKY SCROLLBAR - MOVE THIS OUTSIDE THE $(function) BLOCK
+// HIGH PERFORMANCE STICKY SCROLLBAR
 function setupStickyScrollbar() {
     const horizontalScrollEl = document.querySelector('.horizontal-scroll');
     

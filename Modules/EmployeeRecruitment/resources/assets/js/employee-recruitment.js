@@ -338,6 +338,7 @@ $(function () {
         revalidateOnChange(fv, 'applicants_female_count');
         revalidateOnChange(fv, 'applicants_male_count');
         revalidateOnChange(fv, 'workgroup_id_1');
+        revalidateOnChange(fv, 'workgroup_id_2');
         revalidateOnChange(fv, 'position_id');
         revalidateOnChange(fv, 'job_description_file');
         revalidateOnChange(fv, 'task');
@@ -657,7 +658,34 @@ $(function () {
         console.log('Allowance end date changed:', $(this).attr('id'), $(this).val());
         updateCoverageTable();
     });
+
+    $('#workgroup_id_1, #workgroup_id_2').on('change', syncWorkgroupOptions);
+    syncWorkgroupOptions();
 });
+
+function syncWorkgroupOptions() {
+    const $wg1 = $('#workgroup_id_1');
+    const $wg2 = $('#workgroup_id_2');
+    const val1 = $wg1.val();
+    const val2 = $wg2.val();
+
+    // Minden option engedélyezése
+    $wg1.find('option').prop('disabled', false);
+    $wg2.find('option').prop('disabled', false);
+
+    // Ha van kiválasztott 1-es, tiltjuk ugyanazt a 2-esen
+    if (val1) {
+        $wg2.find(`option[value="${val1}"]`).prop('disabled', true);
+    }
+    // Ha van nem -1-es 2-es, tiltjuk az 1-esen
+    if (val2 && val2 !== '-1') {
+        $wg1.find(`option[value="${val2}"]`).prop('disabled', true);
+    }
+
+    // Frissítjük a select2 megjelenést
+    $wg1.trigger('change.select2');
+    $wg2.trigger('change.select2');
+}
 
 function toggleApplicantCountInputs(isChecked) {
     if (isChecked) {
@@ -1728,7 +1756,23 @@ function validateEmployeeRecruitment() {
                 workgroup_id_1: {
                     validators: {
                         notEmpty: {
-                            message: 'Kérjük, add meg a csoportot'
+                            message: 'Kérjük, add meg a Csoport 1-et'
+                        }
+                    }
+                },
+                workgroup_id_2: {
+                    validators: {
+                        // ha nincs kiválasztva (== -1), az is OK
+                        callback: {
+                            callback: function(input) {
+                                const wg1 = $('#workgroup_id_1').val();
+                                const wg2 = input.value;
+                                if (wg2 === '' || wg2 === '-1') {
+                                    return true;
+                                }
+                                return wg1 !== wg2;
+                            },
+                            message: 'A Csoport 1 és Csoport 2 nem lehet ugyanaz'
                         }
                     }
                 },

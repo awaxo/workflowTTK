@@ -24,7 +24,7 @@ class DropzoneManager {
         addRemoveLinks: true,
         maxFilesize: 20,
         maxFiles: 1,
-        acceptedFiles: 'application/pdf',
+        acceptedFiles: '.pdf,application/pdf',
         paramName: 'file',
         dictRemoveFile: 'Törlés',
         dictFileTooBig: 'A fájl mérete túl nagy ({{filesize}}MiB). Maximum: {{maxFilesize}}MiB.',
@@ -46,13 +46,31 @@ class DropzoneManager {
             return;
         }
 
-        const dropzoneUpload = Dropzone.getElement(`#${elementId}.dropzone`).dropzone;
-        dropzoneUpload.options = Object.assign(dropzoneUpload.options, {
+        // Check if dropzone already exists and destroy it
+        const existingDropzone = Dropzone.getElement(`#${elementId}.dropzone`);
+        if (existingDropzone && existingDropzone.dropzone) {
+            existingDropzone.dropzone.destroy();
+        }
+
+        // Merge options properly
+        const finalOptions = {
             ...this.defaultOptions,
-            maxFilesize: 20,
-            maxFiles: 1,
-            acceptedFiles: 'application/pdf',
-            paramName: 'file'
+            ...options,
+            // Ensure PDF-only acceptance is always enforced
+            acceptedFiles: '.pdf,application/pdf'
+        };
+
+        // Create new Dropzone instance with proper options
+        const dropzoneUpload = new Dropzone(`#${elementId}.dropzone`, finalOptions);
+
+        // Add file type validation at the browser level
+        dropzoneUpload.on("addedfile", function(file) {
+            // Additional client-side validation
+            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                this.removeFile(file);
+                alert('Csak PDF fájlok tölthetők fel!');
+                return;
+            }
         });
 
         dropzoneUpload.on("success", function(file, response) {
@@ -68,6 +86,15 @@ class DropzoneManager {
             $fileInput.attr('data-original-name', '');
             $fileInput.trigger('change');
         });
+
+        dropzoneUpload.on("error", function(file, message) {
+            // Handle file type errors specifically
+            if (typeof message === 'string' && message.includes('type')) {
+                console.error('File type error:', message);
+            }
+        });
+
+        return dropzoneUpload;
     }
 }
 

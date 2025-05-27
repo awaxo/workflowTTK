@@ -1982,7 +1982,7 @@ class EmployeeRecruitmentController extends Controller
                     }
                 },
             ],
-            'email' => 'required|email|max:100|regex:/^[a-zA-Z0-9._%+-]+@ttk\.hu$/',
+            'email' => 'required|email|max:255|regex:/^[a-zA-Z0-9._%+-]+@ttk\.hu$/',
             'entry_permissions' => 'required',
             'license_plate' => 'nullable|string|max:9',
             'employee_room' => 'required',
@@ -2046,7 +2046,7 @@ class EmployeeRecruitmentController extends Controller
             'extra_pay_2_end_date.callback' => 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
             'email.required' => 'Kérjük, add meg az email címet',
             'email.email' => 'Kérjük, valós email címet adj meg',
-            'email.max' => 'Az email nem lehet hosszabb 100 karakternél',
+            'email.max' => 'Az email nem lehet hosszabb 255 karakternél',
             'email.regex' => 'Csak @ttk.hu-ra végződő email cím adható meg',
             'entry_permissions.required' => 'Kérjük, válaszd ki a szükséges belépési jogosultságokat',
             'license_plate.string' => 'A rendszám érvénytelen',

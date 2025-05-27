@@ -2177,8 +2177,8 @@ function validateEmployeeRecruitment() {
                             message: 'Kérjük, valós email címet adj meg'
                         },
                         stringLength: {
-                            max: 100,
-                            message: 'Az email nem lehet hosszabb 100 karakternél'
+                            max: 255,
+                            message: 'Az email nem lehet hosszabb 255 karakternél'
                         },
                         regexp: {
                             regexp: /^[a-zA-Z0-9._%+-]+@ttk\.hu$/,

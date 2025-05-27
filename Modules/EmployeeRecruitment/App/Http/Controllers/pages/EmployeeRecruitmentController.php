@@ -1850,6 +1850,7 @@ class EmployeeRecruitmentController extends Controller
                     }
                 },
             ],
+            'base_salary_cost_center_2' => ['nullable','different:base_salary_cost_center_1'],
             'base_salary_monthly_gross_2' => [
                 function ($attribute, $value, $fail) {
                     $value = str_replace(' ', '', $value);
@@ -1864,6 +1865,7 @@ class EmployeeRecruitmentController extends Controller
                     }
                 },
             ],
+            'base_salary_cost_center_3' => ['nullable','different:base_salary_cost_center_1','different:base_salary_cost_center_2'],
             'base_salary_monthly_gross_3' => [
                 function ($attribute, $value, $fail) {
                     $value = str_replace(' ', '', $value);
@@ -2037,6 +2039,8 @@ class EmployeeRecruitmentController extends Controller
             'employment_end_date.date_format' => 'Kérjük, valós dátumot adj meg',
             'base_salary_cost_center_1.required' => 'Kérjük, add meg a költséghelyet',
             'base_salary_monthly_gross_1.required' => 'Kérjük, add meg havi bruttó bér összegét',
+            'base_salary_cost_center_2.different' => 'A Költséghely 2 nem egyezhet a Költséghely 1-gyel.',
+            'base_salary_cost_center_3.different' => 'A Költséghely 3 nem egyezhet a Költséghely 1-gyel vagy a 2-vel.',
             'management_allowance_end_date.callback' => 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
             'extra_pay_1_end_date.callback' => 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',
             'extra_pay_2_end_date.callback' => 'A dátum nem lehet későbbi, mint a mai dátum + 4 év',

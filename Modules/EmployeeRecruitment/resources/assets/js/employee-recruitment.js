@@ -661,6 +661,17 @@ $(function () {
 
     $('#workgroup_id_1, #workgroup_id_2').on('change', syncWorkgroupOptions);
     syncWorkgroupOptions();
+    
+    $('#base_salary_cost_center_1, #base_salary_cost_center_2, #base_salary_cost_center_3')
+        .on('change', function() {
+            syncCostCenterOptions();
+            // ha FormValidation fut, revalidáljuk a callback mezőket
+            if (typeof fv !== 'undefined') {
+                fv.revalidateField('base_salary_cost_center_2');
+                fv.revalidateField('base_salary_cost_center_3');
+            }
+        });
+    syncCostCenterOptions();
 });
 
 function syncWorkgroupOptions() {
@@ -685,6 +696,39 @@ function syncWorkgroupOptions() {
     // Frissítjük a select2 megjelenést
     $wg1.trigger('change.select2');
     $wg2.trigger('change.select2');
+}
+
+function syncCostCenterOptions() {
+    const $cc1 = $('#base_salary_cost_center_1');
+    const $cc2 = $('#base_salary_cost_center_2');
+    const $cc3 = $('#base_salary_cost_center_3');
+
+    const v1 = $cc1.val();
+    const v2 = $cc2.val();
+    const v3 = $cc3.val();
+
+    // Először mindhárom select összes optionját engedélyezzük
+    $cc1.add($cc2).add($cc3)
+        .find('option').prop('disabled', false);
+
+    // Tiltjuk a duplikációkat
+    if (v1) {
+        $cc2.find(`option[value="${v1}"]`).prop('disabled', true);
+        $cc3.find(`option[value="${v1}"]`).prop('disabled', true);
+    }
+    if (v2) {
+        $cc1.find(`option[value="${v2}"]`).prop('disabled', true);
+        $cc3.find(`option[value="${v2}"]`).prop('disabled', true);
+    }
+    if (v3) {
+        $cc1.find(`option[value="${v3}"]`).prop('disabled', true);
+        $cc2.find(`option[value="${v3}"]`).prop('disabled', true);
+    }
+
+    // Frissíti a select2 UI-t anélkül, hogy újrainicializálná
+    $cc1.trigger('change.select2');
+    $cc2.trigger('change.select2');
+    $cc3.trigger('change.select2');
 }
 
 function toggleApplicantCountInputs(isChecked) {

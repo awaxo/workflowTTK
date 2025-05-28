@@ -864,7 +864,7 @@
                                                     <i class="bx bx-chevron-left bx-sm ms-sm-n2"></i>
                                                     <span class="align-middle d-sm-inline-block d-none">Vissza</span>
                                                 </button>
-                                                <button class="btn btn-danger btn-delete">Folyamat törlése</button>
+                                                <button class="btn btn-danger btn-delete">Kérelem törlése</button>
                                                 <button class="btn btn-success btn-submit">
                                                     @if(isset($isSuspendedReview) && $isSuspendedReview)
                                                         Folyamat visszaállítása

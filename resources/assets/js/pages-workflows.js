@@ -114,7 +114,7 @@ $(function() {
             var checkboxClosedHtml = `
                 <div class="form-check form-switch show-closed-cases ms-3">
                     <input class="form-check-input" type="checkbox" role="switch" id="show_closed">
-                    <label class="form-check-label" for="show_closed">Lezárt folyamatok megjelenítése is</label>
+                    <label class="form-check-label" for="show_closed">Lezárt ügyek megjelenítése is</label>
                 </div>
             `;
             var parent = $(this).closest('.dataTables_wrapper').find('.dataTables_length').parent();

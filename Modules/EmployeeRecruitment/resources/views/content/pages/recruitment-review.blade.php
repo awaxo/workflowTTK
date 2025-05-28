@@ -869,7 +869,7 @@
                                                     @if(isset($isSuspendedReview) && $isSuspendedReview)
                                                         Folyamat visszaállítása
                                                     @else
-                                                        Folyamat indítása
+                                                        Kérelem leadása
                                                     @endif
                                                 </button>
                                             </div>

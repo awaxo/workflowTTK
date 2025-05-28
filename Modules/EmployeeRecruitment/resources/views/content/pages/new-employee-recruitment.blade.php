@@ -803,7 +803,7 @@
                                 @endif
                                 @if($isSecretary)
                                     <button class="btn btn-success btn-submit">
-                                        Folyamat indítása
+                                        Kérelem leadása
                                     </button>
                                 @endif
                             </div>

@@ -90,7 +90,7 @@ $(function() {
         dom: window.isLeaderOfWg915 
             ? '<"card-header"<"head-label text-center"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
             : '<"d-flex justify-content-between align-items-center row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-        buttons: [
+        buttons: !window.isSpecificRoleOnly ? [
             {
                 text: '<i class="bx bx-plus me-1"></i> <span class="d-none d-lg-inline-block">Új felhasználó</span>',
                 className: 'create-new btn btn-primary',
@@ -99,7 +99,7 @@ $(function() {
                     'data-bs-target': '#new_user'
                 },
             }
-        ],
+        ] : [],
         responsive: {
             details: {
                 display: $.fn.dataTable.Responsive.display.modal({

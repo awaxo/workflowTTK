@@ -39,9 +39,16 @@ class UserController extends Controller
             return $role;
         });
 
+        // get readable role name from $roles by $roleName
+        $role = $roles->firstWhere('name', $roleName);
+        if (!$role) {
+            abort(404, 'Role not found');
+        }
+        $roleNameReadable = $role->name_readable;
+
         $externalPrivileges = ExternalPrivilege::all();
 
-        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles', 'externalPrivileges'));
+        return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles', 'roleNameReadable', 'externalPrivileges'));
     }
 
     public function getAllAndFeaturedUsers()

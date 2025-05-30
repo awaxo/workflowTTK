@@ -44,7 +44,8 @@
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">Felhasználók</h4>
+    <h4 class="py-3 mb-0">Felhasználók</h4>
+    <h5 class="card-title mb-4">{{ isset($roleNameReadable) ? $roleNameReadable : '' }}</h5>
 
     <div class="row">
         <div class="col-12 mb-4">
@@ -56,6 +57,7 @@
                     @endphp
                     <script>
                         window.isLeaderOfWg915 = @json($isLeaderOfWg915);
+                        window.isSpecificRoleOnly = @json(isset($roleNameReadable));
                     </script>
 
                     <table class="datatables-users table border-top" data-api-endpoint="{{ $apiEndpoint }}">

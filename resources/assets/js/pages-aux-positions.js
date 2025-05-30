@@ -298,6 +298,7 @@ $(function() {
         $('#new_position_label').text('Új munkakör');
         $('.data-submit').attr('data-position-id', null);
         $('#name').val('');
+        $('#type').val($('#type option:first').val()).trigger('change');
 
         fv?.resetForm(true);
     });
@@ -318,9 +319,22 @@ function validatePosition() {
                             message: 'A munkakör neve maximum 255 karakter hosszú lehet'
                         }
                     }
+                },
+                type: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válassz munkakör típust'
+                        }
+                    }
                 }
             },
             plugins: {
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        name: 'blur',
+                        type: 'change'
+                    },
+                }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),
             },
         }

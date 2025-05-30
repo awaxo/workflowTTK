@@ -402,13 +402,29 @@ function validateWorkgroup() {
                             message: 'Ez a csoport név már használatban van'
                         }
                     }
+                },
+                leader_id: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válassz csoportvezetőt'
+                        }
+                    }
+                },
+                labor_administrator: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válassz munkaügyi ügyintézőt'
+                        }
+                    }
                 }
             },
             plugins: {
                 trigger: new FormValidation.plugins.Trigger({
                     event: {
                         workgroup_number: 'blur',
-                        name: 'blur'
+                        name: 'blur',
+                        leader_id: 'change',
+                        labor_administrator: 'change'
                     },
                 }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),

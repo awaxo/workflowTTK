@@ -258,8 +258,8 @@ $(function() {
         } else {
             $('#tender').prop('checked', false);
         }
-        $('#financial_countersign').val(costcenterType.financial_countersign);
-        $('#clause_template').val(costcenterType.clause_template);
+        $('#financial_countersign').val(costcenterType.financial_countersign).trigger('change');
+        $('#clause_template').val(costcenterType.clause_template).trigger('change');
         $('.data-submit').attr('data-costcenter-type-id', costcenterType.id);
 
         fv.revalidateField('name');
@@ -316,7 +316,7 @@ $(function() {
         $('#name').val('');
         $('#clause_template').val('');
         $('#tender').prop('checked', false);
-        $('#financial_countersign').val('pénzügyi osztályvezető');
+        $('#financial_countersign').val($('#financial_countersign option:first').val()).trigger('change');
 
         fv?.resetForm(true);
     });

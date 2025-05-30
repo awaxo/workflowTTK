@@ -107,6 +107,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="workgroup_id">Csoport</label>
                     <select class="form-select select2" id="workgroup_id">
+                        <option value=""></option>
                         @foreach($workgroups as $workgroup)
                             <option value="{{ $workgroup->id }}">{{ $workgroup->workgroup_number }} - {{ $workgroup->name }}</option>
                         @endforeach

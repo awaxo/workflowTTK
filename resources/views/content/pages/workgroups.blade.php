@@ -105,7 +105,8 @@
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="leader_id">Csoportvezető</label>
-                    <select class="form-select select2" id="leader_id">
+                    <select class="form-select select2" id="leader_id" name="leader_id">
+                        <option value=""></option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
@@ -114,7 +115,8 @@
                 </div>
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="labor_administrator">Munkaügyi ügyintéző</label>
-                    <select class="form-select select2" id="labor_administrator">
+                    <select class="form-select select2" id="labor_administrator" name="labor_administrator">
+                        <option value=""></option>
                         @foreach($labor_administrators as $labor_administrator)
                             <option value="{{ $labor_administrator->id }}">{{ $labor_administrator->name }}</option>
                         @endforeach

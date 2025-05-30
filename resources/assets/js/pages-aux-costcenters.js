@@ -498,6 +498,13 @@ function validateCostCenter() {
                         }
                     }
                 },
+                type_id: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válassz típust'
+                        }
+                    }
+                },
                 lead_user_id: {
                     validators: {
                         notEmpty: {
@@ -575,6 +582,7 @@ function validateCostCenter() {
                     event: {
                         cost_center_code: 'blur change',
                         name: 'blur',
+                        type_id: 'change',
                         lead_user_id: 'change',
                         project_coordinator_user_id: 'change',
                         due_date: 'blur change',

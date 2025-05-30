@@ -396,13 +396,21 @@ function validateUser() {
                             message: 'Ez az email cím már használatban van'
                         }
                     }
-                }
+                },
+                workgroup_id: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, válassz csoportot'
+                        }
+                    }
+                },
             },
             plugins: {
                 trigger: new FormValidation.plugins.Trigger({
                     event: {
                         name: 'blur',
-                        email: 'blur'
+                        email: 'blur',
+                        workgroup_id: 'change',
                     },
                 }),
                 bootstrap: new FormValidation.plugins.Bootstrap5(),

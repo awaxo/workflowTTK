@@ -96,6 +96,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="admin_group_number">Admin csoport</label>
                     <select class="form-select select2" id="admin_group_number" name="admin_group_number">
+                        <option value=""></option>
                         @foreach($workgroups as $workgroup)
                             <option value="{{ $workgroup->id }}">{{ $workgroup->workgroup_number }} - {{ $workgroup->name }}</option>
                         @endforeach

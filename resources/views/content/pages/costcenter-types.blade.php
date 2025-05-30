@@ -6,6 +6,7 @@
 @section('vendor-style')
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+    'resources/assets/vendor/libs/select2/select2.scss',
     'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
     'resources/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.scss',
     'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
@@ -21,6 +22,9 @@
 @vite([
     'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
     'resources/assets/vendor/libs/moment/moment.js',
+    'resources/assets/vendor/libs/bootstrap-select/bootstrap-select.js',
+    'resources/assets/vendor/libs/select2/select2.js',
+    'resources/assets/vendor/libs/select2/i18n/hu.js',
     'resources/assets/vendor/libs/flatpickr/flatpickr.js',
     'resources/assets/vendor/libs/@form-validation/popular.js',
     'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
@@ -35,6 +39,7 @@
 @section('page-script')
     @vite([
         'resources/js/app.js',
+        'resources/assets/js/forms-selects.js',
         'resources/assets/js/pages-aux-costcenter-types.js'
     ])
 @endsection
@@ -102,6 +107,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="financial_countersign">Pénzügyi ellenjegyző</label>
                     <select class="form-select select2" id="financial_countersign" name="financial_countersign">
+                        <option value=""></option>
                         <option value="pénzügyi osztályvezető">pénzügyi osztályvezető</option>
                         <option value="projektkooridinációs osztályvezető">projektkooridinációs osztályvezető</option>
                     </select>

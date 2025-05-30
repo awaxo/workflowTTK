@@ -144,6 +144,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="type_id">Típus</label>
                     <select class="form-select select2" id="type_id" name="type_id">
+                        <option value=""></option>
                         @foreach($costcenterTypes as $costcenterType)
                             <option value="{{ $costcenterType->id }}">{{ $costcenterType->name }}</option>
                         @endforeach
@@ -153,6 +154,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="lead_user_id">Témavezető</label>
                     <select class="form-select select2" id="lead_user_id" name="lead_user_id">
+                        <option value=""></option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
@@ -162,6 +164,7 @@
                 <div class="col-sm-12 fv-plugins-icon-container">
                     <label class="form-label" for="project_coordinator_user_id">Projektkoordinátor</label>
                     <select class="form-select select2" id="project_coordinator_user_id" name="project_coordinator_user_id">
+                        <option value=""></option>
                         @foreach($projectCoordinators as $projectCoordinator)
                             <option value="{{ $projectCoordinator->id }}">{{ $projectCoordinator->name }}</option>
                         @endforeach

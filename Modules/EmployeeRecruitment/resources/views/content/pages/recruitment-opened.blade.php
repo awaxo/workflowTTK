@@ -34,7 +34,7 @@
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">Nyitott felvételi kérelmek</h4>
+    <h4 class="py-3 mb-4">Felvételi kérelmek</h4>
 
     <div class="row">
         <div class="col-12 mb-4">

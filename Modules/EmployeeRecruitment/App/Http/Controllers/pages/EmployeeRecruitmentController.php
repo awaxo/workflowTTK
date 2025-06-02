@@ -1776,7 +1776,7 @@ class EmployeeRecruitmentController extends Controller
         // Add user_name to the details array
         foreach ($history as $key => $history_entry) {
             $user = User::find($history_entry['user_id']);
-            $history[$key]['user_name'] = $user->name;
+            $history[$key]['user_name'] = $user ? $user->name : 'Ismeretlen felhasználó';
         }
     
         $history = collect($history)

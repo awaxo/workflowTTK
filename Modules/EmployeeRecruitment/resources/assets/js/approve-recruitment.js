@@ -64,7 +64,8 @@ $(function () {
         if ($('#state').val() === 'group_lead_approval') {
             let fv = validateHealthAllowance();
 
-            dynamicControls(fv, 'manual_handling', [
+            // Egyelőre még nem törlöm ki, de ezzel az a baj, hogy a nem látható mezőket is validálja
+            /*dynamicControls(fv, 'manual_handling', [
                 'manual_handling_weight_5_20',
                 'manual_handling_weight_20_50',
                 'manual_handling_weight_over_50',
@@ -88,7 +89,19 @@ $(function () {
             ]);
             dynamicControls(fv, 'others', [
                 'planned_other_health_risk_factors',
-            ]);
+            ]);*/
+
+            // Csak a látható mezőket validáljuk: rejtett mezők validátorait kikapcsoljuk
+            Object.keys(fv.getFields()).forEach(function(field) {
+                const $fld = $(`[name="${field}"]`);
+                if ($fld.length && !$fld.is(':visible')) {
+                    try {
+                        fv.disableValidator(field);
+                    } catch (e) {
+                        console.warn(`Nem sikerült letiltani a validátort a rejtett mezőnél: ${field}`, e);
+                    }
+            }
+            });
 
             fv.validate().then(function(status) {
                 if (status === 'Valid') {

@@ -257,7 +257,33 @@
                                     </td>
                                     <td>{{ date('Y-m-d H:i:s', strtotime($history_entry['datetime'])) }}</td>
                                     <td>{{ $history_entry['user_name'] }}</td>
-                                    <td>{{ $history_entry['decision'] == 'start' ? 'Új kérelem' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztve' : ($history_entry['decision'] == 'restore' ? 'Visszaállítva' : ($history_entry['decision'] == 'reject' || $history_entry['decision'] == 'restart' ? 'Kérelem újraellenőrzésére vár' : ($history_entry['decision'] == 'cancel' ? 'Elutasítva' : __('states.' . $history_entry['status']))))) }}</td>
+                                    <td>
+                                        @php
+                                            $statusText = '';
+                                            if ($history_entry['decision'] == 'start') {
+                                                $statusText = 'Új kérelem';
+                                            } elseif ($history_entry['decision'] == 'suspend') {
+                                                $statusText = 'Felfüggesztve';
+                                            } elseif ($history_entry['decision'] == 'restore') {
+                                                $statusText = 'Visszaállítva';
+                                            } elseif ($history_entry['decision'] == 'reject' || $history_entry['decision'] == 'restart') {
+                                                $statusText = 'Kérelem újraellenőrzésére vár';
+                                            } elseif ($history_entry['decision'] == 'cancel') {
+                                                $statusText = 'Elutasítva';
+                                            } else {
+                                                $statusText = __('states.' . $history_entry['status']);
+                                            }
+                                            
+                                            // Add cost center code for proof_of_coverage status
+                                            if ($history_entry['status'] == 'proof_of_coverage') {
+                                                $costCenterCode = $costCenterCodesCache[$history_entry['user_id']] ?? null;
+                                                if ($costCenterCode) {
+                                                    $statusText .= ' (' . $costCenterCode . ')';
+                                                }
+                                            }
+                                        @endphp
+                                        {{ $statusText }}
+                                    </td>
                                     <td>{{ $history_entry['message'] }}</td>
                                 </tr>
                             @endforeach

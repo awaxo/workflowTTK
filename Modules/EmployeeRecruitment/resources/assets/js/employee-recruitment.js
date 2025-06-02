@@ -1370,6 +1370,9 @@ function setWorkingHours(startId, endId, durationId) {
     } else if ($('#weekly_working_hours').val() === '30') {
         defaultStart = '09:00';
         defaultEnd = '15:00';
+    } else if ($('#weekly_working_hours').val() === '20') {
+        defaultStart = '08:00';
+        defaultEnd = '12:00';
     }
 
     $(`${startId}`).timepicker({

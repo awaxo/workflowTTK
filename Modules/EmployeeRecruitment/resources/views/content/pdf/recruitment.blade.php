@@ -27,8 +27,12 @@ use App\Models\ExternalAccessRight;
     <body>
         <div class="title">Felvételi kérelem</div><br />
 
+        <div class="mb-2" style="font-size: larger;">
+            <div class="">ID: <b>{{ $recruitment->pseudo_id }}/{{ \Carbon\Carbon::parse($recruitment->created_at)->format('Y') }}</b></div>
+        </div>
+
         <table class="table-data">
-            <tbody>
+            <tbody>                
                 <!-- Alapadatok Section -->
                 <tr>
                     <th colspan="2" class="fw-bold">Alapadatok</th>

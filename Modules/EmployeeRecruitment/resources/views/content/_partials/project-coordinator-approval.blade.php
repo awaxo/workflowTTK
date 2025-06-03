@@ -122,6 +122,10 @@
                 <label class="form-label col-6 col-md-3">Munkáltatói járulék</label>
                 <span class="fw-bold ms-1 text-break">{{ $recruitment->employer_contribution }} %</span>
             </div>
+            <div class="d-flex">
+                <label class="form-label col-6 col-md-3">Próbaidő hossza</label>
+                <span class="fw-bold ms-1 text-break">{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</span>
+            </div>
         </div>
     </div>
 </div>
@@ -422,10 +426,6 @@
     </h2>
     <div id="collapse_additional_data" class="accordion-collapse collapse show" aria-labelledby="heading_additional_data">
         <div class="accordion-body">
-            <div class="d-flex">
-                <label class="form-label col-6 col-md-3">Próbaidő hossza</label>
-                <span class="fw-bold ms-1 text-break">{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</span>
-            </div>
             <div class="d-flex">
                 <label class="form-label col-6 col-md-3">Szerződés</label>
                 @if($recruitment->contract)

@@ -271,7 +271,15 @@
                                             } elseif ($history_entry['decision'] == 'cancel') {
                                                 $statusText = 'Elutasítva';
                                             } else {
-                                                $statusText = __('states.' . $history_entry['status']);
+                                                // For standard approval workflow, use appropriate language file
+                                                if ($decision == 'approve') {
+                                                    $statusText = __('states-approved.' . $status);
+                                                } elseif (in_array($decision, ['reject', 'deny'])) {
+                                                    $statusText = __('states-rejected.' . $status);
+                                                } else {
+                                                    // Default to pending status from original states file
+                                                    $statusText = __('states.' . $status);
+                                                }
                                             }
                                             
                                             // Add cost center code for proof_of_coverage status

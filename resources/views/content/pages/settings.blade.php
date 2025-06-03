@@ -96,6 +96,12 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Workflow deadline management section -->
+                    <div class="col-12">
+                        <h5 class="mt-4 mb-3">Folyamat határidők kezelése</h5>
+                    </div>
+                    
                     <div class="col-sm-4">
                         <label for="workflows" class="form-label">Folyamat</label>
                         <select class="form-select select2" id="workflows" name="workflows">
@@ -120,6 +126,31 @@
                     </div>
                     <div class="col-12">
                         <button class="btn btn-success btn-submit-deadline">Mentés</button>
+                    </div>
+                    
+                    <!-- Deadlines table -->
+                    <div class="col-12" id="deadlines-table-container" style="display: none;">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Beállított határidők</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="deadlines-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Státusz</th>
+                                                <th>Határidő (óra)</th>
+                                                <th>Műveletek</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="deadlines-table-body">
+                                            <!-- Table rows will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

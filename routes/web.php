@@ -105,6 +105,7 @@ Route::prefix('api')->middleware(['check.admin'])->group(function () {
     Route::post('/settings/update', [SettingsController::class, 'settingsUpdate']);
     Route::get('/settings/{configName}/state/{state}/deadline', [SettingsController::class, 'getWorkflowStateDeadline']);
     Route::post('/settings/update-deadline', [SettingsController::class, 'deadlineUpdate']);
+    Route::get('/settings/workflow/{configName}/deadlines', [SettingsController::class, 'getWorkflowDeadlines']);
 
     Route::post('/reports/generate', [ReportController::class, 'generateReport']);
     Route::post('/reports/export', [ReportController::class, 'exportReport']);

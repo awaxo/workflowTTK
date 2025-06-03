@@ -52,6 +52,43 @@ class SettingsController extends Controller
         return response()->json(['data' => $deadline]);
     }
 
+    /**
+     * Get all deadlines for a specific workflow
+     * 
+     * @param string $configName
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getWorkflowDeadlines($configName)
+    {
+        // Get workflow configuration
+        $workflow_config = config('workflow.' . $configName);
+        if (!$workflow_config) {
+            return response()->json(['error' => 'Workflow not found'], 404);
+        }
+
+        $deadlines = [];
+        
+        // Get all states for this workflow
+        foreach ($workflow_config['places'] as $state) {
+            // Skip states that cannot have deadlines
+            if (in_array($state, ['new_request', 'completed', 'rejected', 'suspended'])) {
+                continue;
+            }
+
+            $optionName = $configName . '_' . $state . '_deadline';
+            $deadline = Option::where('option_name', $optionName)->first();
+            
+            $deadlines[] = [
+                'state' => $state,
+                'state_name' => __('states.' . $state),
+                'deadline' => $deadline ? $deadline->option_value : null,
+                'option_name' => $optionName
+            ];
+        }
+
+        return response()->json(['data' => $deadlines]);
+    }
+
     public function deadlineUpdate()
     {
         $data = request()->all();

@@ -42,6 +42,53 @@
     ])
 @endsection
 
+@php
+use App\Models\Delegation;
+use App\Models\CostCenter;
+
+// Collect all cost centers from recruitment
+$allCostCenters = collect([
+    $recruitment->base_salary_cc1,
+    $recruitment->base_salary_cc2, 
+    $recruitment->base_salary_cc3,
+    $recruitment->health_allowance_cc,
+    $recruitment->management_allowance_cc,
+    $recruitment->extra_pay_1_cc,
+    $recruitment->extra_pay_2_cc
+])->filter(); // Remove null values
+
+// Pre-calculate cost center codes for all history entries with proof_of_coverage status
+$costCenterCodesCache = [];
+foreach ($history as $historyItem) {
+    if ($historyItem['status'] == 'proof_of_coverage') {
+        $userId = $historyItem['user_id'];
+        
+        // Check if user is an active delegate
+        $delegation = Delegation::where('delegate_user_id', $userId)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+        
+        $userIdsToCheck = [$userId];
+        
+        // If user is a delegate, also check the original user
+        if ($delegation) {
+            $userIdsToCheck[] = $delegation->original_user_id;
+        }
+        
+        // Find cost center where project_coordinator_user_id matches any of the user IDs
+        $costCenterCodes = [];
+        foreach ($allCostCenters as $costCenter) {
+            if ($costCenter && in_array($costCenter->project_coordinator_user_id, $userIdsToCheck)) {
+                $costCenterCodes[] = $costCenter->cost_center_code;
+            }
+        }
+        
+        $costCenterCodesCache[$userId] = $costCenterCodes;
+    }
+}
+@endphp
+
 @section('content')
 <h4 class="py-3 mb-2">Folyamat jóváhagyás / <span class="dynamic-part">{{ $recruitment->name }}</span></h4>
 
@@ -283,10 +330,10 @@
                                             }
                                             
                                             // Add cost center code for proof_of_coverage status
-                                            if ($history_entry['status'] == 'proof_of_coverage') {
-                                                $costCenterCode = $costCenterCodesCache[$history_entry['user_id']] ?? null;
-                                                if ($costCenterCode) {
-                                                    $statusText .= ' (' . $costCenterCode . ')';
+                                            if ($status == 'proof_of_coverage') {
+                                                $costCenterCodes = $costCenterCodesCache[$history_entry['user_id']] ?? [];
+                                                if (!empty($costCenterCodes)) {
+                                                    $statusText .= ' (' . implode(', ', $costCenterCodes) . ')';
                                                 }
                                             }
                                         @endphp

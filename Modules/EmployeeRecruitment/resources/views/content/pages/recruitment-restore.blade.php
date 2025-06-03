@@ -61,15 +61,14 @@ foreach ($history as $historyItem) {
         }
         
         // Find cost center where project_coordinator_user_id matches any of the user IDs
-        $costCenterCode = null;
+        $costCenterCodes = [];
         foreach ($allCostCenters as $costCenter) {
             if ($costCenter && in_array($costCenter->project_coordinator_user_id, $userIdsToCheck)) {
-                $costCenterCode = $costCenter->cost_center_code;
-                break;
+                $costCenterCodes[] = $costCenter->cost_center_code;
             }
         }
         
-        $costCenterCodesCache[$userId] = $costCenterCode;
+        $costCenterCodesCache[$userId] = $costCenterCodes;
     }
 }
 @endphp
@@ -208,10 +207,10 @@ foreach ($history as $historyItem) {
                                             }
                                             
                                             // Add cost center code for proof_of_coverage status
-                                            if ($history_entry['status'] == 'proof_of_coverage') {
-                                                $costCenterCode = $costCenterCodesCache[$history_entry['user_id']] ?? null;
-                                                if ($costCenterCode) {
-                                                    $statusText .= ' (' . $costCenterCode . ')';
+                                            if ($status == 'proof_of_coverage') {
+                                                $costCenterCodes = $costCenterCodesCache[$history_entry['user_id']] ?? [];
+                                                if (!empty($costCenterCodes)) {
+                                                    $statusText .= ' (' . implode(', ', $costCenterCodes) . ')';
                                                 }
                                             }
                                         @endphp

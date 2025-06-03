@@ -2,6 +2,54 @@
 use App\Models\ExternalAccessRight;
 @endphp
 
+@php
+use App\Models\Delegation;
+use App\Models\CostCenter;
+
+// Collect all cost centers from recruitment (same logic as in the main view)
+$allCostCenters = collect([
+    $recruitment->base_salary_cc1,
+    $recruitment->base_salary_cc2, 
+    $recruitment->base_salary_cc3,
+    $recruitment->health_allowance_cc,
+    $recruitment->management_allowance_cc,
+    $recruitment->extra_pay_1_cc,
+    $recruitment->extra_pay_2_cc
+])->filter(); // Remove null values
+
+// Pre-calculate cost center codes for all history entries with proof_of_coverage status
+$costCenterCodesCache = [];
+foreach ($history as $historyItem) {
+    if ($historyItem['status'] == 'proof_of_coverage') {
+        $userId = $historyItem['user_id'];
+        
+        // Check if user is an active delegate
+        $delegation = Delegation::where('delegate_user_id', $userId)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->first();
+        
+        $userIdsToCheck = [$userId];
+        
+        // If user is a delegate, also check the original user
+        if ($delegation) {
+            $userIdsToCheck[] = $delegation->original_user_id;
+        }
+        
+        // Find all cost centers where project_coordinator_user_id matches any of the user IDs
+        $costCenterCodes = [];
+        foreach ($allCostCenters as $costCenter) {
+            if ($costCenter && in_array($costCenter->project_coordinator_user_id, $userIdsToCheck)) {
+                $costCenterCodes[] = $costCenter->cost_center_code;
+            }
+        }
+        
+        // Store all matching cost center codes for this user
+        $costCenterCodesCache[$userId] = $costCenterCodes;
+    }
+}
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -430,7 +478,45 @@ use App\Models\ExternalAccessRight;
                         {{ $history_entry['decision'] == 'approve' ? 'Jóváhagyás' : ($history_entry['decision'] == 'reject' ? 'Elutasítás' : ($history_entry['decision'] == 'suspend' ? 'Felfüggesztés' : ($history_entry['decision'] == 'start' ? 'Indítás' : ($history_entry['decision'] == 'restart' ? 'Újraindítás' : ($history_entry['decision'] == 'delete' ? 'Törlés' : 'Visszaállítás'))))) }}
                         <br />{{ $history_entry['datetime'] }}
                         <br />{{ $history_entry['user_name'] }}</span></td>
-                    <td>{{ __('states.' . $history_entry['status']) }}</td>
+                    <td>
+                        @php
+                            $statusText = '';
+                            $decision = $history_entry['decision'];
+                            $status = $history_entry['status'];
+                            
+                            // Handle special decision types that don't use standard approval workflow
+                            if ($decision == 'start') {
+                                $statusText = 'Új kérelem';
+                            } elseif ($decision == 'suspend') {
+                                $statusText = 'Felfüggesztve';
+                            } elseif ($decision == 'restore') {
+                                $statusText = 'Visszaállítva';
+                            } elseif ($decision == 'reject' || $decision == 'restart') {
+                                $statusText = 'Kérelem újraellenőrzésére vár';
+                            } elseif ($decision == 'cancel') {
+                                $statusText = 'Elutasítva';
+                            } else {
+                                // For standard approval workflow, use appropriate language file
+                                if ($decision == 'approve') {
+                                    $statusText = __('states-approved.' . $status);
+                                } elseif (in_array($decision, ['reject', 'deny'])) {
+                                    $statusText = __('states-rejected.' . $status);
+                                } else {
+                                    // Default to pending status from original states file
+                                    $statusText = __('states.' . $status);
+                                }
+                            }
+                            
+                            // Add cost center codes for proof_of_coverage status
+                            if ($status == 'proof_of_coverage') {
+                                $costCenterCodes = $costCenterCodesCache[$history_entry['user_id']] ?? [];
+                                if (!empty($costCenterCodes)) {
+                                    $statusText .= ' (' . implode(', ', $costCenterCodes) . ')';
+                                }
+                            }
+                        @endphp
+                        {{ $statusText }}
+                    </td>
                     <td>{{ $history_entry['message'] }}</td>
                 </tr>
             @endforeach

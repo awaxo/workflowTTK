@@ -162,22 +162,34 @@ foreach ($history as $historyItem) {
                                     <td>
                                         @php
                                             $statusText = '';
-                                            if ($history_entry['decision'] == 'start') {
+                                            $decision = $history_entry['decision'];
+                                            $status = $history_entry['status'];
+                                            
+                                            // Handle special decision types that don't use standard approval workflow
+                                            if ($decision == 'start') {
                                                 $statusText = 'Új kérelem';
-                                            } elseif ($history_entry['decision'] == 'suspend') {
+                                            } elseif ($decision == 'suspend') {
                                                 $statusText = 'Felfüggesztve';
-                                            } elseif ($history_entry['decision'] == 'restore') {
+                                            } elseif ($decision == 'restore') {
                                                 $statusText = 'Visszaállítva';
-                                            } elseif ($history_entry['decision'] == 'reject' || $history_entry['decision'] == 'restart') {
+                                            } elseif ($decision == 'reject' || $decision == 'restart') {
                                                 $statusText = 'Kérelem újraellenőrzésére vár';
-                                            } elseif ($history_entry['decision'] == 'cancel') {
+                                            } elseif ($decision == 'cancel') {
                                                 $statusText = 'Elutasítva';
                                             } else {
-                                                $statusText = __('states.' . $history_entry['status']);
+                                                // For standard approval workflow, use appropriate language file
+                                                if ($decision == 'approve') {
+                                                    $statusText = __('states-approved.' . $status);
+                                                } elseif (in_array($decision, ['reject', 'deny'])) {
+                                                    $statusText = __('states-rejected.' . $status);
+                                                } else {
+                                                    // Default to pending status from original states file
+                                                    $statusText = __('states.' . $status);
+                                                }
                                             }
                                             
                                             // Add cost center code for proof_of_coverage status
-                                            if ($history_entry['status'] == 'proof_of_coverage') {
+                                            if ($status == 'proof_of_coverage') {
                                                 $costCenterCode = $costCenterCodesCache[$history_entry['user_id']] ?? null;
                                                 if ($costCenterCode) {
                                                     $statusText .= ' (' . $costCenterCode . ')';

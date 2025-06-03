@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'new_request' => 'Új kérelem',
+    'it_head_approval' => 'Email cím jóváhagyva',
+    'supervisor_approval' => 'Témavezető jóváhagyta',
+    'group_lead_approval' => 'Csoportvezető jóváhagyta',
+    'director_approval' => 'Igazgató jóváhagyta',
+    'hr_lead_approval' => 'Humánpolitikai osztályvezető jóváhagyta',
+    'proof_of_coverage' => 'Fedezetigazolva',
+    'project_coordination_lead_approval' => 'Projektkoordinációs osztályvezető jóváhagyta',
+    'post_financing_approval' => 'Utófinanszírozott pályázat fedezetigazolva',
+    'financial_counterparty_approval' => 'Pénzügyi ellenjegyző jóváhagyta',
+    'obligee_approval' => 'Kötelezettségvállaló jóváhagyta',
+    'draft_contract_pending' => 'Szerződéstervezet elkészítve',
+    'financial_countersign_approval' => 'Pénzügyi ellenjegyző aláírta',
+    'obligee_signature' => 'Kötelezettségvállaló aláírta',
+    'employee_signature' => 'Munkavállaló aláírta',
+    'registration' => 'Nyilvántartásba véve',
+    'request_to_complete' => 'Felvett',
+    'completed' => 'Lezárva',
+    'rejected' => 'Elutasítva',
+    'suspended' => 'Felfüggesztve',
+    'request_review' => 'Kérelem újraellenőrzésre',
+    'cancelled' => 'Sztornózva',
+];

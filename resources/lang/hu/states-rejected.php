@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'new_request' => 'Új kérelem',
+    'it_head_approval' => 'Email cím jóváhagyása nem lehetséges',
+    'supervisor_approval' => 'Témavezető nem hagyta jóvá',
+    'group_lead_approval' => 'Csoportvezető nem hagyta jóvá',
+    'director_approval' => 'Igazgató nem hagyta jóvá',
+    'hr_lead_approval' => 'Humánpolitikai osztályvezető nem hagyta jóvá',
+    'proof_of_coverage' => 'Fedezetigazolás elutasítva',
+    'project_coordination_lead_approval' => 'Projektkoordinációs osztályvezető nem hagyta jóvá',
+    'post_financing_approval' => 'Utófinanszírozott pályázat fedezetigazolás elutasítva',
+    'financial_counterparty_approval' => 'Pénzügyi ellenjegyző nem hagyta jóvá',
+    'obligee_approval' => 'Kötelezettségvállaló nem hagyta jóvá',
+    'draft_contract_pending' => 'Szerződéstervezet elkészítése nem lehetséges',
+    'financial_countersign_approval' => 'Pénzügyi ellenjegyző nem írta alá',
+    'obligee_signature' => 'Kötelezettségvállaló nem írta alá',
+    'employee_signature' => 'Munkavállaló nem írta alá',
+    'registration' => 'Nyilvántartásba vétel nem lehetséges',
+    'request_to_complete' => 'Felvételi eljárás lezárása nem lehetséges',
+    'completed' => 'Lezárva',
+    'rejected' => 'Elutasítva',
+    'suspended' => 'Felfüggesztve',
+    'request_review' => 'Kérelem újraellenőrzésre',
+    'cancelled' => 'Sztornózva',
+];

@@ -46,26 +46,21 @@ class DropzoneManager {
             return;
         }
 
-        // Check if dropzone already exists and destroy it
-        const existingDropzone = Dropzone.getElement(`#${elementId}.dropzone`);
-        if (existingDropzone && existingDropzone.dropzone) {
-            existingDropzone.dropzone.destroy();
-        }
-
-        // Merge options properly
-        const finalOptions = {
+        const dropzoneUpload = Dropzone.getElement(`#${elementId}.dropzone`).dropzone;
+        dropzoneUpload.options = Object.assign(dropzoneUpload.options, {
             ...this.defaultOptions,
-            ...options,
-            // Ensure PDF-only acceptance is always enforced
-            acceptedFiles: '.pdf,application/pdf'
-        };
+            maxFilesize: 20,
+            maxFiles: 1,
+            acceptedFiles: '.pdf,application/pdf',
+            paramName: 'file'
+        });
 
-        // Create new Dropzone instance with proper options
-        const dropzoneUpload = new Dropzone(`#${elementId}.dropzone`, finalOptions);
+        // Force update the accepted files immediately
+        dropzoneUpload.hiddenFileInput.setAttribute('accept', '.pdf,application/pdf');
 
         // Add file type validation at the browser level
         dropzoneUpload.on("addedfile", function(file) {
-            // Additional client-side validation
+            // Additional client-side validation for PDF only
             if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
                 this.removeFile(file);
                 alert('Csak PDF fájlok tölthetők fel!');

@@ -307,15 +307,19 @@ foreach ($history as $historyItem) {
                                     <td>
                                         @php
                                             $statusText = '';
-                                            if ($history_entry['decision'] == 'start') {
+                                            $decision = $history_entry['decision'];
+                                            $status = $history_entry['status'];
+
+                                            $statusText = '';
+                                            if ($decision == 'start') {
                                                 $statusText = 'Új kérelem';
-                                            } elseif ($history_entry['decision'] == 'suspend') {
+                                            } elseif ($decision == 'suspend') {
                                                 $statusText = 'Felfüggesztve';
-                                            } elseif ($history_entry['decision'] == 'restore') {
+                                            } elseif ($decision == 'restore') {
                                                 $statusText = 'Visszaállítva';
-                                            } elseif ($history_entry['decision'] == 'reject' || $history_entry['decision'] == 'restart') {
+                                            } elseif ($decision == 'reject' || $decision == 'restart') {
                                                 $statusText = 'Kérelem újraellenőrzésére vár';
-                                            } elseif ($history_entry['decision'] == 'cancel') {
+                                            } elseif ($decision == 'cancel') {
                                                 $statusText = 'Elutasítva';
                                             } else {
                                                 // For standard approval workflow, use appropriate language file

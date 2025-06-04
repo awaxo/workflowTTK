@@ -58,7 +58,7 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         CommandRegistry::registerCommand(CheckStateDeadlines::class, 'daily');
         CommandRegistry::registerCommand(CheckDelegationDeadlines::class, 'hourly');
         CommandRegistry::registerCommand(CheckExpiredCostCenters::class, 'dailyAt', ['01:00']);
-        CommandRegistry::registerCommand(ArchiveOldDrafts::class, 'yearlyOn',  ['01-01', '03:00']);
+        CommandRegistry::registerCommand(ArchiveOldDrafts::class, 'yearlyOn', 1, 1, '03:00');
     }
 
     /**

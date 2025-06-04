@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -17,10 +18,14 @@ class Kernel extends ConsoleKernel
         $commands = CommandRegistry::getCommands();
 
         foreach ($commands as $command) {
-            $scheduleCommand = $schedule->command($command['class']);
+            try{
+                $scheduleCommand = $schedule->command($command['class']);
 
-            if (method_exists($scheduleCommand, $command['frequency'])) {
-                $scheduleCommand->{$command['frequency']}(...$command['parameters']);
+                if (method_exists($scheduleCommand, $command['frequency'])) {
+                    $scheduleCommand->{$command['frequency']}(...$command['parameters']);
+                }
+            } catch (\Exception $e) {
+                Log::error("Failed to schedule command '{$command['class']}': " . $e->getMessage());
             }
         }
     }

@@ -70,13 +70,13 @@ use App\Models\CostCenter;
 
 // Collect all cost centers from recruitment
 $allCostCenters = collect([
-    $recruitment->base_salary_cc1,
-    $recruitment->base_salary_cc2, 
-    $recruitment->base_salary_cc3,
-    $recruitment->health_allowance_cc,
-    $recruitment->management_allowance_cc,
-    $recruitment->extra_pay_1_cc,
-    $recruitment->extra_pay_2_cc
+    $draft->base_salary_cc1,
+    $draft->base_salary_cc2, 
+    $draft->base_salary_cc3,
+    $draft->health_allowance_cc,
+    $draft->management_allowance_cc,
+    $draft->extra_pay_1_cc,
+    $draft->extra_pay_2_cc
 ])->filter(); // Remove null values
 
 // Pre-calculate cost center codes for all history entries with proof_of_coverage status

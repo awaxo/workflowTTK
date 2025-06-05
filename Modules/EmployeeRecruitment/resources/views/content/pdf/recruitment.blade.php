@@ -170,38 +170,6 @@ foreach ($history as $historyItem) {
                     <td>Próbaidő hossza</td>
                     <td>{{ $recruitment->probation_period ? $recruitment->probation_period : '-' }} nap</td>
                 </tr>
-                
-                <!-- Munkaidő Section -->
-                <tr>
-                    <th colspan="2" class="fw-bold">Munkaidő</th>
-                </tr>
-                <tr>
-                    <td>Heti munkaóraszám</td>
-                    <td>{{ $recruitment->weekly_working_hours }}</td>
-                </tr>
-                <tr>
-                    <th colspan="2" class="fw-bold"><strong>Munkaidő</strong></th>
-                </tr>
-                <tr>
-                    <td>Hétfő</td>
-                    <td>{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</td>
-                </tr>
-                <tr>
-                    <td>Kedd</td>
-                    <td>{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</td>
-                </tr>
-                <tr>
-                    <td>Szerda</td>
-                    <td>{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</td>
-                </tr>
-                <tr>
-                    <td>Csütörtök</td>
-                    <td>{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</td>
-                </tr>
-                <tr>
-                    <td>Péntek</td>
-                    <td>{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</td>
-                </tr>
 
                 <!-- Bérelemek Section -->
                 <tr>
@@ -302,6 +270,38 @@ foreach ($history as $historyItem) {
                 <tr>
                     <td>Időtartam vége</td>
                     <td>{{ $recruitment->extra_pay_2_end_date }}</td>
+                </tr>
+
+                <!-- Munkaidő Section -->
+                <tr>
+                    <th colspan="2" class="fw-bold">Munkaidő</th>
+                </tr>
+                <tr>
+                    <td>Heti munkaóraszám</td>
+                    <td>{{ $recruitment->weekly_working_hours }}</td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="fw-bold"><strong>Munkaidő</strong></th>
+                </tr>
+                <tr>
+                    <td>Hétfő</td>
+                    <td>{{ Carbon::parse($recruitment->work_start_monday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_monday)->format('H:i') }}</td>
+                </tr>
+                <tr>
+                    <td>Kedd</td>
+                    <td>{{ Carbon::parse($recruitment->work_start_tuesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_tuesday)->format('H:i') }}</td>
+                </tr>
+                <tr>
+                    <td>Szerda</td>
+                    <td>{{ Carbon::parse($recruitment->work_start_wednesday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_wednesday)->format('H:i') }}</td>
+                </tr>
+                <tr>
+                    <td>Csütörtök</td>
+                    <td>{{ Carbon::parse($recruitment->work_start_thursday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_thursday)->format('H:i') }}</td>
+                </tr>
+                <tr>
+                    <td>Péntek</td>
+                    <td>{{ Carbon::parse($recruitment->work_start_friday)->format('H:i') }} - {{ Carbon::parse($recruitment->work_end_friday)->format('H:i') }}</td>
                 </tr>
                 
                 <!-- Egyéb adatok Section -->

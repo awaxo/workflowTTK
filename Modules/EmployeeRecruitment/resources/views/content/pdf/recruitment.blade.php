@@ -205,7 +205,7 @@ foreach ($history as $historyItem) {
                     <th colspan="2" class="fw-bold">Bérelemek</th>
                 </tr>
                 <tr>
-                    <td>Havi bruttó bér</td>
+                    <td>Összesített havi bruttó bér</td>
                     <td>{{ $monthlyGrossSalariesSum }} Ft / hó</td>
                 </tr>
                 @endif
@@ -224,7 +224,7 @@ foreach ($history as $historyItem) {
                 @endif
                 @if($recruitment->base_salary_monthly_gross_1)
                 <tr>
-                    <td>Havi bruttó bér 1</td>
+                    <td>Havi bruttó alapbér 1</td>
                     <td>{{ number_format($recruitment->base_salary_monthly_gross_1, 0, ',', ' ') . ' Ft' }}</td>
                 </tr>
                 @endif
@@ -236,7 +236,7 @@ foreach ($history as $historyItem) {
                 @endif
                 @if($recruitment->base_salary_monthly_gross_2)
                 <tr>
-                    <td>Havi bruttó bér 2</td>
+                    <td>Havi bruttó alapbér 2</td>
                     <td>{{ number_format($recruitment->base_salary_monthly_gross_2, 0, ',', ' ') . ' Ft' }}</td>
                 </tr>
                 @endif
@@ -248,7 +248,7 @@ foreach ($history as $historyItem) {
                 @endif
                 @if($recruitment->base_salary_monthly_gross_3)
                 <tr>
-                    <td>Havi bruttó bér 3</td>
+                    <td>Havi bruttó alapbér 3</td>
                     <td>{{ number_format($recruitment->base_salary_monthly_gross_3, 0, ',', ' ') . ' Ft' }}</td>
                 </tr>
                 @endif
@@ -261,13 +261,13 @@ foreach ($history as $historyItem) {
                 @endif
                 @if($recruitment->health_allowance_cc)
                 <tr>
-                    <td>Költséghely 4</td>
+                    <td>Egészségügyi pótlék költséghely</td>
                     <td>{{ $recruitment->health_allowance_cc->cost_center_code . ' - ' . $recruitment->health_allowance_cc->name }}</td>
                 </tr>
                 @endif
                 @if($recruitment->health_allowance_monthly_gross_4)
                 <tr>
-                    <td>Havi bruttó bér 4</td>
+                    <td>Havi bruttó egészségügyi pótlék</td>
                     <td>{{ number_format($recruitment->health_allowance_monthly_gross_4, 0, ',', ' ') . ' Ft' }}</td>
                 </tr>
                 @endif
@@ -280,13 +280,13 @@ foreach ($history as $historyItem) {
                 @endif
                 @if($recruitment->management_allowance_cc)
                 <tr>
-                    <td>Költséghely 5</td>
+                    <td>Vezetői pótlék költséghely</td>
                     <td>{{ $recruitment->management_allowance_cc->cost_center_code . ' - ' . $recruitment->management_allowance_cc->name }}</td>
                 </tr>
                 @endif
                 @if($recruitment->management_allowance_monthly_gross_5)
                 <tr>
-                    <td>Havi bruttó bér 5</td>
+                    <td>Havi bruttó vezetői pótlék</td>
                     <td>{{ number_format($recruitment->management_allowance_monthly_gross_5, 0, ',', ' ') . ' Ft' }}</td>
                 </tr>
                 @endif
@@ -305,13 +305,13 @@ foreach ($history as $historyItem) {
                 @endif
                 @if($recruitment->extra_pay_1_cc)
                 <tr>
-                    <td>Költséghely 6</td>
+                    <td>Bérpótlék 1</td>
                     <td>{{ $recruitment->extra_pay_1_cc->cost_center_code . ' - ' . $recruitment->extra_pay_1_cc->name }}</td>
                 </tr>
                 @endif
                 @if($recruitment->extra_pay_1_monthly_gross_6)
                 <tr>
-                    <td>Havi bruttó bér 6</td>
+                    <td>Havi bruttó illetménykiegészítés 1</td>
                     <td>{{ number_format($recruitment->extra_pay_1_monthly_gross_6, 0, ',', ' ') . ' Ft' }}</td>
                 </tr>
                 @endif
@@ -330,13 +330,13 @@ foreach ($history as $historyItem) {
                 @endif
                 @if($recruitment->extra_pay_2_cc)
                 <tr>
-                    <td>Költséghely 7</td>
+                    <td>Bérpótlék 2</td>
                     <td>{{ $recruitment->extra_pay_2_cc->cost_center_code . ' - ' . $recruitment->extra_pay_2_cc->name }}</td>
                 </tr>
                 @endif
                 @if($recruitment->extra_pay_1_monthly_gross_7)
                 <tr>
-                    <td>Havi bruttó bér 7</td>
+                    <td>Havi bruttó illetménykiegészítés 2</td>
                     <td>{{ number_format($recruitment->extra_pay_1_monthly_gross_7, 0, ',', ' ') . ' Ft' }}</td>
                 </tr>
                 @endif

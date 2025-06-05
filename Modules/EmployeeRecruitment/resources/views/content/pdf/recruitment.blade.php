@@ -517,36 +517,6 @@ foreach ($history as $historyItem) {
                     <td>{{ $recruitment->planned_carcinogenic_materials_use }}</td>
                 </tr>
                 @endif
-                
-                <!-- Dokumentumok Section -->
-                <tr>
-                    <th colspan="2" class="fw-bold">Dokumentumok</th>
-                </tr>
-                <tr>
-                    <td>Személyi adatlap</td>
-                    <td>{{ $recruitment->personal_data_sheet ? 'Igen' : 'Nem' }}</td>
-                </tr>
-                <tr>
-                    <td>Hallgatói jogviszony igazolás</td>
-                    <td>{{ $recruitment->student_status_verification ? 'Igen' : 'Nem' }}</td>
-                </tr>
-                <tr>
-                    <td>Bizonyítványok</td>
-                    <td>{{ $recruitment->certificates ? 'Igen' : 'Nem' }}</td>
-                </tr>
-                <tr>
-                    <td>Munkába járási támogatást igényel</td>
-                    <td>{{ $recruitment->requires_commute_support ? 'Igen' : 'Nem' }}</td>
-                </tr>
-                <tr>
-                    <td>Munkába járási adatlap</td>
-                    <td>{{ $recruitment->commute_support_form ? 'Igen' : 'Nem' }}</td>
-                </tr>
-                
-                <!-- Kiegészítő adatok Section -->
-                <tr>
-                    <th colspan="2" class="fw-bold">Kiegészítő adatok</th>
-                </tr>
             </tbody>
         </table>
 

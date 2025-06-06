@@ -5,7 +5,7 @@ namespace Modules\EmployeeRecruitment\App\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Services\SecretaryRoleService;
+use App\Services\RoleService;
 
 class CheckSecretary
 {
@@ -15,7 +15,7 @@ class CheckSecretary
             return redirect()->route('login');
         }
         
-        $roles = SecretaryRoleService::getAll();
+        $roles = RoleService::getAllSecretaryRoles();
         $user = User::find(Auth::id());
         
         if (!$user || !$user->hasAnyRole($roles)) {

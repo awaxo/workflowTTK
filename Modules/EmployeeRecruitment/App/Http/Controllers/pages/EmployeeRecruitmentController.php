@@ -23,7 +23,7 @@ use App\Models\User;
 use App\Models\WorkflowType;
 use App\Models\Workgroup;
 use App\Services\PdfService;
-use App\Services\SecretaryRoleService;
+use App\Services\RoleService;
 use App\Services\WorkflowService;
 use Carbon\Carbon;
 use Exception;
@@ -61,7 +61,7 @@ class EmployeeRecruitmentController extends Controller
 
     public function index()
     {
-        $roles = SecretaryRoleService::getAll();
+        $roles = RoleService::getAllSecretaryRoles();
         $user = User::find(Auth::id());
 
         $workgroups = collect();
@@ -719,7 +719,7 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-error');
         }
 
-        $roles = SecretaryRoleService::getAll();
+        $roles = RoleService::getAllSecretaryRoles();
         $user = User::find(Auth::id());
 
         $workgroups = collect();
@@ -823,7 +823,7 @@ class EmployeeRecruitmentController extends Controller
             return view('content.pages.misc-not-authorized');
         }
 
-        $roles = SecretaryRoleService::getAll();
+        $roles = RoleService::getAllSecretaryRoles();
         $user = User::find(Auth::id());
 
         $workgroups = collect();
@@ -1210,7 +1210,7 @@ class EmployeeRecruitmentController extends Controller
         // Ha a felhasználó a felfüggesztő vagy az indító intézet titkárnője
         if ($recruitment->state == 'suspended' && ($isSuspender || $isTitkarForInitiatorInstitute)) {
             // Munkacsoportok lekérdezése a review view számára
-            $roles = SecretaryRoleService::getAll();
+            $roles = RoleService::getAllSecretaryRoles();
             $user = User::find(Auth::id());
 
             $workgroups = collect();

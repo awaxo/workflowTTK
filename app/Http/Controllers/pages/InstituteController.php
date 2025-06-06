@@ -5,9 +5,12 @@ namespace App\Http\Controllers\pages;
 use App\Events\ModelChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Institute;
+use App\Models\Role;
 use App\Models\Workgroup;
+use App\Services\RoleService;
 use Illuminate\Support\Facades\Auth;
 use Closure;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class InstituteController extends Controller
@@ -49,17 +52,23 @@ class InstituteController extends Controller
 
     public function checkGroupLevelUnique()
     {
-        $groupLevel = request()->input('group_level');
+        $groupLevel = request()->input('cleaned_group_level');
         $instituteId = request()->input('institute_id');
         
-        $query = Institute::where('group_level', $groupLevel)
-            ->where('deleted', 0);
-        
+        // If we're checking the same institute's current group_level, it's valid
         if ($instituteId) {
-            $query->where('id', '!=', $instituteId);
+            $currentInstitute = Institute::find($instituteId);
+            if ($currentInstitute && $currentInstitute->group_level == $groupLevel) {
+                return response()->json(['valid' => true]);
+            }
         }
         
-        $exists = $query->exists();
+        $exists = Institute::where('group_level', $groupLevel)
+                        ->where('deleted', 0)
+                        ->when($instituteId, function ($query) use ($instituteId) {
+                            return $query->where('id', '!=', $instituteId);
+                        })
+                        ->exists();
         
         return response()->json(['valid' => !$exists]);
     }
@@ -69,14 +78,20 @@ class InstituteController extends Controller
         $name = request()->input('name');
         $instituteId = request()->input('institute_id');
         
-        $query = Institute::where('name', $name)
-            ->where('deleted', 0);
-        
+        // If we're checking the same institute's current name, it's valid
         if ($instituteId) {
-            $query->where('id', '!=', $instituteId);
+            $currentInstitute = Institute::find($instituteId);
+            if ($currentInstitute && $currentInstitute->name === $name) {
+                return response()->json(['valid' => true]);
+            }
         }
         
-        $exists = $query->exists();
+        $exists = Institute::where('name', $name)
+                        ->where('deleted', 0)
+                        ->when($instituteId, function ($query) use ($instituteId) {
+                            return $query->where('id', '!=', $instituteId);
+                        })
+                        ->exists();
         
         return response()->json(['valid' => !$exists]);
     }
@@ -84,27 +99,41 @@ class InstituteController extends Controller
     public function checkAbbreviationUnique()
     {
         $abbreviation = trim(request()->input('abbreviation'));
-        $instituteId  = request()->input('institute_id');
+        $instituteId = request()->input('institute_id');
 
         if (mb_strlen($abbreviation) > 5) {
             return response()->json(['valid' => false]);
         }
 
-        $query = Institute::where('abbreviation', $abbreviation)
-                        ->where('deleted', 0);
-
+        // If we're checking the same institute's current abbreviation, it's valid
         if ($instituteId) {
-            $query->where('id', '!=', $instituteId);
+            $currentInstitute = Institute::find($instituteId);
+            if ($currentInstitute && $currentInstitute->abbreviation === $abbreviation) {
+                return response()->json(['valid' => true]);
+            }
         }
 
-        $exists = $query->exists();
+        $exists = Institute::where('abbreviation', $abbreviation)
+                        ->where('deleted', 0)
+                        ->when($instituteId, function ($query) use ($instituteId) {
+                            return $query->where('id', '!=', $instituteId);
+                        })
+                        ->exists();
 
         return response()->json(['valid' => !$exists]);
     }
 
     public function delete($id)
     {
-        $institute = Institute::find($id);
+        $institute = Institute::findOrFail($id);
+    
+        // Check if group_level is 9 - cannot be deleted
+        if ($institute->group_level === 9) {
+            return response()->json([
+                'message' => 'Ez az intézet nem törölhető.'
+            ], 403);
+        }
+        
         $institute->deleted = 1;
         $institute->save();
 
@@ -116,6 +145,13 @@ class InstituteController extends Controller
     public function restore($id)
     {
         $institute = Institute::findOrFail($id);
+        
+        // Check if group_level is 9 - cannot be restored (though it shouldn't be deleted in first place)
+        if ($institute->group_level === 9) {
+            return response()->json([
+                'message' => 'Ez az intézet nem állítható vissza.'
+            ], 403);
+        }
 
         $conflictExists = Institute::where('deleted', 0)
             ->where('id', '!=', $institute->id)
@@ -142,9 +178,17 @@ class InstituteController extends Controller
 
     public function update($id)
     {
+        $institute = Institute::findOrFail($id);
+        
+        // Check if group_level is 9 - cannot be modified
+        if ($institute->group_level === 9) {
+            return response()->json([
+                'message' => 'Ez az intézet nem módosítható.'
+            ], 403);
+        }
+        
         $validatedData = $this->validateRequest();
 
-        $institute = Institute::find($id);
         $institute->fill($validatedData);
         $institute->updated_by = Auth::id();
         $institute->save();
@@ -171,67 +215,46 @@ class InstituteController extends Controller
 
     private function validateRequest()
     {
-        $existingGroupLevels = Institute::where('deleted', 0);
-        if (request()->input('id')) {
-            $existingGroupLevels = $existingGroupLevels->where('id', '!=', request()->input('id'));
-        }
-        $existingGroupLevels = $existingGroupLevels->pluck('group_level')->toArray();
-        
-        $existingNames = Institute::where('deleted', 0);
-        if (request()->input('id')) {
-            $existingNames = $existingNames->where('id', '!=', request()->input('id'));
-        }
-        $existingNames = $existingNames->pluck('name')->toArray();
-        
-        $existingAbbreviations = Institute::where('deleted', 0);
-        if (request()->input('id')) {
-            $existingAbbreviations = $existingAbbreviations->where('id', '!=', request()->input('id'));
-        }
-        $existingAbbreviations = $existingAbbreviations->pluck('abbreviation')->toArray();
-
         return request()->validate([
             'name' => [
                 'required',
                 'max:255',
                 'regex:/^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s,-]+$/',
-                function (string $attribute, mixed $value, Closure $fail) use ($existingNames) {
-                    if (in_array($value, $existingNames)) {
-                        $fail("Az intézet neve már foglalt");
-                    }
-                },
+                Rule::unique('wf_institute', 'name')
+                    ->where('deleted', 0)
+                    ->ignore(request()->input('id')),
             ],
             'abbreviation' => [
                 'required',
                 'max:5',
                 'regex:/^[A-ZÁÉÍÓÖŐÚÜŰ]+$/',
-                function (string $attribute, mixed $value, Closure $fail) use ($existingAbbreviations) {
-                    if (in_array($value, $existingAbbreviations)) {
-                        $fail("Az intézet rövidítése már foglalt");
-                    }
-                },
+                Rule::unique('wf_institute', 'abbreviation')
+                    ->where('deleted', 0)
+                    ->ignore(request()->input('id')),
             ],
             'group_level' => [
                 'required',
                 'integer',
                 'min:1',
                 'max:9',
-                function (string $attribute, mixed $value, Closure $fail) use ($existingGroupLevels) {
-                    if (in_array($value, $existingGroupLevels)) {
-                        $fail("Az intézet száma már foglalt");
-                    }
-                },
+                Rule::unique('wf_institute', 'group_level')
+                    ->where('deleted', 0)
+                    ->ignore(request()->input('id')),
             ],
         ], [
             'name.required' => 'Az intézet neve kötelező',
             'name.max' => 'Az intézet neve maximum 255 karakter lehet',
             'name.regex' => 'Az intézet neve csak betűket, szóközt, vesszőt és kötőjelet tartalmazhat',
+            'name.unique' => 'Az intézet neve már foglalt',
             'abbreviation.required' => 'Az intézet rövidítése kötelező',
             'abbreviation.max' => 'Az intézet rövidítése maximum 5 karakter lehet',
             'abbreviation.regex' => 'Az intézet rövidítése csak nagybetűket tartalmazhat',
+            'abbreviation.unique' => 'Az intézet rövidítése már foglalt',
             'group_level.required' => 'Az intézet száma kötelező',
             'group_level.integer' => 'Az intézet száma csak egész szám lehet',
             'group_level.min' => 'Az intézet száma minimum 1 lehet',
             'group_level.max' => 'Az intézet száma maximum 9 lehet',
+            'group_level.unique' => 'Az intézet száma már foglalt',
         ]);
     }
 }

@@ -66,6 +66,11 @@ $(function() {
                 searchable: false,
                 render: function(data, type, full, meta) {
                     if (window.isLeaderOfWg912) {
+                        // If group_level is 9, return empty - no actions allowed
+                        if (full.group_level === 9) {
+                            return '';
+                        }
+                        
                         return (
                             '<div class="d-inline-block">' +
                             '<a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
@@ -195,10 +200,18 @@ $(function() {
                 if (jqXHR.status === 401 || jqXHR.status === 419) {
                     alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
                     window.location.href = '/login';
+                    return;
                 }
 
                 $('#deleteConfirmation').modal('hide');
-                GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
+                
+                // Handle 403 Forbidden specifically
+                if (jqXHR.status === 403) {
+                    var errorMessage = jqXHR.responseJSON?.message || 'Ez a művelet nem engedélyezett.';
+                    GLOBALS.AJAX_ERROR(errorMessage, jqXHR, textStatus, errorThrown);
+                } else {
+                    GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
+                }
             }
         });
     });
@@ -264,15 +277,22 @@ $(function() {
                 // Disable the button to prevent double clicks
                 $(".data-submit").prop('disabled', true);
                 
+                var requestData = {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    group_level: $('#group_level').val().replace(/\s/g, ''),
+                    name: $('#name').val(),
+                    abbreviation: $('#abbreviation').val()
+                };
+                
+                // Add institute ID if updating
+                if (instituteId) {
+                    requestData.id = instituteId;
+                }
+                
                 $.ajax({
                     url: url,
                     type: 'POST',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                        group_level: $('#group_level').val(),
-                        name: $('#name').val(),
-                        abbreviation: $('#abbreviation').val()
-                    },
+                    data: requestData,
                     success: function (response) {
                         window.location.reload();
                     },
@@ -319,10 +339,14 @@ function validateInstitute() {
                         notEmpty: {
                             message: 'Kérjük, add meg az intézet számát'
                         },
-                        between: {
-                            min: 1,
-                            max: 9,
-                            message: 'Az intézet számának 1 és 9 között kell lennie'
+                        callback: {
+                            message: 'Az intézet számának 1 és 9 között kell lennie',
+                            callback: function(input) {
+                                let cleanedValue = input.value.replace(/\s/g, '');
+                                let numValue = parseInt(cleanedValue);
+                                
+                                return numValue >= 1 && numValue <= 9;
+                            }
                         },
                         remote: {
                             url: '/api/institute/check-group-level-unique',
@@ -330,7 +354,7 @@ function validateInstitute() {
                             data: function() {
                                 return {
                                     _token: $('meta[name="csrf-token"]').attr('content'),
-                                    group_level: $('#group_level').val(),
+                                    cleaned_group_level: $('#group_level').val().replace(/\s/g, ''),
                                     institute_id: $('.data-submit').data('institute-id') || null
                                 };
                             },

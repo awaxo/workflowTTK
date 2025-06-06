@@ -6,7 +6,7 @@ use App\Models\User;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Workgroup;
-use App\Services\SecretaryRoleService;
+use App\Services\RoleService;
 
 class CheckSecretaryOrWorkgroupLeader
 {
@@ -16,7 +16,7 @@ class CheckSecretaryOrWorkgroupLeader
             return redirect()->route('login');
         }
 
-        $roles = SecretaryRoleService::getAll();
+        $roles = RoleService::getAllSecretaryRoles();
         $user = User::find(Auth::id());
         
         $isWorkgroupLeader = Workgroup::whereHas('leader', function($query) {

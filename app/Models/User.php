@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Scopes\NonFeaturedScope;
-use App\Services\SecretaryRoleService;
+use App\Services\RoleService;
 use App\Traits\ImapTrait;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -305,7 +305,7 @@ class User extends Authenticatable
         }
 
         if (in_array($menuItem, $pagesForSecretaries)) {
-            if (SecretaryRoleService::isSecretary($this)) {
+            if (RoleService::isSecretary($this)) {
                 return true;
             }
         }

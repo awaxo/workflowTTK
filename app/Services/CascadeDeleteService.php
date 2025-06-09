@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Service for handling cascade delete operations
+ * CascadeDeleteService handles the deletion of workgroups, users, institutes,
+ * and cost center types along with their related entities in a cascading manner.
+ * It ensures that all related data is marked as deleted and appropriate notifications are sent.
  */
 class CascadeDeleteService
 {

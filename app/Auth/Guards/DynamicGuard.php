@@ -8,6 +8,10 @@ use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * DynamicGuard allows switching between different authentication guards
+ * based on configuration settings.
+ */
 class DynamicGuard implements Guard {
 
     protected $guard;

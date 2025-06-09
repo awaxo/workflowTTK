@@ -6,6 +6,11 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Cache;
 
+/*
+ * RoleService provides methods to manage and check user roles.
+ * It includes functionality to check if a user has a secretary role,
+ * retrieve all roles, and manage role display names.
+ */
 class RoleService
 {
     /**

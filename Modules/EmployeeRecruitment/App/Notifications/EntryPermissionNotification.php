@@ -2,13 +2,17 @@
 
 namespace Modules\EmployeeRecruitment\App\Notifications;
 
-use App\Models\AbstractWorkflow;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
+/*
+ * Class EntryPermissionNotification
+ * This notification is sent to users when a new recruitment workflow is created,
+ * providing details about the entry permissions and other relevant information.
+ * It extends the base Notification class and uses the Queueable trait for queueing.
+ */
 class EntryPermissionNotification extends Notification
 {
     use Queueable;
@@ -18,6 +22,9 @@ class EntryPermissionNotification extends Notification
 
     /**
      * Create a new notification instance.
+     *
+     * @param RecruitmentWorkflow $workflow
+     * @param bool $displaySocialSecurityNumber
      */
     public function __construct(RecruitmentWorkflow $workflow, bool $displaySocialSecurityNumber = false)
     {
@@ -35,8 +42,11 @@ class EntryPermissionNotification extends Notification
         return ['mail'];
     }
 
-    /**
+    /*
      * Get the mail representation of the notification.
+     *
+     * @param object $notifiable
+     * @return MailMessage
      */
     public function toMail(object $notifiable): MailMessage
     {

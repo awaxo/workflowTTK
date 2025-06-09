@@ -15,7 +15,21 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-class StateGroupLeadApproval implements IStateResponsibility {
+/**
+ * Class StateGroupLeadApproval
+ * Represents the state of a recruitment workflow where group lead approval is required.
+ * This class implements the IStateResponsibility interface to define the responsibilities
+ * and transitions for this state.
+ */
+class StateGroupLeadApproval implements IStateResponsibility
+{
+    /**
+     * Check if the user is responsible for approving the workflow.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -31,6 +45,13 @@ class StateGroupLeadApproval implements IStateResponsibility {
         return $workgroup_lead && !$workflow->isApprovedBy($user);
     }
 
+    /**
+     * Check if the user is responsible for approving the workflow as a delegate.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -60,6 +81,13 @@ class StateGroupLeadApproval implements IStateResponsibility {
         return $isDelegate && !$workflow->isApprovedBy($user);
     }
 
+    /**
+     * Get the responsible users for the workflow's current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param bool $notApprovedOnly
+     * @return array
+     */
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -102,6 +130,13 @@ class StateGroupLeadApproval implements IStateResponsibility {
         return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
+    /**
+     * Check if all required approvals have been obtained for the workflow in the given state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param int|null $userId
+     * @return bool
+     */
     public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -150,6 +185,12 @@ class StateGroupLeadApproval implements IStateResponsibility {
         return count(array_diff($workgroup_leads, $approval_user_ids)) === 0;
     }
 
+    /**
+     * Get the next transition for the workflow in the current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @return string
+     */
     public function getNextTransition(IGenericWorkflow $workflow): string
     {
         $salary_threshold = Option::where('option_name', 'recruitment_director_approve_salary_threshold')->first()->option_value;
@@ -180,6 +221,12 @@ class StateGroupLeadApproval implements IStateResponsibility {
         }
     }
 
+    /**
+     * Get the delegations for the user in the current state.
+     *
+     * @param User $user
+     * @return array
+     */
     public function getDelegations(User $user): array
     {
         $workgroups = Workgroup::where('deleted', 0)->where('leader_id', $user->id)->get();

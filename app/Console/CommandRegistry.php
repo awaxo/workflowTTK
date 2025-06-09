@@ -4,6 +4,10 @@ namespace App\Console;
 
 use Exception;
 
+/**
+ * CommandRegistry is responsible for registering and managing console commands.
+ * It allows commands to be registered with a specific frequency and parameters.
+ */
 class CommandRegistry
 {
     protected static $commands = [];
@@ -42,7 +46,11 @@ class CommandRegistry
         return self::$commands;
     }
 
-    // get classes
+    /**
+     * Get the classes of all registered commands.
+     *
+     * @return array
+     */
     public static function getClasses()
     {
         $classes = [];

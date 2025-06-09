@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * ChemicalPathogenicFactor model represents a chemical pathogenic factor in the system.
+ * It includes attributes for the factor name, created by, updated by, and a deleted flag.
+ */
 class ChemicalPathogenicFactor extends Model
 {
     use HasFactory;
@@ -46,7 +50,9 @@ class ChemicalPathogenicFactor extends Model
     ];
 
     /**
-     * Get the user that created the position.
+     * Get the user who created the chemical pathogenic factor.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function createdBy()
     {
@@ -54,7 +60,9 @@ class ChemicalPathogenicFactor extends Model
     }
 
     /**
-     * Get the user that last updated the position.
+     * Get the user who last updated the chemical pathogenic factor.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function updatedBy()
     {

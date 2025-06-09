@@ -7,10 +7,16 @@ use App\Models\Option;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Class ApiNotificationListener
+ *
+ * This listener handles the ModelChangedEvent and sends a notification to an external API
+ * whenever a model is created, updated, or deleted.
+ */
 class ApiNotificationListener
 {
     /**
-     * Create the event listener.
+     * Create a new listener instance.
      */
     public function __construct()
     {
@@ -19,6 +25,9 @@ class ApiNotificationListener
 
     /**
      * Handle the event.
+     *
+     * @param ModelChangedEvent $event
+     * @return void
      */
     public function handle(ModelChangedEvent $event): void
     {

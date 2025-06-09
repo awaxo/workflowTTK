@@ -6,15 +6,21 @@ use App\Events\StateChangedEvent;
 use App\Models\ExternalAccessRight;
 use App\Models\User;
 use App\Models\Workgroup;
-use Illuminate\Support\Facades\Log;
-use Modules\EmployeeRecruitment\App\Notifications\EntryPermissionNotification;
 use Modules\EmployeeRecruitment\App\Notifications\ExternalSystemNotification;
 use Modules\EmployeeRecruitment\App\Notifications\WorkgroupLeadsNotification;
 
+/*
+ * ObligeeApprovedListener is an event listener that handles the StateChangedEvent.
+ * It checks if the previous state was 'obligee_approval' and performs actions accordingly,
+ * such as notifying leaders of external access right admin groups and workgroup leads.
+ */
 class ObligeeApprovedListener
 {
     /**
-     * Create the event listener.
+     * Create a new listener instance.
+     *
+     * This constructor does not require any dependencies, but it can be extended in the future
+     * if needed for dependency injection.
      */
     public function __construct()
     {
@@ -23,6 +29,13 @@ class ObligeeApprovedListener
 
     /**
      * Handle the event.
+     *
+     * This method is triggered when the StateChangedEvent is fired.
+     * It checks if the previous state was 'obligee_approval' and performs actions accordingly,
+     * such as notifying leaders of external access right admin groups and workgroup leads.
+     *
+     * @param StateChangedEvent $event
+     * @return void
      */
     public function handle(StateChangedEvent $event): void
     {

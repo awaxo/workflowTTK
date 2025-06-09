@@ -7,6 +7,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Event triggered when a workflow is cancelled.
+ */
 class CancelledEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -15,6 +18,8 @@ class CancelledEvent
 
     /**
      * Create a new event instance.
+     *
+     * @param AbstractWorkflow $workflow
      */
     public function __construct(AbstractWorkflow $workflow)
     {

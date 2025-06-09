@@ -11,14 +11,21 @@ use App\Models\Position;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class RecruitmentWorkflowDraft
+ * Represents a draft recruitment workflow.
+ * This class extends the AbstractWorkflow and defines the base query for fetching drafts
+ * based on user roles and permissions.
+ */
 class RecruitmentWorkflowDraft extends AbstractWorkflow
 {
     protected $table = 'recruitment_workflow_draft';
 
     /**
-     * A piszkozat workflow-k alap lekérdezése.
-     * A csoportvezetők csak a sajátjaikat látják,
-     * a titkár_X szerepkörrel rendelkezők az X-es intézet alá tartozókat.
+     * Base query for fetching recruitment workflow drafts.
+     * This method checks the user's roles and permissions to determine which drafts they can access.
+     * 
+     * @return Builder
      */
     public static function baseQuery(): Builder
     {
@@ -50,6 +57,13 @@ class RecruitmentWorkflowDraft extends AbstractWorkflow
         return self::query()->whereRaw('1 = 0');
     }
 
+    /**
+     * Constructor for RecruitmentWorkflowDraft.
+     * Initializes the model with default attributes and casts.
+     * 
+     * @param array $attributes
+     * @return void
+     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);

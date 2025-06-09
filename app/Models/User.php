@@ -15,19 +15,30 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Webklex\IMAP\Facades\Client;
 
-/**
- * @method static Builder|User nonAdmin()
- * @mixin \Illuminate\Database\Eloquent\Builder
+/*
+ * User model represents a user in the system.
+ * It includes attributes for name, email, workgroup, roles, and other user-related information.
+ * It also provides methods for user management, notifications, and IMAP connections.
  */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, ImapTrait;
 
+    /*
+     * The "booted" method is called when the model is booted.
+     * It adds a global scope to filter out featured users.
+     */
     protected static function booted()
     {
         static::addGlobalScope(new NonFeaturedScope);
     }
 
+    /**
+     * Scope a query to include featured users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function withFeatured()
     {
         return static::withoutGlobalScope(NonFeaturedScope::class);
@@ -202,6 +213,12 @@ class User extends Authenticatable
         return $this->workgroup->leader;
     }
 
+    /**
+     * Get the users who are delegates for the current user.
+     *
+     * @param string|null $delegationType
+     * @return array
+     */
     public function getDelegates(?string $delegationType = null)
     {
         // Helper function to filter users with any roles
@@ -282,6 +299,12 @@ class User extends Authenticatable
         return $filterUsersWithRoles($filterOutCurrentUser($users));
     }
 
+    /**
+     * Check if the user can view a specific menu item.
+     *
+     * @param string $menuItem
+     * @return bool
+     */
     public function canViewMenuItem(string $menuItem)
     {
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
@@ -345,6 +368,14 @@ class User extends Authenticatable
         return false;
     }
 
+    /**
+     * Connect to IMAP server using the provided username and password.
+     * This method initializes the IMAP client and attempts to connect.
+     * 
+     * @param string $username The username for the IMAP account.
+     * @param string $password The password for the IMAP account.
+     * @return void
+     */
     public function connectToImap($username, $password) {
         Log::info('Attempting IMAP connection with username: ' . $username);
         $client = Client::make([
@@ -368,6 +399,11 @@ class User extends Authenticatable
         }
     }
 
+    /**
+     * Check if the IMAP connection is established.
+     * 
+     * @return bool True if connected, false otherwise.
+     */
     public function checkImapConnection() {
         return $this->imapClient && $this->imapClient->isConnected();
     }

@@ -6,8 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/*
+ * FileUploadController handles file uploads.
+ * It stores the uploaded file in the 'uploads' directory and returns the filename.
+ */
 class FileUploadController extends Controller
 {
+    /**
+     * Handle the file upload request.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function upload(Request $request)
     {
         $file = $request->file('file');

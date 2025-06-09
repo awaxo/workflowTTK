@@ -40,6 +40,22 @@ use Modules\EmployeeRecruitment\App\Models\States\StateSupervisorApproval;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 use Modules\EmployeeRecruitment\App\Services\RecruitmentWorkflowService;
 
+/*|--------------------------------------------------------------------------
+| EmployeeRecruitmentController
+|--------------------------------------------------------------------------
+| This controller handles the employee recruitment process, including
+| displaying the recruitment form, storing new recruitments, and managing
+| drafts. It also provides methods for retrieving workgroups, positions,
+| cost centers, and other related data needed for the recruitment process.
+| It uses various services to handle business logic and data retrieval.
+| The controller is responsible for validating input data, creating or
+| updating recruitment workflows, and managing the state transitions
+| of the recruitment process.
+| It also handles the retrieval of user roles and permissions to ensure
+| that only authorized users can access certain functionalities.
+| The controller is designed to be used within a Laravel application
+| and follows the MVC architecture pattern.
+*/
 class EmployeeRecruitmentController extends Controller
 {
     /**
@@ -59,6 +75,14 @@ class EmployeeRecruitmentController extends Controller
         $this->pdfService = $pdfService;
     }
 
+    /*|--------------------------------------------------------------------------
+     * Display the recruitment form
+     *
+     * This method retrieves all necessary data for the recruitment form,
+     * including workgroups, positions, cost centers, rooms, and external access rights.
+     * It also checks if the user is a workgroup leader or a secretary.
+     * The data is then passed to the view for rendering.
+     */
     public function index()
     {
         $roles = RoleService::getAllSecretaryRoles();
@@ -117,6 +141,15 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
+    /*|--------------------------------------------------------------------------
+     * Validate the request data for the recruitment form
+     *
+     * This method validates the incoming request data against the defined rules.
+     * It ensures that all required fields are present and correctly formatted.
+     * If validation fails, it returns a JSON response with the validation errors.
+     *
+     * @return array
+     */
     public function store(Request $request)
     {
         $validatedData = $this->validateRequest();
@@ -282,6 +315,15 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Validate the request data for the recruitment draft form
+     *
+     * This method defines the validation rules for the recruitment form data.
+     * It ensures that all required fields are present and correctly formatted.
+     * If validation fails, it returns a JSON response with the validation errors.
+     *
+     * @return array
+     */
     public function storeDraft(Request $request)
     {
         $workflowType = WorkflowType::where('name', 'Felvételi kérelem folyamata')->first();
@@ -465,21 +507,53 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Display the recruitment opened page
+     *
+     * This method returns the view for the recruitment opened page.
+     * It is used to show all the recruitments that are currently in progress.
+     *
+     * @return \Illuminate\View\View
+     */
     public function opened()
     {
         return view('employeerecruitment::content.pages.recruitment-opened');
     }
 
+    /*|--------------------------------------------------------------------------
+     * Display the recruitment drafts page
+     *
+     * This method returns the view for the recruitment drafts page.
+     * It is used to show all the drafts that have been created but not yet submitted.
+     *
+     * @return \Illuminate\View\View
+     */
     public function drafts()
     {
         return view('employeerecruitment::content.pages.recruitment-drafts-opened');
     }
 
+    /*|--------------------------------------------------------------------------
+     * Display the recruitment closed page
+     *
+     * This method returns the view for the recruitment closed page.
+     * It is used to show the status of recruitments that have been completed or rejected.
+     *
+     * @return \Illuminate\View\View
+     */
     public function closed()
     {
         return view('employeerecruitment::content.pages.recruitment-closed');
     }
     
+    /*|--------------------------------------------------------------------------
+     * Get all recruitments
+     *
+     * This method retrieves all recruitment workflows and formats them for the response.
+     * It includes information such as workgroups, positions, cost centers, and user roles.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAll()
     {
         $service = new WorkflowService();
@@ -517,6 +591,14 @@ class EmployeeRecruitmentController extends Controller
         return response()->json(['data' => $recruitments]);
     }
 
+    /*|--------------------------------------------------------------------------
+     * Get all recruitment drafts
+     *
+     * This method retrieves all recruitment workflow drafts and formats them for the response.
+     * It includes information such as workgroups, positions, and creation dates.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllDrafts()
     {
         $drafts = RecruitmentWorkflowDraft::baseQuery()->where('deleted', 0)->get()->map(function ($draft) {
@@ -535,6 +617,14 @@ class EmployeeRecruitmentController extends Controller
         return response()->json(['data' => $drafts]);
     }
 
+    /*|--------------------------------------------------------------------------
+     * Get all closed recruitments
+     *
+     * This method retrieves all recruitment workflows that are in a closed state (completed, rejected, or deleted).
+     * It formats the data for the response, including workgroups, positions, and user information.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllClosed()
     {
         $recruitments = RecruitmentWorkflow::baseQuery()->where(function ($query) {
@@ -566,6 +656,15 @@ class EmployeeRecruitmentController extends Controller
         return response()->json(['data' => $recruitments]);
     }
 
+    /*|--------------------------------------------------------------------------
+     * View a specific recruitment
+     *
+     * This method retrieves a recruitment workflow by its ID and checks if the user has permission to view it.
+     * It prepares the data for the recruitment view, including responsible users, workgroups, and external access rights.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function view($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -627,6 +726,15 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
+    /*|--------------------------------------------------------------------------
+     * Prepare the recruitment for approval
+     *
+     * This method checks if the user is authorized to approve the recruitment.
+     * It retrieves necessary data and prepares the view for approval.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function beforeApprove($id)
     {
         $service = new WorkflowService();
@@ -711,6 +819,15 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Review a recruitment request
+     *
+     * This method retrieves a recruitment workflow by its ID and prepares the data for review.
+     * It includes workgroups, positions, cost centers, rooms, and external access rights.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function review($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -774,6 +891,15 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
+    /*|--------------------------------------------------------------------------
+     * Review a recruitment draft
+     *
+     * This method retrieves a recruitment workflow draft by its ID and prepares the data for review.
+     * It includes workgroups, positions, cost centers, rooms, and external access rights.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function reviewDraft($id)
     {
         $draft = RecruitmentWorkflowDraft::find($id);
@@ -883,6 +1009,17 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
+    /*|--------------------------------------------------------------------------
+     * Approve a recruitment request
+     *
+     * This method handles the approval of a recruitment request.
+     * It checks if the user is authorized to approve, validates the request,
+     * and applies the necessary transitions in the workflow.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function approve(Request $request, $id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -1088,6 +1225,17 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Reject a recruitment request
+     *
+     * This method handles the rejection of a recruitment request.
+     * It checks if the user is authorized to reject, validates the request,
+     * and applies the necessary transitions in the workflow.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function reject(Request $request, $id)
     {
         $service = new WorkflowService();
@@ -1121,6 +1269,17 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Suspend a recruitment request
+     *
+     * This method handles the suspension of a recruitment request.
+     * It checks if the user is authorized to suspend, validates the request,
+     * and applies the necessary transitions in the workflow.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function suspend(Request $request, $id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -1148,6 +1307,17 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Cancel a recruitment request
+     *
+     * This method handles the cancellation of a recruitment request.
+     * It checks if the user is authorized to cancel, validates the request,
+     * and applies the necessary transitions in the workflow.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function cancel(Request $request, $id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -1175,6 +1345,15 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Before restoring a recruitment request
+     *
+     * This method checks if the user has the necessary permissions to restore a suspended recruitment request.
+     * It prepares the data for review if the user is authorized.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
+     */
     public function beforeRestore($id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -1313,6 +1492,17 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Restore a suspended recruitment request
+     *
+     * This method handles the restoration of a suspended recruitment request.
+     * It checks if the user is authorized to restore, validates the request,
+     * and applies the necessary transitions in the workflow.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
     public function restore(Request $request, $id)
     {
         $recruitment = RecruitmentWorkflow::findOrFail($id);
@@ -1346,6 +1536,17 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Delete a recruitment request
+     *
+     * This method handles the deletion of a recruitment request.
+     * It checks if the user is authorized to delete, validates the request,
+     * and marks the recruitment as deleted.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
     public function delete(Request $request, $id)
     {
         $recruitment = RecruitmentWorkflow::find($id);
@@ -1365,6 +1566,16 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
+    /*|--------------------------------------------------------------------------
+     * Delete a recruitment workflow draft
+     *
+     * This method handles the deletion of a recruitment workflow draft.
+     * It checks if the user is authorized to delete, validates the request,
+     * and deletes the draft along with its associated files.
+     *
+     * @param int $id The draft ID
+     * @return \Illuminate\Http\Response
+     */
     public function deleteDraft($id)
     {
         $draft = RecruitmentWorkflowDraft::find($id);
@@ -1476,6 +1687,12 @@ class EmployeeRecruitmentController extends Controller
         return $this->pdfService->downloadPdf($mpdf, 'OrvosiAlkalmassagBeutalo_' . $id . '.pdf');
     }
 
+    /**
+     * Get the sum of salaries for a recruitment workflow
+     *
+     * @param RecruitmentWorkflow $recruitment
+     * @return float
+     */
     private function getSumOfSallaries($recruitment)
     {
         $monthlyGrossSalaries = [
@@ -1494,6 +1711,12 @@ class EmployeeRecruitmentController extends Controller
         return $monthlyGrossSalariesSum;
     }
 
+    /*|--------------------------------------------------------------------------
+     * Get the sum of salaries formatted for display
+     *
+     * @param RecruitmentWorkflow $recruitment
+     * @return string
+     */
     private function getSumOfSallariesFormatted($recruitment)
     {
         return number_format($this->getSumOfSallaries($recruitment), 0, '', ' ');

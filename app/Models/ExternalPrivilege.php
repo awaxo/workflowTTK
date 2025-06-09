@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/*
+ * ExternalPrivilege model represents a privilege that can be assigned to users outside the standard role-based permissions.
+ * It includes attributes for the privilege name and description, and relationships to users who have this privilege.
+ */
 class ExternalPrivilege extends Model
 {
     use HasFactory;
@@ -28,6 +32,8 @@ class ExternalPrivilege extends Model
 
     /**
      * Get the users that have this external privilege.
+     *
+     * @var array
      */
     public function users()
     {
@@ -35,16 +41,20 @@ class ExternalPrivilege extends Model
                     ->withTimestamps();
     }
 
-    /**
-     * Get the user who created this external privilege.
+    /*
+     * Get the user who created the external privilege.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Get the user who last updated this external privilege.
+    /*
+     * Get the user who last updated the external privilege.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function updatedBy()
     {

@@ -5,12 +5,22 @@ namespace Modules\EmployeeRecruitment\App\Console\Commands;
 use App\Models\Delegation;
 use Illuminate\Console\Command;
 
-// Checks if the suspended workflows have reached the given deadline and reject them
+/**
+ * CheckDelegationDeadlines is a console command that checks for ended delegations
+ * and marks them as deleted. It is intended to be run periodically to clean up
+ * old delegations.
+ */
 class CheckDelegationDeadlines extends Command
 {
     protected $signature = 'employeerecruitment:check-delegation-deadline';
     protected $description = 'Check delegation deadlines';
 
+    /**
+     * Execute the console command.
+     *
+     * This method retrieves all delegations that have ended and marks them as deleted.
+     * It also logs the details of each delegation that is marked as deleted.
+     */
     public function handle()
     {
         $this->info('Aktív helyettesítések ellenőrzése...');

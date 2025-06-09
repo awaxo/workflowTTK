@@ -6,12 +6,19 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Console Kernel
+ *
+ * This class is responsible for registering and scheduling console commands.
+ */
 class Kernel extends ConsoleKernel
 {
     protected $commands = [];
 
     /**
-     * Define the application's command schedule.
+     * Register the application's command schedule.
+     *
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      */
     protected function schedule(Schedule $schedule): void
     {
@@ -32,6 +39,8 @@ class Kernel extends ConsoleKernel
 
     /**
      * Register the commands for the application.
+     *
+     * This method loads commands from the CommandRegistry and dynamically from all modules.
      */
     protected function commands(): void
     {

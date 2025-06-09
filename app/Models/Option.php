@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Option model represents a configuration option in the system.
+ * It includes attributes for option name and value.
+ */
 class Option extends Model
 {
     use HasFactory;

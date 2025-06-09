@@ -7,8 +7,19 @@ use App\Models\Option;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
+/*
+ * SettingsController handles the settings page and related functionality.
+ *
+ * This controller is responsible for displaying the settings page, updating settings,
+ * and managing workflow deadlines.
+ */
 class SettingsController extends Controller
 {
+    /**
+     * Display the settings page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $options = Option::get()->pluck('option_value', 'option_name');
@@ -27,6 +38,11 @@ class SettingsController extends Controller
         return view('content.pages.settings', compact('options', 'workflows', 'places'));
     }
 
+    /*
+     * Update settings based on user input.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function settingsUpdate()
     {
         $user = User::find(Auth::id());
@@ -46,6 +62,13 @@ class SettingsController extends Controller
         return response()->json(['message' => 'Settings updated']);
     }
 
+    /**
+     * Get the deadline for a specific workflow state.
+     * 
+     * @param string $configName
+     * @param string $state
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getWorkflowStateDeadline($configName, $state)
     {
         $deadline = Option::where('option_name', $configName . '_' . $state . '_deadline')->first()?->option_value;
@@ -89,6 +112,11 @@ class SettingsController extends Controller
         return response()->json(['data' => $deadlines]);
     }
 
+    /**
+     * Update the deadline for a specific workflow state.
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deadlineUpdate()
     {
         $data = request()->all();

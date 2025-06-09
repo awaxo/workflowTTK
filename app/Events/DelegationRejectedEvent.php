@@ -7,6 +7,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Event triggered when a delegation is rejected.
+ */
 class DelegationRejectedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -15,6 +18,8 @@ class DelegationRejectedEvent
 
     /**
      * Create a new event instance.
+     *
+     * @param Delegation $delegation
      */
     public function __construct(Delegation $delegation)
     {

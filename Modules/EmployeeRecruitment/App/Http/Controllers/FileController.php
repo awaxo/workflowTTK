@@ -17,7 +17,10 @@ class FileController extends Controller
         $recruitment->$type = '';
         $recruitment->save();
 
-
+        $filename = $request->input('filename');
+        if (!$filename) {
+            return response()->json(['error' => 'Filename is required'], 400);
+        }
 
         $path = storage_path('app/public/uploads/' . $filename);
         if (file_exists($path)) {

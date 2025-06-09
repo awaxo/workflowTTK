@@ -6,11 +6,23 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflowDraft;
 
+/*
+ * ArchiveOldDrafts is a console command that archives recruitment workflow drafts
+ * created in the previous calendar year by marking them as deleted.
+ * It is intended to be run periodically to clean up old drafts.
+ */
 class ArchiveOldDrafts extends Command
 {
     protected $signature = 'employeerecruitment:archive-old-drafts';
     protected $description = 'Archive recruitment workflow drafts created in the previous calendar year';
 
+    /*
+     * Execute the console command.
+     *
+     * This method fetches all recruitment workflow drafts created in the previous year,
+     * marks them as deleted, and saves the changes.
+     * It also logs the user who performed the deletion.
+     */
     public function handle()
     {
         $this->info('Archiving recruitment workflow drafts from previous year...');

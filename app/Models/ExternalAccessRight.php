@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/* * ExternalAccessRight model represents the rights granted to external systems
+ * for accessing certain functionalities within the application.
+ * It includes attributes for the external system, admin group number, and user references for creation and updates.
+ */
 class ExternalAccessRight extends Model
 {
     use HasFactory;
@@ -47,7 +51,9 @@ class ExternalAccessRight extends Model
     ];
 
     /**
-     * Get the workgroup associated with the external access right.
+     * Get the external system associated with this access right.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function workgroup()
     {
@@ -55,15 +61,19 @@ class ExternalAccessRight extends Model
     }
 
     /**
-     * Get the user who created the external access right.
+     * Get the user who created this external access right.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Get the user who last updated the external access right.
+    /*
+     * Get the user who last updated this external access right.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function updatedBy()
     {

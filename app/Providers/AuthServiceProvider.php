@@ -6,6 +6,12 @@ use App\Auth\Guards\DynamicGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Class AuthServiceProvider
+ *
+ * This service provider is responsible for registering authentication and authorization services.
+ * It allows dynamic switching between IMAP and database authentication based on configuration.
+ */
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +25,8 @@ class AuthServiceProvider extends ServiceProvider
 
     /**
      * Register any authentication / authorization services.
+     *
+     * @return void
      */
     public function boot(): void
     {

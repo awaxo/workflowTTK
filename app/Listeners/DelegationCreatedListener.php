@@ -6,10 +6,14 @@ use App\Events\DelegationCreatedEvent;
 use App\Models\User;
 use App\Notifications\DelegationNotification;
 
+/**
+ * Listener for handling delegation created events.
+ * This listener sends a notification to the delegate user when a delegation is created.
+ */
 class DelegationCreatedListener
 {
     /**
-     * Create the event listener.
+     * Create a new listener instance.
      */
     public function __construct()
     {
@@ -18,6 +22,9 @@ class DelegationCreatedListener
 
     /**
      * Handle the event.
+     *
+     * @param DelegationCreatedEvent $event
+     * @return void
      */
     public function handle(DelegationCreatedEvent $event): void
     {

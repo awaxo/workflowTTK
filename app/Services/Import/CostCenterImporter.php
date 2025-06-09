@@ -11,8 +11,17 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
+/*
+ * CostCenterImporter is responsible for importing cost center data from a CSV file.
+ * It validates the file format, checks each row for correctness, and saves valid rows to the database.
+ */
 class CostCenterImporter extends BaseImporter
 {
+    /**
+     * Set the rules for validating each row of the CSV file.
+     *
+     * @return array
+     */
     protected function rules(): array
     {
         return [
@@ -25,6 +34,12 @@ class CostCenterImporter extends BaseImporter
         ];
     }
 
+    /**
+     * Save a row of data to the database.
+     *
+     * @param array $row
+     * @param int $index
+     */
     protected function saveRow(array $row, int $index): void
     {
         // Skip first row as it is the header
@@ -59,6 +74,13 @@ class CostCenterImporter extends BaseImporter
         ]);
     }
 
+    /*
+     * Validate each row of the CSV file.
+     *
+     * @param array $row
+     * @param int $index
+     * @return bool
+     */
     protected function validateRow(array $row, int $index): bool
     {
         // Check if the row is entirely empty (e.g., ';;;;;')
@@ -132,6 +154,11 @@ class CostCenterImporter extends BaseImporter
         return true;
     }
 
+    /**
+     * Define the validation messages for each rule.
+     *
+     * @return array
+     */
     protected function validationMessages(): array
     {
         return [
@@ -148,6 +175,12 @@ class CostCenterImporter extends BaseImporter
         ];
     }
 
+    /**
+     * Validate the uploaded CSV file.
+     *
+     * @param UploadedFile $file
+     * @return bool
+     */
     protected function isValidCSV(UploadedFile $file): bool
     {
         // Check if the file is a valid text file
@@ -173,6 +206,12 @@ class CostCenterImporter extends BaseImporter
         return true;
     }
 
+    /*
+     * Parse the CSV file and return an array of rows.
+     *
+     * @param UploadedFile $file
+     * @return array
+     */
     protected function parseCSV(UploadedFile $file): array
     {
         $data = [];

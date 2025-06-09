@@ -9,19 +9,47 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-class StateHrLeadApproval implements IStateResponsibility {
+/*
+ * Class StateHrLeadApproval
+ * Represents the state of a workflow when HR lead approval is required.
+ * This class implements the IStateResponsibility interface to define the responsibilities
+ * and transitions for this state.
+ */
+class StateHrLeadApproval implements IStateResponsibility
+{
+    /**
+     * Check if the user is responsible for approving the workflow.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
     {
         $workgroup908 = Workgroup::where('workgroup_number', 908)->first();
         return $workgroup908 && $workgroup908->leader_id === $user->id;
     }
 
+    /**
+     * Check if the user is responsible for approving the workflow as a delegate.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
         $service = new DelegationService();
         return $service->isDelegate($user, 'hr_head');
     }
 
+    /**
+     * Get the responsible users for the workflow's current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param bool $notApprovedOnly
+     * @return array
+     */
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         $service = new DelegationService();
@@ -44,16 +72,35 @@ class StateHrLeadApproval implements IStateResponsibility {
         return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
     }
 
+    /**
+     * Check if all required approvals have been obtained for the workflow in the given state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param int|null $userId
+     * @return bool
+     */
     public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
         return true;
     }
 
+    /**
+     * Get the next transition for the workflow in the current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @return string
+     */
     public function getNextTransition(IGenericWorkflow $workflow): string 
     {
         return 'to_proof_of_coverage';
     }
 
+    /**
+     * Get the delegations for the user in the current state.
+     *
+     * @param User $user
+     * @return array
+     */
     public function getDelegations(User $user): array
     {
         $workgroup908 = Workgroup::where('deleted', 0)->where('workgroup_number', 908)->first();

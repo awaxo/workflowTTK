@@ -6,14 +6,24 @@ use App\Models\Interfaces\IGenericWorkflow;
 use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
 /**
- * The state of the recruitment process when the IT head has to approve the recruitment.
+ * Class StateSuspended
+ * Represents the state of a workflow when it is suspended.
+ * This class implements the IStateResponsibility interface to define
+ * the responsibilities and transitions for this state.
  */
-class StateSuspended implements IStateResponsibility {
+class StateSuspended implements IStateResponsibility
+{
     private $stateClass = null;
 
+    /**
+     * Check if the user is responsible for approving the workflow.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
     {
         $workflow_meta = json_decode($workflow->meta_data);
@@ -45,6 +55,13 @@ class StateSuspended implements IStateResponsibility {
         return $this->stateClass && $this->stateClass->isUserResponsible($user, $workflow);
     }
 
+    /**
+     * Check if the user is responsible for approving the workflow as a delegate.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
         if ($workflow->initiator_institute) {
@@ -73,6 +90,13 @@ class StateSuspended implements IStateResponsibility {
         return $this->stateClass && $this->stateClass->isUserResponsibleAsDelegate($user, $workflow);
     }
 
+    /**
+     * Get the responsible users for the workflow's current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param bool $notApprovedOnly
+     * @return array
+     */
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         $users = [];
@@ -111,17 +135,36 @@ class StateSuspended implements IStateResponsibility {
         return array_values($users);
     }
 
+    /**
+     * Check if all required approvals have been obtained for the workflow in the given state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param int|null $userId
+     * @return bool
+     */
     public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
         return true;
     }
 
+    /**
+     * Get the next transition for the workflow in the current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @return string
+     */
     public function getNextTransition(IGenericWorkflow $workflow): string
     {
         // next transition depends on from where we get suspended
         return '';
     }
 
+    /**
+     * Get the delegations for the user in the current state.
+     *
+     * @param User $user
+     * @return array
+     */
     public function getDelegations(User $user): array
     {
         return [];

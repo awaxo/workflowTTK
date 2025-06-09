@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
+/**
+ * Class StateProofOfCoverage
+ * Represents the state of a recruitment workflow where proof of coverage is required.
+ * This class implements the IStateResponsibility interface to define the responsibilities
+ * and transitions for this state.
+ */
 class StateProofOfCoverage implements IStateResponsibility
 {
     use WorkgroupLeadersTrait;
@@ -25,6 +31,13 @@ class StateProofOfCoverage implements IStateResponsibility
         return [910, 911];
     }
 
+    /**
+     * Check if the user is responsible for approving the workflow.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -46,6 +59,13 @@ class StateProofOfCoverage implements IStateResponsibility
         return ($is_project_coordinator || $isLeader) && !$workflow->isApprovedBy($user);
     }
 
+    /**
+     * Check if the user is responsible for approving the workflow as a delegate.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
         if (! $workflow instanceof RecruitmentWorkflow) {
@@ -82,6 +102,13 @@ class StateProofOfCoverage implements IStateResponsibility
         return $delegated && !$workflow->isApprovedBy($user);
     }
 
+    /**
+     * Get the responsible users for the workflow's current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param bool $notApprovedOnly
+     * @return array
+     */
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         if (! $workflow instanceof RecruitmentWorkflow) {
@@ -147,6 +174,13 @@ class StateProofOfCoverage implements IStateResponsibility
         return Helpers::arrayUniqueMulti($responsibleUsers->toArray(), 'id');
     }
 
+    /**
+     * Check if all required approvals have been obtained for the workflow in the given state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param int|null $userId
+     * @return bool
+     */
     public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -209,6 +243,12 @@ class StateProofOfCoverage implements IStateResponsibility
         return false;
     }
 
+    /**
+     * Get the next transition for the workflow in the current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @return string
+     */
     public function getNextTransition(IGenericWorkflow $workflow): string
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -245,6 +285,12 @@ class StateProofOfCoverage implements IStateResponsibility
         }
     }
 
+    /**
+     * Get the delegations for the user in the current state.
+     *
+     * @param User $user
+     * @return array
+     */
     public function getDelegations(User $user): array
     {
         $cost_center_codes = CostCenter::where('deleted', 0)

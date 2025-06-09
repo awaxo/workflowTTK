@@ -3,19 +3,25 @@
 namespace Modules\EmployeeRecruitment\App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
+/*
+ * Class LaborAdministratorNotification
+ * This notification is sent to labor administrators when a new recruitment workflow is created.
+ * It extends the base Notification class and uses the Queueable trait for queueing.
+ */
 class LaborAdministratorNotification extends Notification
 {
     use Queueable;
 
     public $workflow;
 
-    /**
+    /*
      * Create a new notification instance.
+     *
+     * @param RecruitmentWorkflow $workflow
      */
     public function __construct(RecruitmentWorkflow $workflow)
     {
@@ -34,6 +40,9 @@ class LaborAdministratorNotification extends Notification
 
     /**
      * Get the mail representation of the notification.
+     *
+     * @param object $notifiable
+     * @return MailMessage
      */
     public function toMail(object $notifiable): MailMessage
     {

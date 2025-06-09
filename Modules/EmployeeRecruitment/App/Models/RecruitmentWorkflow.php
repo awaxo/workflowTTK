@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
+/**
+ * RecruitmentWorkflow model for managing recruitment processes.
+ * This model extends the AbstractWorkflow and uses WorkflowTrait for workflow management.
+ */
 class RecruitmentWorkflow extends AbstractWorkflow
 {
     use WorkflowTrait;
@@ -397,13 +401,15 @@ class RecruitmentWorkflow extends AbstractWorkflow
         return $recruitmentsQuery;
     }
 
-    /*protected static function newFactory()
-    {
-        return RecruitmentWorkflowFactory::new();
-    }*/
-
     protected $table = 'recruitment_workflow';
 
+    /**
+     * Constructor for the RecruitmentWorkflow model.
+     * Initializes the model with default attributes and casts.
+     * 
+     * @param array $attributes Initial attributes for the model.
+     * @return void
+     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);

@@ -7,14 +7,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Institute;
 use App\Models\Role;
 use App\Models\Workgroup;
-use App\Services\RoleService;
 use Illuminate\Support\Facades\Auth;
 use Closure;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
+/**
+ * InstituteController handles the management of institutes,
+ * including CRUD operations and validation.
+ */
 class InstituteController extends Controller
 {
+    /**
+     * Display the institutes page with a list of institutes and their workgroup counts.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $institutes = Institute::where('deleted', 0)->get()->map(function ($institute) {
@@ -27,11 +34,21 @@ class InstituteController extends Controller
         return view('content.pages.institutes', compact('institutes'));
     }
 
+    /**
+     * Display the institute management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function manage()
     {
         return view('content.pages.institutes-manage');
     }
 
+    /**
+     * Get all institutes for DataTables.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllInstitutes()
     {
         $institutes = Institute::all()->map(function ($institute) {
@@ -50,6 +67,11 @@ class InstituteController extends Controller
         return response()->json(['data' => $institutes]);
     }
 
+    /**
+     * Check if the group level is unique.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkGroupLevelUnique()
     {
         $groupLevel = request()->input('cleaned_group_level');
@@ -73,6 +95,11 @@ class InstituteController extends Controller
         return response()->json(['valid' => !$exists]);
     }
 
+    /**
+     * Check if the institute name is unique.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkNameUnique()
     {
         $name = request()->input('name');
@@ -96,6 +123,11 @@ class InstituteController extends Controller
         return response()->json(['valid' => !$exists]);
     }
 
+    /**
+     * Check if the institute abbreviation is unique.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkAbbreviationUnique()
     {
         $abbreviation = trim(request()->input('abbreviation'));
@@ -123,6 +155,12 @@ class InstituteController extends Controller
         return response()->json(['valid' => !$exists]);
     }
 
+    /**
+     * Delete an institute (soft delete).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $institute = Institute::findOrFail($id);
@@ -142,6 +180,12 @@ class InstituteController extends Controller
         return response()->json(['message' => 'Institute deleted successfully']);
     }
 
+    /**
+     * Restore a soft-deleted institute.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $institute = Institute::findOrFail($id);
@@ -176,6 +220,12 @@ class InstituteController extends Controller
         return response()->json(['message' => 'Intézet sikeresen visszaállítva']);
     }
 
+    /**
+     * Update an existing institute.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id)
     {
         $institute = Institute::findOrFail($id);
@@ -198,6 +248,11 @@ class InstituteController extends Controller
         return response()->json(['message' => 'Institute updated successfully']);
     }
 
+    /**
+     * Create a new institute.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create()
     {
         $validatedData = $this->validateRequest();
@@ -213,6 +268,11 @@ class InstituteController extends Controller
         return response()->json(['message' => 'Institute created successfully']);
     }
 
+    /**
+     * Validate the incoming request data for institute creation or update.
+     *
+     * @return array
+     */
     private function validateRequest()
     {
         return request()->validate([

@@ -10,6 +10,12 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * RoomAssignmentNotification is a notification class that sends an email
+ * to the workgroup admin users when a workgroup is closed and its rooms
+ * need to be reassigned to another group.
+ * It includes the details of the workgroup and the associated rooms.
+ */
 class RoomAssignmentNotification extends Notification implements ShouldQueue
 {
     use Queueable;

@@ -2,6 +2,12 @@
 
 namespace App\Enums;
 
+/**
+ * LegalRelationship Enum
+ *
+ * This enum represents different types of legal relationships.
+ * It provides methods to get all values and cases as arrays.
+ */
 enum LegalRelationship: string
 {
     case EMPLOYEE = 'munkavállaló';

@@ -8,12 +8,23 @@ use App\Services\WorkflowService;
 use Illuminate\Console\Command;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-// Checks if the suspended workflows have reached the given deadline and reject them
+/*
+ * CheckSuspendedDeadline is a console command that checks for recruitment workflows
+ * that are in a suspended state and have exceeded their suspension threshold.
+ * It resets the approvals and sends the workflows back for review.
+ */
 class CheckSuspendedDeadline extends Command
 {
     protected $signature = 'employeerecruitment:check-suspended-deadline';
     protected $description = 'Check suspended workflow deadlines';
 
+    /**
+     * Execute the console command.
+     *
+     * This method retrieves all recruitment workflows that are in a suspended state,
+     * checks if they have exceeded their suspension threshold, and resets their approvals
+     * to send them back for review.
+     */
     public function handle()
     {
         $this->info('Lejárt határidejű, felfüggesztett felvételi kérelmek ellenőrzése...');

@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/*
+ * WorkflowType model represents a type of workflow in the system.
+ * It includes attributes for name, description, manager workgroup, metadata, and user information.
+ */
 class WorkflowType extends Model
 {
     use HasFactory;
@@ -51,6 +55,8 @@ class WorkflowType extends Model
 
     /**
      * Get the workgroup that the workflow type belongs to.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function workgroup()
     {
@@ -59,6 +65,8 @@ class WorkflowType extends Model
 
     /**
      * Get the user who created the workflow type.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function createdBy()
     {
@@ -67,6 +75,8 @@ class WorkflowType extends Model
 
     /**
      * Get the user who last updated the workflow type.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function updatedBy()
     {

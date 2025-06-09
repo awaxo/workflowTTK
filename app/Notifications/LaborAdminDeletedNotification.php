@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+/**
+ * LaborAdminDeletedNotification is a notification class that sends an email
+ * to the labor admin users when a labor administrator is deleted.
+ * It includes the details of the deleted user and the workgroups they were managing.
+ */
 class LaborAdminDeletedNotification extends Notification implements ShouldQueue
 {
     use Queueable;

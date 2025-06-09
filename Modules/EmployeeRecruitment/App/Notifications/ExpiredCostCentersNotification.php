@@ -8,6 +8,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 
+/**
+ * Class ExpiredCostCentersNotification
+ * This notification is sent to users when their cost centers have expired and are automatically closed.
+ * It extends the base Notification class and uses the Queueable trait for queueing.
+ */
 class ExpiredCostCentersNotification extends Notification implements ShouldQueue
 {
     use Queueable;

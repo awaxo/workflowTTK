@@ -13,7 +13,21 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-class StateDirectorApproval implements IStateResponsibility {
+/*
+ * StateDirectorApproval is a class that implements the IStateResponsibility interface.
+ * It defines the responsibilities and transitions for the director approval state in a recruitment workflow.
+ * This class checks if a user is responsible for approving a recruitment workflow based on their role as a director
+ * and their associated workgroup.
+ */
+class StateDirectorApproval implements IStateResponsibility
+{
+    /**
+     * Check if the user is responsible for approving the workflow.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsible(User $user, IGenericWorkflow $workflow): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -61,6 +75,13 @@ class StateDirectorApproval implements IStateResponsibility {
         return $director && !$workflow->isApprovedBy($user);
     }
 
+    /**
+     * Check if the user is responsible for approving the workflow as a delegate.
+     *
+     * @param User $user
+     * @param IGenericWorkflow $workflow
+     * @return bool
+     */
     public function isUserResponsibleAsDelegate(User $user, IGenericWorkflow $workflow): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -106,6 +127,13 @@ class StateDirectorApproval implements IStateResponsibility {
         return $delegated && !$workflow->isApprovedBy($user);
     }
 
+    /**
+     * Get the responsible users for the workflow's current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param bool $notApprovedOnly
+     * @return array
+     */
     public function getResponsibleUsers(IGenericWorkflow $workflow, bool $notApprovedOnly = false): array
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -158,6 +186,13 @@ class StateDirectorApproval implements IStateResponsibility {
         return Helpers::arrayUniqueMulti($responsibleUsers, 'id');
     }
 
+    /**
+     * Check if all required approvals have been obtained for the workflow in the given state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @param int|null $userId
+     * @return bool
+     */
     public function isAllApproved(IGenericWorkflow $workflow, ?int $userId = null): bool
     {
         if (!$workflow instanceof RecruitmentWorkflow) {
@@ -231,11 +266,23 @@ class StateDirectorApproval implements IStateResponsibility {
         return count(array_diff($director_ids, $approval_user_ids)) === 0;
     }
 
+    /**
+     * Get the next transition for the workflow in the current state.
+     *
+     * @param IGenericWorkflow $workflow
+     * @return string
+     */
     public function getNextTransition(IGenericWorkflow $workflow): string
     {
         return 'to_hr_lead_approval';
     }
 
+    /**
+     * Get the delegations for the user in the current state.
+     *
+     * @param User $user
+     * @return array
+     */
     public function getDelegations(User $user): array
     {
         $workgroups = Workgroup::where('deleted', 0)

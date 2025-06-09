@@ -6,13 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use Nwidart\Modules\Facades\Module;
 
+/*
+ * PermissionController handles the management of permissions,
+ * including displaying the permissions page and retrieving all permissions.
+ */
 class PermissionController extends Controller
 {
+    /**
+     * Display the permissions management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         return view('content.pages.permissions');
     }
 
+    /**
+     * Get all permissions, merging generic and module-specific permissions.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllPermissions()
     {
         // Load generic permissions

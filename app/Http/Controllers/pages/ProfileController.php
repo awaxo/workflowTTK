@@ -11,19 +11,39 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
+/*
+ * ProfileController handles the user's profile page,
+ * including delegation management and notifications.
+ */
 class ProfileController extends Controller
 {
+    /**
+     * Status translations for user-friendly display.
+     *
+     * @var array
+     */
     protected $statusTranslation = [
         'waiting_to_accept' => 'Elfogadásra vár',
         'valid' => 'Érvényes',
         'invalid' => 'Érvénytelen'
     ];
 
+    /**
+     * Translate database status to user-friendly status.
+     *
+     * @param string $dbStatus The status from the database
+     * @return string The translated status
+     */
     protected function translateStatus($dbStatus)
     {
         return $this->statusTranslation[$dbStatus] ?? $dbStatus;
     }
 
+    /**
+     * Display the user's profile page with delegations and notification settings.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $service = new DelegationService();
@@ -92,6 +112,11 @@ class ProfileController extends Controller
         return $result;
     }
 
+    /**
+     * Get all delegations for the current user, grouped by delegate and type.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllDelegations()
     {
         $showDeleted = request('show_deleted', false) === 'true';
@@ -185,6 +210,11 @@ class ProfileController extends Controller
         return response()->json(['data' => $result]);
     }
 
+    /**
+     * Get delegations assigned to the current user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getDelegatedToMe()
     {
         $showDeleted = request('show_deleted', false) === 'true';
@@ -249,6 +279,11 @@ class ProfileController extends Controller
         return response()->json(['data' => $result]);
     }
 
+    /**
+     * Create a new delegation record.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create() 
     {
         $validatedData = request()->validate([
@@ -357,6 +392,12 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Delegation added successfully']);
     }
 
+    /**
+     * Delete a delegation record.
+     *
+     * @param int $id The ID of the delegation to delete
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $delegation = Delegation::find($id);
@@ -382,6 +423,12 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Delegation deleted successfully']);
     }
 
+    /**
+     * Accept a delegation request.
+     *
+     * @param int $id The ID of the delegation to accept
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function acceptDelegation($id)
     {
         $delegation = Delegation::find($id);
@@ -403,6 +450,12 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Delegation accepted successfully']);
     }
 
+    /**
+     * Reject a delegation request.
+     *
+     * @param int $id The ID of the delegation to reject
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function rejectDelegation($id)
     {
         $delegation = Delegation::find($id);
@@ -425,8 +478,13 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Delegation rejected successfully']);
     }
 
-    public function notificationUpdate()
-    {
+    /**
+     * Update notification preferences for the user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+     public function notificationUpdate()
+     {
         $notification_preferences = json_decode(Auth::user()?->notification_preferences);
         if ($notification_preferences === null) {
             $notification_preferences = (object) [
@@ -445,6 +503,12 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Notification settings updated successfully']);
     }
 
+    /**
+     * Get delegates for a specific type.
+     *
+     * @param string $type The type of delegation
+     * @return array The list of delegates
+     */
     public function getDelegates($type)
     {
         // Check if we have multiple types

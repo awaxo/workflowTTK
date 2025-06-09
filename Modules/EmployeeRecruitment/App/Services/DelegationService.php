@@ -6,6 +6,10 @@ use App\Models\User;
 use App\Services\AbstractDelegationService;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * DelegationService handles delegation logic for the Employee Recruitment module.
+ * It retrieves delegations from various state classes defined in the module.
+ */
 class DelegationService extends AbstractDelegationService
 {
     /**

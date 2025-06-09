@@ -7,20 +7,41 @@ use App\Models\User;
 use App\Models\WorkflowType;
 use App\Services\WorkflowService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
+/*
+ * WorkflowController handles the management of workflows,
+ * including displaying workflows, fetching data, and managing states.
+ *
+ * This controller is responsible for rendering the workflows page,
+ * fetching all workflows, closed workflows, and workflow states by configuration name.
+ */
 class WorkflowController extends Controller
 {
+    /**
+     * Display the workflows management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         return view('content.pages.workflows');
     }
 
+    /**
+     * Display the closed workflows management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function closed()
     {
         return view('content.pages.workflows-closed');
     }
 
+    /**
+     * Get all workflows for DataTables.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllWorkflows()
     {
         $service = new WorkflowService();
@@ -48,6 +69,11 @@ class WorkflowController extends Controller
         return response()->json(['data' => $workflows]);
     }
 
+    /**
+     * Get closed workflows for DataTables.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getClosedWorkflows()
     {
         $service = new WorkflowService();
@@ -72,6 +98,12 @@ class WorkflowController extends Controller
         return response()->json(['data' => $workflows]);
     }
 
+    /**
+     * Get workflow states by configuration name.
+     *
+     * @param string $configName
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getWorkflowStatesByConfigName($configName)
     {
         $workflow_configs = config('workflow');

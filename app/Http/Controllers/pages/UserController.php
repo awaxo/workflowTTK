@@ -13,8 +13,19 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Closure;
 
+/*
+ * UserController handles the user management page and related functionality.
+ *
+ * This controller is responsible for displaying the user management page,
+ * fetching users, checking unique constraints, and creating/updating users.
+ */
 class UserController extends Controller
 {
+    /**
+     * Display the user management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $apiEndpoint = '/api/users';
@@ -29,6 +40,12 @@ class UserController extends Controller
         return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles', 'externalPrivileges'));
     }
 
+    /**
+     * Display the user management page filtered by role.
+     *
+     * @param string $roleName
+     * @return \Illuminate\View\View
+     */
     public function indexByRole($roleName)
     {
         // Dynamically generate the API endpoint based on the role
@@ -51,6 +68,12 @@ class UserController extends Controller
         return view('content.pages.users', compact('apiEndpoint', 'workgroups', 'roles', 'roleNameReadable', 'externalPrivileges'));
     }
 
+    /**
+     * Display the user management page filtered by permission.
+     *
+     * @param string $permissionName
+     * @return \Illuminate\View\View
+     */
     public function getAllAndFeaturedUsers()
     {
         $users = User::withFeatured()
@@ -62,6 +85,11 @@ class UserController extends Controller
         return response()->json(['data' => $users]);
     }
 
+    /**
+     * Fetch all users, including their details.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllUsers()
     {
         $users = User::all()->map(function ($user) {
@@ -70,6 +98,12 @@ class UserController extends Controller
         return response()->json(['data' => $users]);
     }
 
+    /**
+     * Fetch users by role, excluding featured users.
+     *
+     * @param string $roleName
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getUsersByRole($roleName)
     {
         $role = Role::findByName($roleName);
@@ -83,6 +117,12 @@ class UserController extends Controller
         return response()->json(['data' => $users]);
     }
 
+    /**
+     * Fetch users by permission, excluding featured users.
+     *
+     * @param string $permissionName
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkEmailUnique()
     {
         $email = request()->input('email');
@@ -100,6 +140,11 @@ class UserController extends Controller
         return response()->json(['valid' => !$exists]);
     }
 
+    /**
+     * Check if a user name is unique, excluding the current user if editing.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkNameUnique()
     {
         $name = request()->input('name');
@@ -117,6 +162,12 @@ class UserController extends Controller
         return response()->json(['valid' => !$exists]);
     }
 
+    /**
+     * Delete a user by setting its deleted flag.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $user = User::find($id);
@@ -128,6 +179,12 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully']);
     }
 
+    /**
+     * Restore a soft-deleted user.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $user = User::find($id);
@@ -139,6 +196,12 @@ class UserController extends Controller
         return response()->json(['message' => 'User restored successfully']);
     }
 
+    /**
+     * Update an existing user.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id)
     {
         $validatedData = $this->validateRequest();
@@ -160,6 +223,11 @@ class UserController extends Controller
         return response()->json(['message' => 'User updated successfully']);
     }
 
+    /**
+     * Create a new user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create()
     {
         $validatedData = $this->validateRequest();
@@ -246,6 +314,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Format user data for API response.
+     *
+     * @param User $user
+     * @return array|null
+     */
     private function formatUserData($user)
     {
         if (!$user) {
@@ -289,6 +363,11 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Validate the incoming request data for user creation or update.
+     *
+     * @return array
+     */
     private function validateRequest()
     {
         $userId = request()->input('userId');

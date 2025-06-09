@@ -8,6 +8,13 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Support\Collection;
 
+/**
+ * Class CostCenterExport
+ * 
+ * This class handles the export of cost center data to an Excel file.
+ * It implements the FromCollection, WithHeadings, and WithStyles interfaces
+ * to define the data source, column headers, and styling for the exported sheet.
+ */
 class CostCenterExport implements FromCollection, WithHeadings, WithStyles
 {
     protected $data;

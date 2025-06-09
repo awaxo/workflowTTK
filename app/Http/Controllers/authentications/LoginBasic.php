@@ -7,14 +7,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * LoginBasic handles the basic login functionality.
+ * It uses a dynamic guard to switch between different authentication methods.
+ */
 class LoginBasic extends Controller
 {
+    /**
+     * Display the login page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $pageConfigs = ['myLayout' => 'blank'];
         return view('content.authentications.auth-login-basic', ['pageConfigs' => $pageConfigs]);
     }
 
+    /**
+     * Handle the login request.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function authenticate(Request $request)
     {
         $request->validate([
@@ -46,6 +61,12 @@ class LoginBasic extends Controller
         ])->onlyInput('email-username');
     }
 
+    /*
+     * Handle the logout request.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
         if (auth()->check()) {

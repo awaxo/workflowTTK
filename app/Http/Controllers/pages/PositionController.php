@@ -7,13 +7,27 @@ use App\Http\Controllers\Controller;
 use App\Models\Position;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * PositionController handles the management of positions,
+ * including CRUD operations and validation.
+ */
 class PositionController extends Controller
 {
+    /**
+     * Display the positions management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function manage()
     {
         return view('content.pages.positions');
     }
 
+    /*
+     * Get all positions, including their details.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllPositions()
     {
         $positions = Position::all()->map(function ($position) {
@@ -31,6 +45,12 @@ class PositionController extends Controller
         return response()->json(['data' => $positions]);
     }
 
+    /*
+     * Delete a position by setting its deleted flag.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $position = Position::find($id);
@@ -42,6 +62,12 @@ class PositionController extends Controller
         return response()->json(['message' => 'Position deleted successfully']);
     }
 
+    /**
+     * Restore a position by resetting its deleted flag.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $position = Position::find($id);
@@ -53,6 +79,12 @@ class PositionController extends Controller
         return response()->json(['message' => 'Position restored successfully']);
     }
 
+    /*
+     * Update an existing position.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id)
     {
         $validatedData = $this->validateRequest();
@@ -68,6 +100,11 @@ class PositionController extends Controller
         return response()->json(['message' => 'Position updated successfully']);
     }
 
+    /*
+     * Create a new position.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create()
     {
         $validatedData = $this->validateRequest();
@@ -84,6 +121,11 @@ class PositionController extends Controller
         return response()->json(['message' => 'Position created successfully']);
     }
 
+    /**
+     * Validate the incoming request data for position creation or update.
+     *
+     * @return array
+     */
     private function validateRequest()
     {
         return request()->validate([

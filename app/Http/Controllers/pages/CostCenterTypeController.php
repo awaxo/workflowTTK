@@ -7,15 +7,28 @@ use App\Http\Controllers\Controller;
 use App\Models\CostCenterType;
 use Illuminate\Support\Facades\Auth;
 use Closure;
-use Illuminate\Validation\ValidationException;
 
+/*
+ * CostCenterTypeController handles the management of cost center types,
+ * including CRUD operations and validation.
+ */
 class CostCenterTypeController extends Controller
 {
+    /**
+     * Display the cost center types management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function manage()
     {
         return view('content.pages.costcenter-types');
     }
 
+    /**
+     * Get all cost center types.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllCostCenterTypes()
     {
         $costcenterTypes = CostCenterType::all()->map(function ($costcenterType) {
@@ -35,6 +48,11 @@ class CostCenterTypeController extends Controller
         return response()->json(['data' => $costcenterTypes]);
     }
 
+    /*
+     * Check if the cost center type name is unique.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkNameUnique()
     {
         $name = request()->input('name');
@@ -52,6 +70,12 @@ class CostCenterTypeController extends Controller
         return response()->json(['valid' => !$exists]);
     }
 
+    /**
+     * Delete a cost center type (soft delete).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $costcenterType = CostCenterType::find($id);
@@ -63,6 +87,12 @@ class CostCenterTypeController extends Controller
         return response()->json(['message' => 'Cost center type deleted successfully']);
     }
 
+    /**
+     * Restore a soft-deleted cost center type.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $costcenterType = CostCenterType::find($id);
@@ -74,6 +104,12 @@ class CostCenterTypeController extends Controller
         return response()->json(['message' => 'Cost center type restored successfully']);
     }
 
+    /**
+     * Update an existing cost center type.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id)
     {
         $validatedData = $this->validateRequest();
@@ -90,6 +126,11 @@ class CostCenterTypeController extends Controller
         return response()->json(['message' => 'Cost center type updated successfully']);
     }
 
+    /**
+     * Create a new cost center type.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create()
     {
         $validatedData = $this->validateRequest();
@@ -107,6 +148,11 @@ class CostCenterTypeController extends Controller
         return response()->json(['message' => 'Cost center type created successfully']);
     }
 
+    /*
+     * Validate the request data for creating or updating a cost center type.
+     *
+     * @return array
+     */
     private function validateRequest()
     {
         $existingNames = CostCenterType::where('deleted', 0);

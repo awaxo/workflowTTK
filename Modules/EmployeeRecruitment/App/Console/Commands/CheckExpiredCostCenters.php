@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Notifications\ExpiredCostCentersNotification;
 
 /**
- * This command checks for expired cost centers based on due_date
- * and automatically marks them as deleted, then notifies project coordinators.
+ * CheckExpiredCostCenters is a console command that checks for expired cost centers,
+ * marks them as deleted, and notifies the project coordinators.
  */
 class CheckExpiredCostCenters extends Command
 {
@@ -32,6 +32,11 @@ class CheckExpiredCostCenters extends Command
 
     /**
      * Execute the console command.
+     *
+     * This method retrieves all cost centers that have expired (due_date in the past),
+     * marks them as deleted, and sends notifications to the project coordinators.
+     *
+     * @return void
      */
     public function handle()
     {

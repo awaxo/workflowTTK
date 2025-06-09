@@ -4,6 +4,21 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
+/*|--------------------------------------------------------------------------
+| Application HTTP Kernel
+|--------------------------------------------------------------------------
+|
+| This class is responsible for handling incoming HTTP requests to your
+| application. It registers the global middleware stack, route middleware
+| groups, and middleware aliases that can be used throughout your routes.
+|
+| You can also register any custom middleware here.
+|
+| The middleware defined here will be applied to every request that
+| your application receives, allowing you to perform tasks such as
+| authentication, logging, and more.
+|
+*/
 class Kernel extends HttpKernel
 {
     /**
@@ -67,6 +82,13 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 
+    /**
+     * The application's route middleware.
+     *
+     * These middleware are assigned to specific routes and can be used to apply role-based access control.
+     *
+     * @var array<string, class-string|string>
+     */
     protected $routeMiddleware = [
         'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
         'check.wg908' => \App\Http\Middleware\CheckWorkgroup908::class,

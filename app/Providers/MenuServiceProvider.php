@@ -3,12 +3,15 @@
 namespace App\Providers;
 
 use App\Http\Composers\MenuComposer;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class MenuServiceProvider
+ *
+ * This service provider is responsible for composing the vertical menu view with necessary data.
+ * It uses a view composer to inject data into the 'layouts.sections.menu.verticalMenu' view.
+ */
 class MenuServiceProvider extends ServiceProvider
 {
     /**

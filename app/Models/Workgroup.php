@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/*
+ * Workgroup model represents a group of users working together on tasks or projects.
+ * It includes attributes for workgroup number, name, leader, labor administrator, and user information.
+ */
 class Workgroup extends Model
 {
     use HasFactory;
@@ -58,6 +62,8 @@ class Workgroup extends Model
 
     /**
      * Get the labor administrator associated with the workgroup.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function laborAdministrator()
     {
@@ -66,6 +72,8 @@ class Workgroup extends Model
 
     /**
      * Get the user who created the workgroup.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function createdBy()
     {
@@ -74,6 +82,8 @@ class Workgroup extends Model
 
     /**
      * Get the user who last updated the workgroup.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function updatedBy()
     {

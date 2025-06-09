@@ -8,6 +8,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+/**
+ * StoreGasCylinderAssignmentNotification is a notification class that sends an email
+ * to the warehouse when a workgroup is closed, requesting the assignment of gas cylinders
+ * to another group.
+ */
 class StoreGasCylinderAssignmentNotification extends Notification implements ShouldQueue
 {
     use Queueable;

@@ -9,6 +9,13 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Support\Collection;
 
+/**
+ * Class ReportExport
+ * 
+ * This class handles the export of various reports to an Excel file.
+ * It implements the FromCollection, WithHeadings, WithStyles, and WithTitle interfaces
+ * to define the data source, column headers, styling, and title for the exported sheet.
+ */
 class ReportExport implements FromCollection, WithHeadings, WithStyles, WithTitle
 {
     protected $data;

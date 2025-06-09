@@ -4,19 +4,24 @@ namespace Modules\EmployeeRecruitment\App\Notifications;
 
 use App\Models\AbstractWorkflow;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
+/*
+ * Class ApproverAssignedNotification
+ * This notification is sent to users when they are assigned as approvers for a workflow.
+ * It extends the base Notification class and uses the Queueable trait for queueing.
+ */
 class ApproverAssignedNotification extends Notification
 {
     use Queueable;
 
     public $workflow;
 
-    /**
+    /*
      * Create a new notification instance.
+     *
+     * @param AbstractWorkflow $workflow
      */
     public function __construct(AbstractWorkflow $workflow)
     {

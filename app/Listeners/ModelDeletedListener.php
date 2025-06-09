@@ -13,7 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Listener for processing model deletion events and triggering cascade operations
+ * Listener for model deletion events to handle cascade deletions.
  */
 class ModelDeletedListener implements ShouldQueue
 {

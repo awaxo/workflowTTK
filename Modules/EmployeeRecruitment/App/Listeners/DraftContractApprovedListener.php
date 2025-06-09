@@ -6,10 +6,18 @@ use App\Events\StateChangedEvent;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Notifications\EntryPermissionNotification;
 
+/**
+ * DraftContractApprovedListener is an event listener that handles the StateChangedEvent.
+ * It checks if the previous state was 'draft_contract_pending' and sends a notification
+ * to the IT lead user when the draft contract is approved.
+ */
 class DraftContractApprovedListener
 {
     /**
-     * Create the event listener.
+     * Create a new listener instance.
+     *
+     * This constructor does not require any dependencies, but it can be extended in the future
+     * if needed for dependency injection.
      */
     public function __construct()
     {
@@ -18,6 +26,13 @@ class DraftContractApprovedListener
 
     /**
      * Handle the event.
+     *
+     * This method is triggered when the StateChangedEvent is fired.
+     * It checks if the previous state was 'draft_contract_pending' and sends a notification
+     * to the IT lead user when the draft contract is approved.
+     *
+     * @param StateChangedEvent $event
+     * @return void
      */
     public function handle(StateChangedEvent $event): void
     {

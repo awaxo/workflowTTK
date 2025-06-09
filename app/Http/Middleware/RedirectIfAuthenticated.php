@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
+/*
+ * Middleware to redirect authenticated users to the home page.
+ * If the user is authenticated, they will be redirected to the home route.
+ * If not, the request will proceed to the next middleware or controller.
+ */
 class RedirectIfAuthenticated
 {
     /**

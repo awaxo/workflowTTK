@@ -26,6 +26,12 @@ use Modules\EmployeeRecruitment\App\Listeners\RecruitmentStartedListener;
 use Modules\EmployeeRecruitment\App\Listeners\RejectedListener;
 use Modules\EmployeeRecruitment\App\Listeners\SuspendedListener;
 
+/**
+ * EventServiceProvider
+ *
+ * This service provider is responsible for registering event listeners for the Employee Recruitment module.
+ * It maps events to their corresponding listeners.
+ */
 class EventServiceProvider extends ServiceProvider
 {
     /**

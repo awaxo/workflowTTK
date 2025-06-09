@@ -6,10 +6,18 @@ use App\Events\CancelledEvent;
 use App\Models\User;
 use Modules\EmployeeRecruitment\App\Notifications\CancelledNotification;
 
+/**
+ * CancelledListener is an event listener that handles the CancelledEvent.
+ * It retrieves the users involved in the workflow's history and sends them
+ * a notification when the workflow is cancelled.
+ */
 class CancelledListener
 {
     /**
-     * Create the event listener.
+     * Create a new listener instance.
+     *
+     * This constructor does not require any dependencies, but it can be extended in the future
+     * if needed for dependency injection.
      */
     public function __construct()
     {
@@ -18,6 +26,13 @@ class CancelledListener
 
     /**
      * Handle the event.
+     *
+     * This method is triggered when the CancelledEvent is fired.
+     * It retrieves the users involved in the workflow's history and sends them
+     * a notification when the workflow is cancelled.
+     *
+     * @param CancelledEvent $event
+     * @return void
      */
     public function handle(CancelledEvent $event): void
     {

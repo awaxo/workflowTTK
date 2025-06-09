@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
+/**
+ * Custom exception handler for the application.
+ *
+ * This class extends the default Laravel exception handler to provide custom
+ * logging and response handling for exceptions.
+ */
 class Handler extends ExceptionHandler
 {
     /**
@@ -35,6 +41,14 @@ class Handler extends ExceptionHandler
         });
     }
 
+    /**
+     * Report or log an exception.
+     *
+     * This method overrides the default report method to customize the logging
+     * of exceptions, excluding the stack trace for cleaner logs.
+     *
+     * @param Throwable $exception
+     */
     public function report(Throwable $exception)
     {
         if ($this->shouldReport($exception)) {
@@ -57,6 +71,16 @@ class Handler extends ExceptionHandler
         //parent::report($exception);
     }
 
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * This method overrides the default render method to provide custom handling
+     * for exceptions, including CSRF token mismatch and validation exceptions.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param Throwable $e
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
     public function render($request, Throwable $e)
     {
         $e = $this->mapException($e);

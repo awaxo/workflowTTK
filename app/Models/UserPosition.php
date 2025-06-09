@@ -8,6 +8,10 @@ use Database\Factories\UserPositionFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/*
+ * UserPosition model represents the relationship between users and positions.
+ * It includes attributes for user ID, position ID, and metadata for creation and updates.
+ */
 class UserPosition extends Model
 {
     use HasFactory;
@@ -70,6 +74,8 @@ class UserPosition extends Model
 
     /**
      * Get the user associated with the user position.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
@@ -78,6 +84,8 @@ class UserPosition extends Model
 
     /**
      * Get the position associated with the user position.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function position()
     {
@@ -86,6 +94,8 @@ class UserPosition extends Model
 
     /**
      * Get the user who created the group.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function createdBy()
     {
@@ -94,6 +104,8 @@ class UserPosition extends Model
 
     /**
      * Get the user who last updated the group.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function updatedBy()
     {

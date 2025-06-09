@@ -9,6 +9,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
+/*
+ * StateChangedNotification is a notification class that sends an email
+ * to the user when the state of a workflow changes.
+ * It includes the details of the workflow and the state change.
+ */
 class StateChangedNotification extends Notification
 {
     use Queueable;

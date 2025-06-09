@@ -6,6 +6,12 @@ use App\Models\User;
 use App\Models\Workgroup;
 use App\Models\CostCenter;
 
+/**
+ * RecruitmentWorkflowService
+ *
+ * This service provides methods to check if a user is a project coordinator or financing approver
+ * based on their roles, workgroup memberships, and delegations.
+ */
 class RecruitmentWorkflowService
 {
     /**

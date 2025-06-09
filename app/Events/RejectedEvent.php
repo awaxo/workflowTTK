@@ -7,6 +7,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Event triggered when a workflow is rejected.
+ */
 class RejectedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -15,6 +18,8 @@ class RejectedEvent
 
     /**
      * Create a new event instance.
+     *
+     * @param AbstractWorkflow $workflow
      */
     public function __construct(AbstractWorkflow $workflow)
     {

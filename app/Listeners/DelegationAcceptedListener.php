@@ -8,6 +8,10 @@ use App\Notifications\DelegationAcceptedNotification;
 use App\Services\Interfaces\IDelegationService;
 use Illuminate\Support\Facades\Log;
 
+/*
+ * Listener for handling delegation accepted events.
+ * This listener sends a notification to the original user when a delegation is accepted.
+ */
 class DelegationAcceptedListener
 {
     /**
@@ -40,6 +44,9 @@ class DelegationAcceptedListener
 
     /**
      * Handle the event.
+     *
+     * @param DelegationAcceptedEvent $event
+     * @return void
      */
     public function handle(DelegationAcceptedEvent $event): void
     {

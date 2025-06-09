@@ -11,8 +11,18 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\Facades\Module;
 
+/*
+ * WorkflowService provides methods to manage workflows, including fetching workflows,
+ * checking user responsibilities, and handling workflow metadata.
+ */
 class WorkflowService
 {
+    /**
+     * Retrieves all workflows that are not deleted, marking them with user responsibility and closed state.
+     *
+     * @param User $user The user for whom the workflows are being fetched.
+     * @return Collection A collection of workflows with additional metadata.
+     */
     public function getAllButDeletedWorkflows(User $user): Collection
     {
         $allWorkflows = collect();
@@ -35,6 +45,12 @@ class WorkflowService
         return new \Illuminate\Database\Eloquent\Collection($allWorkflows->all());
     }
 
+    /**
+     * Retrieves all workflows that are currently active for the given user.
+     *
+     * @param User $user The user for whom the workflows are being fetched.
+     * @return Collection A collection of active workflows with additional metadata.
+     */
     public function getVisibleWorkflows(User $user): Collection
     {
         $visibleWorkflows = collect();
@@ -56,6 +72,12 @@ class WorkflowService
         return new \Illuminate\Database\Eloquent\Collection($visibleWorkflows->all());
     }
 
+    /**
+     * Retrieves all closed workflows for the given user.
+     *
+     * @param User $user The user for whom the workflows are being fetched.
+     * @return Collection A collection of closed workflows with additional metadata.
+     */
     public function getClosedWorkflows(User $user): Collection
     {
         $visibleWorkflows = collect();
@@ -77,18 +99,40 @@ class WorkflowService
         return new \Illuminate\Database\Eloquent\Collection($visibleWorkflows->all());
     }
 
+    /**
+     * Checks if the given user is responsible for the specified workflow.
+     *
+     * @param User $user The user to check.
+     * @param AbstractWorkflow $workflow The workflow to check against.
+     * @return bool True if the user is responsible, false otherwise.
+     */
     public function isUserResponsible(User $user, AbstractWorkflow $workflow): bool
     {
         $stateHandler = $this->getStateHandler($workflow);
         return $stateHandler && ($stateHandler->isUserResponsible($user, $workflow) || $stateHandler->isUserResponsibleAsDelegate($user, $workflow));
     }
 
+    /**
+     * Retrieves the users responsible for the given workflow.
+     *
+     * @param AbstractWorkflow $workflow The workflow to check.
+     * @param bool $notApprovedOnly If true, only returns users who have not approved the workflow.
+     * @return array An array of user IDs who are responsible for the workflow.
+     */
     public function getResponsibleUsers(AbstractWorkflow $workflow, $notApprovedOnly = false): array
     {
         $stateHandler = $this->getStateHandler($workflow);
         return $stateHandler->getResponsibleUsers($workflow, $notApprovedOnly);
     }
 
+    /**
+     * Checks if the given user has approved the specified workflow state.
+     *
+     * @param AbstractWorkflow $workflow The workflow to check.
+     * @param string $workflowState The state of the workflow to check against.
+     * @param int $userId The ID of the user to check.
+     * @return bool True if the user has approved, false otherwise.
+     */
     public function isApprovedBy(AbstractWorkflow $workflow, string $workflowState, int $userId): bool
     {
         $metaData = json_decode($workflow->meta_data, true);
@@ -99,16 +143,36 @@ class WorkflowService
         return false;
     }
 
+    /**
+     * Checks if all approvals for the given workflow have been completed.
+     *
+     * @param AbstractWorkflow $workflow The workflow to check.
+     * @return bool True if all approvals are completed, false otherwise.
+     */
     public function isAllApproved(AbstractWorkflow $workflow): bool
     {
         $stateHandler = $this->getStateHandler($workflow);
         return $stateHandler && $stateHandler->isAllApproved($workflow);
     }
 
+    /**
+     * Checks if all approvals for the given workflow state have been completed by a specific user.
+     *
+     * @param AbstractWorkflow $workflow The workflow to check.
+     * @param IStateResponsibility $stateHandler The state handler responsible for the workflow.
+     * @param int|null $userId The ID of the user to check, or null for the current authenticated user.
+     * @return bool True if all approvals are completed by the user, false otherwise.
+     */
     public function isAllApprovedForState(AbstractWorkflow $workflow, IStateResponsibility $stateHandler, ?int $userId = null): bool {
         return $stateHandler->isAllApproved($workflow, $userId);
     }
 
+    /**
+     * Retrieves the next transition for the given workflow.
+     *
+     * @param AbstractWorkflow $workflow The workflow to check.
+     * @return string The next transition for the workflow.
+     */
     public function getNextTransition(AbstractWorkflow $workflow): string
     {
         $stateHandler = $this->getStateHandler($workflow);

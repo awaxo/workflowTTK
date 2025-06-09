@@ -8,11 +8,23 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
+/**
+ * WorkgroupController handles the management of workgroups,
+ * including creating, updating, deleting, and restoring workgroups.
+ *
+ * This controller is responsible for rendering the workgroups page,
+ * fetching all workgroups, checking uniqueness of workgroup numbers and names,
+ * and managing workgroup states.
+ */
 class WorkgroupController extends Controller
 {
+    /**
+     * Display the workgroups management page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function manage()
     {
         $users = User::nonAdmin()
@@ -30,6 +42,11 @@ class WorkgroupController extends Controller
         return view('content.pages.workgroups', compact('users', 'labor_administrators'));
     }
 
+    /**
+     * Get all workgroups for DataTables.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllWorkgroups()
     {
         $workgroups = Workgroup::all()->map(function ($workgroup) {
@@ -51,6 +68,11 @@ class WorkgroupController extends Controller
         return response()->json(['data' => $workgroups]);
     }
 
+    /**
+     * Check if the workgroup number is unique.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkWorkgroupNumberUnique()
     {
         $workgroupNumber = request()->input('workgroup_number');
@@ -68,6 +90,11 @@ class WorkgroupController extends Controller
         return response()->json(['valid' => !$exists]);
     }
     
+    /**
+     * Check if the workgroup name is unique.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkWorkgroupNameUnique()
     {
         $name = request()->input('name');
@@ -85,6 +112,12 @@ class WorkgroupController extends Controller
         return response()->json(['valid' => !$exists]);
     }
 
+    /**
+     * Delete a workgroup by setting its deleted flag.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $workgroup = Workgroup::find($id);
@@ -96,6 +129,12 @@ class WorkgroupController extends Controller
         return response()->json(['success' => 'Workgroup deleted successfully']);
     }
 
+    /**
+     * Restore a deleted workgroup by resetting its deleted flag.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $workgroup = Workgroup::find($id);
@@ -107,6 +146,12 @@ class WorkgroupController extends Controller
         return response()->json(['success' => 'Workgroup restored successfully']);
     }
 
+    /**
+     * Update an existing workgroup.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id)
     {
         $validatedData = $this->validateRequest();
@@ -121,6 +166,11 @@ class WorkgroupController extends Controller
         return response()->json(['success' => 'Workgroup updated successfully']);
     }
 
+    /**
+     * Create a new workgroup.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create()
     {
         $validatedData = $this->validateRequest();
@@ -136,6 +186,11 @@ class WorkgroupController extends Controller
         return response()->json(['success' => 'Workgroup created successfully']);
     }
 
+    /**
+     * Validate the request data for creating or updating a workgroup.
+     *
+     * @return array
+     */
     private function validateRequest()
     {
         // Get active users with at least one role

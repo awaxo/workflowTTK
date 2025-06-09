@@ -8,6 +8,10 @@ use App\Notifications\DelegationRejectedNotification;
 use App\Services\Interfaces\IDelegationService;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Listener for handling delegation rejected events.
+ * This listener sends a notification to the original user when a delegation is rejected.
+ */
 class DelegationRejectedListener
 {
     /**
@@ -40,6 +44,9 @@ class DelegationRejectedListener
 
     /**
      * Handle the event.
+     *
+     * @param DelegationRejectedEvent $event
+     * @return void
      */
     public function handle(DelegationRejectedEvent $event): void
     {

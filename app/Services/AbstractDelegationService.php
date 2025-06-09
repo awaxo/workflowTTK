@@ -8,6 +8,11 @@ use App\Services\Interfaces\IDelegationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
 
+/*
+ * AbstractDelegationService provides a base implementation for delegation services.
+ * It includes methods to check if a user is a delegate, get all delegations,
+ * and retrieve delegates for a specific user and delegation type.
+ */
 abstract class AbstractDelegationService implements IDelegationService
 {
     /**

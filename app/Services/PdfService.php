@@ -10,7 +10,10 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Service for PDF generation using MPDF
+ * PDF generation service using mPDF library
+ * 
+ * This service provides methods to create and configure mPDF instances,
+ * set headers and footers, and generate PDF documents from Blade views.
  */
 class PdfService
 {

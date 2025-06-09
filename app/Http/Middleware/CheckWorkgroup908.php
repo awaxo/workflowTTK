@@ -7,8 +7,19 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Workgroup;
 
+/**
+ * Middleware to check if the authenticated user is a leader of workgroup 908 or has the 'adminisztrator' role.
+ * If not, it redirects to a not authorized view.
+ */
 class CheckWorkgroup908
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @return mixed
+     */
     public function handle($request, Closure $next)
     {
         if (!Auth::check()) {

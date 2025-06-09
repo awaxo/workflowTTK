@@ -7,6 +7,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Event triggered when an approver is assigned to a workflow.
+ */
 class ApproverAssignedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -15,6 +18,8 @@ class ApproverAssignedEvent
 
     /**
      * Create a new event instance.
+     *
+     * @param AbstractWorkflow $workflow
      */
     public function __construct(AbstractWorkflow $workflow)
     {

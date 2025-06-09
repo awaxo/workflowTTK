@@ -10,10 +10,18 @@ use Modules\EmployeeRecruitment\App\Notifications\OperationsCoordinatorNotificat
 use Modules\EmployeeRecruitment\App\Notifications\RadiationProtectionServiceNotification;
 use Modules\EmployeeRecruitment\App\Notifications\RecruitmentCreatorNotification;
 
+/*
+ * HrLeadApprovedListener is an event listener that handles the StateChangedEvent.
+ * It checks if the previous state was 'hr_lead_approval' and performs actions accordingly,
+ * such as notifying Operations Coordinators, the Creator, and the Operations Lead.
+ */
 class HrLeadApprovedListener
 {
     /**
-     * Create the event listener.
+     * Create a new listener instance.
+     *
+     * This constructor does not require any dependencies, but it can be extended in the future
+     * if needed for dependency injection.
      */
     public function __construct()
     {
@@ -22,6 +30,13 @@ class HrLeadApprovedListener
 
     /**
      * Handle the event.
+     *
+     * This method is triggered when the StateChangedEvent is fired.
+     * It checks if the previous state was 'hr_lead_approval' and performs actions accordingly,
+     * such as notifying Operations Coordinators, the Creator, and the Operations Lead.
+     *
+     * @param StateChangedEvent $event
+     * @return void
      */
     public function handle(StateChangedEvent $event): void
     {

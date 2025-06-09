@@ -5,10 +5,14 @@ namespace App\Listeners;
 use App\Events\StateChangedEvent;
 use App\Notifications\StateChangedNotification;
 
+/*
+ * Listener for handling state change events.
+ * This listener sends a notification to the user when a workflow state changes.
+ */
 class StateChangedListener
 {
     /**
-     * Create the event listener.
+     * Create a new listener instance.
      */
     public function __construct()
     {
@@ -17,6 +21,9 @@ class StateChangedListener
 
     /**
      * Handle the event.
+     *
+     * @param StateChangedEvent $event
+     * @return void
      */
     public function handle(StateChangedEvent $event): void
     {

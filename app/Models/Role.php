@@ -6,6 +6,10 @@ use Spatie\Permission\Models\Role as SpatieRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * Role model represents a user role in the system.
+ * It extends the Spatie Permission model to include additional functionality if needed.
+ */
 class Role extends SpatieRole
 {
     use HasFactory;
@@ -14,6 +18,10 @@ class Role extends SpatieRole
 
     /**
      * Get role display name by role name
+     * Caches the result for 1 hour
+     * 
+     * @param string $roleName
+     * @return string
      */
     public static function getDisplayName(string $roleName): string
     {
@@ -28,6 +36,9 @@ class Role extends SpatieRole
 
     /**
      * Get all roles with their display names
+     * Caches the result for 1 hour
+     *
+     * @return array
      */
     public static function getAllWithDisplayNames(): array
     {

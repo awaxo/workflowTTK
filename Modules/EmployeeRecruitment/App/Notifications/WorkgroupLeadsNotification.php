@@ -2,14 +2,16 @@
 
 namespace Modules\EmployeeRecruitment\App\Notifications;
 
-use App\Models\AbstractWorkflow;
-use App\Models\ExternalAccessRight;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
+/**
+ * Class WorkgroupLeadsNotification
+ * This notification is sent to workgroup leads when a new recruitment workflow is created.
+ * It extends the base Notification class and uses the Queueable trait for queueing.
+ */
 class WorkgroupLeadsNotification extends Notification
 {
     use Queueable;
@@ -18,6 +20,8 @@ class WorkgroupLeadsNotification extends Notification
 
     /**
      * Create a new notification instance.
+     *
+     * @param RecruitmentWorkflow $workflow
      */
     public function __construct(RecruitmentWorkflow $workflow)
     {
@@ -34,8 +38,11 @@ class WorkgroupLeadsNotification extends Notification
         return ['mail'];
     }
 
-    /**
+    /*
      * Get the mail representation of the notification.
+     *
+     * @param object $notifiable
+     * @return MailMessage
      */
     public function toMail(object $notifiable): MailMessage
     {

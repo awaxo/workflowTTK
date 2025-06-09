@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+/*
+ * CostCenterUserDeletedNotification is a notification class that sends an email
+ * to the cost center admin users when a user is deleted from cost centers.
+ * It includes the details of the deleted user and their roles in the cost centers.
+ */
 class CostCenterUserDeletedNotification extends Notification implements ShouldQueue
 {
     use Queueable;

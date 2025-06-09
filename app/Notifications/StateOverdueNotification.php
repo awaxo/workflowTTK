@@ -9,6 +9,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * StateOverdueNotification is a notification class that sends an email
+ * to the user when a workflow state has been overdue for a specified deadline.
+ * It includes the details of the workflow and the deadline.
+ */
 class StateOverdueNotification extends Notification
 {
     use Queueable;

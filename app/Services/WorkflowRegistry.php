@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+/**
+ * WorkflowRegistry is responsible for registering and managing workflow classes.
+ * It allows workflows to be registered and retrieved later.
+ */
 class WorkflowRegistry
 {
     /**

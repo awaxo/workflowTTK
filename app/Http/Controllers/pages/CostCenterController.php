@@ -13,22 +13,36 @@ use App\Services\Import\CostCenterImporter;
 use App\Services\Import\ImportManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Closure;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 
+/*
+ * CostCenterController handles the management of cost centers, including import, export, and CRUD operations.
+ * It also validates cost center codes and checks user roles within workgroups.
+ */
 class CostCenterController extends Controller
 {
     protected $importManager;
 
+    /**
+     * Constructor
+     * 
+     * @param ImportManager $importManager
+     */
     public function __construct(ImportManager $importManager)
     {
         $this->importManager = $importManager;
         $this->importManager->registerImporter('costcenter', new CostCenterImporter());
     }
 
+    /**
+     * Import cost centers from a CSV file
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function import(Request $request)
     {
         $request->validate([
@@ -108,6 +122,11 @@ class CostCenterController extends Controller
         return Excel::download(new CostCenterExport($data, $headers), $filename);
     }
 
+    /**
+     * Display the cost centers management page
+     * 
+     * @return \Illuminate\View\View
+     */
     public function manage()
     {
         $costcenterTypes = CostCenterType::where('deleted', 0)->get();
@@ -125,6 +144,11 @@ class CostCenterController extends Controller
         return view('content.pages.costcenters', compact('users', 'projectCoordinators', 'costcenterTypes'));
     }
 
+    /**
+     * Get all cost centers with their details
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAllCostCenters()
     {
         $costCenters = CostCenter::all()->map(function ($costCenter) {
@@ -154,9 +178,10 @@ class CostCenterController extends Controller
     }
 
     /**
-     * Egy endpoint a költséghely kód teljes validációjára:
-     * - Egyediség ellenőrzése
-     * - Aktív csoport ellenőrzése
+     * Validate the cost center code format and uniqueness
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function validateCostCenterCode(Request $request)
     {
@@ -204,6 +229,11 @@ class CostCenterController extends Controller
         return response()->json(['valid' => true]);
     }
 
+    /*     * Check if a user is in a specific workgroup
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkUserInWorkgroup(Request $request)
     {
         $userId = $request->input('user_id');
@@ -223,6 +253,12 @@ class CostCenterController extends Controller
         return response()->json(['valid' => $inWorkgroup]);
     }
 
+    /**
+     * Check if a user is a project coordinator
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkProjectCoordinator(Request $request)
     {
         $userId = $request->input('user_id');
@@ -241,6 +277,12 @@ class CostCenterController extends Controller
         return response()->json(['valid' => $isProjectCoordinator]);
     }
 
+    /**
+     * Delete a cost center by ID
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete($id)
     {
         $costCenter = CostCenter::find($id);
@@ -252,6 +294,12 @@ class CostCenterController extends Controller
         return response()->json(['message' => 'Cost center deleted successfully']);
     }
 
+    /**
+     * Restore a deleted cost center
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore($id)
     {
         $costCenter = CostCenter::find($id);
@@ -263,6 +311,12 @@ class CostCenterController extends Controller
         return response()->json(['message' => 'Cost center restored successfully']);
     }
 
+    /**
+     * Update a cost center by ID
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id)
     {
         $validatedData = $this->validateRequest($id, request('cost_center_code'));
@@ -279,6 +333,11 @@ class CostCenterController extends Controller
         return response()->json(['message' => 'Cost center updated successfully']);
     }
 
+    /**
+     * Create a new cost center
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create()
     {
         $validatedData = $this->validateRequest();
@@ -296,6 +355,12 @@ class CostCenterController extends Controller
         return response()->json(['message' => 'Cost center created successfully']);
     }
 
+    /**
+     * Validate the request data for creating or updating a cost center
+     * 
+     * @return array
+     * @throws ValidationException
+     */
     private function validateRequest()
     {
         $input = request()->all();

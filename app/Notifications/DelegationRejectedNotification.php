@@ -9,6 +9,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+/**
+ * DelegationRejectedNotification is a notification class that sends an email
+ * to the user when a delegation is rejected by another user.
+ * It includes the details of the delegation and the rejecting user.
+ */
 class DelegationRejectedNotification extends Notification implements ShouldQueue
 {
     use Queueable;

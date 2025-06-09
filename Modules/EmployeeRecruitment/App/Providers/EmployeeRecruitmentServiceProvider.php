@@ -19,6 +19,13 @@ use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentPermissionSeeder;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentRolePermissionSeeder;
 use Modules\EmployeeRecruitment\Database\Seeders\RecruitmentWorkflowTypeSeeder;
 
+/**
+ * EmployeeRecruitmentServiceProvider
+ * 
+ * This service provider is responsible for bootstrapping the Employee Recruitment module.
+ * It registers commands, translations, views, configuration, seeders, workflows,
+ * and event service providers.
+ */
 class EmployeeRecruitmentServiceProvider extends ServiceProvider
 {
     protected string $moduleName = 'EmployeeRecruitment';

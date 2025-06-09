@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use App\Services\RoleService;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Institute model represents an educational or organizational institute.
+ * It includes attributes for group level, name, abbreviation, and user references for creation and updates.
+ */
 class Institute extends Model
 {
     use HasFactory;
@@ -31,7 +35,9 @@ class Institute extends Model
     ];
 
     /**
-     * Get the user who created the labor administrator.
+     * Get the user who created the institute.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function createdBy()
     {
@@ -39,7 +45,9 @@ class Institute extends Model
     }
 
     /**
-     * Get the user who last updated the labor administrator.
+     * Get the user who last updated the institute.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function updatedBy()
     {
@@ -47,7 +55,9 @@ class Institute extends Model
     }
 
     /**
-     * Get the workgroups that belong to this institute.
+     * Get the workgroups associated with this institute.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function workgroups()
     {
@@ -55,7 +65,10 @@ class Institute extends Model
     }
 
     /**
-     * Get the secretary role name for this institute
+     * Get the secretary role name for this institute.
+     * This will be used to create or update the secretary role in the system.
+     *
+     * @return string
      */
     public function getSecretaryRoleName(): string
     {
@@ -63,7 +76,10 @@ class Institute extends Model
     }
 
     /**
-     * Get the secretary role display name for this institute
+     * Get the display name for the secretary role of this institute.
+     * This will be used in various places like dropdowns, lists, etc.
+     *
+     * @return string
      */
     public function getSecretaryRoleDisplayName(): string
     {
@@ -71,7 +87,10 @@ class Institute extends Model
     }
 
     /**
-     * Update secretary role when institute changes
+     * Get the display name for this institute.
+     * This will be used in various places like dropdowns, lists, etc.
+     *
+     * @return string
      */
     protected static function booted()
     {
@@ -82,19 +101,8 @@ class Institute extends Model
 
         // When institute is updated, update the secretary role
         static::updated(function ($institute) {
-            Log::info("Institute updated event triggered", [
-        'institute_id' => $institute->id,
-        'dirty_fields' => $institute->getDirty(),
-        'original_values' => $institute->getOriginal(),
-        'abbreviation_dirty' => $institute->isDirty('abbreviation'),
-        'group_level_dirty' => $institute->isDirty('group_level'),
-        'deleted_dirty' => $institute->isDirty('deleted')
-    ]);
             // Check if abbreviation or group_level changed
             if ($institute->isDirty('abbreviation') || $institute->isDirty('group_level')) {
-                Log::info("Calling updateSecretaryRole", [
-            'old_group_level' => $institute->getOriginal('group_level')
-        ]);
                 $institute->updateSecretaryRole($institute->getOriginal('group_level'));
             }
         });
@@ -111,7 +119,11 @@ class Institute extends Model
     }
 
     /**
-     * Update or create secretary role for this institute
+     * Update or create the secretary role for this institute.
+     * This method will create a new role if it doesn't exist, or update the display name if it does.
+     * If the group_level has changed, it will handle it as a delete + create operation.
+     *
+     * @param int|null $oldGroupLevel
      */
     public function updateSecretaryRole(?int $oldGroupLevel = null): void
     {
@@ -150,7 +162,8 @@ class Institute extends Model
     }
 
     /**
-     * Handle secretary role when institute is deleted
+     * Handle secretary role deletion when institute is deleted
+     * This method will remove the secretary role from all users and delete the role itself.
      */
     public function handleSecretaryRoleOnDelete(): void
     {
@@ -192,7 +205,10 @@ class Institute extends Model
     }
 
     /**
-     * Handle group_level change (delete old role, create new one)
+     * Handle group_level change by removing the old secretary role and creating a new one.
+     * This method will remove the old role from all users and delete the role itself.
+     *
+     * @param int $oldGroupLevel
      */
     private function handleGroupLevelChange(int $oldGroupLevel): void
     {

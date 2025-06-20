@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * Class CancelledNotification
  * This notification is sent to users when a workflow has been cancelled.
  * It extends the base Notification class and uses the Queueable trait for queueing.
@@ -41,7 +41,7 @@ class CancelledNotification extends Notification
         return ['mail'];
     }
 
-    /*
+    /**
      * Get the mail representation of the notification.
      *
      * @param object $notifiable

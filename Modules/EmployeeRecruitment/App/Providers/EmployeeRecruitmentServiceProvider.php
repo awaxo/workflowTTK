@@ -125,6 +125,10 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         View::addNamespace($this->moduleName, $sourcePath);
     }
 
+    /**
+     * Register seeders.
+     * This method registers the seeders for the Employee Recruitment module.
+     */
     public function registerSeeders(): void
     {
         DatabaseSeeder::addSeeder(RecruitmentPermissionSeeder::class);
@@ -132,16 +136,28 @@ class EmployeeRecruitmentServiceProvider extends ServiceProvider
         DatabaseSeeder::addSeeder(RecruitmentRolePermissionSeeder::class);
     }
 
+    /**
+     * Register workflows.
+     * This method registers the RecruitmentWorkflow class in the WorkflowRegistry.
+     */
     public function registerWorkflow(): void
     {
         WorkflowRegistry::register(RecruitmentWorkflow::class);
     }
 
+    /**
+     * Register the EventServiceProvider.
+     * This method registers the EventServiceProvider for the Employee Recruitment module.
+     */
     public function registerEventServciceProvider(): void
     {
         $this->app->register(EventServiceProvider::class);
     }
 
+    /**
+     * Register class aliases.
+     * This method registers class aliases for the Employee Recruitment module.
+     */
     public function registerClassAliases(): void
     {
         if (!class_exists('Carbon')) {

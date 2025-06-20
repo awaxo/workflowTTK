@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\UserProvider;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
-/*
+/**
  * Custom UserProvider for IMAP authentication.
  * This provider retrieves users from the database and checks their IMAP credentials.
  */
@@ -67,7 +67,7 @@ class ImapUserProvider implements UserProvider
         return null;
     }
 
-    /*
+    /**
      * Validate the user's credentials.
      *
      * @param Authenticatable $user

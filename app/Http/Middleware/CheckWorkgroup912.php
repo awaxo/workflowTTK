@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Workgroup;
 
-/*
+/**
  * Middleware to check if the authenticated user is a leader of workgroup 912 or has the 'adminisztrator' role.
  * If not, it redirects to a not authorized view.
  */

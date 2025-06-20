@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-/*
+/**
  * Class OperationsCoordinatorNotification
  * This notification is sent to operations coordinators when a new recruitment workflow is created.
  * It extends the base Notification class and uses the Queueable trait for queueing.
@@ -18,7 +18,7 @@ class OperationsCoordinatorNotification extends Notification
 
     public $workflow;
 
-    /*
+    /**
      * Create a new notification instance.
      *
      * @param RecruitmentWorkflow $workflow
@@ -38,7 +38,7 @@ class OperationsCoordinatorNotification extends Notification
         return ['mail'];
     }
 
-    /*
+    /**
      * Get the mail representation of the notification.
      *
      * @param object $notifiable

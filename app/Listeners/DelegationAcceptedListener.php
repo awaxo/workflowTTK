@@ -8,7 +8,7 @@ use App\Notifications\DelegationAcceptedNotification;
 use App\Services\Interfaces\IDelegationService;
 use Illuminate\Support\Facades\Log;
 
-/*
+/**
  * Listener for handling delegation accepted events.
  * This listener sends a notification to the original user when a delegation is accepted.
  */

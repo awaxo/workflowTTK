@@ -14,7 +14,8 @@ use App\Models\Workgroup;
  */
 class CheckWorkgroup910And911
 {
-    /* * Handle an incoming request.
+    /**
+     * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next

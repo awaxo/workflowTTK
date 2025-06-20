@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Closure;
 
-/*
+/**
  * UserController handles the user management page and related functionality.
  *
  * This controller is responsible for displaying the user management page,

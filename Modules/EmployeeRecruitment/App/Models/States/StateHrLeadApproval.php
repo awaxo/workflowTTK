@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/*
+/**
  * Class StateHrLeadApproval
  * Represents the state of a workflow when HR lead approval is required.
  * This class implements the IStateResponsibility interface to define the responsibilities

@@ -6,6 +6,12 @@ namespace App\Helpers;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 
+/**
+ * Class Helpers
+ * This class provides helper methods for managing application configurations and options.
+ * It includes methods to retrieve application classes, update page configurations,
+ * and handle unique multidimensional arrays.
+ */
 class Helpers
 {
     public static function appClasses()

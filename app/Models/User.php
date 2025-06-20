@@ -15,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Webklex\IMAP\Facades\Client;
 
-/*
+/**
  * User model represents a user in the system.
  * It includes attributes for name, email, workgroup, roles, and other user-related information.
  * It also provides methods for user management, notifications, and IMAP connections.
@@ -24,7 +24,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, ImapTrait;
 
-    /*
+    /**
      * The "booted" method is called when the model is booted.
      * It adds a global scope to filter out featured users.
      */

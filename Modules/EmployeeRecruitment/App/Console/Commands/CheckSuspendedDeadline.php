@@ -8,7 +8,7 @@ use App\Services\WorkflowService;
 use Illuminate\Console\Command;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-/*
+/**
  * CheckSuspendedDeadline is a console command that checks for recruitment workflows
  * that are in a suspended state and have exceeded their suspension threshold.
  * It resets the approvals and sends the workflows back for review.

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/*
+/**
  * Class StateEmployeeSignature
  * Represents the state of a workflow where an employee signature is required.
  * This class implements the IStateResponsibility interface to define

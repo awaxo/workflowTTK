@@ -4,7 +4,7 @@ namespace App\Services\Import;
 
 use Illuminate\Http\UploadedFile;
 
-/*
+/**
  * ImportManager is responsible for managing different importers.
  * It allows registering importers and importing files using the registered importers.
  */
@@ -23,7 +23,7 @@ class ImportManager
         $this->importers[$key] = $importer;
     }
 
-    /*
+    /**
      * Import a file using the specified importer key.
      *
      * @param string $key

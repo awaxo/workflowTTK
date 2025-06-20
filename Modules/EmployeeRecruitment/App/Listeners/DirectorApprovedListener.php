@@ -4,7 +4,7 @@ namespace Modules\EmployeeRecruitment\App\Listeners;
 
 use App\Events\StateChangedEvent;
 
-/*
+/**
  * DirectorApprovedListener is an event listener that handles the StateChangedEvent.
  * It checks if the previous state was 'director_approval' and performs actions accordingly.
  */

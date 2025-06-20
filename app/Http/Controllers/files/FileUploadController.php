@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-/*
+/**
  * FileUploadController handles file uploads.
  * It stores the uploaded file in the 'uploads' directory and returns the filename.
  */

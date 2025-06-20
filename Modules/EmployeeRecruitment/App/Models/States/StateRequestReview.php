@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/*
+/**
  * Class StateRequestReview
  * Represents the state of a workflow when a request review is required.
  * This class implements the IStateResponsibility interface to define the responsibilities

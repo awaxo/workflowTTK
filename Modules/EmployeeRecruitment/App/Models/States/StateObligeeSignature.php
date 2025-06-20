@@ -8,7 +8,7 @@ use App\Models\Interfaces\IStateResponsibility;
 use App\Models\User;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/*
+/**
  * Class StateObligeeSignature
  * Represents the state of a workflow when the obligee signature is required.
  * This class implements the IStateResponsibility interface to define the responsibilities

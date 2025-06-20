@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-/*
+/**
  * Class RecruitmentCreatorNotification
  * This notification is sent to the creator of a recruitment workflow when the occupational health referral is available for download.
  * It extends the base Notification class and uses the Queueable trait for queueing.
@@ -18,7 +18,7 @@ class RecruitmentCreatorNotification extends Notification
 
     public $workflow;
 
-    /*
+    /**
      * Create a new notification instance.
      *
      * @param RecruitmentWorkflow $workflow

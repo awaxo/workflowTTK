@@ -7,7 +7,7 @@ use App\Models\Option;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-/*
+/**
  * SettingsController handles the settings page and related functionality.
  *
  * This controller is responsible for displaying the settings page, updating settings,
@@ -38,7 +38,7 @@ class SettingsController extends Controller
         return view('content.pages.settings', compact('options', 'workflows', 'places'));
     }
 
-    /*
+    /**
      * Update settings based on user input.
      *
      * @return \Illuminate\Http\JsonResponse

@@ -9,7 +9,7 @@ use App\Services\WorkflowService;
 use Illuminate\Console\Command;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-/*
+/**
  * CheckStateDeadlines is a console command that checks recruitment workflow state deadlines.
  * It retrieves all recruitment workflows that are not in terminal states and checks if their
  * last updated time exceeds the configured deadline for their current state.
@@ -20,7 +20,7 @@ class CheckStateDeadlines extends Command
     protected $signature = 'employeerecruitment:check-state-deadline';
     protected $description = 'Check recruitment workflow state deadlines';
 
-    /*
+    /**
      * Execute the console command.
      *
      * This method retrieves all recruitment workflows that are not in terminal states,

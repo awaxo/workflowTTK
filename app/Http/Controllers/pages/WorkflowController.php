@@ -8,7 +8,7 @@ use App\Models\WorkflowType;
 use App\Services\WorkflowService;
 use Illuminate\Support\Facades\Auth;
 
-/*
+/**
  * WorkflowController handles the management of workflows,
  * including displaying workflows, fetching data, and managing states.
  *

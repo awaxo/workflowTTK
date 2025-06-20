@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
-/*
+/**
  * MenuComposer is responsible for composing the menu data for views.
  * It reads the vertical menu configuration from a JSON file and filters
  * the menu items based on the user's permissions.

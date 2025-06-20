@@ -8,7 +8,7 @@ use Database\Factories\UserPositionFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-/*
+/**
  * UserPosition model represents the relationship between users and positions.
  * It includes attributes for user ID, position ID, and metadata for creation and updates.
  */

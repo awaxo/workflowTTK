@@ -23,7 +23,7 @@ class PositionController extends Controller
         return view('content.pages.positions');
     }
 
-    /*
+    /**
      * Get all positions, including their details.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -45,7 +45,7 @@ class PositionController extends Controller
         return response()->json(['data' => $positions]);
     }
 
-    /*
+    /**
      * Delete a position by setting its deleted flag.
      *
      * @param int $id
@@ -79,7 +79,7 @@ class PositionController extends Controller
         return response()->json(['message' => 'Position restored successfully']);
     }
 
-    /*
+    /**
      * Update an existing position.
      *
      * @param int $id
@@ -100,7 +100,7 @@ class PositionController extends Controller
         return response()->json(['message' => 'Position updated successfully']);
     }
 
-    /*
+    /**
      * Create a new position.
      *
      * @return \Illuminate\Http\JsonResponse

@@ -13,7 +13,7 @@ use App\Models\Workgroup;
  */
 class CheckWorkgroup910
 {
-    /*
+    /**
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request

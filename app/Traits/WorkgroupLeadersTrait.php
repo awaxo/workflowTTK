@@ -5,7 +5,7 @@ use App\Models\Workgroup;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
-/*
+/**
  * Trait WorkgroupLeadersTrait provides methods to manage and check workgroup leaders.
  * It includes functionality to retrieve all leader users based on workgroup numbers
  * and check if a user is a leader in the specified workgroups.
@@ -26,7 +26,7 @@ trait WorkgroupLeadersTrait
                         ->filter(); // csak nem-null értékek
     }
 
-    /*
+    /**
      * Check if the given user is a leader in the specified workgroups.
      *
      * @param User $user
@@ -41,7 +41,7 @@ trait WorkgroupLeadersTrait
         return in_array($user->id, $leaderIds, true);
     }
 
-    /*
+    /**
      * Get the workgroup numbers that this trait will use to filter leaders.
      * This method should be implemented in the class using this trait.
      *

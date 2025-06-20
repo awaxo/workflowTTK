@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-/*
+/**
  * Class ExternalSystemNotification
  * This notification is sent to users when a new recruitment workflow is created,
  * providing details about the external systems and access rights.

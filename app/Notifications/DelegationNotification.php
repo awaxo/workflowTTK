@@ -11,7 +11,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\App;
 
-/*
+/**
  * DelegationNotification is a notification class that sends an email
  * to the user when a delegation is created or updated.
  * It includes the details of the delegation and the original user.

@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * Class RejectedNotification
  * This notification is sent to users when a workflow is rejected.
  * It extends the base Notification class and uses the Queueable trait for queueing.
@@ -19,7 +19,7 @@ class RejectedNotification extends Notification
     public $workflow;
     public $ccEmails;
 
-    /*
+    /**
      * Create a new notification instance.
      *
      * @param AbstractWorkflow $workflow

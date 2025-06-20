@@ -10,7 +10,7 @@ use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 
-/*
+/**
  * ReportController handles the generation and export of various reports,
  * including job advertisement statistics, chemical workers, and carcinogenic workers.
  */

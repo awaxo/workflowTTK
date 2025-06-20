@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use Nwidart\Modules\Facades\Module;
 
-/*
+/**
  * PermissionController handles the management of permissions,
  * including displaying the permissions page and retrieving all permissions.
  */

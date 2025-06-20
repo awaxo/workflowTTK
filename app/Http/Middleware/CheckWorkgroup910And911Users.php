@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
-/*
+/**
  * Middleware to check if the authenticated user is a member of workgroups 910 or 911,
  * or has the 'adminisztrator' role.
  * If not, it redirects to a not authorized view.

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * DeletedUsersNotification is a notification class that sends an email
  * to the workgroup admin users when users are automatically deleted
  * due to the closure of a workgroup.

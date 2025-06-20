@@ -42,7 +42,7 @@ class CostCenterType extends Model
         'deleted' => 'boolean',
     ];
 
-    /*
+    /**
      * Get the user who created this cost center type.
      *
      * @return string
@@ -52,7 +52,7 @@ class CostCenterType extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /*
+    /**
      * Get the user who last updated this cost center type.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -62,7 +62,7 @@ class CostCenterType extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    /*
+    /**
      * Get the costcenters associated with this cost center type.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

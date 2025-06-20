@@ -10,7 +10,7 @@ use Modules\EmployeeRecruitment\App\Notifications\OperationsCoordinatorNotificat
 use Modules\EmployeeRecruitment\App\Notifications\RadiationProtectionServiceNotification;
 use Modules\EmployeeRecruitment\App\Notifications\RecruitmentCreatorNotification;
 
-/*
+/**
  * HrLeadApprovedListener is an event listener that handles the StateChangedEvent.
  * It checks if the previous state was 'hr_lead_approval' and performs actions accordingly,
  * such as notifying Operations Coordinators, the Creator, and the Operations Lead.

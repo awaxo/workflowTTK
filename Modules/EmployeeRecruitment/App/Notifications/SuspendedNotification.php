@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * Class SuspendedNotification
  * This notification is sent to users when a workflow is suspended.
  * It extends the base Notification class and uses the Queueable trait for queueing.
@@ -19,7 +19,7 @@ class SuspendedNotification extends Notification
     public $workflow;
     public $ccEmails;
 
-    /*
+    /**
      * Create a new notification instance.
      *
      * @param AbstractWorkflow $workflow
@@ -41,7 +41,7 @@ class SuspendedNotification extends Notification
         return ['mail'];
     }
 
-    /*
+    /**
      * Get the mail representation of the notification.
      *
      * @param object $notifiable

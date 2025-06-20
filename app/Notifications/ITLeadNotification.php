@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * ITLeadNotification is a notification class that sends an email
  * to the IT lead when a workflow state changes.
  * It includes the details of the workflow and its state change.

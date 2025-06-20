@@ -6,7 +6,7 @@ use App\Events\ApproverAssignedEvent;
 use App\Models\User;
 use Modules\EmployeeRecruitment\App\Notifications\ApproverAssignedNotification;
 
-/*
+/**
  * ApproverAssignedListener is an event listener that handles the ApproverAssignedEvent.
  * It retrieves the responsible users for the workflow's current state and sends them
  * a notification if they have enabled email notifications for recruitment approval.
@@ -24,7 +24,7 @@ class ApproverAssignedListener
         //
     }
 
-    /*
+    /**
      * Handle the event.
      *
      * This method is triggered when the ApproverAssignedEvent is fired.

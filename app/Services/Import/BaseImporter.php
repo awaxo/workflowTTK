@@ -5,7 +5,7 @@ namespace App\Services\Import;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 
-/*
+/**
  * BaseImporter is an abstract class that provides a structure for importing CSV files.
  * It includes methods for validating the file, parsing the CSV, validating each row,
  * and saving the data. Subclasses must implement the rules and saveRow methods.

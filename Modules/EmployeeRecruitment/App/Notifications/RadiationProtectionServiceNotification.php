@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-/*
+/**
  * Class RadiationProtectionServiceNotification
  * This notification is sent to users when a new recruitment workflow is created,
  * specifically for cases involving ionizing radiation risk.
@@ -19,7 +19,7 @@ class RadiationProtectionServiceNotification extends Notification
 
     public $workflow;
 
-    /*
+    /**
      * Create a new notification instance.
      *
      * @param RecruitmentWorkflow $workflow

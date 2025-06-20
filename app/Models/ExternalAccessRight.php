@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/* * ExternalAccessRight model represents the rights granted to external systems
+/**
+ * ExternalAccessRight model represents the rights granted to external systems
  * for accessing certain functionalities within the application.
  * It includes attributes for the external system, admin group number, and user references for creation and updates.
  */

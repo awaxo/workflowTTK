@@ -5,6 +5,11 @@ namespace Modules\EmployeeRecruitment\App\Providers;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
+/**
+ * RouteServiceProvider
+ * This service provider is responsible for defining the routes for the Employee Recruitment module.
+ * It maps the "web" and "api" routes to their respective files and applies the
+ */
 class RouteServiceProvider extends ServiceProvider
 {
     /**

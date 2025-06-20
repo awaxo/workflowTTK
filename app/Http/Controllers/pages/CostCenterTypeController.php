@@ -8,7 +8,7 @@ use App\Models\CostCenterType;
 use Illuminate\Support\Facades\Auth;
 use Closure;
 
-/*
+/**
  * CostCenterTypeController handles the management of cost center types,
  * including CRUD operations and validation.
  */

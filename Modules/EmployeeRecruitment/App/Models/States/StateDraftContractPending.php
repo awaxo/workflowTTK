@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/* * Class StateDraftContractPending
- * Represents the state of a recruitment workflow when the draft contract is pending.
- * This class implements the IStateResponsibility interface to define the responsibilities
- * and transitions for this state.
+/**
+ * Class StateDraftContractPending
+ * This class represents the state of a recruitment workflow where the draft contract is pending approval.
+ * It implements the IStateResponsibility interface to define the responsibilities and actions for this state.
  */
 class StateDraftContractPending implements IStateResponsibility
 {

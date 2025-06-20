@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/*
+/**
  * WorkflowType model represents a type of workflow in the system.
  * It includes attributes for name, description, manager workgroup, metadata, and user information.
  */

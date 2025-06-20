@@ -11,7 +11,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/*
+/**
  * ProfileController handles the user's profile page,
  * including delegation management and notifications.
  */

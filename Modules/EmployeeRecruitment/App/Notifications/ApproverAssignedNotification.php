@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * Class ApproverAssignedNotification
  * This notification is sent to users when they are assigned as approvers for a workflow.
  * It extends the base Notification class and uses the Queueable trait for queueing.
@@ -18,7 +18,7 @@ class ApproverAssignedNotification extends Notification
 
     public $workflow;
 
-    /*
+    /**
      * Create a new notification instance.
      *
      * @param AbstractWorkflow $workflow

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/*
+/**
  * Workgroup model represents a group of users working together on tasks or projects.
  * It includes attributes for workgroup number, name, leader, labor administrator, and user information.
  */

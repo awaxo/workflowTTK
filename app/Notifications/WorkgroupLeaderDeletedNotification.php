@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * WorkgroupLeaderDeletedNotification is a notification class that sends an email
  * to the workgroup admin users when a workgroup leader is deleted.
  * It includes the details of the deleted user and the workgroups they were leading.

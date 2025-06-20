@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/*
+/**
  * Class StateRequestToComplete
  * Represents the state of a recruitment workflow when a request to complete is made.
  * This class implements the IStateResponsibility interface to define the responsibilities

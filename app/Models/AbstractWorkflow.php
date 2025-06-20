@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
 
-/*
+/**
  * AbstractWorkflow serves as a base model for all workflow-related models.
  * It provides common functionality and properties that can be shared across different workflow types.
  * 
@@ -139,7 +139,7 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    /*
+    /**
      * Get the current state of the workflow.
      * 
      * @return string
@@ -149,7 +149,7 @@ abstract class AbstractWorkflow extends Model implements IGenericWorkflow
         return $this->state;
     }
 
-    /*
+    /**
      * Check if the workflow is approved by a specific user.
      * 
      * @param User $user

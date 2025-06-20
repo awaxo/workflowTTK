@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * DelegationAcceptedNotification is a notification class that sends an email
  * to the user when a delegation is accepted by another user.
  * It includes the details of the delegation and the accepting user.

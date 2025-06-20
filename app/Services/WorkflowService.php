@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\Facades\Module;
 
-/*
+/**
  * WorkflowService provides methods to manage workflows, including fetching workflows,
  * checking user responsibilities, and handling workflow metadata.
  */

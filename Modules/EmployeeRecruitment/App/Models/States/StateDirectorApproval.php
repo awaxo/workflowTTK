@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
-/*
+/**
  * StateDirectorApproval is a class that implements the IStateResponsibility interface.
  * It defines the responsibilities and transitions for the director approval state in a recruitment workflow.
  * This class checks if a user is responsible for approving a recruitment workflow based on their role as a director

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
-/*
+/**
  * ExternalPrivilegeController handles the management of external privileges,
  * including CRUD operations and DataTables integration.
  */

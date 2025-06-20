@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\StateChangedEvent;
 use App\Notifications\StateChangedNotification;
 
-/*
+/**
  * Listener for handling state change events.
  * This listener sends a notification to the user when a workflow state changes.
  */

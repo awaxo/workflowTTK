@@ -4,7 +4,7 @@ namespace App\Models\Interfaces;
 
 use App\Models\User;
 
-/*
+/**
  * Interface IStateResponsibility
  *
  * This interface defines the methods required for managing state responsibilities in a workflow.

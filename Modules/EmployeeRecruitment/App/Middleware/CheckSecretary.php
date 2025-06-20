@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Services\RoleService;
 
-/*
+/**
  * CheckSecretary is a middleware that checks if the authenticated user has any of the secretary roles.
  * If the user is not authenticated or does not have the required roles, it redirects to the login page
  * or returns a not authorized view.
  */
 class CheckSecretary
 {
-    /*
+    /**
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request

@@ -8,6 +8,10 @@ use App\Services\PdfService;
 use Illuminate\Support\ServiceProvider;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 
+/**
+ * AppServiceProvider
+ * This service provider is responsible for registering application-wide services.
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**

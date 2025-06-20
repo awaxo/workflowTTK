@@ -38,7 +38,7 @@ class WorkgroupLeadsNotification extends Notification
         return ['mail'];
     }
 
-    /*
+    /**
      * Get the mail representation of the notification.
      *
      * @param object $notifiable

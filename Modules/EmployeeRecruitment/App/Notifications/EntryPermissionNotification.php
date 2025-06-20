@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\EmployeeRecruitment\App\Models\RecruitmentWorkflow;
 
-/*
+/**
  * Class EntryPermissionNotification
  * This notification is sent to users when a new recruitment workflow is created,
  * providing details about the entry permissions and other relevant information.
@@ -42,7 +42,7 @@ class EntryPermissionNotification extends Notification
         return ['mail'];
     }
 
-    /*
+    /**
      * Get the mail representation of the notification.
      *
      * @param object $notifiable

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
-/*
+/**
  * Middleware to check if the authenticated user has the 'koltseghely_adatkarbantarto' or 'adminisztrator' role,
  * or belongs to specific workgroups (900, 901, 903, 908, 910, 911, 912).
  * This middleware allows access to users with these roles or workgroups and redirects others to a not authorized view.

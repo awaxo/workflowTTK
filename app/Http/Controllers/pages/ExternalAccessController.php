@@ -9,13 +9,13 @@ use App\Models\Workgroup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
-/*
+/**
  * ExternalAccessController handles the management of external access rights,
  * including CRUD operations and validation.
  */
 class ExternalAccessController extends Controller
 {
-    /*
+    /**
      * Display the external access management page.
      *
      * @return \Illuminate\View\View
@@ -27,7 +27,7 @@ class ExternalAccessController extends Controller
         return view('content.pages.external-access-manage', compact('workgroups'));
     }
 
-    /*
+    /**
      * Get all external access rights.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -139,7 +139,7 @@ class ExternalAccessController extends Controller
         return response()->json(['success' => 'External access right created successfully']);
     }
 
-    /*
+    /**
      * Validate the request data for creating or updating external access rights.
      *
      * @return array

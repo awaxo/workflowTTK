@@ -8,6 +8,10 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
+/**
+ * EventServiceProvider
+ * This service provider is responsible for registering events and their listeners.
+ */
 class EventServiceProvider extends ServiceProvider
 {
     /**

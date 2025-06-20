@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Webklex\IMAP\Facades\Client;
 
-/*
+/**
  * ImapTrait provides methods to manage IMAP connections.
  * It includes functionality to connect to an IMAP server,
  * check the connection status, and retrieve the connection instance.
@@ -32,7 +32,7 @@ trait ImapTrait {
         return $this->imapConnection->checkConnection();
     }
 
-    /*
+    /**
      * Get the IMAP connection instance.
      * This method returns the current IMAP connection instance.
      *

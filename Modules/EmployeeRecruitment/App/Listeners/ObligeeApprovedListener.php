@@ -9,7 +9,7 @@ use App\Models\Workgroup;
 use Modules\EmployeeRecruitment\App\Notifications\ExternalSystemNotification;
 use Modules\EmployeeRecruitment\App\Notifications\WorkgroupLeadsNotification;
 
-/*
+/**
  * ObligeeApprovedListener is an event listener that handles the StateChangedEvent.
  * It checks if the previous state was 'obligee_approval' and performs actions accordingly,
  * such as notifying leaders of external access right admin groups and workgroup leads.

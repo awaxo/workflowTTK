@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * DelegationDeletedNotification is a notification class that sends an email
  * to the user when their delegation is deleted.
  * It includes the details of the deleted delegate and the delegations.

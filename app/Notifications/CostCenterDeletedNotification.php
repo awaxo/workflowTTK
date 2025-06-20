@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-/*
+/**
  * CostCenterDeletedNotification is a notification class that sends an email
  * to the cost center admin users when cost centers are deleted.
  * It includes the details of the deleted cost centers in the email.

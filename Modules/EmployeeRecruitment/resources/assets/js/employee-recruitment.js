@@ -674,6 +674,12 @@ $(function () {
     syncCostCenterOptions();
 });
 
+/**
+ * Synchronizes the options of two workgroup select elements.
+ * This function ensures that if a workgroup is selected in one select,
+ * it is disabled in the other select to prevent duplicate selections.
+ * It also updates the select2 UI to reflect these changes.
+ */
 function syncWorkgroupOptions() {
     const $wg1 = $('#workgroup_id_1');
     const $wg2 = $('#workgroup_id_2');
@@ -698,6 +704,12 @@ function syncWorkgroupOptions() {
     $wg2.trigger('change.select2');
 }
 
+/**
+ * Synchronizes the options of three cost center select elements.
+ * This function ensures that if a cost center is selected in one select,
+ * it is disabled in the other selects to prevent duplicate selections.
+ * It also updates the select2 UI to reflect these changes.
+ */
 function syncCostCenterOptions() {
     const $cc1 = $('#base_salary_cost_center_1');
     const $cc2 = $('#base_salary_cost_center_2');
@@ -731,6 +743,10 @@ function syncCostCenterOptions() {
     $cc3.trigger('change.select2');
 }
 
+/**
+ * Toggles the applicant count inputs based on the job ad checkbox state.
+ * If the checkbox is checked, the inputs are enabled; otherwise, they are disabled and cleared
+ */
 function toggleApplicantCountInputs(isChecked) {
     if (isChecked) {
         $('#applicants_female_count').prop('disabled', false);
@@ -741,6 +757,9 @@ function toggleApplicantCountInputs(isChecked) {
     }
 }
 
+/**
+ * Toggles the task input and employment end date based on the selected employment type.
+ */
 function toggleTaskInput(employmentType) {
     if (employmentType === 'Határozatlan') {
         $('#task').val('').prop('disabled', true);
@@ -751,6 +770,9 @@ function toggleTaskInput(employmentType) {
     }
 }
 
+/**
+ * Updates the start date settings based on the citizenship and position type.
+ */
 function citizenshipPopover() {
     $('#citizenship').on('change', function () {
         if ($(this).val() === 'EGT tagállambeli') {
@@ -765,7 +787,9 @@ function citizenshipPopover() {
     });
 }
 
-// Filtering position
+/**
+ * Filters position options based on the selected position type.
+ */
 function filterPositionOptions() {
     filterPositionIdOptions('kutatói');
 
@@ -802,6 +826,10 @@ let originalManagementAllowanceCostCenter5Options = $('#management_allowance_cos
 let originalExtraPay1CostCenter6Options = $('#extra_pay_1_cost_center_6').html();
 let originalExtraPay2CostCenter7Options = $('#extra_pay_2_cost_center_7').html();
 
+/**
+ * Filters the room options, cost centers, and external access rights based on selected workgroups.
+ * This function sets up event listeners for changes in workgroup selections and applies the filters accordingly.
+ */
 function filterByWorkgroups() {
     filterRoomOptions();
     filterCostCenters();
@@ -812,6 +840,11 @@ function filterByWorkgroups() {
     $('#workgroup_id_1').on('change', filterExternalAccess);
 }
 
+/**
+ * Filters the cost center options based on selected workgroups.
+ * This function removes options from the cost center selects that do not match the selected workgroups.
+ * It also restores the original options before applying the filter.
+ */
 function filterCostCenters() {
     let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
     let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
@@ -855,6 +888,11 @@ function filterCostCenters() {
     $('#extra_pay_2_cost_center_7').select2();
 }
 
+/**
+ * Filters the room options based on selected workgroups.
+ * This function removes options from the entry permissions and employee room selects that do not match the selected workgroups.
+ * It also restores the original options before applying the filter.
+ */
 function filterRoomOptions() {
     let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
     let selectedWorkgroup2 = $('#workgroup_id_2').find(':selected').data('workgroup');
@@ -900,6 +938,11 @@ function filterRoomOptions() {
     $('#entry_permissions').trigger('change');
 }
 
+/**
+ * Filters the external access rights based on the selected workgroup.
+ * If the first digit of the selected workgroup is '9', the external access rights are enabled.
+ * Otherwise, they are disabled and hidden.
+ */
 function filterExternalAccess() {
     let selectedWorkgroup1 = $('#workgroup_id_1').find(':selected').data('workgroup');
 
@@ -911,7 +954,11 @@ function filterExternalAccess() {
 }
 // End of filtering by workgroups
 
-// Employer contribution rate
+/**
+ * Initializes the coverage table for displaying the employer contributions and coverage amounts.
+ * This function sets up the table headers, event listeners for input changes,
+ * and calculates the coverage amounts based on the provided salary and contribution rates.
+ */
 function initCoverageTable() {
     console.log('Initializing coverage table');
     
@@ -988,7 +1035,10 @@ function initCoverageTable() {
     console.log('Coverage table initialized');
 }
 
-// Munkáltatói járulék értékének lekérése
+/**
+ * Calculates the total gross salary sum from the salary fields.
+ * This function sums up the values of all salary fields and returns the total.
+ */
 function getEmployerContribution() {
     // Ha nyugdíjas, nincs járulék
     if ($('#is_retired').is(':checked')) {
@@ -1004,7 +1054,11 @@ function getEmployerContribution() {
     return employerContributionRate;
 }
 
-// Fedezetigazolandó összeg táblázat frissítése
+/**
+ * Updates the coverage table with the current employment and salary data.
+ * This function calculates the coverage amounts for each cost center based on the provided salary and contribution rates.
+ * It also updates the totals for each year and displays them in the table.
+ */
 function updateCoverageTable() {
     console.log('Updating coverage table...');
     
@@ -1155,7 +1209,9 @@ function updateCoverageTable() {
     updateTotals(yearlyTotals);
 }
 
-// Segédfüggvény a fizetés értékek beolvasásához
+/**
+ * Helper function to format numbers with spaces as thousands separators.
+ */
 function parseSalaryValue(fieldId) {
     const field = $('#' + fieldId);
     
@@ -1173,7 +1229,10 @@ function parseSalaryValue(fieldId) {
     return parseInt(value.replace(/\s+/g, '').replace(/[^\d]/g, '')) || 0;
 }
 
-// Éves bontás számítása egy költséghelyhez
+/**
+ * Calculates the yearly amounts based on the start date, end date, monthly salary,
+ * contribution rate, and item end date.
+ */
 function calculateYearlyAmounts(startDate, endDate, monthlySalary, contributionRate, itemEndDate) {
     console.log('Original dates - start:', startDate ? startDate.format('YYYY-MM-DD') : 'none', 
                 'end:', endDate ? endDate.format('YYYY-MM-DD') : 'none',
@@ -1324,7 +1383,9 @@ function calculateYearlyAmounts(startDate, endDate, monthlySalary, contributionR
     return amounts;
 }
 
-// Összesítő számok frissítése
+/**
+ * Updates the totals in the coverage table footer.
+ */
 function updateTotals(yearlyTotals) {
     console.log('Updating totals with:', yearlyTotals);
     
@@ -1338,13 +1399,17 @@ function updateTotals(yearlyTotals) {
     $('#grand-total').text(formatNumber(grandTotal) + ' Ft');
 }
 
-// Szám formázása ezres elválasztóval
+/**
+ * Formats a number with spaces as thousands separators.
+ */
 function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 // End of employer contribution rate
 
-// Setting working hours
+/**
+ * Sets the working hours for weekdays and calculates the duration.
+ */
 function setWorkingHoursWeekdays() {
     setWorkingHours("#work_start_monday", "#work_end_monday", "#monday_duration");
     setWorkingHours("#work_start_tuesday", "#work_end_tuesday", "#tuesday_duration");
@@ -1359,7 +1424,9 @@ function setWorkingHoursWeekdays() {
     calculateDuration("#work_start_friday", "#work_end_friday", "#friday_duration");
 }
 
-// Function to set working hours and calculate duration
+/**
+ * Sets the working hours for a given start and end time, and calculates the duration.
+ */
 function setWorkingHours(startId, endId, durationId) {
     let defaultStart = '';
     let defaultEnd = '';
@@ -1396,7 +1463,9 @@ function setWorkingHours(startId, endId, durationId) {
     });
 }
 
-// Function to calculate duration based on start and end times
+/**
+ * Calculates the duration between two time inputs and formats it as HH:mm.
+ */
 function calculateDuration(startId, endId, durationId) {
     let start = moment($(startId).val(), 'HH:mm');
     let end = moment($(endId).val(), 'HH:mm');
@@ -1418,7 +1487,9 @@ function calculateDuration(startId, endId, durationId) {
 }
 // End of setting working hours
 
-// Filtering available tools
+/**
+ * Updates the available tools based on the selected required tools.
+ */
 function updateAvailableTools() {
     let options = [];
     let selectedValues = $('#required_tools').val();
@@ -1443,7 +1514,9 @@ function updateAvailableTools() {
 updateAvailableTools();
 // End of filtering available tools
 
-// Filtering inventory numbers of available tools
+/**
+ * Updates the inventory numbers of available tools based on the selected options.
+ */
 function updateInventoryNumbersOfAvailableTools() {
     let previousSelectedOptions = [];
 
@@ -1486,11 +1559,18 @@ function updateInventoryNumbersOfAvailableTools() {
 }
 // End of filtering inventory numbers of available tools
 
+/**
+ * Filters the student status verification based on the selected position.
+ */
 function filterByPosition()
 {
     filterStudentStatus();
     $('#position_id').on('change', filterStudentStatus);
 }
+
+/**
+ * Filters the student status verification based on the selected position.
+ */
 function filterStudentStatus() {
     let selectedPositionName = $('#position_id option:selected').text();
 
@@ -1501,12 +1581,18 @@ function filterStudentStatus() {
     }
 }
 
+/**
+ * Revalidates a field when the target element changes.
+ */
 function revalidateOnChange(fv, targetId) {
     $('#' + targetId).on('change', function() {
         fv.revalidateField(targetId);
     });
 }
 
+/**
+ * Enables or disables a field based on a condition when another element changes.
+ */
 function enableOnChange(fv, targetId, changerId, condition) {
     if ($('#' + targetId).length === 0) {
         return;
@@ -1520,6 +1606,9 @@ function enableOnChange(fv, targetId, changerId, condition) {
     });
 }
 
+/**
+ * Calculates the total gross salary sum from various salary fields.
+ */
 function getGrossSalarySum() {
     let sum = 0;
     let fields = ['base_salary_monthly_gross_1', 'base_salary_monthly_gross_2', 'base_salary_monthly_gross_3', 'health_allowance_monthly_gross_4', 'management_allowance_monthly_gross_5', 'extra_pay_1_monthly_gross_6', 'extra_pay_2_monthly_gross_7'];
@@ -1572,7 +1661,9 @@ function updateStartDateSettings() {
     updateEndDateBasedOnPosition();
 }
 
-// Függvény a végdátum frissítéséhez
+/**
+ * Updates the end date based on the selected position and start date.
+ */
 function updateEndDateBasedOnPosition() {
     let startDate = $("#employment_start_date").datepicker('getDate');
     if (startDate) {
@@ -1596,13 +1687,18 @@ function updateEndDateBasedOnPosition() {
     }
 }
 
-// before submit validation functions
+/**
+ * Validates the cost center sum to ensure it is a multiple of 1000.
+ */
 function validateCostCenterSum() {
     const raw = parseFloat(getGrossSalarySum()) || 0;
     const sum = Math.round(raw);
     return sum % 1000 === 0;
 }
 
+/**
+ * Validates the workday times to ensure they are in the correct format and order.
+ */
 function validateWorkdayTimes() {
     const workdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 
@@ -1629,6 +1725,9 @@ function validateWorkdayTimes() {
     return true;
 }
 
+/**
+ * Validates the working hours to ensure they match the weekly working hours.
+ */
 function validateWorkingHours() {
     const fields = [
       'monday_duration', 'tuesday_duration',
@@ -1672,6 +1771,14 @@ const transformers = fields.reduce((acc, fieldName) => {
     return acc;
 }, {});
 
+/**
+ * Validates the health allowance form.
+ * @returns {FormValidation.FormValidationInstance} – FormValidation instance
+ * @description
+ * This function sets up validation for the health allowance form fields.
+ * It checks that all required fields are filled out and displays error messages
+ * if any fields are left empty. The validation is done using the FormValidation library.
+ */
 function validateEmployeeRecruitment() {
     return FormValidation.formValidation(
         document.getElementById('new-recruitment'),

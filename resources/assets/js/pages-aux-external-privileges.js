@@ -243,6 +243,14 @@ $(function() {
     });
 });
 
+/**
+ * Validates the health allowance form.
+ * @returns {FormValidation.FormValidationInstance} – FormValidation instance
+ * @description
+ * This function sets up validation for the health allowance form fields.
+ * It checks that all required fields are filled out and displays error messages
+ * if any fields are left empty. The validation is done using the FormValidation library.
+ */
 function validateExternalPrivilege() {
     return FormValidation.formValidation(
         document.getElementById('new_external_privilege'),

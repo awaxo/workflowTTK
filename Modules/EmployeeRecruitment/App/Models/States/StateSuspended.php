@@ -125,7 +125,18 @@ class StateSuspended implements IStateResponsibility
             $this->stateClass = new $stateClassName();
             $delegated = $this->stateClass->getResponsibleUsers($workflow, $notApprovedOnly);
             foreach ($delegated as $u) {
-                $users[$u->id] = $u;
+                // Check if $u is an object and has an id property
+                if (is_object($u) && property_exists($u, 'id')) {
+                    $users[$u->id] = $u;
+                } elseif (is_array($u) && isset($u['id'])) {
+                    // If it's an array, convert it or handle accordingly
+                    $users[$u['id']] = $u;
+                } else {
+                    Log::warning('Invalid user object in delegated users:', [
+                        'type' => gettype($u),
+                        'content' => $u
+                    ]);
+                }
             }
         } else {
             Log::error("State class not found: {$stateClassName}");

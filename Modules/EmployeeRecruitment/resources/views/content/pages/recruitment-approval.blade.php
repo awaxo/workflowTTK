@@ -30,6 +30,7 @@
         'resources/assets/vendor/libs/cleavejs/cleave-phone.js',
         'resources/assets/vendor/libs/dropzone/dropzone.min.js',
         'resources/assets/vendor/libs/dropzone/dropzone.js',
+        'resources/js/dropzone-manager.js'
     ])
 @endsection
 

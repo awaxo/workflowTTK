@@ -23,7 +23,7 @@ $(function () {
     $('#chemical_hazards_exposure').select2();
 
     // file uploads
-    if ($('#contract-dropzone').length) {
+    if ($('#contract').length) {
         DropzoneManager.init('contract');
     }
 

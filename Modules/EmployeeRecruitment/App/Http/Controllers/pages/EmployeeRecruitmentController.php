@@ -40,22 +40,21 @@ use Modules\EmployeeRecruitment\App\Models\States\StateSupervisorApproval;
 use Modules\EmployeeRecruitment\App\Services\DelegationService;
 use Modules\EmployeeRecruitment\App\Services\RecruitmentWorkflowService;
 
-/*|--------------------------------------------------------------------------
-| EmployeeRecruitmentController
-|--------------------------------------------------------------------------
-| This controller handles the employee recruitment process, including
-| displaying the recruitment form, storing new recruitments, and managing
-| drafts. It also provides methods for retrieving workgroups, positions,
-| cost centers, and other related data needed for the recruitment process.
-| It uses various services to handle business logic and data retrieval.
-| The controller is responsible for validating input data, creating or
-| updating recruitment workflows, and managing the state transitions
-| of the recruitment process.
-| It also handles the retrieval of user roles and permissions to ensure
-| that only authorized users can access certain functionalities.
-| The controller is designed to be used within a Laravel application
-| and follows the MVC architecture pattern.
-*/
+/**
+ * EmployeeRecruitmentController
+ * Handles the recruitment process for new employees.
+ * This controller provides methods to display the recruitment form,
+ * store new recruitments, and manage drafts. It also provides methods
+ * for retrieving workgroups, positions, cost centers, and other related
+ * data needed for the recruitment process. It uses various services to
+ * handle business logic and data retrieval. The controller is responsible
+ * for validating input data, creating or updating recruitment workflows,
+ * and managing the state transitions of the recruitment process. It also
+ * handles the retrieval of user roles and permissions to ensure that only
+ * authorized users can access certain functionalities. The controller is
+ * designed to be used within a Laravel application and follows the MVC
+ * architecture pattern.
+ */
 class EmployeeRecruitmentController extends Controller
 {
     /**
@@ -75,7 +74,7 @@ class EmployeeRecruitmentController extends Controller
         $this->pdfService = $pdfService;
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Display the recruitment form
      *
      * This method retrieves all necessary data for the recruitment form,
@@ -108,7 +107,10 @@ class EmployeeRecruitmentController extends Controller
                 $workgroup->leader_name = $workgroup->leader()->first()?->name;
                 return $workgroup;
             });
+
+        $leaderWorkgroups = Workgroup::where('leader_id', $user->id)->where('deleted', 0)->get();
         $workgroups1 = $workgroups
+            ->concat($leaderWorkgroups)
             ->unique('id')
             ->map(function ($workgroup) {
                 $workgroup->leader_name = $workgroup->leader()->first()?->name;
@@ -141,7 +143,7 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Validate the request data for the recruitment form
      *
      * This method validates the incoming request data against the defined rules.
@@ -315,7 +317,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Validate the request data for the recruitment draft form
      *
      * This method defines the validation rules for the recruitment form data.
@@ -507,7 +509,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Display the recruitment opened page
      *
      * This method returns the view for the recruitment opened page.
@@ -520,7 +522,7 @@ class EmployeeRecruitmentController extends Controller
         return view('employeerecruitment::content.pages.recruitment-opened');
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Display the recruitment drafts page
      *
      * This method returns the view for the recruitment drafts page.
@@ -533,7 +535,7 @@ class EmployeeRecruitmentController extends Controller
         return view('employeerecruitment::content.pages.recruitment-drafts-opened');
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Display the recruitment closed page
      *
      * This method returns the view for the recruitment closed page.
@@ -545,8 +547,8 @@ class EmployeeRecruitmentController extends Controller
     {
         return view('employeerecruitment::content.pages.recruitment-closed');
     }
-    
-    /*|--------------------------------------------------------------------------
+
+    /**
      * Get all recruitments
      *
      * This method retrieves all recruitment workflows and formats them for the response.
@@ -591,7 +593,7 @@ class EmployeeRecruitmentController extends Controller
         return response()->json(['data' => $recruitments]);
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Get all recruitment drafts
      *
      * This method retrieves all recruitment workflow drafts and formats them for the response.
@@ -617,7 +619,7 @@ class EmployeeRecruitmentController extends Controller
         return response()->json(['data' => $drafts]);
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Get all closed recruitments
      *
      * This method retrieves all recruitment workflows that are in a closed state (completed, rejected, or deleted).
@@ -656,7 +658,7 @@ class EmployeeRecruitmentController extends Controller
         return response()->json(['data' => $recruitments]);
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * View a specific recruitment
      *
      * This method retrieves a recruitment workflow by its ID and checks if the user has permission to view it.
@@ -726,7 +728,7 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Prepare the recruitment for approval
      *
      * This method checks if the user is authorized to approve the recruitment.
@@ -819,7 +821,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Review a recruitment request
      *
      * This method retrieves a recruitment workflow by its ID and prepares the data for review.
@@ -854,10 +856,16 @@ class EmployeeRecruitmentController extends Controller
             $workgroup->leader_name = $workgroup->leader()->first()?->name;
             return $workgroup;
         });
-        $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
-            $workgroup->leader_name = $workgroup->leader()->first()?->name;
-            return $workgroup;
-        });
+
+        $leaderWorkgroups = Workgroup::where('leader_id', $user->id)->where('deleted', 0)->get();
+        $workgroups1 = $workgroups
+            ->concat($workgroup800)
+            ->concat($leaderWorkgroups)
+            ->unique('id')
+            ->map(function ($workgroup) {
+                $workgroup->leader_name = $workgroup->leader()->first()?->name;
+                return $workgroup;
+            });
         $positions = Position::where('deleted', 0)->get();
         $costCenters = CostCenter::where('deleted', 0)
             ->where('valid_employee_recruitment', 1)
@@ -891,7 +899,7 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Review a recruitment draft
      *
      * This method retrieves a recruitment workflow draft by its ID and prepares the data for review.
@@ -967,10 +975,16 @@ class EmployeeRecruitmentController extends Controller
             $workgroup->leader_name = $workgroup->leader()->first()?->name;
             return $workgroup;
         });
-        $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
-            $workgroup->leader_name = $workgroup->leader()->first()?->name;
-            return $workgroup;
-        });
+
+        $leaderWorkgroups = Workgroup::where('leader_id', $user->id)->where('deleted', 0)->get();
+        $workgroups1 = $workgroups
+            ->concat($workgroup800)
+            ->concat($leaderWorkgroups)
+            ->unique('id')
+            ->map(function ($workgroup) {
+                $workgroup->leader_name = $workgroup->leader()->first()?->name;
+                return $workgroup;
+            });
         $positions = Position::where('deleted', 0)->get();
         $costCenters = CostCenter::where('deleted', 0)
             ->where('valid_employee_recruitment', 1)
@@ -1009,7 +1023,7 @@ class EmployeeRecruitmentController extends Controller
         ]);
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Approve a recruitment request
      *
      * This method handles the approval of a recruitment request.
@@ -1225,7 +1239,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Reject a recruitment request
      *
      * This method handles the rejection of a recruitment request.
@@ -1269,7 +1283,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Suspend a recruitment request
      *
      * This method handles the suspension of a recruitment request.
@@ -1307,7 +1321,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Cancel a recruitment request
      *
      * This method handles the cancellation of a recruitment request.
@@ -1345,7 +1359,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Before restoring a recruitment request
      *
      * This method checks if the user has the necessary permissions to restore a suspended recruitment request.
@@ -1407,10 +1421,16 @@ class EmployeeRecruitmentController extends Controller
                 $workgroup->leader_name = $workgroup->leader()->first()?->name;
                 return $workgroup;
             });
-            $workgroups1 = $workgroups->concat($workgroup800)->unique('id')->map(function ($workgroup) {
-                $workgroup->leader_name = $workgroup->leader()->first()?->name;
-                return $workgroup;
-            });
+
+            $leaderWorkgroups = Workgroup::where('leader_id', $user->id)->where('deleted', 0)->get();
+            $workgroups1 = $workgroups
+                ->concat($workgroup800)
+                ->concat($leaderWorkgroups)
+                ->unique('id')
+                ->map(function ($workgroup) {
+                    $workgroup->leader_name = $workgroup->leader()->first()?->name;
+                    return $workgroup;
+                });
             $positions = Position::where('deleted', 0)->get();
             $costCenters = CostCenter::where('deleted', 0)
                 ->where('valid_employee_recruitment', 1)
@@ -1492,7 +1512,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Restore a suspended recruitment request
      *
      * This method handles the restoration of a suspended recruitment request.
@@ -1536,7 +1556,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Delete a recruitment request
      *
      * This method handles the deletion of a recruitment request.
@@ -1566,7 +1586,7 @@ class EmployeeRecruitmentController extends Controller
         }
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Delete a recruitment workflow draft
      *
      * This method handles the deletion of a recruitment workflow draft.
@@ -1711,7 +1731,7 @@ class EmployeeRecruitmentController extends Controller
         return $monthlyGrossSalariesSum;
     }
 
-    /*|--------------------------------------------------------------------------
+    /**
      * Get the sum of salaries formatted for display
      *
      * @param RecruitmentWorkflow $recruitment
@@ -2022,6 +2042,9 @@ class EmployeeRecruitmentController extends Controller
         return $newFileName;
     }
 
+    /**
+     * Validate the request data for recruitment workflow
+     */
     private function validateRequest() {
         return request()->validate([
             'name' => 'required|string|max:100',

@@ -16,6 +16,46 @@ $(function () {
         });
     }
 
+    // Format the obligee number sequence input if it exists
+    var obligeeNumberSequenceField = document.getElementById('obligee_number_sequence');
+    if (obligeeNumberSequenceField) {
+        var cleaveObligeeSequence = new Cleave(obligeeNumberSequenceField, {
+            numericOnly: true,
+            blocks: [7],
+            // Custom onValueChanged to ensure leading zeros
+            onValueChanged: function(e) {
+                // If the value has less than 7 digits, pad with leading zeros
+                if (e.target.value.length > 0 && e.target.value.length < 7) {
+                    const paddedValue = e.target.value.padStart(7, '0');
+                    // Only update if different to avoid infinite loop
+                    if (e.target.value !== paddedValue) {
+                        e.target.value = paddedValue;
+                    }
+                }
+            }
+        });
+
+        // Additional blur event to ensure padding when user leaves the field
+        $(obligeeNumberSequenceField).on('blur', function() {
+            const currentValue = this.value;
+            if (currentValue.length > 0 && currentValue.length < 7) {
+                const paddedValue = currentValue.padStart(7, '0');
+                this.value = paddedValue;
+                // Trigger change event to notify other listeners
+                $(this).trigger('change');
+            }
+        });
+
+        // Input event to restrict to maximum 7 digits
+        $(obligeeNumberSequenceField).on('input', function() {
+            let value = this.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length > 7) {
+                value = value.substring(0, 7); // Limit to 7 digits
+            }
+            this.value = value;
+        });
+    }
+
     initObligeeNumberField();
 
     setMedicalData(medicalData);
@@ -43,6 +83,11 @@ $(function () {
         } else if ($('#state').val() === 'registration' && 
             (!$('#obligee_number_year').val() || !$('#obligee_number_sequence').val())) {
             $('#obligeeNumberMissing').modal('show');
+            return;
+        } else if ($('#state').val() === 'registration' && 
+            $('#obligee_number_sequence').val() && $('#obligee_number_sequence').val().length !== 7) {
+            // Additional validation for obligee number sequence length
+            $('#obligeeNumberSequenceInvalid').modal('show');
             return;
         } else if ($('#state').val() === 'draft_contract_pending') {
             // Validate social security number

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="utf-8">
+    <title>Fejlesztői dokumentáció – Laravel 10 Projekt</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="sidebar">
+        <h2><i class="fa fa-list"></i> Tartalom</h2>
+        <nav id="toc">
+            <ul>
+                <li><a href="laravel-framework.html">1. Laravel Framework áttekintés</a>
+                    <ul>
+                        <li><a href="laravel-framework.html#sec1_1" class="level-2">1.1 Mi a Laravel?</a></li>
+                        <li><a href="laravel-framework.html#sec1_2" class="level-2">1.2 MVC architektúra</a></li>
+                        <li><a href="laravel-framework.html#sec1_3" class="level-2">1.3 Artisan parancssor</a></li>
+                        <li><a href="laravel-framework.html#sec1_4" class="level-2">1.4 Service Container és DI</a></li>
+                        <li><a href="laravel-framework.html#sec1_5" class="level-2">1.5 Eloquent ORM</a></li>
+                    </ul>
+                </li>
+                <li><a href="projekt-felepites.html">2. Projekt felépítés</a>
+                    <ul>
+                        <li><a href="projekt-felepites.html#sec2_1" class="level-2">2.1 Standard Laravel mappaszerkezet</a></li>
+                        <li><a href="projekt-felepites.html#sec2_2" class="level-2">2.2 Konfigurációs fájlok</a></li>
+                        <li><a href="projekt-felepites.html#sec2_3" class="level-2">2.3 Autoloading és névterek</a></li>
+                        <li><a href="projekt-felepites.html#sec2_4" class="level-2">2.4 Moduláris felépítés</a></li>
+                    </ul>
+                </li>
+                <li><a href="laravel-csomagok.html">3. Laravel csomagok</a>
+                    <ul>
+                        <li><a href="laravel-csomagok.html#sec3_1" class="level-2">3.1 Alapvető Laravel csomagok</a></li>
+                        <li><a href="laravel-csomagok.html#sec3_2" class="level-2">3.2 Dokumentum és fájlkezelés</a></li>
+                        <li><a href="laravel-csomagok.html#sec3_3" class="level-2">3.3 Jogosultságkezelés és workflow</a></li>
+                        <li><a href="laravel-csomagok.html#sec3_4" class="level-2">3.4 Moduláris fejlesztés</a></li>
+                    </ul>
+                </li>
+                <li><a href="implementalt-funkciok.html">4. Implementált funkciók</a>
+                    <ul>
+						<li><a href="implementalt-funkciok.html#sec4_1" class="level-2">4.1 PDF generálás workflow</a></li>
+                        <li><a href="implementalt-funkciok.html#sec4_2" class="level-2">4.2 Excel adatok kezelése</a></li>
+                        <li><a href="implementalt-funkciok.html#sec4_3" class="level-2">4.3 Jogosultságkezelés implementálása</a></li>
+                        <li><a href="implementalt-funkciok.html#sec4_4" class="level-2">4.4 Workflow rendszer használata</a></li>
+                    </ul>
+                </li>
+                <li><a href="architektura-design.html">5. Architektúra és Design Patterns</a>
+                    <ul>
+						<li><a href="architektura-design.html#sec5_1" class="level-2">5.1 Domain Driven Design</a></li>
+                        <li><a href="architektura-design.html#sec5_2" class="level-2">5.2 Event-Driven Architecture</a></li>
+                        <li><a href="architektura-design.html#sec5_3" class="level-2">5.3 Service Layer Pattern</a></li>
+                    </ul>
+                </li>
+				<li><a href="code/index.html">6. Részletes kód dokumentáció</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <header>
+        <h1><i class="fa fa-code"></i> Fejlesztői dokumentáció</h1>
+        <p>Laravel 10 alapú TTK ügyintézési rendszer technikai és architekturális bemutatása</p>
+        <div style="margin-top:1rem">
+            <span class="badge badge-primary">Laravel 10.46.0</span>
+            <span class="badge badge-success">PHP 8.1+</span>
+            <span class="badge badge-info">Moduláris</span>
+            <span class="badge badge-warning">Enterprise</span>
+        </div>
+    </header>
+
+    <main id="content">
+        <section id="overview">
+            <h2><i class="fa fa-home"></i> Dokumentáció áttekintés</h2>
+            
+            <div class="info-box">
+                <strong><i class="fa fa-info-circle"></i> Projekt összefoglaló:</strong> 
+                A TTK ügyintézési rendszer egy Laravel 10.46.0 LTS alapú enterprise alkalmazás, amely modern fejlesztési elveket követ és moduláris architektúrát használ. A rendszer támogatja a munkafolyamat-kezelést, jogosultságkezelést, integrált PDF/Excel generálást és IMAP alapú email integrációt.
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-rocket"></i> Technológiai alapok</h4>
+                    <ul>
+                        <li>Laravel 10.46.0 LTS</li>
+                        <li>PHP 8.1+ strict typing</li>
+                        <li>MySQL/MariaDB adatbázis</li>
+                        <li>Redis cache és session</li>
+                        <li>jQuery frontend</li>
+                        <li>Composer dependency management</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-cogs"></i> Architekturális jellemzők</h4>
+                    <ul>
+                        <li>Moduláris MVC felépítés</li>
+                        <li>Event-driven architecture</li>
+                        <li>Service layer pattern</li>
+                        <li>Repository pattern</li>
+                        <li>Domain-driven design</li>
+                        <li>SOLID principles</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fa fa-puzzle-piece"></i> Kulcs funkciók</h4>
+                    <ul>
+                        <li>Munkafolyamat-kezelés</li>
+                        <li>Role-based hozzáférés</li>
+                        <li>PDF/Excel generálás</li>
+                        <li>IMAP email integráció</li>
+                        <li>REST API endpoints</li>
+                        <li>Automatikus deployment</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4><i class="fa fa-shield-alt"></i> Enterprise funkciók</h4>
+                    <ul>
+                        <li>Multi-guard authentication</li>
+                        <li>Permission-based authorization</li>
+                        <li>Audit logging</li>
+                        <li>Background job processing</li>
+                        <li>Cache optimalizáció</li>
+                        <li>Monitoring és alerting</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="architecture-diagram">
+                <h4>Rendszer architektúra áttekintés</h4>
+                <pre>
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │───▶│   Laravel API   │───▶│   Database      │
+│   (jQuery/HTML) │    │   (Controllers) │    │   (MySQL/Redis) │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                               │
+                               ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   External      │◀───│   Services      │───▶│   Background    │
+│   (IMAP/SMTP)   │    │   (Business)    │    │   (Jobs/Queue)  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+</pre>
+            </div>
+
+            <div class="warning-box">
+                <strong><i class="fa fa-exclamation-triangle"></i> Fejlesztői követelmények:</strong>
+                <ul>
+                    <li><strong>PHP 8.1+</strong> strict typing használatával</li>
+                    <li><strong>Composer</strong> dependency management</li>
+                    <li><strong>Node.js & NPM</strong> frontend asset building</li>
+                    <li><strong>MySQL/MariaDB</strong> adatbázis szerver</li>
+                    <li><strong>Redis</strong> cache és session store</li>
+                    <li><strong>Git</strong> verziókezelés és CI/CD</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <strong><i class="fa fa-check-circle"></i> Quick Start:</strong>
+                <ol>
+                    <li>Klónozd a repository-t: <code>git clone https://github.com/awaxo/workflowTTK.git</code></li>
+                    <li>Telepítsd a függőségeket: <code>composer install && npm install</code></li>
+                    <li>Másold és konfigurálj: <code>cp .env.example .env</code></li>
+                    <li>Generálj kulcsot: <code>php artisan key:generate</code></li>
+                    <li>Futtasd a migrációkat: <code>php artisan migrate:fresh --seed</code></li>
+                    <li>Indítsd el a dev szervert: <code>php artisan serve</code></li>
+                </ol>
+            </div>
+
+            <h3>Dokumentáció struktúra</h3>
+            <p>A dokumentáció moduláris felépítést követ, ahol minden fejezet egy konkrét témakört fed le. A bal oldali navigációs menüben található linkekkel könnyen navigálhatsz a különböző szekciók között.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-book"></i> Elméleti alapok</h4>
+                    <p><strong>1-3. fejezetek:</strong> Laravel framework áttekintés, projekt felépítés és használt csomagok bemutatása.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-code"></i> Gyakorlati implementáció</h4>
+                    <p><strong>4-6. fejezetek:</strong> Konkrét funkciók implementálása, design patterns és fejlesztői útmutatók.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-database"></i> Technikai részletek</h4>
+                    <p><strong>7-8. fejezetek:</strong> Adatbázis struktúra és API dokumentáció részletes leírása.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-server"></i> Üzemeltetés</h4>
+                    <p><strong>9. fejezet:</strong> Deployment, monitoring és karbantartási útmutatók production környezethez.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>TTK Workflow System</strong> · Fejlesztői dokumentáció · 2025
+            </div>
+            <div>
+                <a href="https://github.com/awaxo/workflowTTK" target="_blank" style="color: #666; text-decoration: none;">
+                    <i class="fa fa-github"></i> GitHub Repository
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple navigation highlighting
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling to anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

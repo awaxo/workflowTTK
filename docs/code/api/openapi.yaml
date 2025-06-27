@@ -1,0 +1,1263 @@
+openapi: 3.0.3
+info:
+  title: 'Ügyintézés API Documentation'
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+tags:
+  -
+    name: Endpoints
+    description: ''
+paths:
+  /api/user:
+    get:
+      summary: ''
+      operationId: getApiUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/permissions:
+    get:
+      summary: 'Get all permissions, merging generic and module-specific permissions.'
+      operationId: getAllPermissionsMergingGenericAndModuleSpecificPermissions
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/workflows:
+    get:
+      summary: 'Get all workflows for DataTables.'
+      operationId: getAllWorkflowsForDataTables
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/workflows/closed:
+    get:
+      summary: 'Get closed workflows for DataTables.'
+      operationId: getClosedWorkflowsForDataTables
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  '/api/workflow/{configName}/states':
+    get:
+      summary: 'Get workflow states by configuration name.'
+      operationId: getWorkflowStatesByConfigurationName
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: configName
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/delegations:
+    get:
+      summary: 'Get all delegations for the current user, grouped by delegate and type.'
+      operationId: getAllDelegationsForTheCurrentUserGroupedByDelegateAndType
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  '/api/delegates/{type}':
+    get:
+      summary: 'Get delegates for a specific type.'
+      operationId: getDelegatesForASpecificType
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: type
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/delegations/delegations-to-me:
+    get:
+      summary: 'Get delegations assigned to the current user.'
+      operationId: getDelegationsAssignedToTheCurrentUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/delegation/create:
+    post:
+      summary: 'Create a new delegation record.'
+      operationId: createANewDelegationRecord
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/delegation/{id}/delete':
+    post:
+      summary: 'Delete a delegation record.'
+      operationId: deleteADelegationRecord
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the delegation.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/delegation/{id}/accept':
+    post:
+      summary: 'Accept a delegation request.'
+      operationId: acceptADelegationRequest
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the delegation.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/delegation/{id}/reject':
+    post:
+      summary: 'Reject a delegation request.'
+      operationId: rejectADelegationRequest
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the delegation.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/notification-settings/update:
+    post:
+      summary: 'Update notification preferences for the user.'
+      operationId: updateNotificationPreferencesForTheUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/settings/update:
+    post:
+      summary: 'Update settings based on user input.'
+      operationId: updateSettingsBasedOnUserInput
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/settings/{configName}/state/{state}/deadline':
+    get:
+      summary: 'Get the deadline for a specific workflow state.'
+      operationId: getTheDeadlineForASpecificWorkflowState
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: configName
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: state
+        description: 'The state.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/settings/update-deadline:
+    post:
+      summary: 'Update the deadline for a specific workflow state.'
+      operationId: updateTheDeadlineForASpecificWorkflowState
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/settings/workflow/{configName}/deadlines':
+    get:
+      summary: 'Get all deadlines for a specific workflow'
+      operationId: getAllDeadlinesForASpecificWorkflow
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: configName
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/reports/generate:
+    post:
+      summary: 'Generate report data based on type and year'
+      operationId: generateReportDataBasedOnTypeAndYear
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/reports/export:
+    post:
+      summary: 'Export report data to Excel'
+      operationId: exportReportDataToExcel
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/positions:
+    get:
+      summary: 'Get all positions, including their details.'
+      operationId: getAllPositionsIncludingTheirDetails
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  '/api/position/{id}/delete':
+    post:
+      summary: 'Delete a position by setting its deleted flag.'
+      operationId: deleteAPositionBySettingItsDeletedFlag
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the position.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/position/{id}/restore':
+    post:
+      summary: 'Restore a position by resetting its deleted flag.'
+      operationId: restoreAPositionByResettingItsDeletedFlag
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the position.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/position/{id}/update':
+    post:
+      summary: 'Update an existing position.'
+      operationId: updateAnExistingPosition
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the position.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/position/create:
+    post:
+      summary: 'Create a new position.'
+      operationId: createANewPosition
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/costcenters:
+    get:
+      summary: 'Get all cost centers with their details'
+      operationId: getAllCostCentersWithTheirDetails
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/costcenter/validate-cost-center-code:
+    post:
+      summary: 'Validate the cost center code format and uniqueness'
+      operationId: validateTheCostCenterCodeFormatAndUniqueness
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/costcenter/check-user-in-workgroup:
+    post:
+      summary: ''
+      operationId: postApiCostcenterCheckUserInWorkgroup
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/costcenter/check-project-coordinator:
+    post:
+      summary: 'Check if a user is a project coordinator'
+      operationId: checkIfAUserIsAProjectCoordinator
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/costcenter/{id}/delete':
+    post:
+      summary: 'Delete a cost center by ID'
+      operationId: deleteACostCenterByID
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the costcenter.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/costcenter/{id}/restore':
+    post:
+      summary: 'Restore a deleted cost center'
+      operationId: restoreADeletedCostCenter
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the costcenter.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/costcenter/{id}/update':
+    post:
+      summary: 'Update a cost center by ID'
+      operationId: updateACostCenterByID
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the costcenter.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/costcenter/create:
+    post:
+      summary: 'Create a new cost center'
+      operationId: createANewCostCenter
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/costcenter/import:
+    post:
+      summary: 'Import cost centers from a CSV file'
+      operationId: importCostCentersFromACSVFile
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                csv_file:
+                  type: string
+                  format: binary
+                  description: 'Must be a file.'
+                  nullable: false
+              required:
+                - csv_file
+      security: []
+  /api/costcenter/export:
+    get:
+      summary: 'Export cost centers to Excel'
+      operationId: exportCostCentersToExcel
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/costcenter-types:
+    get:
+      summary: 'Get all cost center types.'
+      operationId: getAllCostCenterTypes
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/costcenter-type/check-name-unique:
+    post:
+      summary: ''
+      operationId: postApiCostcenterTypeCheckNameUnique
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/costcenter-type/{id}/delete':
+    post:
+      summary: 'Delete a cost center type (soft delete).'
+      operationId: deleteACostCenterTypesoftDelete
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the costcenter type.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/costcenter-type/{id}/restore':
+    post:
+      summary: 'Restore a soft-deleted cost center type.'
+      operationId: restoreASoftDeletedCostCenterType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the costcenter type.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/costcenter-type/{id}/update':
+    post:
+      summary: 'Update an existing cost center type.'
+      operationId: updateAnExistingCostCenterType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the costcenter type.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/costcenter-type/create:
+    post:
+      summary: 'Create a new cost center type.'
+      operationId: createANewCostCenterType
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/workgroups:
+    get:
+      summary: 'Get all workgroups for DataTables.'
+      operationId: getAllWorkgroupsForDataTables
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/workgroup/check-unique:
+    post:
+      summary: 'Check if the workgroup number is unique.'
+      operationId: checkIfTheWorkgroupNumberIsUnique
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/workgroup/check-name-unique:
+    post:
+      summary: 'Check if the workgroup name is unique.'
+      operationId: checkIfTheWorkgroupNameIsUnique
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/workgroup/{id}/delete':
+    post:
+      summary: 'Delete a workgroup by setting its deleted flag.'
+      operationId: deleteAWorkgroupBySettingItsDeletedFlag
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the workgroup.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/workgroup/{id}/restore':
+    post:
+      summary: 'Restore a deleted workgroup by resetting its deleted flag.'
+      operationId: restoreADeletedWorkgroupByResettingItsDeletedFlag
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the workgroup.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/workgroup/{id}/update':
+    post:
+      summary: 'Update an existing workgroup.'
+      operationId: updateAnExistingWorkgroup
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the workgroup.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/workgroup/create:
+    post:
+      summary: 'Create a new workgroup.'
+      operationId: createANewWorkgroup
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/institutes:
+    get:
+      summary: 'Get all institutes for DataTables.'
+      operationId: getAllInstitutesForDataTables
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/institute/check-group-level-unique:
+    post:
+      summary: 'Check if the group level is unique.'
+      operationId: checkIfTheGroupLevelIsUnique
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/institute/check-name-unique:
+    post:
+      summary: 'Check if the institute name is unique.'
+      operationId: checkIfTheInstituteNameIsUnique
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/institute/check-abbreviation-unique:
+    post:
+      summary: 'Check if the institute abbreviation is unique.'
+      operationId: checkIfTheInstituteAbbreviationIsUnique
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/institute/{id}/delete':
+    post:
+      summary: 'Delete an institute (soft delete).'
+      operationId: deleteAnInstitutesoftDelete
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the institute.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/institute/{id}/restore':
+    post:
+      summary: 'Restore a soft-deleted institute.'
+      operationId: restoreASoftDeletedInstitute
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the institute.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/institute/{id}/update':
+    post:
+      summary: 'Update an existing institute.'
+      operationId: updateAnExistingInstitute
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the institute.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/institute/create:
+    post:
+      summary: 'Create a new institute.'
+      operationId: createANewInstitute
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/roles:
+    get:
+      summary: 'Fetch all roles with their user count and readable names.'
+      operationId: fetchAllRolesWithTheirUserCountAndReadableNames
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/users:
+    get:
+      summary: 'Fetch all users, including their details.'
+      operationId: fetchAllUsersIncludingTheirDetails
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  '/api/users/role/{roleName}':
+    get:
+      summary: 'Fetch users by role, excluding featured users.'
+      operationId: fetchUsersByRoleExcludingFeaturedUsers
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: roleName
+        description: ''
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/user/check-email-unique:
+    post:
+      summary: 'Fetch users by permission, excluding featured users.'
+      operationId: fetchUsersByPermissionExcludingFeaturedUsers
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/user/check-name-unique:
+    post:
+      summary: 'Check if a user name is unique, excluding the current user if editing.'
+      operationId: checkIfAUserNameIsUniqueExcludingTheCurrentUserIfEditing
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/user/{id}/delete':
+    post:
+      summary: 'Delete a user by setting its deleted flag.'
+      operationId: deleteAUserBySettingItsDeletedFlag
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/user/{id}/restore':
+    post:
+      summary: 'Restore a soft-deleted user.'
+      operationId: restoreASoftDeletedUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/user/{id}/update':
+    post:
+      summary: 'Update an existing user.'
+      operationId: updateAnExistingUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/user/create:
+    post:
+      summary: 'Create a new user.'
+      operationId: createANewUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/external-access:
+    get:
+      summary: 'Get all external access rights.'
+      operationId: getAllExternalAccessRights
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/external-access/check-active-group:
+    post:
+      summary: 'Check if active group is exists and not deleted.'
+      operationId: checkIfActiveGroupIsExistsAndNotDeleted
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/external-access/{id}/delete':
+    post:
+      summary: 'Delete an external access right (soft delete).'
+      operationId: deleteAnExternalAccessRightsoftDelete
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the external access.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/external-access/{id}/restore':
+    post:
+      summary: 'Restore a soft-deleted external access right.'
+      operationId: restoreASoftDeletedExternalAccessRight
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the external access.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/external-access/{id}/update':
+    post:
+      summary: 'Update an existing external access right.'
+      operationId: updateAnExistingExternalAccessRight
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the external access.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/external-access/create:
+    post:
+      summary: 'Create a new external access right.'
+      operationId: createANewExternalAccessRight
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/external-privileges:
+    get:
+      summary: 'Get all external privileges for DataTables.'
+      operationId: getAllExternalPrivilegesForDataTables
+      description: ''
+      parameters: []
+      responses:
+        302:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" />\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\r\n\r\n        <title>Redirecting to http://localhost/login</title>\r\n    </head>\r\n    <body>\r\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\r\n    </body>\r\n</html>"
+      tags:
+        - Endpoints
+      security: []
+  /api/external-privilege/create:
+    post:
+      summary: 'Create a new external privilege.'
+      operationId: createANewExternalPrivilege
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/external-privilege/{id}/update':
+    post:
+      summary: 'Update an existing external privilege.'
+      operationId: updateAnExistingExternalPrivilege
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the external privilege.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  '/api/external-privilege/{id}/delete':
+    post:
+      summary: 'Delete an external privilege.'
+      operationId: deleteAnExternalPrivilege
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the external privilege.'
+        example: consequatur
+        required: true
+        schema:
+          type: string
+  /api/v1/employeerecruitment:
+    get:
+      summary: ''
+      operationId: getApiV1Employeerecruitment
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []

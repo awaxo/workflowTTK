@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="utf-8">
+    <title>3. Laravel csomagok – Fejlesztői dokumentáció</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="sidebar">
+        <h2><i class="fa fa-list"></i> Tartalom</h2>
+        <nav id="toc">
+            <ul>
+                <li><a href="index.html"><i class="fa fa-home"></i> Főoldal</a></li>
+                <li><a href="laravel-framework.html">1. Laravel Framework áttekintés</a></li>
+                <li><a href="projekt-felepites.html">2. Projekt felépítés</a></li>
+                <li><a href="#sec3" class="active">3. Laravel csomagok</a>
+                    <ul>
+                        <li><a href="#sec3_1" class="level-2">3.1 Alapvető Laravel csomagok</a></li>
+                        <li><a href="#sec3_2" class="level-2">3.2 Dokumentum és fájlkezelés</a></li>
+                        <li><a href="#sec3_3" class="level-2">3.3 Jogosultságkezelés és workflow</a></li>
+                        <li><a href="#sec3_4" class="level-2">3.4 Moduláris fejlesztés</a></li>
+                    </ul>
+                </li>
+                <li><a href="implementalt-funkciok.html">4. Implementált funkciók</a></li>
+                <li><a href="architektura-design.html">5. Architektúra és Design Patterns</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <header>
+        <h1><i class="fa fa-box"></i> 3. Használt Laravel csomagok és kiterjesztések</h1>
+        <p>A TTK rendszerben alkalmazott külső könyvtárak és integrációk áttekintése</p>
+        <div style="margin-top:1rem">
+            <span class="badge badge-primary">Composer</span>
+            <span class="badge badge-success">Production Ready</span>
+            <span class="badge badge-info">Enterprise</span>
+        </div>
+    </header>
+
+    <main id="content">
+        <section id="sec3">
+            <h2><i class="fa fa-box"></i> 3. Használt Laravel csomagok és kiterjesztések</h2>
+
+            <div class="info-box">
+                <strong><i class="fa fa-info-circle"></i> Fejezet áttekintés:</strong> 
+                Az alábbiakban röviden összefoglaljuk a Composer production és fejlesztői függőségeit, kiemelve a konkrét projekt használatot. A csomagok kiválasztásánál a stabilitás, teljesítmény és hosszú távú támogatottság volt a fő szempont.
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-shield-alt"></i> Kiválasztási szempontok</h4>
+                    <ul>
+                        <li>Stabil és aktívan karbantartott</li>
+                        <li>Laravel ökoszisztémába illeszkedik</li>
+                        <li>Enterprise környezetben bevált</li>
+                        <li>Jó dokumentáció és közösségi támogatás</li>
+                        <li>Biztonsági frissítések rendszeresek</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-chart-line"></i> Teljesítmény megfontolások</h4>
+                    <ul>
+                        <li>Minimális függőségi fa</li>
+                        <li>Gyors betöltési idők</li>
+                        <li>Memória hatékonyság</li>
+                        <li>Cache-elhető komponensek</li>
+                        <li>Production optimalizáció</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h4>Csomag kategóriák áttekintése</h4>
+                <pre>
+┌─────────────────────────────────────────────────────────────────┐
+│                    Laravel Alap Csomagok                       │
+├─────────────────────────────────────────────────────────────────┤
+│  Sanctum  │  Tinker  │  Scout  │           │         │       │
+├─────────────────────────────────────────────────────────────────┤
+│                  Dokumentum Kezelés                            │
+├─────────────────────────────────────────────────────────────────┤
+│    mPDF    │  Laravel Excel  │  Image Processing  │  Storage   │
+├─────────────────────────────────────────────────────────────────┤
+│                Jogosultság és Workflow                         │
+├─────────────────────────────────────────────────────────────────┤
+│ Spatie Permission │  Laravel Workflow  │  Activity Log  │ ... │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+            </div>
+        </section>
+
+        <section id="sec3_1">
+            <h2>3.1 Alapvető Laravel csomagok</h2>
+
+            <p>Ezek a csomagok a Laravel ökoszisztéma részei, és alapvető funkcionalitást biztosítanak az alkalmazáshoz. Minden csomag alaposan tesztelt és a Laravel fejlesztő csapat által karbantartott.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-shield-alt"></i> Laravel Sanctum</h4>
+                    <p><strong>Verzió:</strong> ^3.2</p>
+                    <p>Könnyűsúlyú API token kezelés SPA-khoz és mobil kliensekhez. A `app/Providers/AuthServiceProvider.php`-ben engedélyezzük a token képességeket (pl. <code>admin</code>, <code>report</code>).</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-terminal"></i> Laravel Tinker</h4>
+                    <p><strong>Verzió:</strong> ^2.8</p>
+                    <p>Interaktív REPL a gyors modell teszteléshez. Például: <code>php artisan tinker --execute="User::count()"</code> paranccsal gyorsan lekérdezhetjük a felhasználók számát.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="fa fa-lightbulb"></i> Sanctum használati tippek:</strong>
+                A token képességek (abilities) finomhangolt jogosultságkezelést tesznek lehetővé. A middleware-ben ellenőrizhetjük: <code>auth:sanctum</code> és <code>abilities:workflows:read</code> kombinációval.
+            </div>
+        </section>
+
+        <section id="sec3_2">
+            <h2>3.2 Dokumentum és fájlkezelés</h2>
+
+            <p>A dokumentum generálás és fájlkezelés kritikus része a TTK rendszernek. PDF jelentések, Excel exportok is készülnek.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-file-pdf"></i> mPDF</h4>
+                    <p><strong>Verzió:</strong> ^8.1</p>
+                    <p>PDF renderelés Blade nézetekből. A `PdfService` szolgáltatás centralizálja a betűkészletek és margók beállítását, majd `Mpdf::Output()`-tal menti vagy streammeli.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-file-excel"></i> Laravel Excel</h4>
+                    <p><strong>Verzió:</strong> ^3.1</p>
+                    <p>Excel fájlok import/export kezelése. Maatwebsite Excel csomag PhpSpreadsheet alapokon, teljes Excel funkcionalitással.</p>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header"><i class="fa fa-file-code"></i> PdfService - PDF generálás központosított kezelése</div>
+                <pre><code class="language-php"><?php
+
+namespace App\Services;
+
+use Mpdf\Mpdf;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
+use Mpdf\Output\Destination;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
+
+/**
+ * PDF generálási szolgáltatás mPDF könyvtár használatával
+ *
+ * Ez a szolgáltatás metódusokat biztosít mPDF példányok létrehozásához és konfigurálásához,
+ * fejlécek és láblécek beállításához, valamint PDF dokumentumok generálásához Blade nézetekből.
+ */
+class PdfService
+{
+    /**
+     * Új MPDF példány létrehozása alapértelmezett konfigurációval
+     *
+     * @param array $config További konfiguráció
+     * @return Mpdf
+     */
+    public function createMpdf(array $config = []): Mpdf
+    {
+        // Ideiglenes könyvtár létrehozása ha nem létezik
+        $tempDir = storage_path('app/mpdf');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        // Alapértelmezett betűtípus könyvtárak lekérdezése
+        $defaultConfig = (new ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+
+        // Alapértelmezett betűtípus adatok lekérdezése
+        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        // Alapértelmezett konfiguráció
+        $defaultConfig = [
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_left' => 15,
+            'margin_right' => 15,
+            'margin_top' => 25,
+            'margin_bottom' => 25,
+            'margin_header' => 5,
+            'margin_footer' => 10,
+            'tempDir' => $tempDir,
+            'fontDir' => array_merge($fontDirs, [
+                resource_path('fonts/'),
+            ]),
+            'fontdata' => $fontData + [
+                'dejavusans' => [
+                    'R' => 'DejaVuSans.ttf',
+                    'B' => 'DejaVuSans-Bold.ttf',
+                    'I' => 'DejaVuSans-Oblique.ttf',
+                    'BI' => 'DejaVuSans-BoldOblique.ttf',
+                ],
+            ],
+            'default_font_size' => 10,
+            'default_font' => 'dejavusans',
+        ];
+
+        // Felhasználói konfiguráció egyesítése
+        $finalConfig = array_merge($defaultConfig, $config);
+
+        return new Mpdf($finalConfig);
+    }
+
+    /**
+     * PDF generálása Blade nézetből
+     *
+     * @param string $view Blade nézet neve
+     * @param array $data Nézet adatok
+     * @param array $config mPDF konfiguráció
+     * @return Mpdf
+     */
+    public function generateFromView(string $view, array $data = [], array $config = []): Mpdf
+    {
+        try {
+            $mpdf = $this->createMpdf($config);
+            
+            // HTML tartalom renderelése Blade nézetből
+            $html = view($view, $data)->render();
+            
+            // Alapértelmezett stílusok hozzáadása
+            $css = $this->getDefaultCss();
+            $mpdf->WriteHTML($css, 1); // CSS módban
+            $mpdf->WriteHTML($html, 2); // HTML módban
+            
+            Log::info('PDF sikeresen generálva', [
+                'view' => $view,
+                'data_keys' => array_keys($data),
+                'page_count' => $mpdf->page
+            ]);
+            
+            return $mpdf;
+            
+        } catch (\Exception $e) {
+            Log::error('PDF generálás sikertelen', [
+                'view' => $view,
+                'error' => $e->getMessage(),
+            ]);
+            
+            throw new \Exception('PDF generálás sikertelen: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Alapértelmezett CSS stílusok lekérdezése
+     *
+     * @return string
+     */
+    protected function getDefaultCss(): string
+    {
+        return '
+            body { 
+                font-family: DejaVuSans, sans-serif; 
+                font-size: 10pt; 
+                line-height: 1.4;
+            }
+            .header { 
+                text-align: center; 
+                font-weight: bold; 
+                margin-bottom: 20px; 
+            }
+            .footer { 
+                text-align: center; 
+                font-size: 8pt; 
+                color: #666; 
+            }
+            table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin: 10px 0; 
+            }
+            th, td { 
+                border: 1px solid #ddd; 
+                padding: 8px; 
+                text-align: left; 
+            }
+            th { 
+                background-color: #f2f2f2; 
+                font-weight: bold; 
+            }
+        ';
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header"><i class="fa fa-file-code"></i> Excel Export osztály példa</div>
+                <pre><code class="language-php"><?php
+
+namespace App\Exports;
+
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Illuminate\Support\Collection;
+
+/**
+ * ReportExport osztály
+ *
+ * Ez az osztály kezeli a különböző jelentések Excel fájlba történő exportálását.
+ * Implementálja a FromCollection, WithHeadings, WithStyles és WithTitle interfészeket.
+ */
+class ReportExport implements FromCollection, WithHeadings, WithStyles, WithTitle
+{
+    protected $data;
+    protected $headers;
+    protected $reportType;
+    protected $year;
+
+    /**
+     * Konstruktor
+     *
+     * @param array $data Export adatok
+     * @param array $headers Oszlop fejlécek
+     * @param string $reportType Jelentés típus azonosító
+     * @param int $year Jelentés éve
+     */
+    public function __construct($data, $headers, $reportType, $year)
+    {
+        $this->data = $data;
+        $this->headers = $headers;
+        $this->reportType = $reportType;
+        $this->year = $year;
+    }
+
+    /**
+     * Exportálandó adatok
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function collection()
+    {
+        return new Collection($this->data);
+    }
+
+    /**
+     * Oszlop fejlécek
+     *
+     * @return array
+     */
+    public function headings(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Munkalap címe
+     *
+     * @return string
+     */
+    public function title(): string
+    {
+        return ucfirst($this->reportType) . ' - ' . $this->year;
+    }
+
+    /**
+     * Stílusok alkalmazása
+     *
+     * @param Worksheet $sheet
+     * @return array
+     */
+    public function styles(Worksheet $sheet)
+    {
+        // Fejléc stílus
+        return [
+            1 => ['font' => ['bold' => true]],
+        ];
+    }
+}</code></pre>
+            </div>
+
+            <div class="success-box">
+                <strong><i class="fa fa-check-circle"></i> Export használat:</strong>
+                Egy export generálása: <code>return Excel::download(new ReportExport($data, $headers, 'toborzas', 2024), 'toborzas_jelentes.xlsx');</code>
+            </div>
+        </section>
+
+        <section id="sec3_3">
+            <h2>3.3 Jogosultságkezelés és workflow</h2>
+
+            <p>A jogosultságkezelés és munkafolyamat kezelés kritikus komponensei a TTK rendszernek. Professzionális csomagokat használunk a biztonság és megbízhatóság érdekében.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-user-shield"></i> Spatie Laravel Permission</h4>
+                    <p><strong>Verzió:</strong> ^5.11</p>
+                    <p>Role/permission kezelő ORM bővítmény. A projekthez igazítva további guard-ot definiálunk (<code>guard_name = 'sanctum'</code>), a seeder pedig kitölti a <code>roles</code> és <code>permissions</code> táblákat.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-project-diagram"></i> Zerodahero Laravel Workflow</h4>
+                    <p><strong>Verzió:</strong> ^3.1</p>
+                    <p>Wrapper a Symfony StateMachine fölött. Minden state machine egy config fájlba kerül; az `EmployeeRecruitment` entitás folyamatábrája: <code>draft -> reviewed -> approved -> archived</code>.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="fa fa-lightbulb"></i> Workflow használat:</strong>
+                Állapot átmenet végrehajtása: <code>$workflow->applyTransition('submit')</code>. Az elérhető átmenetek: <code>$workflow->getAvailableTransitions()</code>.
+            </div>
+        </section>
+
+        <section id="sec3_4">
+            <h2>3.4 Moduláris fejlesztés</h2>
+
+            <p>A **nwidart/laravel-modules** csomag lehetővé teszi a funkciók moduláris szervezését, ami jobb karbantarthatóságot és újrahasznosíthatóságot biztosít.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-cubes"></i> nwidart/laravel-modules</h4>
+                    <p><strong>Verzió:</strong> ^10.0</p>
+                    <p>Független modulok generálása (<code>php artisan module:make Blog</code>) és publikációja. Előnye, hogy a modul importálható más projektekbe is, így kódújrahasznosítást tesz lehetővé.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-cog"></i> Modul parancsok</h4>
+                    <ul>
+                        <li><code>module:make</code> - Új modul létrehozás</li>
+                        <li><code>module:list</code> - Modulok listázása</li>
+                        <li><code>module:enable</code> - Modul engedélyezés</li>
+                        <li><code>module:disable</code> - Modul letiltás</li>
+                        <li><code>module:publish</code> - Asset publikálás</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header"><i class="fa fa-file-code"></i> Modul generálás és használat</div>
+                <pre><code class="language-bash"># Új modul létrehozása
+php artisan module:make ExpenseApproval
+
+# Modul controller létrehozása
+php artisan module:make-controller ExpenseController ExpenseApproval
+
+# Modul modell létrehozása  
+php artisan module:make-model Expense ExpenseApproval
+
+# Modul migráció létrehozása
+php artisan module:make-migration create_expenses_table ExpenseApproval
+
+# Modulok listázása
+php artisan module:list
+
+# Modul engedélyezése/letiltása
+php artisan module:enable ExpenseApproval
+php artisan module:disable ExpenseApproval
+
+# Modul asset-ek publikálása
+php artisan module:publish ExpenseApproval</code></pre>
+            </div>
+
+            <div class="success-box">
+                <strong><i class="fa fa-rocket"></i> Modul előnyök a projektben:</strong>
+                <ul>
+                    <li><strong>Független fejlesztés:</strong> Csapatok párhuzamosan dolgozhatnak különböző modulokon</li>
+                    <li><strong>Újrahasznosítás:</strong> Modulok könnyen átvihetők más projektekbe</li>
+                    <li><strong>Karbantarthatóság:</strong> Tiszta kód szeparáció és könnyű hibakeresés</li>
+                    <li><strong>Tesztelés:</strong> Modulok izoláltan tesztelhetők</li>
+                    <li><strong>Deployment:</strong> Modulok külön-külön telepíthetők és frissíthetők</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="fa fa-lightbulb"></i> Modul fejlesztési tippek:</strong>
+                Új modul létrehozása után mindig ellenőrizzük a <code>module.json</code> fájlt és állítsuk be a megfelelő függőségeket. A modulok közötti kommunikációhoz használjunk event-eket és szolgáltatás interfészeket.
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <a href="projekt-felepites.html" style="color: #666; text-decoration: none;">
+                    <i class="fa fa-arrow-left"></i> Előző: 2. Projekt felépítés
+                </a>
+            </div>
+            <div>
+                <strong>TTK Ügyintézés</strong> · Laravel csomagok · 2025
+            </div>
+            <div>
+                <a href="implementalt-funkciok.html" style="color: #666; text-decoration: none;">
+                    Következő: 4. Implementált funkciók <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigáció kiemelés és smooth scrolling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aktuális szekció kiemelése az oldalsávban
+            const currentSection = window.location.hash || '#sec3';
+            document.querySelector(`a[href="${currentSection}"]`)?.classList.add('active');
+            
+            // Smooth scrolling az anchor linkekhez
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // URL frissítése navigáció kiváltása nélkül
+                        history.pushState(null, null, this.getAttribute('href'));
+                    }
+                });
+            });
+
+            // Aktív szekció frissítése görgetéskor
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelectorAll('#sidebar a').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        document.querySelector(`#sidebar a[href="#${id}"]`)?.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('section[id]').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

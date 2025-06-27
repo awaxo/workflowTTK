@@ -1,0 +1,2963 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "\u00dcgyint\u00e9z\u00e9s API Documentation",
+        "_postman_id": "70bafd0e-ca5b-4d95-b9ac-c23f8d80add6",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Endpoints",
+            "description": "",
+            "item": [
+                {
+                    "name": "GET api\/user",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get all permissions, merging generic and module-specific permissions.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/permissions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/permissions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IlNWd2FGZ25DRlA5dVlyVGFPQy9Id3c9PSIsInZhbHVlIjoicVBIbFRCUGg3ZlBSQjI2dHVra1lMS08rSG84NEkwMXFJZy9UenJHRlJaNUJlRi9oOUFKbDc5eHBKUHFteVVDUXQydmp6ajU3Tkp4a0g4QzAremN0TUY5Z0hRTUk4WHJET0pIUDdOM2NTK2ZRQnBPRkpkeFY4TEpFMVlOYmpBSEEiLCJtYWMiOiI3NGM4NDEyZTVjZGE1Mjg0ZmU3OTU4MmRlNmU4N2JhMTkzMzJmZjY3NGUyYzk0MWY2MzQ0N2NjNzkzZDk4NzIxIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IkdhY3BaUjFQT3M2SEw4cjJBVE9uTHc9PSIsInZhbHVlIjoicUU0S29BYmF4WUlZTTlPM1FncWtNbW1QaWFNdGNuSTVESXRpemJBTktnQ3pzeVIxSEs3MWIwVHB6WEEyZUh4Y0lZV2R0bTFsN2ZyU2VTR2h4OTduVXE3ZW1EK1RtMW04WFhaMTRBbzkrdi82NnlZMmJLMUxub1JHRURZNzFPZ2wiLCJtYWMiOiI1MjUwMDg1MTUxYTNjNjY4YTY4ODQ0M2E5NDNmODExZjlmNjZiYTFjMmQ2MTJiMDgzZTU5ODU4YTBjNGExMDEwIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get all workflows for DataTables.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workflows",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workflows"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IjczQjROc3ZUMW1kbk9HaTYzSVJGemc9PSIsInZhbHVlIjoibXNYOG90WlBUc1phUXlPTEswYSsveWtjaXovVXRXRmFSZmowSGNjVWplYUhhNVhIaHJCQm8xZHZ0WERXK2xRWEFPTnYwOEFiWlV1NEtlQ3dGRUk5OXQ4Ykh6ZWlkK0cxMVBJdzBsN2dkUk1QTTdhbnhTZ1NGd2dqYWdmZXNFZWUiLCJtYWMiOiI2NzllNDFiMTJjOWYzNjkzNWJmZjZhYTYxNmU3NTM5OTcyMjhjZGQ5NDAwMDZkMzkyNjllM2JhMDE4NDQ4ZGE1IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IjJ1YVFjQjUvTnI0ZHM5YlNEVzhDd1E9PSIsInZhbHVlIjoiZU5nTHEvbzRteTdhMnZ4djFlV2I1aVA4dk5hdE5CWXRzNHd6NzRTNjdGMElac29WcFRTMHQ3NERHdTZVTm5Td2VtODB5UXRIVFBjS2hJcWZNUGpTRG81eVNkVlFWSVZpMTZtOWJPTis2YllicGpDUHY2VVp0cFRocUtOQzVlV2wiLCJtYWMiOiJjMzBjMzZkOWYxM2U4ZWU5ZGY0NzE0Mzc1NGQ2NTkwMGY0ZmY0NDNmOGY2MzczMGI1YTdmMWUzOGQ4N2UzNTcwIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get closed workflows for DataTables.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workflows\/closed",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workflows\/closed"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6ImV0SThiUHNVRzZiYkRHNC9aSy9kRFE9PSIsInZhbHVlIjoiUDRVSkYvK2M5RmRsNytDUGFxWHpqRkQ2NFg2SFh1L2h1cEFYOUFqcngzQVQvRE9CUmlKMzJTWDd6SWpjQmxrRXgyRDArakp3OXcwWS9CSHJZeWVBbS8vWUlCNEdoMnRBVjBPdmtDL2Q5MENJZnNDWUFQZEVFOXBJMFJINk45aDciLCJtYWMiOiI5ZjQ3Y2NlYzY1NmRmOTExYjE2YzI5ZmIwNDQ3NzhiM2VmOWMwM2Q5MjIyNjZhNzhmMzcyMTM3NjRiZWJhMGNjIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6InB4bzdaQmZtMWVsMEhzUmljVk5nWmc9PSIsInZhbHVlIjoiWmN5T3hBMU8xTTVyUUxoUDgzRXNjN0V3TVVuamczU0pvYUtoNnNwQnlNRW1PNWxLOW9PUG1SeTN5YWZDbjl5TFVFSTgzWG1LTmV6czI1eVZmRzBkdVJZU3cyWEdGOWJ0c3E5Z3pRNjNmOWcyNzVwZ295UmNTZUZZUUR5K3hQeHMiLCJtYWMiOiI2NGE1Y2QxYjE4OGUyZWU2MDFlMmE0ZDFmNGY2YzcyNThkYmQyYTYyMDgzYzFlOWMzZWE2MGI5Njc1NWZhMjU2IiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get workflow states by configuration name.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workflow\/:configName\/states",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workflow\/:configName\/states",
+                            "variable": [
+                                {
+                                    "id": "configName",
+                                    "key": "configName",
+                                    "value": "consequatur",
+                                    "description": ""
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6InV4MlVVSTIxQ2FUOUlQSXZKV0hERFE9PSIsInZhbHVlIjoiaUNwaU9BUHQrMWxEZGt6YXZuamtxWmp4WVF3ZEQzcDFleXNMd3FyK1loZ3hnblhPRTc5STNFMDhuTU94bWtSS2tPSUNHcmUxN2hjMERtRkVCc1VpbjdoZTJDb3lSR0tnYkxyU1ZjTFJFb25vNU1DOEpERG1hM00xSnl4QXZQeHgiLCJtYWMiOiJhOWI3YmY3M2NhMzQxOGZkODk4YTk2ZmExOWE5ZTZmMDljNDkxNWJlNjQ1YzhlZDA4ZTE1ZGQ3NjJiMjA0NTk3IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IlM5V0hCa0ZBUlU1bk9ycVdPbXBLZEE9PSIsInZhbHVlIjoidHBESzhkRkp5L1dqckppQTRHRXRHRTdadDlaYTRRVFVtaFUwdUtUbjhhRVBoTzJYWVF6U0EvQTJ2cVVUcysyVzNZNHg1V29oSS9XWUVVWFVDUUVPUXllOGxYTTdickFHMndNUWM5MGxOdnMveXNsbWxlWHUzSlJ5ODg0M0ZSdCsiLCJtYWMiOiIxNzFjMGQ3MWUyYjEzMWUyYjZkMTI3ZWQ1OWJlNzA2MzZkMThjZWEyNzM4NmJjMDQyZDkyOTUxYjc0MDU4MWEwIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get all delegations for the current user, grouped by delegate and type.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delegations",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delegations"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IjVGVUlpUkVtZTV4bTgzSWR2WjZOYUE9PSIsInZhbHVlIjoiMVFCSnpRK0xUMXBSenpyZHB3WDdneE8ySHNPV3RrWVc1Y3c3WEQyVXU5SVB6dTJSVDhQaDRleml2aFM2UkJnT25aNVBLWEozMlFpOERHVlZVUktBcWptT3hBUFZsY1lYbWtLRlY5UStlZ29FelJQcENKN0V3bHVNUVNQTWh1dUoiLCJtYWMiOiI5YjI1NzMyMDMzNDNhNGM4YjgwM2JkYmQwNzQxNTI4NmMzYjhlZWYyY2FlZDlhNTcyZDJhNDhlMjdhZmQ1NjM1IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IjNzWkt1YkVtVzdKWDdvTy9JaXlJM0E9PSIsInZhbHVlIjoiMy9IeWlYTzJtWXlkRlRlZ2NtNGRZdXFmQXR1dzhlZzBGa3hSdGkrWWJJWi85UFkzdGo0Uk1tNWRnQ0h4Mk4rOEcrNWx5M2tNbW0zZ1NobHFuY1JiWVFlTkp3YUZzMTd3djBrenB0R2NwUkNGcWhHdmZLSjdMYjYwNW5NZ2ZpdVYiLCJtYWMiOiJlODhkYzNhOTk0NGJhNGIyZDQzMTQ2YzMyODc1MmM5MGY4ZmQwM2U5NTIyZGVmOWVhNDZmYjU2ZWMxNDEzODVkIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get delegates for a specific type.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delegates\/:type",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delegates\/:type",
+                            "variable": [
+                                {
+                                    "id": "type",
+                                    "key": "type",
+                                    "value": "consequatur",
+                                    "description": ""
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6ImNVclo3emtIUHc1OWdwbW1WSi80Mmc9PSIsInZhbHVlIjoiUDN2cnZLRXFzQzZDU1ptR3BXQjVaNUtyRWZZUDhmcHFTVXZ0NC9kZ2NFdVR2WGdkSGJzanpuT2VERkRLaVludlp5c0p3SWg5aWlXZzFOYVNUSXdhdDNpd0ZpNmIyb1kvWHR0K1RIektPQWlORzZVSjRZakdJUUZZaXVLeWJsRkkiLCJtYWMiOiI4NWYyYWI0OGQyOTljMGJiNzZkOTQ4NmJjOWRhMzFmMDdjY2I5NjY4MzM4MzBmODU4NmQ2ZDBkNWQ2YzAxZDk0IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IlNjUzNpNUp5RmpMdmFjWkpJeEtVbFE9PSIsInZhbHVlIjoiMnpsVnRKamVERnA3bnlQZVlVTFZRS1lQUnMxY2Q1MEVNcXltbXJMTUp3Tiszb0ZCbEZrSll1aGJLdU9yUFN4aUljM3lVL295M3hnMlM0VkpFRzJIdEFiZm5jQnFKOTV3RVc1cUV5S05GQkVDVngrclJvYXJjS1lzT2xBaDRjV3MiLCJtYWMiOiI0MTBiZjAyNzcyZjA0YzJlYmZlODQyM2Y0MDY0MWMwYWFkMTk2OGJlNTk4M2JkNmUxMzI5ZmE2MmE3YzA5YTNhIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get delegations assigned to the current user.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delegations\/delegations-to-me",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delegations\/delegations-to-me"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6Im5XcUo1ZGRKV2NYWDVmeUE3ZWh1Tmc9PSIsInZhbHVlIjoiUHlEWld4Vm1zekZVeWZNQU1GaU9UeW95TUJFTHVpK09vTWxQSUZmL2NYWGUzV3FNRXFzQWQzblFBcTlxWEVJbW43aHdGanZBeStUUGYzSVRuOC9QWVJ3a2M2aGpHMzlKMjVkTkIxd01nYkNlVnJ4VWRMd05hS1FvY1YrcG91Z2siLCJtYWMiOiI3MTNkMGQ5Y2NjZTA1NTVlZTFlYjliNTg3ZjZhNWYzZGMzNDA0YTNlOThiZWNkZmI0NDJhYWEyN2YyNjVlNzA0IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IlE4QWpWdUo0NUtGUTJrMDV6MWtmTlE9PSIsInZhbHVlIjoiZUxwb1hUS3duOFFDVzVrS0REVkkrWCtOVzNvc0hocUJYbW56OWFMR1dHMlc4dGhUZTBUeXhyK3UrUndhWFQ4NW9VcE14NENkck9odmVPM0NSbEpBNjNMTkRnOGNxSGF0MlRMRUt2ZzJxWlhzcTBuYlVHd0tabnVXanlPQmtOZmkiLCJtYWMiOiJiODEyMmMwOGNkMjY0MDQzZDIxZWMzNTNlZmIzMGE5NTJhOWIyNzgwODFmYTViZTE2Y2QwZjAyOWM4MWQ2M2U0IiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create a new delegation record.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delegation\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delegation\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a delegation record.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delegation\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delegation\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the delegation."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Accept a delegation request.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delegation\/:id\/accept",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delegation\/:id\/accept",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the delegation."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reject a delegation request.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/delegation\/:id\/reject",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/delegation\/:id\/reject",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the delegation."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update notification preferences for the user.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/notification-settings\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/notification-settings\/update"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update settings based on user input.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/settings\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/settings\/update"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get the deadline for a specific workflow state.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/settings\/:configName\/state\/:state\/deadline",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/settings\/:configName\/state\/:state\/deadline",
+                            "variable": [
+                                {
+                                    "id": "configName",
+                                    "key": "configName",
+                                    "value": "consequatur",
+                                    "description": ""
+                                },
+                                {
+                                    "id": "state",
+                                    "key": "state",
+                                    "value": "consequatur",
+                                    "description": "The state."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IisxdDU2eEZma3l4eVFaN2o5UnFmL1E9PSIsInZhbHVlIjoicWp5RVV4RVhvNDJVbXpzdi91UkNRRmNPc1BZWmgyMHE1SnBuUmttSEhUSmdUelJueWtqaHNWMkxqeTl3Z2I3NEdiZjZJRkluaTNYN09QcU9vMUpjTEVsZ2cySG1xVFl3VDM2d3lHTVVjRlVxZkl5QUc3KzJHamYyWDBmYU1RQVQiLCJtYWMiOiJiN2NjMTllMTVjMTY3OTA5MWYxN2Q1NzVkMGQ4NTcxZWIxNTlmMzc5YjE1ODM3YjBkODg1ZGU1YmUxOGFlM2YxIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IlArcldvV2JydGhud1RDcWNWcTlNL1E9PSIsInZhbHVlIjoiQW1XRk0zVDFHa2k5aHRmdElhaHlJOVpvS3Nhem52V2RnZUNRUmVSVHNoUUpIRWRFZUd1Qjg1ZjdnTVRZemtzcDFrU2RDS1pFUUF1SWFDY0g1WHRzZnk4YS9hcTVmTU9yRnRRN2dZaW1Obm9QOUNYWS9vRExyN0JxTFY0aDZCcjAiLCJtYWMiOiIzMjBlZjQ1NWMxMDhiYTBiOGQ3MWZlYWVlOGM4MzQ3OTZmNWU1OTA2ZmY5MjA1Y2RhY2Y4ZDg5ZmU1ZmVmYzIyIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update the deadline for a specific workflow state.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/settings\/update-deadline",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/settings\/update-deadline"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all deadlines for a specific workflow",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/settings\/workflow\/:configName\/deadlines",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/settings\/workflow\/:configName\/deadlines",
+                            "variable": [
+                                {
+                                    "id": "configName",
+                                    "key": "configName",
+                                    "value": "consequatur",
+                                    "description": ""
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IjV3RTYwQjlaMVpXMGZPYnUzckRkM2c9PSIsInZhbHVlIjoieC8ra0N4cXh0bTVkOFlwRGZoY0RSTVVTUzdFUXRNMEppZm02Z1JwMGRzSWM3WWZkQUVjYWdGcTBWd3Y0SEo4eEVEd0JaT01OQ2NBQllackhtcmhpMC9vV1d5QTVRVC9jSHM2VTRaT094bjhsTlpFamhYYk9KMnNyWEMzZVprejAiLCJtYWMiOiI1NzQxOGZlNjVhMTY2M2UxNzhhNzQ0NDVlODA2OGMzNTM4ODMyNTNjN2EzMGFiNmE4YmRiMTk2YmUzYTYxZGIwIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6ImRKNDMxWi9TYUJDckhOWEdzSTdkQVE9PSIsInZhbHVlIjoic2pVSXhId3ZGcFR4bVpMMWhnWlNjMU53aFcvV3JVZzdsOTRsZkw0WEpUOElXa1phSU8yZ050dFV0U0JubzNTSGNKaU5EK0JpaDlVUW1BUGZNMXowRzNjQWVlM0RpTHV5NG1ETFA1V0wzSGJ1L3RGU20xd2pubmNjbERXT0oySVgiLCJtYWMiOiIyMGE2ZmEzZDFjNjgzNTAyODJlOTk4NmE2ZWJlYjJhNWE1MDdlZTY0ZWFhMjUwMjVmYjBiZDVkNGNiYmRiMjYyIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Generate report data based on type and year",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/generate",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/reports\/generate"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Export report data to Excel",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/reports\/export",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/reports\/export"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all positions, including their details.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/positions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/positions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6ImdqcjZwYWdJdDI3eERzRHA5K2luTmc9PSIsInZhbHVlIjoidGRzZitzTVZrUFVZaTVwbnE5Q1c5cEtuNVdFYnRNVlJqSitha0lJSjdGQnk1eUFlVFcranJzZG5zemNkVHc3cGczWVFnN0dsemp6SlZnOTF5TmhRLzRVeXh3Z2ZwMXNIRnBFRHpHbGJscGZBc09zM002cFB1WS9mMTZPMlExVDMiLCJtYWMiOiI0MjBiNGVlODZjODFkZDUwODQwMWQ2NDk4ODUzN2M2OTU0MjhmZmU5MDE5ZjIzYTRmYzkyNTFlZWQyMjlkMDM1IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IklWOEpWbjhZejZrZnl6dnVtZTl4ZWc9PSIsInZhbHVlIjoiUHVJMm1KOXlmZGJrRTV4Uk9qdXZ2WFJVTzVxSlZERVJ3K0g0Z0tVRzRRT3ZFclFvdTlKc25SbHJzaTh6UmtpMUh3d0U1ZTZjUk9zS1NzM29zWkdDZFE0bXBoMElVUXlRd29zQ3VzQ0JVMTRwTUs3T0pLbnRLc08rMU1GZzR5VXciLCJtYWMiOiJiNjAwYzY2OWI0NzNiYzYxOGI0YjY4MTBkNTYxOTcyZmUyNWJlZjA0MjQxZmViM2U3YzAxY2M5NTMzZWRhNzJhIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete a position by setting its deleted flag.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/position\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/position\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the position."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Restore a position by resetting its deleted flag.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/position\/:id\/restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/position\/:id\/restore",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the position."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing position.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/position\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/position\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the position."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a new position.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/position\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/position\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all cost centers with their details",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenters",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenters"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IkxqdUk5clZ2WnJvaDZXY3NhNXVNM3c9PSIsInZhbHVlIjoic0JKUmErZzYzTjB4TktCNFpDaHFpczBHYkJvREJRNmN3U0tlUXVTd0tsMFoxbzc2V3lWS0RlUDNmVHhoaTVyYmZidnMvZU0wZWNRYWxxRWJUMXhiakhiWE5Ra1RKaXBFTlRURW8zR3R4YTlYSy9UZ3ZZM3NPN3hNL1U4MmxFUXAiLCJtYWMiOiI5NmI3M2FjNGRhZDMwNjI0YTlkZjYzZjk4N2U0MzhmZTA0OTY3M2Q2OGNmOTc4MDljN2U3NGFiNWZlMjEyZGIyIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6InVYbGxLYzJWWjBXYlk2MW9RMWJJZEE9PSIsInZhbHVlIjoiQllKdnhIMlJGd3M3ZFd2L0VIQzUzQWlET1R4VWc2eUJpamtSOE5HT3BqQ1l2UU9Ud2k2QUdJRy9kZG5CcGMya3VhaUlYRFlJSUFucnZ2V2FSTzVrQlUwYmhwWndtYjM1UU03a1dzcGVNSkNEZkNDUlI4Mm5QYUZkWG0zUCttQVciLCJtYWMiOiIzNjUxNjZhMjdmNGRkY2IyYzc3N2Y5MmM3M2FhODQyNDg5NzI3MzkzNGZjZmRmYTUzZjU0NGMxYWY2NWMwOTEyIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Validate the cost center code format and uniqueness",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/validate-cost-center-code",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/validate-cost-center-code"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/costcenter\/check-user-in-workgroup",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/check-user-in-workgroup",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/check-user-in-workgroup"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check if a user is a project coordinator",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/check-project-coordinator",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/check-project-coordinator"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a cost center by ID",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the costcenter."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Restore a deleted cost center",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/:id\/restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/:id\/restore",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the costcenter."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update a cost center by ID",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the costcenter."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a new cost center",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Import cost centers from a CSV file",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/import",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/import"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "csv_file",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Export cost centers to Excel",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter\/export",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter\/export"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6Im9CT1l1cXl0V0dFdUZCNzBJSGpjdnc9PSIsInZhbHVlIjoid0Qrc2Y0NUU4MmRXNnJuR1dmL1p5ZVYrK09JZXB6TjVkYVN4TFN5dEU0RXd5bVZqT0RiOVA0b2V2U2lSaE9lUUlnWG12b1Nxc0JFQWZ0QjhwTFVzVEhYRDh4YWtremJyYmxvbEJEbHUrYXNXb0s4MUZrbzZ1Vkh5TUpNUG82elUiLCJtYWMiOiI5N2Q0NzNhOWU0MGY4NGJiOWJhNDhhODUyMDI1ZjkyN2UwNGNmZTgxMmI0ZGQwZmRkNGUxYzg2Y2U3ZWZjZDE3IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6Imh5amV4NlAxL1VOTk4vWVcxZTM4N2c9PSIsInZhbHVlIjoiT3lZTHA5cmZkcmNUa2FiOEUzajkySWl1ZlluR2o5dGhtTkVnUUU4Y1J6NW5CVGlZQnFoeUFIZWlYTWZ6RzRFc2xRWU12R3ZwTHpXaFo3aEZjVTRZc0pOUHNtbXhjRDlqOHZzNHBaMWJjbkU4Wjl6MmxpU2NBL1REYm5nb3J0cjkiLCJtYWMiOiIzNjRmZTk4NzM4ZjRkYTA3ODIwOWRhMTkwMjhhOGFmNTU0MTE0MDM1ZjRlNWZlNmZiMTE2NWZiYzI1YmE5YzdhIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Get all cost center types.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter-types",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter-types"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6Ik4ya1BBKzB4UmYwd09ZdWpRYUJSVEE9PSIsInZhbHVlIjoiTGN2ZE12SnEySThQSUZqcXFRUjJrejNaVjUvalMrUlFMaC83aStLRzJYdkF5bWN2S1dSaEFPbjVqcUdZUHlYN1YrQVlxdGhtTHgzYWtkNitFTUxIcUkrU3Ixd3lSZVZja2ZpdklHeitwN2U4K3FFZXlQUzZOSElUTld6aW5zeHEiLCJtYWMiOiIzMzA4NTc4OTE2MjVmZmJkZTEzMDg5MTQ4NDJjYmJmMDY3Y2FkMjQxZTYwYTViNWZkZGUwYmE4ZGUyYTg1YmNjIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6ImVRZFlUa2tZU2xzN3dFS2hTWWZ0Rnc9PSIsInZhbHVlIjoiWVB1bmFXbWtnTUxsMjFvOEs4M2ppRFhMQkp5VDdwTDRSR3pJWmNlbm1KVTB4Zm5GQWh2VzlZa0gvSWVVQ3dwRXFnQ3lmUldZc3NULytwOCtXTDFDT1lVaW0rdWUzUDI0S3FtS1BkM2VsNzVtay96STlHNGhxdGdNTDc1ZDRYejYiLCJtYWMiOiI2NzA5YmVjOWRiZmU0N2M1ZTliZmYwMTkzYjM4MWU5NTYwM2U4MjM5MWJhNDUwNTkzNWZiMjRhMDE4OGM4NjdiIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "POST api\/costcenter-type\/check-name-unique",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter-type\/check-name-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter-type\/check-name-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a cost center type (soft delete).",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter-type\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter-type\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the costcenter type."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Restore a soft-deleted cost center type.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter-type\/:id\/restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter-type\/:id\/restore",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the costcenter type."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing cost center type.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter-type\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter-type\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the costcenter type."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a new cost center type.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/costcenter-type\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/costcenter-type\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all workgroups for DataTables.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workgroups",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workgroups"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6Ii9RbjZqT0FsRXBvMnJGSzM3eklFb0E9PSIsInZhbHVlIjoiSnd4a2UybWpvNzVPdXpzTG9FcDF1ZUp5emZvRXFGY2h1R1J1VXVkN2UwaUYrKzBJKzR3RGpSTUYvdXVyWHVqMXFLMjZkYURWQnVzWlp0U1RPSzhyd3hHZ3psdy9IaDdOTjArRkU0OXB0TU01OWlUbno1TDFDeUVZeUdsaGRlUjIiLCJtYWMiOiI4ODkzYTlkNDBmNDBmY2JhOTUyOTMwODcwYzI5ZWM4ODk2YTk3ODFiMzk0ZDAyYWVjOWVhYTI2Y2NlZjIxYzE2IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IjQ2bFY2TmthQzZPN2NpL2daMXJPMEE9PSIsInZhbHVlIjoicGQ5Y05Kdm9MRDM4cVJRWm5OcEp4QXRrbGhPWWpuRW5qRGNPUkk0SWl0RkVIYUpuSWZMZFU0VU5Od0ZrQ2lQWENnbFlTU1lrVUFmR21zQUQ0VnY0aXNGVEdkamFYNWNJcUl1Ni9jL1pSZ1ExVll4ekFXaW5aS2hWekgyY1V1OG8iLCJtYWMiOiI5NGI5ZWEzZGU5ZGM2NGRlYWVkNmI5NmU2NGFkODliMzRjY2VkN2ZmZTMxMWRjMTAzZDhlZDY4YzA2Y2JkMjczIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Check if the workgroup number is unique.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workgroup\/check-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workgroup\/check-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check if the workgroup name is unique.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workgroup\/check-name-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workgroup\/check-name-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a workgroup by setting its deleted flag.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workgroup\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workgroup\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the workgroup."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Restore a deleted workgroup by resetting its deleted flag.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workgroup\/:id\/restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workgroup\/:id\/restore",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the workgroup."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing workgroup.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workgroup\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workgroup\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the workgroup."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a new workgroup.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/workgroup\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/workgroup\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all institutes for DataTables.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institutes",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institutes"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IlEyd1pWOC9qcXJXZmpTK2VhZkV0R3c9PSIsInZhbHVlIjoiVGZKSDc4aXBiUFhqd0ZpL1A1Z2kzQW5hVkRBbHI2WnBXN0VIdGNwMHlPcEF4d0gvMTQ3aytlWFU2d1BpemVhM3lWbkRIS01aLzhWRmN6dTk5aTUvblFSU2ZtMC92bm9tdFljMXNCUGU5RWFucEhFUXo1RG90RmlLSmxDYzJwYS8iLCJtYWMiOiIwNThhODA5MmRmMzU5Y2FlOTIyMTM5N2RlMDkwNDE0NzQzYzAzODRmYWI1NTM0NDExOTg1M2JkMWZiMWYwNjE4IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6InhhVktpalFYa1h3OXQyT25UL0JBZWc9PSIsInZhbHVlIjoienZVWVh5SExEVDNXK2tTOExXdDNJdGNRVG5BZXJBeGV3d201TEhZU2RhYkQ5VGRGRWk4KzAwNWZ2MUZvTWZXSk5oU0MzMy9SLzFjQVUvZWwrNCtUcUY3b2JyUVYwUEJiUXA1ZjBCMExSaGE0T1M2anE0YTBhYmNYZTVoaCtKemMiLCJtYWMiOiI3YmU3NjhlNTJhZmE1ZDUzMDAyNGQyZDQyM2E4MGQ4YzI3YjM1NTI1ZjFlYWRiMDBjOGFmMDUyMjAzMjk0MjE1IiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Check if the group level is unique.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institute\/check-group-level-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institute\/check-group-level-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check if the institute name is unique.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institute\/check-name-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institute\/check-name-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check if the institute abbreviation is unique.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institute\/check-abbreviation-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institute\/check-abbreviation-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete an institute (soft delete).",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institute\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institute\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the institute."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Restore a soft-deleted institute.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institute\/:id\/restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institute\/:id\/restore",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the institute."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing institute.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institute\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institute\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the institute."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a new institute.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/institute\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/institute\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Fetch all roles with their user count and readable names.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/roles",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/roles"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IkRQaHpZcjRUcEgyTmVVbVdRTmtUL2c9PSIsInZhbHVlIjoid3RnVkRkSTl6WWlqV1hPM3BWdkdwaktYSzhiNFByY1lXeTVJS3RuMmRiT3NZMXg2QUlaY29SRjZDaktZNDdHREY2bGw1SHpJcUhwMlZpUERaeWZQT0dJOEZvN0xKYlNHR2RvOFQ5WWN1TDJJVkg1SG5QNjhOcmVvd0pUVURWQTQiLCJtYWMiOiIwMzZiNjBkY2U0Nzg5ODFkY2IzOTM5MTNlZGIxYzc4ZmRjYzE0NmQ3YWE4MzM3ODM3OTMzM2EwODIxM2I3ODM0IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6ImpEUFk5QUR0SXZCS3pNU2NEalJTNGc9PSIsInZhbHVlIjoiclNXVDRYSVZRdXM2NXlkM01pS3NPY00zS2hSUFRQZU0zL0g1YXR0bTZSMEhUYVFLaFkxU01oQnQzanY1N3J3QzMybEFjakRBb0hkV24xSE9EVk5MR0g1d0ZTT2VkTXluTktTYmorWmlXT1JXYTVUVStTc1pTTWs4NnFrR3lQb3MiLCJtYWMiOiJlZWNiOTBhNjA3MjUxMmJjYjJmYjI5NjExZGYxMzQ5M2I1NjI1YzFiZGMzMTFjOGI4NzcxNjA2Zjk0NjgzOGUyIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch all users, including their details.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/users"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6InEvNWNIWWNHM1pGVkJuSE1WWHYrWlE9PSIsInZhbHVlIjoiS1JLQXh1TFAyQWxNOFQ4ZTJURk53VmxhREhBa3pUa0piOTQ0dks5ZC8wa3NJZ25sbTVHeUpHZVFBYVdzWTltUmUyN1hBb3k5UHNmUmNwcnFQT282Q0Q3ZXBIMzhKR3B3NEdEL2NYT2N5Q1BZRUs3Q3kzczdGVnU1NFNyUWp2a0MiLCJtYWMiOiJlOGY0NzY0YzNlYjA2OTdhYTBiMDk0NmUzMTRlYTQzZDI5Njc0ODg4NDYzZmRkZDc0M2NiZjUyOTgzY2YzNTIxIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6InZUYXFrVkNmREx6MVhyWTlDbGFXOUE9PSIsInZhbHVlIjoiSU9VdFYwcGNYZGJac3BZMDhZR0orZ0FZSm4vQURqN0lGbkRJYVI4cFJ4WU1DQURLTkEvK3N4WllHWnhSbFF1R2twdTZBSTVTQXZGT0Ixa21ObjRWWXRFTUJmeUxuekRQRDFLN05YVU5CL3Zwd2RkeXlaalZTVVVKd1ZrMUdKY3giLCJtYWMiOiJmNjMzNWFjNzM3Y2U0MTQyMTYyOTFmNWZjOWEzNmQzOGE5NTg3ZjRkOWYzYmY4NmYyYWFjZDNjNmNhNWZlZjBkIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch users by role, excluding featured users.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/users\/role\/:roleName",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/users\/role\/:roleName",
+                            "variable": [
+                                {
+                                    "id": "roleName",
+                                    "key": "roleName",
+                                    "value": "consequatur",
+                                    "description": ""
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IjNyY2IzYVRhYXhsSmpHK05ORTJ1M2c9PSIsInZhbHVlIjoiOGo3eEx3aG5pb3JtaDZuNnBHYmMxOStEUFlnaEpMeEI2WnZRaEJqeCtac2tzV29XVEdOMlNleXVQb29MeXhOdFFJODRtenh2VkdpK0I0ZzNORXh5aE9hZXhMYS93WklvVy96SzBkSFcxMXRyeW5XS2VUSldiTGN0enV6bjlGRGMiLCJtYWMiOiIwMTBmYjI4ODc1Yzg3NWQwMWNhY2VkMzAwNTU1MGQ1MGI1ODU4MTJlNzRiOTc4YTJjNjlkMTRkYjFiMDc3MDZiIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IkRNYzBaekxoODh0SHIrWXdMY2tTR2c9PSIsInZhbHVlIjoib1UrdzNLNTZab0loTmR2ZVEzZVJ5VzZNMEl2K3QzdnVWSHp1SUtESHhWVU1IUnRzUGMya3ZoN2dXV1o2L1FIUndzNzYvQ3M5MHRKTmRFRnFOK1dEeXEwMU04d2xlcWs0RDVhZzNMck1qZlNMRURtMjNOZmlQVFQxZC8wTU45ejAiLCJtYWMiOiJkNTRiNTBkZTEwNGVjNTJkY2FiNDdiOGExMDAyMTRkOTE2YzljMjQzNGY0ZTRmNzY1ZDYwMzIwODk2NTY5YjRkIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Fetch users by permission, excluding featured users.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/check-email-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/check-email-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check if a user name is unique, excluding the current user if editing.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/check-name-unique",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/check-name-unique"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete a user by setting its deleted flag.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the user."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Restore a soft-deleted user.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/:id\/restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/:id\/restore",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the user."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing user.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the user."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a new user.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all external access rights.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-access",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-access"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6IndvRG5LL2owdnZocC95M0YxK20vQWc9PSIsInZhbHVlIjoia0FSUkhQQUo0LzY0UjBYQmIwWlN0Z3BqZ1NHeHprKzhmZjQ4ZWZLcjdCSVRkbHova1RsTWxxNTN6bE1Zdng0SXI0RE4wbi9saUNBVDRLK2s4Q3VSNnN3YjNTVVhDeTVYTVZIY1F5YWVRYlcyUzFkblNDQUhFc3FGL2NoWFZhSWgiLCJtYWMiOiI2MTc5ZWU1ZGExNzU2N2RmMTI2ODIxMDUyZTUzZmU5ZDA1ODg4MTc0Yjk4OTMwOGVkMmM4ZWYyMjgxNmM3YWFiIiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6IlhSUk1oL1FzQzZCNHNscVRLcHFnZHc9PSIsInZhbHVlIjoiVWE2TXhjdkFaallQOGZTb21CZEhKUlg0Qk90WVd1NVdhRis4Ui9IQUF1QTNicWh4Q0dkWHNVbWVQNUdubkUyZFEwbjhMc2liS0tUZGJ1TzRwVnZIYm5jdmJxU05iMjh2Q2ZpVzVSZFdySnpZOThYK0pJd3UyWDh0ekNCbWRlbloiLCJtYWMiOiI4ZDczZWFlZDExOTEyMWIyMDk1NjkxYzc3MjlmZDEwZTk2Mjc5Zjg4NTMxNTBjMmY1MGFkYjVhNDcxNWY1OTlmIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Check if active group is exists and not deleted.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-access\/check-active-group",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-access\/check-active-group"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete an external access right (soft delete).",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-access\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-access\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the external access."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Restore a soft-deleted external access right.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-access\/:id\/restore",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-access\/:id\/restore",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the external access."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing external access right.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-access\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-access\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the external access."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create a new external access right.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-access\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-access\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all external privileges for DataTables.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-privileges",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-privileges"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "location",
+                                    "value": "http:\/\/localhost\/login"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "text\/html; charset=utf-8"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                },
+                                {
+                                    "key": "set-cookie",
+                                    "value": "XSRF-TOKEN=eyJpdiI6Im1mL3hZSWpST20rS2tDQmc0aTNFUmc9PSIsInZhbHVlIjoiTnF3Y2NXRUsxMGRuY0ZFY0p3UHlKUEExVmJqYWp6WjNySUM5VzhNK1AyQm93dldKb2twZWFoOHRaTTRqekNzZ01qRStQSGVlOUFkSFJRMDJxNWV0OVJobjloK1NsbHU3VVJZTnU3Rzc2ZERpU2tTb2lJMmNDWUUwUTIwR3RPLzIiLCJtYWMiOiJlNTNhZWQ5ZjcxYzU2MTE3YzU4Njk2OTYzYjhmNDkyMjljZWMyODFmN2E4MTU2MjdjZGM4ZmNlZDVjNzk2MmY5IiwidGFnIjoiIn0%3D; expires=Fri, 20 Jun 2025 15:07:59 GMT; Max-Age=7200; path=\/; samesite=lax; ugyintezes_session=eyJpdiI6Imx0NzZCZkgyNEs3cTJnYVU2TTNIblE9PSIsInZhbHVlIjoib204Yi90YW5sUzg5Q2E5bDJoWUwyVmhNT1V6TkxVNXdpUGhTd2ZOc2Nzb3dCTlUwZDlNSWIzUHUwM0RNU1NGZFpKK2lwTXdtcE5KR2RnVXVPdk85TFVHWVMvYk0vYmJTTG9DRXZtOWNaMW1IU3ByVlpocEVHZWZnVGc3TFNlNWYiLCJtYWMiOiJkMzY0ZTY3MzJmN2MzYjFlMTI1MGM1YzRlMDNlN2FiNDYzMmU0ODE1YWJlOTNiOWVkOGMyYWRlZmEyZmQ4OWFhIiwidGFnIjoiIn0%3D; path=\/; httponly; samesite=lax"
+                                }
+                            ],
+                            "code": 302,
+                            "body": "<!DOCTYPE html>\r\n<html>\r\n    <head>\r\n        <meta charset=\"UTF-8\" \/>\r\n        <meta http-equiv=\"refresh\" content=\"0;url='http:\/\/localhost\/login'\" \/>\r\n\r\n        <title>Redirecting to http:\/\/localhost\/login<\/title>\r\n    <\/head>\r\n    <body>\r\n        Redirecting to <a href=\"http:\/\/localhost\/login\">http:\/\/localhost\/login<\/a>.\r\n    <\/body>\r\n<\/html>",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Create a new external privilege.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-privilege\/create",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-privilege\/create"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update an existing external privilege.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-privilege\/:id\/update",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-privilege\/:id\/update",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the external privilege."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete an external privilege.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/external-privilege\/:id\/delete",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/external-privilege\/:id\/delete",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "consequatur",
+                                    "description": "The ID of the external privilege."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "GET api\/v1\/employeerecruitment",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/employeerecruitment",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/employeerecruitment"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "*"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

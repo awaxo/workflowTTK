@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="utf-8">
+    <title>4. Implementált funkciók – Fejlesztői dokumentáció</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="sidebar">
+        <h2><i class="fa fa-list"></i> Tartalom</h2>
+        <nav id="toc">
+            <ul>
+                <li><a href="index.html"><i class="fa fa-home"></i> Főoldal</a></li>
+                <li><a href="laravel-framework.html">1. Laravel Framework áttekintés</a></li>
+                <li><a href="projekt-felepites.html">2. Projekt felépítés</a></li>
+                <li><a href="laravel-csomagok.html">3. Laravel csomagok</a></li>
+                <li><a href="#sec4" class="active">4. Implementált funkciók</a>
+                    <ul>
+                        <li><a href="#sec4_1" class="level-2">4.1 PDF generálás workflow</a></li>
+                        <li><a href="#sec4_2" class="level-2">4.2 Excel adatok kezelése</a></li>
+                        <li><a href="#sec4_3" class="level-2">4.3 Jogosultságkezelés implementálása</a></li>
+                        <li><a href="#sec4_4" class="level-2">4.4 Workflow rendszer használata</a></li>
+                    </ul>
+                </li>
+                <li><a href="architektura-design.html">5. Architektúra és Design Patterns</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <header>
+        <h1><i class="fa fa-cogs"></i> 4. Specifikus funkciók implementálása</h1>
+        <p>A TTK rendszer konkrét, domain-specifikus megoldásainak részletes bemutatása</p>
+        <div style="margin-top:1rem">
+            <span class="badge badge-primary">Workflow</span>
+            <span class="badge badge-success">PDF/Excel</span>
+            <span class="badge badge-info">Email</span>
+            <span class="badge badge-warning">RBAC</span>
+        </div>
+    </header>
+	<main id="content">
+        <section id="sec4">
+            <h2><i class="fa fa-cogs"></i> 4. Specifikus funkciók implementálása</h2>
+
+            <div class="info-box">
+                <strong><i class="fa fa-info-circle"></i> Fejezet áttekintés:</strong> 
+                Ez a fejezet konkrét, domain-specifikus megoldásokat mutat be a projektben.
+            </div>
+
+            </section>
+
+        <section id="sec4_1">
+            <h2>4.1 PDF generálás workflow</h2>
+
+            <p>A PDF generálás több lépcsőben zajlik és különböző típusú dokumentumokat támogat.</p>
+    <p>A PDF-generálás a <code>barryvdh/laravel-dompdf</code> csomagra épül, amely lehetővé teszi, hogy Blade nézeteket alakítsunk át PDF dokumentummá. A folyamat során a felhasználó űrlapokon keresztül adja meg a szükséges adatokat és sablonválasztékot, majd egy aszinkron queue job indítja el a generálást.</p>
+    <p>A job betölti a megfelelő Blade nézetet, beilleszti az adatokat, majd a <code>PDF::loadView('pdf.template', $data)->save($path)</code> hívással elkészíti a PDF-et, amit aztán tárolunk, és értesítjük a felhasználót e-mailben vagy system notificationnel. A konfigurációs sablonok rugalmasan bővíthetők, új sablonok definiálhatók a <code>resources/views/pdf</code> könyvtárban.</p>
+    <pre><code>// Példa PDF generálás job
+public function handle()
+{
+    $pdf = PDF::loadView('pdf.invoice', ['order' => $this->order]);
+    Storage::put('invoices/invoice_'.$this->order->id.'.pdf', $pdf->output());
+}
+    </code></pre>
+
+
+            </section>
+	<section id="sec4_2">
+            <h2>4.2 Excel adatok kezelése</h2>
+
+            <p>Az export moduláris: minden export osztály a `App\Exports` névtérben él, és a `FromCollection` interfészt implementálja. A rendszer támogatja mind az egyszerű, mind a komplex Excel exportokat dinamikus formázással.</p>
+    <p>Az Excel export és import a <code>maatwebsite/excel</code> csomagon keresztül valósul meg. A export oldalon minden export osztály implementálja a <code>FromCollection</code> vagy <code>FromQuery</code> interfészt, és opcionálisan a <code>WithHeadings</code> segítségével adjuk meg az oszlopfejléceket.</p>
+    <p>Importálás során a <code>ToModel</code> interfészt használjuk, amely rekordonként modelleket hoz létre vagy frissít, és validációs szabályokat alkalmaz a <code>SkipsOnFailure</code> mixin segítségével. A munkafolyamat részére konfigurált import processzorok kezelik az időigényes feladatokat queue-ban.</p>
+    <pre><code>// Egyszerű export példa
+return Excel::download(new RecruitmentWorkflowReportExport($filters), 'report.xlsx');
+</code></pre>
+
+
+            <div class="success-box">
+                <strong><i class="fa fa-check-circle"></i> Export használat:</strong>
+                Egy export generálása: <code>return Excel::download(new RecruitmentWorkflowReportExport($filters), 'toborzas_jelentes.xlsx');</code>
+            </div>
+        </section>
+
+        
+<section id="sec4_3">
+    <h2>4.3 Jogosultságkezelés implementálása</h2>
+    <p>A rendszerben a Spatie Laravel Permission csomagot használjuk, azonban csak role-alapú jogosultságokat alkalmazunk, permission-öket nem definiálunk. A middleware és a Blade direktívák segítségével ellenőrizzük, hogy a felhasználó a megfelelő role-lal rendelkezik.</p>
+    <p>Az elérhető szerepkörök jelenleg:</p>
+    <ul>
+        <li><code>adminisztrator</code> – Adminisztrátor</li>
+<li><code>titkar_1</code> – Titkár - SZKI</li>
+<li><code>titkar_3</code> – Titkár - AKI</li>
+<li><code>titkar_4</code> – Titkár - MÉI</li>
+<li><code>titkar_5</code> – Titkár - KPI</li>
+<li><code>titkar_6</code> – Titkár - AKK</li>
+<li><code>titkar_7</code> – Titkár - SZKK</li>
+<li><code>titkar_8</code> – Titkár - GYIK</li>
+<li><code>titkar_9_fi</code> – Titkár - FI</li>
+<li><code>titkar_9_gi</code> – Titkár - GI</li>
+<li><code>utofinanszirozas_fedezetigazolo</code> – Utófinanszírozás fedezetigazoló</li>
+<li><code>munkaber_kotelezettsegvallalas_nyilvantarto</code> – Munkabér kötelezettségvállalás nyilvántartó</li>
+<li><code>betekinto</code> – Betekintő</li>
+<li><code>koltseghely_adatkarbantarto</code> – Költséghely adatkarbantartó</li>
+<li><code>uzemeltetesi_ugyintezo</code> – Üzemeltetési ügyintéző</li>
+<li><code>sugarvedelmi_szolgalat</code> – Sugárvédelmi szolgálat</li>
+    </ul>
+</section>
+<section id="sec4_4">
+            <h2>4.4 Workflow rendszer használata</h2>
+
+            
+    <p>A workflow rendszert a Symfony Workflow komponens és a ZeroDaHero Laravel Workflow csomag kombinációjával valósítottuk meg. A konfigurációt a <code>Modules/EmployeeRecruitment/config/workflow.php</code> fájl tartalmazza, ahol meghatározzuk az állapotokat és azok átmeneteit. A komponensek segítségével guard feltételek és események is definiálhatók a folyamatok finomhangolásához.</p>
+
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-project-diagram"></i> State Machine jellemzők</h4>
+                    <ul>
+                        <li>Symfony Workflow alapok</li>
+                        <li>Konfiguráció alapú állapotok</li>
+                        <li>Guard feltételek</li>
+                        <li>Automatikus esemény kiváltás</li>
+                        <li>Történet nyomkövetés</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-clock"></i> Deadline Management</h4>
+                    <ul>
+                        <li>Állapot-specifikus határidők</li>
+                        <li>Automatikus eszkaláció</li>
+                        <li>Email figyelmeztetések</li>
+                        <li>Delegációs rendszer</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong><i class="fa fa-check-circle"></i> Workflow rendszer előnyei:</strong>
+                <ul>
+                    <li><strong>Átlátható folyamat:</strong> Minden állapot és átmenet dokumentált</li>
+                    <li><strong>Jogosultság integráció:</strong> State-specific permission ellenőrzés</li>
+                    <li><strong>Audit trail:</strong> Teljes változás történet nyomkövetés</li>
+                    <li><strong>Automatizáció:</strong> Deadline monitoring és eszkaláció</li>
+                    <li><strong>Rugalmasság:</strong> Delegáció és manual override lehetőségek</li>
+                </ul>
+            </div>
+        </section>
+	</main>
+
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <a href="laravel-csomagok.html" style="color: #666; text-decoration: none;">
+                    <i class="fa fa-arrow-left"></i> Előző: 3. Laravel csomagok
+                </a>
+            </div>
+            <div>
+                <strong>TTK Ügyintézés</strong> · Implementált funkciók · 2025
+            </div>
+            <div>
+                <a href="architektura-design.html" style="color: #666; text-decoration: none;">
+                    Következő: 5. Architektúra és Design Patterns <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigáció kiemelés és smooth scrolling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aktuális szekció kiemelése az oldalsávban
+            const currentSection = window.location.hash || '#sec4';
+            document.querySelector(`a[href="${currentSection}"]`)?.classList.add('active');
+            
+            // Smooth scrolling az anchor linkekhez
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // URL frissítése navigáció kiváltása nélkül
+                        history.pushState(null, null, this.getAttribute('href'));
+                    }
+                });
+            });
+
+            // Aktív szekció frissítése görgetéskor
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelectorAll('#sidebar a').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        document.querySelector(`#sidebar a[href="#${id}"]`)?.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('section[id]').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

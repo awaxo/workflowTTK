@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html lang="hu">
+<head>
+<meta charset="utf-8"/>
+<title>1. Laravel Framework áttekintés – Fejlesztői dokumentáció</title>
+<link href="style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+</head>
+<body>
+<div id="sidebar">
+<h2><i class="fa fa-list"></i> Tartalom</h2>
+<nav id="toc">
+<ul>
+<li><a href="index.html"><i class="fa fa-home"></i> Főoldal</a></li>
+<li><a class="active" href="#sec1">1. Laravel Framework áttekintés</a>
+<ul>
+<li><a class="level-2" href="#sec1_1">1.1 Mi a Laravel?</a></li>
+<li><a class="level-2" href="#sec1_2">1.2 MVC architektúra</a></li>
+<li><a class="level-2" href="#sec1_3">1.3 Artisan parancssor</a></li>
+<li><a class="level-2" href="#sec1_4">1.4 Service Container és DI</a></li>
+<li><a class="level-2" href="#sec1_5">1.5 Eloquent ORM</a></li>
+</ul>
+</li>
+<li><a href="projekt-felepites.html">2. Projekt felépítés</a></li>
+<li><a href="laravel-csomagok.html">3. Laravel csomagok</a></li>
+<li><a href="implementalt-funkciok.html">4. Implementált funkciók</a></li>
+<li><a href="architektura-design.html">5. Architektúra és Design Patterns</a></li>
+</ul>
+</nav>
+</div>
+<header>
+<h1><i class="fa-solid fa-cubes"></i> 1. Laravel Framework áttekintés</h1>
+<p>A TTK ügyintézési rendszer technológiai alapjainak bemutatása</p>
+<div style="margin-top:1rem">
+<span class="badge badge-primary">Laravel 10.46.0</span>
+<span class="badge badge-success">LTS Support</span>
+<span class="badge badge-info">PHP 8.1+</span>
+</div>
+</header>
+<main id="content">
+<section id="sec1">
+<div class="info-box">
+<strong><i class="fa fa-info-circle"></i> Fejezet áttekintés:</strong> 
+                A TTK ügyintézési rendszer a Laravel 10.46.0 LTS verzióra épül, kihasználva annak expresszív szintaxisát, gazdag ökoszisztémáját és hosszú távú támogatását. A rendszer REST API-kat, moduláris backend architektúrát és modern frontend eszközláncot kombinál.
+            </div>
+<div class="feature-grid">
+<div class="feature-card">
+<h4><i class="fa fa-cogs"></i> Technológiai Stack</h4>
+<ul>
+<li><strong>Framework:</strong> Laravel 10.46.0 LTS</li>
+<li><strong>PHP verzió:</strong> 8.1+ strict typing</li>
+<li><strong>Adatbázis:</strong> MySQL 8.0 / MariaDB 10.6+</li>
+<li><strong>Cache:</strong> Redis 6.0+</li>
+<li><strong>Frontend:</strong> jQuery 3.6, Bootstrap 5</li>
+<li><strong>Build tools:</strong> Vite, Tailwind CSS</li>
+</ul>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-puzzle-piece"></i> Architekturális Jellemzők</h4>
+<ul>
+<li>Moduláris MVC felépítés</li>
+<li>Event-driven architecture</li>
+<li>Service layer pattern</li>
+<li>Repository pattern használata</li>
+<li>Domain-driven design elemek</li>
+<li>SOLID principles követése</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="sec1_1">
+<h2>1.1 Mi a Laravel?</h2>
+<p>A Laravel egy modern, nyílt forráskódú PHP keretrendszer, amely a Symfony komponenseire épül. Filosofiája a <strong>"developer happiness"</strong> - a fejlesztői élmény maximalizálása expresszív szintaxissal és gazdag eszközkészlettel.</p>
+<div class="success-box">
+<strong><i class="fa fa-check-circle"></i> Miért Laravel a TTK projektben?</strong>
+<ul>
+<li><strong>Rapid Development:</strong> Beépített authentication, validation, routing rendszerek</li>
+<li><strong>Scalability:</strong> Mikroszolgáltatás-ready architektúra támogatás</li>
+<li><strong>Maintainability:</strong> Tiszta kód, SOLID principles, tesztelhetőség</li>
+<li><strong>Rich Ecosystem:</strong> Composer csomagok, Laravel specifikus megoldások</li>
+<li><strong>Long-term Support:</strong> 10.x LTS verzió 2026-ig támogatott</li>
+</ul>
+</div>
+<h3>Laravel filozófia a projektben</h3>
+<div class="feature-grid">
+<div class="feature-card">
+<h4><i class="fa fa-heart"></i> Developer Experience</h4>
+<p>Expresszív szintaxis, intuitive API-k és gazdag dokumentáció. A Laravel lehetővé teszi, hogy a fejlesztők a business logikára koncentráljanak a boilerplate kód helyett.</p>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-magic"></i> Convention over Configuration</h4>
+<p>Intelligens alapértelmezések és naming conventions csökkentik a konfigurációs overhead-et. A Laravel "magic" automatizálja a rutin feladatokat.</p>
+</div>
+</div>
+</section>
+<section id="sec1_2">
+<h2>1.2 MVC architektúra és Service Layer</h2>
+<p>A projekt szigorúan követi az MVC (Model-View-Controller) mintát, de kiegészíti <strong>Service Layer</strong> réteggel az üzleti logika elkülönítése érdekében.</p>
+<div class="architecture-diagram">
+<h4>Extended MVC Architecture</h4>
+<pre>
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Request   │───▶│ Controller  │───▶│   Service   │───▶│ Repository  │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+                           │                   │                   │
+                           ▼                   ▼                   ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Response   │◀───│    View     │    │   Events    │    │    Model    │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+</pre>
+</div>
+<div class="feature-grid">
+<div class="feature-card">
+<h4><i class="fa fa-layer-group"></i> Controller réteg</h4>
+<ul>
+<li>HTTP-kérések kezelése</li>
+<li>Bemeneti érvényesítés</li>
+<li>Válasz formázása</li>
+<li>Szolgáltatás delegálása</li>
+<li>Jogosultság ellenőrzése</li>
+</ul>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-cogs"></i> Service réteg</h4>
+<ul>
+<li>Üzleti logika megvalósítása</li>
+<li>Tranzakciókezelés</li>
+<li>Eseményindítás</li>
+<li>Külső szolgáltatások integrálása</li>
+<li>Összetett adatok összehangolása</li>
+</ul>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-database"></i> Model réteg</h4>
+<ul>
+<li>Adatok tartósítása</li>
+<li>Kapcsolatok definiálása</li>
+<li>Attribútum-konvertálás</li>
+<li>Lekérdezés-határok</li>
+<li>Modell események</li>
+</ul>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-eye"></i> View réteg</h4>
+<ul>
+<li>Blade-sablon renderelése</li>
+<li>Adatok megjelenítése</li>
+<li>Komponenskompozíció</li>
+<li>Erőforrások fordítása</li>
+<li>Kliensoldali integráció</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="sec1_3">
+<h2>1.3 Artisan parancssor és egyedi parancsok</h2>
+<p>Az Artisan CLI-t kiterjedten használjuk automatizálásra, karbantartásra és üzleti folyamatok támogatására. A projekt több tucat egyedi parancsot definiál.</p>
+<div class="feature-grid">
+<div class="feature-card">
+<h4><i class="fa fa-calendar-check"></i> Ütemezett Feladatok</h4>
+<ul>
+<li><code>employeerecruitment:archive-old-drafts</code></li>
+<li><code>employeerecruitment:check-delegation-deadline</code></li>
+<li><code>costcenter:check-expired</code></li>
+<li><code>employeerecruitment:check-state-deadline</code></li>
+<li><code>workflow:cleanup-completed</code></li>
+<li><code>reports:generate-monthly</code></li>
+</ul>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-tools"></i> Karbantartási Parancsok</h4>
+<ul>
+<li><code>workflow:sync</code> - Workflow definíciók szinkronizálása</li>
+<li><code>permissions:sync</code> - Jogosultságok frissítése</li>
+<li><code>cache:warm</code> - Cache előmelegítése</li>
+<li><code>queue:monitor</code> - Queue monitoring</li>
+<li><code>modules:publish</code> - Modul assets publikálása</li>
+</ul>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-database"></i> Adatbázis Parancsok</h4>
+<ul>
+<li><code>db:backup</code> - Automatikus backup készítése</li>
+<li><code>db:optimize</code> - Indexek optimalizálása</li>
+<li><code>migrate:status-extended</code> - Részletes migráció státusz</li>
+<li><code>seed:specific</code> - Célzott seeding</li>
+</ul>
+</div>
+<div class="feature-card">
+<h4><i class="fa fa-envelope"></i> Integráció Parancsok</h4>
+<ul>
+<li><code>imap:check</code> - Email beolvasás</li>
+<li><code>imap:sync-folders</code> - IMAP mappák szinkronizálása</li>
+<li><code>pdf:cleanup-temp</code> - Temp PDF fájlok törlése</li>
+<li><code>excel:process-queue</code> - Excel generálási queue</li>
+</ul>
+</div>
+</div>
+<div class="info-box">
+<strong><i class="fa fa-clock"></i> Cron ütemezés:</strong>
+                A parancsok ütemezése a <code>app/Console/Kernel.php</code> fájlban történik.
+            </div>
+</section>
+<section id="sec1_4">
+<h2>1.4 Service Container és Dependency Injection</h2>
+<p>A service container a Laravel központi eleme, amely a függőség-injektálást (Dependency Injection) valósítja meg. Ez egy egyszerű PHP objektum, ami felelős az osztályok és szolgáltatások létrehozásáért, valamint azok kezeléséért és tárolásáért. A konténer automatikusan kezeli a függőségek feloldását, így a kód könnyen tesztelhető és karbantartható.</p>
+<p><strong>Főbb jellemzők:</strong></p>
+<ul>
+<li><strong>Automatikus függőség-injektálás:</strong> A konténer képes a konstruktoron és metódusokon keresztüli függőségek automatikus feloldására.</li>
+<li><strong>Service Providers:</strong> A szolgáltatások regisztrálása és konfigurálása service provider osztályokon keresztül történik.</li>
+<li><strong>Singleton és Binding:</strong> Szolgáltatások egyszeri vagy több példányban történő regisztrálása.</li>
+<li><strong>Contextual Binding:</strong> Konkrét implementációk kötése egy adott kontextushoz.</li>
+</ul>
+</section>
+<section id="sec1_5">
+<h2>1.5 Eloquent ORM és Advanced Features</h2>
+<p>A Eloquent ORM a Laravel beépített objektum-relációs leképezője, amely egyszerű és olvasható API-t biztosít az adatbázis-kezeléshez. Minden adatbázis-tábla egy modellosztálynak felel meg, és a rekordok objektumként kezelhetők.</p>
+<p><strong>Főbb funkciók és fogalmak:</strong></p>
+<ul>
+<li><strong>Kapcsolatok:</strong> Egy-az-egyhez, egy-a-többhöz, sok-a-sokhoz és polimorfikus kapcsolatok egyszerű definiálása és használata.</li>
+<li><strong>Accessorok és Mutátorok:</strong> A modellek attribútumainak egyedi lekérdezése és beállítása getterek és setterek segítségével.</li>
+<li><strong>Query Scopes:</strong> Újrafelhasználható lekérdezési logika csatolása a modellhez helyi (local) és globális (global) hatókörben.</li>
+<li><strong>Eager Loading:</strong> Kapcsolatok előre betöltése a N+1 lekérdezési probléma elkerülésére.</li>
+<li><strong>Soft Deletes:</strong> Törlés helyett jelölés, így az adatok archiválhatók.</li>
+</ul>
+</section>
+<section id="sec1_6">
+</section>
+</main>
+<footer>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<strong>TTK Ügyintézés</strong> · Laravel Framework áttekintés · 2025
+            </div>
+<div>
+<a href="projekt-felepites.html" style="color: #666; text-decoration: none;">
+                    Következő: 2. Projekt felépítés <i class="fa fa-arrow-right"></i>
+</a>
+</div>
+</div>
+</footer>
+<script>
+        // Navigation highlighting and smooth scrolling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Highlight current section in sidebar
+            const currentSection = window.location.hash || '#sec1';
+            document.querySelector(`a[href="${currentSection}"]`)?.classList.add('active');
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Update URL without triggering navigation
+                        history.pushState(null, null, this.getAttribute('href'));
+                    }
+                });
+            });
+
+            // Update active section on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelectorAll('#sidebar a').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        document.querySelector(`#sidebar a[href="#${id}"]`)?.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('section[id]').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

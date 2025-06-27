@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: resources/assets/js/pages-aux-costcenter-types.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: resources/assets/js/pages-aux-costcenter-types.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import moment from 'moment';
+import GLOBALS from '../../js/globals.js';
+
+var fv;
+
+$(function() {
+    fv = validateCostCenterType();
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+    
+    let dataTable = $('.datatables-costcenter-types').DataTable({
+        ajax: '/api/costcenter-types',
+        columns: [
+            { data: 'id', visible: false, searchable: false },
+            { data: 'name' },
+            { 
+                data: 'tender',
+                render: function(data, type, row) {
+                    if (type === 'display') {
+                        return data ? '&lt;i class="fas fa-check text-success">&lt;/i>' : '&lt;i class="fas fa-times text-danger">&lt;/i>';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            { data: 'financial_countersign' },
+            { data: 'clause_template' },
+            { 
+                data: 'deleted',
+                render: function(data, type, row) {
+                    if (type === 'display') {
+                        return data ? '&lt;i class="fas fa-times text-danger">&lt;/i>' : '&lt;i class="fas fa-check text-success">&lt;/i>';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            { data: 'updated_by_name' },
+            { 
+                data: 'updated_at',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD HH:mm:ss');
+                }
+            },
+            { data: 'created_by_name' },
+            { 
+                data: 'created_at',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD HH:mm:ss');
+                }
+            },
+            { data: '' }
+        ],
+        columnDefs: [
+            {
+                // For Responsive
+                targets: 0,
+                className: 'control',
+                orderable: false,
+                responsivePriority: 2,
+                searchable: false,
+                render: function(data, type, full, meta) {
+                    return '';
+                }
+            },
+            {
+                // Actions
+                targets: -1,
+                title: window.isWg910Or911 ? 'Műveletek' : '',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, full, meta) {
+                    if (window.isWg910Or911) {
+                        return (
+                            '&lt;div class="d-inline-block">' +
+                            '&lt;a href="javascript:;" class="btn btn-sm text-primary btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">&lt;i class="bx bx-dots-vertical-rounded">&lt;/i>&lt;/a>' +
+                            '&lt;ul class="dropdown-menu dropdown-menu-end">' +
+                            (!full.deleted ? '&lt;li>&lt;a href="javascript:;" class="dropdown-item modify-costcenter-type" data-bs-toggle="offcanvas" data-bs-target="#new_costcenter_type">Módosítás&lt;/a>&lt;/li>' : '') +
+                            (full.deleted ? '&lt;li>&lt;a href="javascript:;" class="dropdown-item restore-costcenter-type">Visszaállítás&lt;/a>&lt;/li>' : '') +
+                            (!full.deleted ? '&lt;div class="dropdown-divider">&lt;/div>&lt;li>&lt;a href="javascript:;" class="dropdown-item text-danger delete-costcenter-type">Törlés&lt;/a>&lt;/li>' : '') +
+                            '&lt;/ul>' +
+                            '&lt;/div>'
+                        );
+                    } else {
+                        return '';
+                    }
+                }
+            }
+        ],
+        order: [[1, 'asc']],
+        displayLength: 10,
+        lengthMenu: [10, 25, 50, 75, 100],
+        dom: window.isWg910Or911 
+            ? '&lt;"card-header"&lt;"head-label text-center">&lt;"dt-action-buttons text-end"B>>&lt;"d-flex justify-content-between align-items-center row"&lt;"col-sm-12 col-md-6"l>&lt;"col-sm-12 col-md-6"f>>t&lt;"d-flex justify-content-between row"&lt;"col-sm-12 col-md-6"i>&lt;"col-sm-12 col-md-6"p>>'
+            : '&lt;"d-flex justify-content-between align-items-center row"&lt;"col-sm-12 col-md-6"l>&lt;"col-sm-12 col-md-6"f>>t&lt;"d-flex justify-content-between row"&lt;"col-sm-12 col-md-6"i>&lt;"col-sm-12 col-md-6"p>>',
+        buttons: [
+            {
+                text: '&lt;i class="bx bx-plus me-1">&lt;/i> &lt;span class="d-none d-lg-inline-block">Új költséghely típus&lt;/span>',
+                className: 'create-new btn btn-primary',
+                attr: {
+                    'data-bs-toggle': 'offcanvas',
+                    'data-bs-target': '#new_costcenter_type'
+                },
+            }
+        ],
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.modal({
+                    header: function(row) {
+                        var data = row.data();
+                        return 'Details of ' + data['full_name'];
+                    }
+                }),
+                type: 'column',
+                renderer: function(api, rowIdx, columns) {
+                    var data = $.map(columns, function(col, i) {
+                        return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
+                        ? '&lt;tr data-dt-row="' +
+                            col.rowIndex +
+                            '" data-dt-column="' +
+                            col.columnIndex +
+                            '">' +
+                            '&lt;td>' +
+                            col.title +
+                            ':' +
+                            '&lt;/td> ' +
+                            '&lt;td>' +
+                            col.data +
+                            '&lt;/td>' +
+                            '&lt;/tr>'
+                        : '';
+                    }).join('');
+
+                    return data ? $('&lt;table class="table"/>&lt;tbody />').append(data) : false;
+                }
+            }
+        },
+        language: GLOBALS.DATATABLE_TRANSLATION,
+        initComplete: function() {
+            var checkboxHtml = `
+                &lt;div class="form-check form-switch show-inactive">
+                    &lt;input class="form-check-input" type="checkbox" role="switch" id="show_inactive">
+                    &lt;label class="form-check-label" for="show_inactive">Inaktívak megjelenítése&lt;/label>
+                &lt;/div>
+            `;
+            var parent = $(this).closest('.dataTables_wrapper').find('.dataTables_length').parent();
+            parent.css('display', 'flex').css('align-items', 'center');
+            parent.find('.dataTables_length').css('margin-right', '20px');
+            parent.find('.dataTables_length').after(checkboxHtml);
+
+            $('#show_inactive').on('change', function() {
+                $('.datatables-costcenter-types').DataTable().draw();
+            });
+        }
+    });
+
+    // refresh number of rows on show inactive checkbox change
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            let showInactive = $('#show_inactive').prop('checked');
+            let isInactive = dataTable.row(dataIndex).data().deleted;
+            if (showInactive) {
+                return true;
+            } else {
+                return !isInactive;
+            }
+        }
+    );
+
+    // Filter form control to default size
+    // ? setTimeout used for multilingual table initialization
+    setTimeout(() => {
+        $('.dataTables_filter .form-control').removeClass('form-control-sm');
+        $('.dataTables_length .form-select').removeClass('form-select-sm');
+    }, 300);
+
+    // delete costcenter type
+    $(document).on('click', '.delete-costcenter-type', function() {
+        var row = $(this).closest('tr');
+        var costcenterId = $('.datatables-costcenter-types').DataTable().row(row).data().id;
+
+        $('#confirm_delete').attr('data-costcenter-type-id', costcenterId);
+        $('#deleteConfirmation').modal('show');
+    });
+
+    // confirm delete costcenter type
+    $('#confirm_delete').on('click', function () {
+        var costcenterId = $(this).data('costcenter-type-id');
+
+        $.ajax({
+            url: '/api/costcenter-type/' + costcenterId + '/delete',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
+                $('#deleteConfirmation').modal('hide');
+                GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
+
+    //restore costcenter type
+    $(document).on('click', '.restore-costcenter-type', function() {
+        var row = $(this).closest('tr');
+        var costcenterId = $('.datatables-costcenter-types').DataTable().row(row).data().id;
+
+        $('#confirm_restore').attr('data-costcenter-type-id', costcenterId);
+        $('#restoreConfirmation').modal('show');
+    });
+
+    // confirm restore costcenter type
+    $('#confirm_restore').on('click', function () {
+        var costcenterId = $(this).data('costcenter-type-id');
+
+        $.ajax({
+            url: '/api/costcenter-type/' + costcenterId + '/restore',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
+                $('#restoreConfirmation').modal('hide');
+                GLOBALS.AJAX_ERROR('Hiba történt a visszaállítás során!', jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
+
+    // modify costcenter type
+    $(document).on('click', '.modify-costcenter-type', function() {
+        var row = $(this).closest('tr');
+        var costcenterType = $('.datatables-costcenter-types').DataTable().row(row).data();
+
+        $('#new_costcenter_type_label').text('Költséghely típus módosítás');
+
+        $('#name').val(costcenterType.name);
+        if (costcenterType.tender) {
+            $('#tender').prop('checked', true);
+        } else {
+            $('#tender').prop('checked', false);
+        }
+        $('#financial_countersign').val(costcenterType.financial_countersign).trigger('change');
+        $('#clause_template').val(costcenterType.clause_template).trigger('change');
+        $('.data-submit').attr('data-costcenter-type-id', costcenterType.id);
+
+        fv.revalidateField('name');
+    });
+
+    // submit costcenter type
+    $('.data-submit').on('click', function() {
+        var costcenterTypeId = $(this).data('costcenter-type-id');
+        var url = costcenterTypeId ? '/api/costcenter-type/' + costcenterTypeId + '/update' : '/api/costcenter-type/create';
+
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                // Disable the button to prevent double clicks
+                $(".data-submit").prop('disabled', true);
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        name: $('#name').val(),
+                        tender: $('#tender').is(':checked'),
+                        financial_countersign: $('#financial_countersign').val(),
+                        clause_template: $('#clause_template').val()
+                    },
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status === 401 || jqXHR.status === 419) {
+                            alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                            window.location.href = '/login';
+                        }
+                        
+                        bootstrap.Offcanvas.getInstance(document.getElementById('new_costcenter_type')).hide();
+                        $('.data-submit').attr('data-costcenter-type-id', null);
+                        var errors = jqXHR.responseJSON.errors;
+                        var errorMessages = "";
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                errorMessages += errors[key] + '&lt;br>';
+                            }
+                        }
+                        GLOBALS.AJAX_ERROR(errorMessages, jqXHR, textStatus, errorThrown);
+                    }
+                });
+            }
+        });
+    });
+
+    $('.create-new').on('click', function() {
+        $('#new_costcenter_type_label').text('Új költséghely típus');
+        $('.data-submit').attr('data-costcenter-type-id', null);
+        $('#name').val('');
+        $('#clause_template').val('');
+        $('#tender').prop('checked', false);
+        $('#financial_countersign').val($('#financial_countersign option:first').val()).trigger('change');
+
+        fv?.resetForm(true);
+    });
+});
+
+/**
+ * Validates the health allowance form.
+ * @returns {FormValidation.FormValidationInstance} – FormValidation instance
+ * @description
+ * This function sets up validation for the health allowance form fields.
+ * It checks that all required fields are filled out and displays error messages
+ * if any fields are left empty. The validation is done using the FormValidation library.
+ */
+function validateCostCenterType() {
+    return FormValidation.formValidation(
+        document.getElementById('new_costcenter_type'),
+        {
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a költséghely típus nevét'
+                        },
+                        stringLength: {
+                            max: 255,
+                            message: 'A költséghely típus neve maximum 255 karakter lehet'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ\s,-]+$/,
+                            message: 'A költséghely típus neve csak betűket, szóközt, vesszőt és kötőjelet tartalmazhat'
+                        },
+                        remote: {
+                            url: '/api/costcenter-type/check-name-unique',
+                            method: 'POST',
+                            data: function() {
+                                return {
+                                    _token: $('meta[name="csrf-token"]').attr('content'),
+                                    name: $('#name').val(),
+                                    costcenter_type_id: $('.data-submit').data('costcenter-type-id') || null
+                                };
+                            },
+                            message: 'Ez a költséghely típus név már használatban van'
+                        }
+                    }
+                },
+                financial_countersign: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Kérjük, add meg a pénzügyi ellenjegyzőt'
+                        },
+                    }
+                },
+            },
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger({
+                    event: {
+                        name: 'blur change',
+                        financial_countersign: 'change'
+                    },
+                }),
+                bootstrap: new FormValidation.plugins.Bootstrap5(),
+                autoFocus: new FormValidation.plugins.AutoFocus(),
+            },
+        }
+    );
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#calculateDuration">calculateDuration</a></li><li><a href="global.html#calculateYearlyAmounts">calculateYearlyAmounts</a></li><li><a href="global.html#citizenshipPopover">citizenshipPopover</a></li><li><a href="global.html#dynamicControls">dynamicControls</a></li><li><a href="global.html#enableOnChange">enableOnChange</a></li><li><a href="global.html#filterByPosition">filterByPosition</a></li><li><a href="global.html#filterByWorkgroups">filterByWorkgroups</a></li><li><a href="global.html#filterCostCenters">filterCostCenters</a></li><li><a href="global.html#filterExternalAccess">filterExternalAccess</a></li><li><a href="global.html#filterPositionOptions">filterPositionOptions</a></li><li><a href="global.html#filterRoomOptions">filterRoomOptions</a></li><li><a href="global.html#filterStudentStatus">filterStudentStatus</a></li><li><a href="global.html#formatNumber">formatNumber</a></li><li><a href="global.html#getEmployerContribution">getEmployerContribution</a></li><li><a href="global.html#getGrossSalarySum">getGrossSalarySum</a></li><li><a href="global.html#handleChemicalHazardsVisibility">handleChemicalHazardsVisibility</a></li><li><a href="global.html#handleChemicalsExposureVisibility">handleChemicalsExposureVisibility</a></li><li><a href="global.html#handleMainFieldVisibility">handleMainFieldVisibility</a></li><li><a href="global.html#handleSubFieldVisibility">handleSubFieldVisibility</a></li><li><a href="global.html#hideChemicalSubfields">hideChemicalSubfields</a></li><li><a href="global.html#initCoverageTable">initCoverageTable</a></li><li><a href="global.html#isMainField">isMainField</a></li><li><a href="global.html#isSubField">isSubField</a></li><li><a href="global.html#parseSalaryValue">parseSalaryValue</a></li><li><a href="global.html#resetChemicalFields">resetChemicalFields</a></li><li><a href="global.html#resetSubfields">resetSubfields</a></li><li><a href="global.html#revalidateOnChange">revalidateOnChange</a></li><li><a href="global.html#setWorkingHours">setWorkingHours</a></li><li><a href="global.html#setWorkingHoursWeekdays">setWorkingHoursWeekdays</a></li><li><a href="global.html#syncCostCenterOptions">syncCostCenterOptions</a></li><li><a href="global.html#syncWorkgroupOptions">syncWorkgroupOptions</a></li><li><a href="global.html#toggleApplicantCountInputs">toggleApplicantCountInputs</a></li><li><a href="global.html#toggleTaskInput">toggleTaskInput</a></li><li><a href="global.html#updateAvailableTools">updateAvailableTools</a></li><li><a href="global.html#updateCoverageTable">updateCoverageTable</a></li><li><a href="global.html#updateEndDateBasedOnPosition">updateEndDateBasedOnPosition</a></li><li><a href="global.html#updateInventoryNumbersOfAvailableTools">updateInventoryNumbersOfAvailableTools</a></li><li><a href="global.html#updateTotals">updateTotals</a></li><li><a href="global.html#validateCostCenter">validateCostCenter</a></li><li><a href="global.html#validateCostCenterSum">validateCostCenterSum</a></li><li><a href="global.html#validateCostCenterType">validateCostCenterType</a></li><li><a href="global.html#validateDelegation">validateDelegation</a></li><li><a href="global.html#validateEmployeeRecruitment">validateEmployeeRecruitment</a></li><li><a href="global.html#validateExternalAccess">validateExternalAccess</a></li><li><a href="global.html#validateExternalPrivilege">validateExternalPrivilege</a></li><li><a href="global.html#validateHealthAllowance">validateHealthAllowance</a></li><li><a href="global.html#validateInstitute">validateInstitute</a></li><li><a href="global.html#validatePosition">validatePosition</a></li><li><a href="global.html#validateWorkdayTimes">validateWorkdayTimes</a></li><li><a href="global.html#validateWorkgroup">validateWorkgroup</a></li><li><a href="global.html#validateWorkingHours">validateWorkingHours</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Jun 20 2025 12:46:55 GMT+0200 (közép-európai nyári idő)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: resources/assets/js/pages-profile.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: resources/assets/js/pages-profile.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import moment from 'moment';
+import GLOBALS from '../../js/globals.js';
+import { is } from 'immutable';
+
+'use strict';
+
+$(function () {
+    const instances = GLOBALS.initNumberInputs();
+
+    $("#delegation_start_date, #delegation_end_date").datepicker({
+        format: "yyyy.mm.dd",
+        startDate: new Date(),
+        language: 'hu',
+        weekStart: 1,
+    });
+
+    // set locale for sorting
+    $.fn.dataTable.ext.order.intl('hu', {
+        sensitivity: 'base'
+    });
+
+    // Status handling utility
+    const StatusUtils = {
+        // Map status codes to display status
+        getStatusDisplay: function(status, deleted) {
+            // Ha deleted = 1, akkor mindig "Érvénytelen"
+            if (deleted === 1) {
+                return 'Érvénytelen';
+            }
+            
+            // Ha nincs státusz, alapértelmezetten "Elfogadásra vár"
+            if (!status) {
+                return 'Elfogadásra vár';
+            }
+            
+            // A státusz már lefordított formátumban érkezik a szervertől
+            return status;
+        },
+        
+        // Get badge class based on status
+        getStatusBadgeClass: function(status) {
+            if (status === 'Érvényes') {
+                return 'bg-label-success';
+            } else if (status === 'Érvénytelen') {
+                return 'bg-label-danger';
+            } else {
+                return 'bg-label-warning';
+            }
+        },
+        
+        // Check if status is valid
+        isStatusValid: function(status) {
+            return status === 'Érvényes';
+        },
+        
+        // Check if status is invalid or delegation is deleted
+        isStatusInvalid: function(status, deleted) {
+            return status === 'Érvénytelen' || deleted === 1;
+        },
+        
+        // Check if status is waiting for acceptance
+        isStatusWaiting: function(status, deleted) {
+            return status === 'Elfogadásra vár' &amp;&amp; deleted !== 1;
+        }
+    };
+
+    // Initialize delegates DataTable
+    const delegatesTable = $('.datatables-delegates').DataTable({
+        ajax: {
+            url: '/api/delegations', 
+            data: function (d) {
+                d.show_deleted = $('#show_deleted_my_delegations').is(':checked');
+            }
+        },
+        autoWidth: false,
+        dom: 'rtip',
+        columns: [
+            { data: 'id', visible: false, searchable: false },
+            { data: 'delegate_name' },
+            { data: 'readable_type' },
+            { 
+                data: 'start_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            {
+                data: 'end_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            { 
+                data: 'status',
+                render: function(data, type, row) {
+                    const status = StatusUtils.getStatusDisplay(data, row.deleted);
+                    const badgeClass = StatusUtils.getStatusBadgeClass(status);
+                    return '&lt;span class="badge ' + badgeClass + '">' + status + '&lt;/span>';
+                }
+            },
+            { data: '' }
+        ],
+        columnDefs: [
+            {
+                // Actions
+                targets: -1,
+                title: 'Törlés',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, full, meta) {
+                    // Ha a státusz érvénytelen vagy törölt, ne jelenítsen meg gombot
+                    if (StatusUtils.isStatusInvalid(full.status, full.deleted)) {
+                        return '';
+                    }
+                    
+                    return (
+                        '&lt;div class="d-inline-block">' +
+                        '&lt;a href="javascript:;" class="btn btn-sm text-danger btn-icon delete-delegation">&lt;i class="bx bx-trash">&lt;/i>&lt;/a>' +
+                        '&lt;/div>'
+                    );
+                }
+            }
+        ],
+        order: [[1, 'asc']],
+        buttons: [],
+        displayLength: 10,
+        lengthMenu: [5, 10, 25],
+        language: GLOBALS.DATATABLE_TRANSLATION
+    });
+
+    // Initialize delegated to me DataTable
+    const delegatedToMeTable = $('.datatables-delegated-to-me').DataTable({
+        ajax: {
+            url: '/api/delegations/delegations-to-me',
+            data: function (d) {
+                d.show_deleted = $('#show_deleted_delegations').is(':checked');
+            }
+        },
+        autoWidth: false,
+        dom: 'rtip',
+        columns: [
+            { data: 'id', visible: false, searchable: false },
+            { data: 'original_user_name' },
+            { data: 'readable_type' },
+            { 
+                data: 'start_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            {
+                data: 'end_date',
+                render: function(data, type, row) {
+                    return moment(data).format('YYYY.MM.DD');
+                }
+            },
+            { 
+                data: 'status',
+                render: function(data, type, row) {
+                    const status = StatusUtils.getStatusDisplay(data, row.deleted);
+                    const badgeClass = StatusUtils.getStatusBadgeClass(status);
+                    return '&lt;span class="badge ' + badgeClass + '">' + status + '&lt;/span>';
+                }
+            },
+            { 
+                data: '',  
+                render: function(data, type, full, meta) {
+                    // Ha a státusz érvénytelen vagy törölt, ne jelenítsen meg gombot
+                    if (StatusUtils.isStatusInvalid(full.status, full.deleted)) {
+                        return '';
+                    }
+                    
+                    // Ha a státusz érvényes, csak a törlés gomb jelenjen meg
+                    if (StatusUtils.isStatusValid(full.status)) {
+                        return (
+                            '&lt;div class="d-inline-block">' +
+                            '&lt;a href="javascript:;" class="btn btn-sm text-danger btn-icon reject-delegation" data-bs-toggle="tooltip" title="Törlés">' +
+                            '&lt;i class="bx bx-trash">&lt;/i>' +
+                            '&lt;/a>' +
+                            '&lt;/div>'
+                        );
+                    }
+                    
+                    // Ha elfogadásra vár, mindkét gomb jelenjen meg
+                    return (
+                        '&lt;div class="d-inline-block">' +
+                        '&lt;a href="javascript:;" class="btn btn-sm text-success btn-icon accept-delegation me-1" data-bs-toggle="tooltip" title="Elfogadás">' +
+                        '&lt;i class="bx bx-check">&lt;/i>' +
+                        '&lt;/a>' +
+                        '&lt;a href="javascript:;" class="btn btn-sm text-danger btn-icon reject-delegation" data-bs-toggle="tooltip" title="Törlés">' +
+                        '&lt;i class="bx bx-trash">&lt;/i>' +
+                        '&lt;/a>' +
+                        '&lt;/div>'
+                    );
+                }
+            }
+        ],
+        order: [[1, 'asc']],
+        buttons: [],
+        displayLength: 10,
+        lengthMenu: [5, 10, 25],
+        language: GLOBALS.DATATABLE_TRANSLATION,
+        drawCallback: function() {
+            // Initialize tooltips after table is drawn
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        }
+    });
+
+    // Handle checkbox change for "Helyettesek beállítása" deleted delegations
+    $('#show_deleted_my_delegations').on('change', function() {
+        delegatesTable.ajax.reload();
+    });
+
+    // Handle checkbox change for deleted delegations
+    $('#show_deleted_delegations').on('change', function() {
+        delegatedToMeTable.ajax.reload();
+    });
+
+    // Filter form control to default size
+    // ? setTimeout used for multilingual table initialization
+    setTimeout(() => {
+        $('.dataTables_filter .form-control').removeClass('form-control-sm');
+        $('.dataTables_length .form-select').removeClass('form-select-sm');
+    }, 300);
+
+    // Handle delegation type change
+    $('#delegation_type').on('change', function() {
+        if ($(this).val() !== '') {
+            let type = $(this).val();
+            
+            // Clear previous delegates
+            $('#delegated_user').empty();
+            
+            $.ajax({
+                url: '/api/delegates/' + type,
+                type: 'GET',
+                success: function(response) {
+                    let options = '';
+                    if (response) {
+                        if (Array.isArray(response)) {
+                            response.forEach(function(user) {
+                                options += `&lt;option value="${user.id}">${user.name}&lt;/option>`;
+                            });
+                        } else {
+                            options += `&lt;option value="${response.id}">${response.name}&lt;/option>`;
+                        }
+                    }
+                    $('#delegated_user').html(options);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401 || jqXHR.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+
+                    GLOBALS.AJAX_ERROR('Hiba történt a helyettesítők betöltése során!', jqXHR, textStatus, errorThrown);
+                }
+            });
+        }
+    });
+    
+    // Trigger change if value exists on page load
+    if ($('#delegation_type').val()) {
+        $('#delegation_type').trigger('change');
+    }
+
+    // Save delegation handler
+    $('#save_delegation').on('click', function() {
+        // Clear any existing validation messages
+        $('.invalid-feedback').remove();
+        $('.is-invalid').removeClass('is-invalid');
+        
+        let fv = validateDelegation();
+    
+        fv.validate().then(function(status) {
+            if(status === 'Valid') {
+                // Additional manual validation for end date
+                const startDate = $('#delegation_start_date').val();
+                const endDate = $('#delegation_end_date').val();
+                
+                if (startDate &amp;&amp; endDate) {
+                    const startMoment = moment(startDate, 'YYYY.MM.DD');
+                    const maxEndDate = moment(startMoment).add(2, 'months');
+                    const endMoment = moment(endDate, 'YYYY.MM.DD');
+                    
+                    // Check date order
+                    if (endDate &lt; startDate) {
+                        showEndDateError('A helyettesítés vége nem lehet korábban a helyettesítés kezdténél');
+                        return;
+                    }
+                    
+                    // Check 2 month limit
+                    if (endMoment.isAfter(maxEndDate)) {
+                        showEndDateError('A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumnál');
+                        return;
+                    }
+                }
+                
+                $.ajax({
+                    url: 'api/delegation/create',
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        type: $('#delegation_type').val(),
+                        delegate_user_id: $('#delegated_user').val(),
+                        start_date: $('#delegation_start_date').val(),
+                        end_date: $('#delegation_end_date').val()
+                    },
+                    success: function() {
+                        // Reset form fields
+                        $('#delegation_start_date').val('');
+                        $('#delegation_end_date').val('');
+                        $('#delegation_type').val(null).trigger('change');
+                        $('#delegated_user').val(null).trigger('change');
+    
+                        // Reload datatables
+                        $('.datatables-delegates').DataTable().ajax.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status === 401 || jqXHR.status === 419) {
+                            alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                            window.location.href = '/login';
+                        }
+    
+                        if (jqXHR.status === 409) {
+                            try {
+                                // Parse the response to get detailed information
+                                const response = JSON.parse(jqXHR.responseText);
+                                
+                                if (response.overlapping &amp;&amp; response.overlapping.length > 0) {
+                                    // Format the dates for better readability
+                                    const formatDates = (overlapping) => {
+                                        return overlapping.map(item => {
+                                            // Create readable date format
+                                            const startDate = moment(item.start_date).format('YYYY.MM.DD');
+                                            const endDate = moment(item.end_date).format('YYYY.MM.DD');
+                                            return `${startDate} - ${endDate}`;
+                                        }).join(', ');
+                                    };
+                                    
+                                    const formattedDates = formatDates(response.overlapping);
+                                    const errorMessage = `Átfedő időszak! Már létezik helyettesítés a kiválasztott funkciókhoz és helyetteshez a következő időszakokban: ${formattedDates}`;
+                                    
+                                    GLOBALS.AJAX_ERROR(errorMessage, jqXHR, textStatus, errorThrown);
+                                } else {
+                                    GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
+                                }
+                            } catch (e) {
+                                // If parsing fails, fallback to the generic message
+                                GLOBALS.AJAX_ERROR('A megadott adatokkal már van helyettesítés rögzítve', jqXHR, textStatus, errorThrown);
+                            }
+                        } else if (jqXHR.status === 422) {
+                            try {
+                                // Parse validation errors
+                                const response = JSON.parse(jqXHR.responseText);
+                                
+                                if (response.errors &amp;&amp; response.errors.end_date) {
+                                    // Display specific error about 2-month limit
+                                    const errorMessage = response.errors.end_date[0];
+                                    GLOBALS.AJAX_ERROR(errorMessage, jqXHR, textStatus, errorThrown);
+                                    
+                                    // Also show error in the form
+                                    showEndDateError(errorMessage);
+                                } else {
+                                    GLOBALS.AJAX_ERROR(response.message || 'Érvénytelen adatok!', jqXHR, textStatus, errorThrown);
+                                }
+                            } catch (e) {
+                                GLOBALS.AJAX_ERROR('Érvénytelen adatok!', jqXHR, textStatus, errorThrown);
+                            }
+                        } else {
+                            GLOBALS.AJAX_ERROR('Hiba történt a helyettesítés mentése során!', jqXHR, textStatus, errorThrown);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    // Delete delegation handler
+    $(document).on('click', '.delete-delegation', function() {
+        var row = $(this).closest('tr');
+        var delegationId = $('.datatables-delegates').DataTable().row(row).data().id;
+
+        $('#confirm_delete').attr('data-delegation-id', delegationId);
+        $('#confirm_delete').data('row', row);
+        $('#deleteConfirmation').modal('show');
+    });
+
+    // Confirm delete handler
+    $('#confirm_delete').on('click', function() {
+        let delegationId = $(this).attr('data-delegation-id');
+        let row = $(this).data('row');
+        let delegationData = $('.datatables-delegates').DataTable().row(row).data();
+        
+        // Function to delete a single delegation
+        const deleteDelegation = (id) => {
+            return $.ajax({
+                url: '/api/delegation/' + id + '/delete',
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        };
+        
+        // Check if we have multiple delegations in a group
+        if (delegationData.delegations &amp;&amp; delegationData.delegations.length > 0) {
+            // Create an array of promises for each deletion
+            const deletePromises = delegationData.delegations.map(id => deleteDelegation(id));
+            
+            // Wait for all deletions to complete
+            Promise.all(deletePromises)
+                .then(() => {
+                    $('#deleteConfirmation').modal('hide');
+                    $('.datatables-delegates').DataTable().row(row).remove().draw();
+                })
+                .catch((error) => {
+                    if (error.status === 401 || error.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+                    
+                    $('#deleteConfirmation').modal('hide');
+                    GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', error, 'error', '');
+                });
+        } else {
+            // Delete a single delegation (original behavior)
+            deleteDelegation(delegationId)
+                .done(function(response) {
+                    $('#deleteConfirmation').modal('hide');
+                    $('.datatables-delegates').DataTable().row(row).remove().draw();
+                })
+                .fail(function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status === 401 || jqXHR.status === 419) {
+                        alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                        window.location.href = '/login';
+                    }
+
+                    $('#deleteConfirmation').modal('hide');
+                    GLOBALS.AJAX_ERROR('Hiba történt a törlés során!', jqXHR, textStatus, errorThrown);
+                });
+        }
+    });
+
+    // Accept delegation handler
+    $(document).on('click', '.accept-delegation', function() {
+        var row = $(this).closest('tr');
+        var delegationId = delegatedToMeTable.row(row).data().id;
+
+        $('#action-confirmation-text').text('Biztosan elfogadod ezt a helyettesítést?');
+        $('#confirm_action').attr('data-delegation-id', delegationId);
+        $('#confirm_action').attr('data-action', 'accept');
+        $('#delegationActionConfirmation').modal('show');
+    });
+
+    // Reject delegation handler
+    $(document).on('click', '.reject-delegation', function() {
+        var row = $(this).closest('tr');
+        var delegationId = delegatedToMeTable.row(row).data().id;
+
+        $('#action-confirmation-text').text('Biztosan törlöd ezt a helyettesítést?');
+        $('#confirm_action').attr('data-delegation-id', delegationId);
+        $('#confirm_action').attr('data-action', 'reject');
+        $('#delegationActionConfirmation').modal('show');
+    });
+
+    // Confirm action handler (for accept/reject)
+    $('#confirm_action').on('click', function() {
+        let delegationId = $(this).attr('data-delegation-id');
+        let action = $(this).attr('data-action');
+        
+        let url = action === 'accept' 
+            ? '/api/delegation/' + delegationId + '/accept'
+            : '/api/delegation/' + delegationId + '/reject';
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $('#delegationActionConfirmation').modal('hide');
+                
+                // Reload both tables to reflect changes
+                delegatedToMeTable.ajax.reload();
+                delegatesTable.ajax.reload();
+                
+                // Show success message
+                const successMessage = action === 'accept' 
+                    ? 'Helyettesítés sikeresen elfogadva!'
+                    : 'Helyettesítés sikeresen törölve!';
+                    
+                Swal.fire({
+                    title: 'Sikeres művelet!',
+                    text: successMessage,
+                    icon: 'success',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
+                $('#delegationActionConfirmation').modal('hide');
+                GLOBALS.AJAX_ERROR('Hiba történt a művelet során!', jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
+
+    // Save notification settings
+    $('.btn-submit').on('click', function() {
+        $.ajax({
+            url: '/api/notification-settings/update',
+            type: 'POST',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                approval_notification: $('#approval_notification').is(':checked') ? 'true' : 'false',
+            },
+            success: function() {
+                //
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 401 || jqXHR.status === 419) {
+                    alert('Lejárt a munkamenet. Kérjük, jelentkezz be újra.');
+                    window.location.href = '/login';
+                }
+
+                GLOBALS.AJAX_ERROR('Hiba történt a mentés során!', jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
+});
+
+// Helper function to show end date error with custom message
+function showEndDateError(message) {
+    // Remove any existing error message
+    $('#delegation_end_date_error').remove();
+    
+    // Add the error message
+    const errorDiv = $('&lt;div>')
+        .attr('id', 'delegation_end_date_error')
+        .addClass('invalid-feedback')
+        .text(message);
+    
+    // Add error class to input
+    $('#delegation_end_date').addClass('is-invalid');
+    
+    // Append error message after the input
+    $('#delegation_end_date').after(errorDiv);
+}
+
+/**
+ * Validate delegation form fields
+ * @returns {object} FormValidation instance
+ */
+function validateDelegation() {
+    // Define validation rules
+    const validationRules = {
+        fields: {
+            delegation_type: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük válassz helyettesített funkciót'
+                    }
+                }
+            },
+            delegated_user: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük válassz helyettesítőt'
+                    }
+                }
+            },
+            delegation_start_date: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük add meg a helyettesítés kezdetét'
+                    },
+                    date: {
+                        format: 'YYYY.MM.DD',
+                        message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
+                    }
+                }
+            },
+            delegation_end_date: {
+                validators: {
+                    notEmpty: {
+                        message: 'Kérjük add meg a helyettesítés végét'
+                    },
+                    date: {
+                        format: 'YYYY.MM.DD',
+                        message: 'Kérjük, valós formában add meg a dátumot: YYYY.MM.DD'
+                    },
+                    // We'll handle these validations separately, but keep a basic callback
+                    // for the FormValidation framework
+                    callback: {
+                        message: 'A helyettesítés vége érvénytelen',
+                        callback: function(input) {
+                            // Clear any existing custom error messages
+                            $('#delegation_end_date_error').remove();
+                            
+                            if (input.value === '') {
+                                return true;
+                            }
+                            
+                            const startDateValue = $('#delegation_start_date').val();
+                            if (startDateValue === '') {
+                                return true;
+                            }
+                            
+                            // Check date order
+                            if (input.value &lt; startDateValue) {
+                                showEndDateError('A helyettesítés vége nem lehet korábban a helyettesítés kezdténél');
+                                return false;
+                            }
+                            
+                            // Check 2 month limit
+                            const startDate = moment(startDateValue, 'YYYY.MM.DD');
+                            const maxEndDate = moment(startDate).add(2, 'months');
+                            const endDate = moment(input.value, 'YYYY.MM.DD');
+                            
+                            if (endDate.isAfter(maxEndDate)) {
+                                showEndDateError('A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumtól');
+                                return false;
+                            }
+                            
+                            return true;
+                        }
+                    }
+                }
+            }
+        },
+        plugins: {
+            bootstrap: new FormValidation.plugins.Bootstrap5(),
+        },
+    };
+    
+    // Add event listeners for date changes
+    $('#delegation_start_date, #delegation_end_date').on('change', function() {
+        const startDate = $('#delegation_start_date').val();
+        const endDate = $('#delegation_end_date').val();
+        
+        // Clear any existing error
+        $('#delegation_end_date_error, div[data-field="delegation_end_date"]').remove();
+        $('#delegation_end_date').removeClass('is-invalid');
+        
+        // Skip validation if either date is empty
+        if (!startDate || !endDate) {
+            return;
+        }
+        
+        // Check date order
+        if (endDate &lt; startDate) {
+            showEndDateError('A helyettesítés vége nem lehet korábban a helyettesítés kezdténél');
+            return;
+        }
+        
+        // Check 2 month limit
+        const startMoment = moment(startDate, 'YYYY.MM.DD');
+        const maxEndDate = moment(startMoment).add(2, 'months');
+        const endMoment = moment(endDate, 'YYYY.MM.DD');
+        
+        if (endMoment.isAfter(maxEndDate)) {
+            showEndDateError('A helyettesítés vége nem lehet 2 hónapnál későbbi a kezdő dátumtól');
+        }
+    });
+    
+    // Initialize FormValidation
+    const fv = FormValidation.formValidation(
+        document.getElementById('navs-pills-delegations'),
+        validationRules
+    ).on('core.field.invalid', function(field) {
+        $(`#${field}`).addClass('is-invalid');
+    }).on('core.field.valid', function(field) {
+        $(`#${field}`).removeClass('is-invalid');
+    });
+    
+    return fv;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#calculateDuration">calculateDuration</a></li><li><a href="global.html#calculateYearlyAmounts">calculateYearlyAmounts</a></li><li><a href="global.html#citizenshipPopover">citizenshipPopover</a></li><li><a href="global.html#dynamicControls">dynamicControls</a></li><li><a href="global.html#enableOnChange">enableOnChange</a></li><li><a href="global.html#filterByPosition">filterByPosition</a></li><li><a href="global.html#filterByWorkgroups">filterByWorkgroups</a></li><li><a href="global.html#filterCostCenters">filterCostCenters</a></li><li><a href="global.html#filterExternalAccess">filterExternalAccess</a></li><li><a href="global.html#filterPositionOptions">filterPositionOptions</a></li><li><a href="global.html#filterRoomOptions">filterRoomOptions</a></li><li><a href="global.html#filterStudentStatus">filterStudentStatus</a></li><li><a href="global.html#formatNumber">formatNumber</a></li><li><a href="global.html#getEmployerContribution">getEmployerContribution</a></li><li><a href="global.html#getGrossSalarySum">getGrossSalarySum</a></li><li><a href="global.html#handleChemicalHazardsVisibility">handleChemicalHazardsVisibility</a></li><li><a href="global.html#handleChemicalsExposureVisibility">handleChemicalsExposureVisibility</a></li><li><a href="global.html#handleMainFieldVisibility">handleMainFieldVisibility</a></li><li><a href="global.html#handleSubFieldVisibility">handleSubFieldVisibility</a></li><li><a href="global.html#hideChemicalSubfields">hideChemicalSubfields</a></li><li><a href="global.html#initCoverageTable">initCoverageTable</a></li><li><a href="global.html#isMainField">isMainField</a></li><li><a href="global.html#isSubField">isSubField</a></li><li><a href="global.html#parseSalaryValue">parseSalaryValue</a></li><li><a href="global.html#resetChemicalFields">resetChemicalFields</a></li><li><a href="global.html#resetSubfields">resetSubfields</a></li><li><a href="global.html#revalidateOnChange">revalidateOnChange</a></li><li><a href="global.html#setWorkingHours">setWorkingHours</a></li><li><a href="global.html#setWorkingHoursWeekdays">setWorkingHoursWeekdays</a></li><li><a href="global.html#syncCostCenterOptions">syncCostCenterOptions</a></li><li><a href="global.html#syncWorkgroupOptions">syncWorkgroupOptions</a></li><li><a href="global.html#toggleApplicantCountInputs">toggleApplicantCountInputs</a></li><li><a href="global.html#toggleTaskInput">toggleTaskInput</a></li><li><a href="global.html#updateAvailableTools">updateAvailableTools</a></li><li><a href="global.html#updateCoverageTable">updateCoverageTable</a></li><li><a href="global.html#updateEndDateBasedOnPosition">updateEndDateBasedOnPosition</a></li><li><a href="global.html#updateInventoryNumbersOfAvailableTools">updateInventoryNumbersOfAvailableTools</a></li><li><a href="global.html#updateTotals">updateTotals</a></li><li><a href="global.html#validateCostCenter">validateCostCenter</a></li><li><a href="global.html#validateCostCenterSum">validateCostCenterSum</a></li><li><a href="global.html#validateCostCenterType">validateCostCenterType</a></li><li><a href="global.html#validateDelegation">validateDelegation</a></li><li><a href="global.html#validateEmployeeRecruitment">validateEmployeeRecruitment</a></li><li><a href="global.html#validateExternalAccess">validateExternalAccess</a></li><li><a href="global.html#validateExternalPrivilege">validateExternalPrivilege</a></li><li><a href="global.html#validateHealthAllowance">validateHealthAllowance</a></li><li><a href="global.html#validateInstitute">validateInstitute</a></li><li><a href="global.html#validatePosition">validatePosition</a></li><li><a href="global.html#validateWorkdayTimes">validateWorkdayTimes</a></li><li><a href="global.html#validateWorkgroup">validateWorkgroup</a></li><li><a href="global.html#validateWorkingHours">validateWorkingHours</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Fri Jun 20 2025 12:46:55 GMT+0200 (közép-európai nyári idő)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="utf-8">
+    <title>2. Projekt felépítés – Fejlesztői dokumentáció</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="sidebar">
+        <h2><i class="fa fa-list"></i> Tartalom</h2>
+        <nav id="toc">
+            <ul>
+                <li><a href="index.html"><i class="fa fa-home"></i> Főoldal</a></li>
+                <li><a href="laravel-framework.html">1. Laravel Framework áttekintés</a></li>
+                <li><a href="#sec2" class="active">2. Projekt felépítés</a>
+                    <ul>
+                        <li><a href="#sec2_1" class="level-2">2.1 Standard Laravel mappaszerkezet</a></li>
+                        <li><a href="#sec2_2" class="level-2">2.2 Konfigurációs fájlok</a></li>
+                        <li><a href="#sec2_3" class="level-2">2.3 Autoloading és névterek</a></li>
+                        <li><a href="#sec2_4" class="level-2">2.4 Moduláris felépítés</a></li>
+                    </ul>
+                </li>
+                <li><a href="laravel-csomagok.html">3. Laravel csomagok</a></li>
+                <li><a href="implementalt-funkciok.html">4. Implementált funkciók</a></li>
+                <li><a href="architektura-design.html">5. Architektúra és Design Patterns</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <header>
+        <h1><i class="fa fa-sitemap"></i> 2. Projekt felépítés és könyvtárszerkezet</h1>
+        <p>A TTK ügyintézési rendszer moduláris architektúrájának részletes bemutatása</p>
+        <div style="margin-top:1rem">
+            <span class="badge badge-primary">Moduláris</span>
+            <span class="badge badge-success">PSR-4</span>
+            <span class="badge badge-info">Enterprise</span>
+        </div>
+    </header>
+
+    <main id="content">
+        <section id="sec2">
+            <h2><i class="fa fa-sitemap"></i> 2. Projekt felépítés és könyvtárszerkezet</h2>
+
+            <div class="info-box">
+                <strong><i class="fa fa-info-circle"></i> Projekt áttekintés:</strong> 
+                A projekt moduláris architektúrát követ, ahol a funkciók logikailag és fizikailag elkülönített modulokba szerveződnek. Az alábbiakban részletesen bemutatjuk a könyvtárszerkezetet, konfigurációs rendszert és a moduláris felépítést.
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-cogs"></i> Fő jellemzők</h4>
+                    <ul>
+                        <li>Standard Laravel struktúra</li>
+                        <li>Moduláris kiterjesztések</li>
+                        <li>PSR-4 autoloading</li>
+                        <li>Környezeti konfigurációk</li>
+                        <li>Asset management Vite-tal</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-puzzle-piece"></i> Moduláris előnyök</h4>
+                    <ul>
+                        <li>Független fejlesztés</li>
+                        <li>Újrahasznosíthatóság</li>
+                        <li>Könnyű karbantartás</li>
+                        <li>Tesztelhetőség</li>
+                        <li>Kód elkülönítés</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div>
+                <h4>Projekt struktúra áttekintés</h4>
+                <pre>
+workflowTTK/
+├── 📁 app/                     # Laravel alkalmazás magja
+├── 📁 Modules/                 # Független modulok
+├── 📁 config/                  # Konfigurációs fájlok
+├── 📁 database/                # Adatbázis fájlok
+├── 📁 resources/               # Nézetek és asset-ek
+├── 📁 routes/                  # Route definíciók
+├── 📁 storage/                 # Tároló könyvtár
+└── 📁 public/                  # Nyilvános fájlok
+</pre>
+            </div>
+        </section>
+
+        <section id="sec2_1">
+            <h2>2.1 Standard Laravel mappaszerkezet</h2>
+
+            <p>Az `app/`, `config/`, `database/`, `resources/`, `routes/` és `tests/` könyvtárak a Laravel alapértelmezett elrendezését követik. A `routes/web.php` tartalmazza a böngészőn keresztüli útvonalakat, míg a `routes/api.php` a token-alapú JSON API-t definiálja.</p>
+
+            <div class="code-block">
+    <div class="code-header"><i class="fa fa-folder-tree"></i> Részletes mappastruktúra</div>
+    <pre><code>workflowTTK/
+├── 📁 app/                           # Laravel alkalmazás magja
+│   ├── 📁 Auth/                      # Guardok
+│   ├── 📁 Console/                   # Artisan parancsok
+│   │   └── 📄 Kernel.php             # Parancs ütemezés
+│   ├── 📁 Events/                    # Esemény osztályok
+│   ├── 📁 Exceptions/                # Kivétel kezelők
+│   ├── 📁 Exports/                   # Excel exportok
+│   ├── 📁 Http/                      # HTTP réteg
+│   │   ├── 📁 Controllers/           # Kérés kezelők
+│   │   ├── 📁 Middleware/            # Kérés szűrők
+│   ├── 📁 Listeners/                 # Esemény figyelők
+│   ├── 📁 Models/                    # Adatmodell osztályok
+│   ├── 📁 Notifications/             # Értesítés osztályok
+│   ├── 📁 Providers/                 # Szolgáltatás regisztrálók
+│   ├── 📁 Services/                  # Üzleti logika szolgáltatások
+│   └── 📁 Traits/                    # Újrafelhasználható kód darabok
+├── 📁 Modules/                       # Független modulok
+│   └── 📁 EmployeeRecruitment/       # Toborzási modul példa
+│       ├── 📁 App/                   # Modul alkalmazás logika
+│       ├── 📁 Config/                # Modul konfiguráció
+│       ├── 📁 Database/              # Migrációk és seedek
+│       ├── 📁 Resources/             # Nézetek és asset-ek
+│       └── 📁 Routes/                # Route definíciók
+├── 📁 config/                        # Konfigurációs fájlok
+├── 📁 resources/                     # Alkalmazás erőforrások
+│   ├── 📁 css/                       # Stíluslap források
+│   ├── 📁 js/                        # JavaScript források
+│   ├── 📁 lang/                      # Nyelvi fájlok
+│   └── 📁 views/                     # Blade sablonok
+├── 📁 routes/                        # Alkalmazás útvonalak
+│   ├── 📄 web.php                    # Web és API útvonalak
+├── 📁 storage/                       # Alkalmazás tároló
+│   ├── 📁 app/                       # Alkalmazás fájlok
+│   ├── 📁 framework/                 # Framework cache/sessions
+│   └── 📁 logs/                      # Alkalmazás naplók
+└── 📁 public/                        # Webről elérhető fájlok
+    ├── 📁 assets/                    # Fordított asset-ek
+    └── 📄 index.php                  # Alkalmazás belépési pont
+</code></pre>
+</div>
+
+            <h3>Alapvető könyvtárak magyarázata</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-cube"></i> App könyvtár</h4>
+                    <ul>
+                        <li><strong>Console:</strong> Egyedi Artisan parancsok</li>
+                        <li><strong>Http:</strong> Controllerek és middleware-ek</li>
+                        <li><strong>Models:</strong> Eloquent adatmodellek</li>
+                        <li><strong>Services:</strong> Üzleti logika szolgáltatások</li>
+                        <li><strong>Providers:</strong> Szolgáltatás regisztrálók</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-cogs"></i> Config könyvtár</h4>
+                    <ul>
+                        <li><strong>app.php:</strong> Alkalmazás beállítások</li>
+                        <li><strong>database.php:</strong> Adatbázis kapcsolatok</li>
+                        <li><strong>auth.php:</strong> Hitelesítési beállítások</li>
+                        <li><strong>mail.php:</strong> Email konfiguráció</li>
+                        <li><strong>workflow.php:</strong> Munkafolyamat beállítások</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong><i class="fa fa-exclamation-triangle"></i> Névadási konvenciók:</strong>
+                <ul>
+                    <li><strong>Osztályok:</strong> PascalCase (pl. `UserController`)</li>
+                    <li><strong>Metódusok:</strong> camelCase (pl. `getUserData`)</li>
+                    <li><strong>Fájlok:</strong> kebab-case (pl. `user-profile.blade.php`)</li>
+                    <li><strong>Adatbázis táblák:</strong> snake_case (pl. `user_profiles`)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sec2_2">
+            <h2>2.2 Konfigurációs fájlok</h2>
+
+            <p>Az összes konfiguráció a `config/` almappában helyezkedik el, környezeti felülírással `.env` fájlból. A projektben például a `config/pdf.php` határozza meg az mPDF alap betűtípusait, míg a `config/workflow.php` a workflow állapotgépeket.</p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-cog"></i> Fő konfigurációs fájlok</h4>
+                    <ul>
+                        <li><code>app.php</code> - Alkalmazás alapbeállítások</li>
+                        <li><code>auth.php</code> - IMAP + DB hitelesítés</li>
+                        <li><code>mail.php</code> - SMTP konfiguráció</li>
+                        <li><code>cache.php</code> - Redis cache beállítások</li>
+                        <li><code>queue.php</code> - Sor kezelés beállítások</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-puzzle-piece"></i> Projekt specifikus konfigurációk</h4>
+                    <ul>
+                        <li><code>workflow.php</code> - Munkafolyamat állapotgépek</li>
+                        <li><code>pdf.php</code> - PDF generálás beállítások</li>
+                        <li><code>imap.php</code> - Email szerver kapcsolat</li>
+                        <li><code>variables.php</code> - Sablon változók</li>
+                        <li><code>modules.php</code> - Modul rendszer konfiguráció</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="fa fa-lightbulb"></i> Környezeti változók:</strong>
+                A konfigurációs fájlok az <code>env()</code> helper függvényt használják a <code>.env</code> fájlból való értékek beolvasására. Production környezetben a <code>config:cache</code> parancs optimalizálja a teljesítményt.
+            </div>
+        </section>
+
+        <section id="sec2_3">
+            <h2>2.3 Autoloading és névterek</h2>
+
+            <p>A Composer PSR-4 autoload szabályokat a gyökér `composer.json` `autoload` és `autoload-dev` blokkjai írják le. Saját moduljaink külön névtér prefixszel indulnak (`Modules\EmployeeRecruitment\`). Autoload cache frissítése: <code>composer dump-autoload -o</code>.</p>
+
+            <div class="code-block">
+                <div class="code-header"><i class="fa fa-file-code"></i> composer.json - PSR-4 autoloading konfiguráció</div>
+                <pre><code class="language-json">{
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/",
+            "Database\\Migrations\\Traits\\": "database/migrations/traits/",
+            "Modules\\": "Modules/",
+            "Tests\\": "tests/"
+        },
+        "files": [
+            "app/Helpers/helpers.php",
+            "app/Helpers/workflow_helpers.php"
+        ],
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+}</code></pre>
+            </div>
+
+            <h3>Névtér hierarchia és használat</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-sitemap"></i> Fő névtér struktúra</h4>
+                    <ul>
+                        <li><code>App\Models\</code> - Adatmodellek</li>
+                        <li><code>App\Services\</code> - Üzleti logika szolgáltatások</li>
+                        <li><code>App\Http\Controllers\</code> - Kérés kezelők</li>
+                        <li><code>App\Events\</code> - Esemény osztályok</li>
+                        <li><code>App\Listeners\</code> - Esemény figyelők</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-cubes"></i> Modul névtér minta</h4>
+                    <ul>
+                        <li><code>Modules\{Modul}\App\Models\</code></li>
+                        <li><code>Modules\{Modul}\App\Services\</code></li>
+                        <li><code>Modules\{Modul}\App\Http\Controllers\</code></li>
+                        <li><code>Modules\{Modul}\App\Events\</code></li>
+                        <li><code>Modules\{Modul}\App\Providers\</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec2_4">
+            <h2>2.4 Moduláris felépítés (nwidart/laravel-modules)</h2>
+
+            <p>A **nwidart/laravel-modules** csomaggal a kódot fizikailag és logikailag modulokra bontjuk. Minden modul csomag-szerűen tartalmazhat controllert, modellt, migrációt, view-t és külön `composer.json`-t is. Példa modul a <code>Modules/EmployeeRecruitment</code>, amely a toborzási munkafolyamatot izolálja.</p>
+
+            <div>
+                <h4>Moduláris architektúra felépítés</h4>
+                <pre>
+┌────────────────────────────────────────────────────────────────────┐
+│                         Laravel Mag                                │
+├────────────────────────────────────────────────────────────────────┤
+│  Megosztott Szolgáltatások  │  Hitelesítés  │  Globális Middleware │
+├────────────────────────────────────────────────────────────────────┤
+│                    Modul Rendszer Réteg                            │
+├────────────────────────────────────────────────────────────────────┤
+│ EmployeeRecruitment │ ExpenseApproval │ LeaveManagement │ ...      │
+├────────────────────────────────────────────────────────────────────┤
+│ A Modul Struktúra:                                                 │
+│ ├── Controllerek és Route-ok                                       │
+│ ├── Modellek és Szolgáltatások                                     │
+│ ├── Nézetek és Asset-ek                                            │
+│ ├── Adatbázis Migrációk                                            │
+│ └── Konfigurációs Fájlok                                           │
+└────────────────────────────────────────────────────────────────────┘
+</pre>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-puzzle-piece"></i> Modul előnyök</h4>
+                    <ul>
+                        <li><strong>Kapszuláció:</strong> Izolált üzleti domain logika</li>
+                        <li><strong>Újrahasznosíthatóság:</strong> Modulok újrafelhasználása projektekben</li>
+                        <li><strong>Csapat izoláció:</strong> Párhuzamos fejlesztés támogatása</li>
+                        <li><strong>Microservice kész:</strong> Könnyű kiszervezés</li>
+                        <li><strong>Tesztelés:</strong> Izolált unit és integrációs tesztek</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-cogs"></i> Modul jellemzők</h4>
+                    <ul>
+                        <li>Független routing és middleware</li>
+                        <li>Saját migráció és seeder fájlok</li>
+                        <li>Modul-specifikus konfiguráció</li>
+                        <li>Asset publikálás és verziókezelés</li>
+                        <li>Esemény-vezérelt modulok közötti kommunikáció</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Modulok közötti kommunikáció</h3>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4><i class="fa fa-exchange-alt"></i> Esemény-vezérelt kommunikáció</h4>
+                    <ul>
+                        <li>Domain események közötti laza csatolás</li>
+                        <li>Aszinkron esemény feldolgozás sorral</li>
+                        <li>Event sourcing minta támogatás</li>
+                        <li>Modulok közötti esemény figyelők</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h4><i class="fa fa-plug"></i> Szolgáltatás interfészek</h4>
+                    <ul>
+                        <li>Megosztott interfész szerződések</li>
+                        <li>Függőség injektálás minták</li>
+                        <li>Szolgáltatás felfedezés mechanizmusok</li>
+                        <li>API verziókezelés támogatás</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong><i class="fa fa-exclamation-triangle"></i> Modul fejlesztési legjobb gyakorlatok:</strong>
+                <ul>
+                    <li><strong>Egyszeres felelősség:</strong> Egy modul = egy üzleti domain</li>
+                    <li><strong>Laza csatolás:</strong> Minimális függőségek más modulokra</li>
+                    <li><strong>Magas kohézió:</strong> Kapcsolódó funkcionalitás egy modulban</li>
+                    <li><strong>Interfész szegregáció:</strong> Kis, specifikus interfészek</li>
+                    <li><strong>Függőség inverzió:</strong> Absztrakciók, nem konkrét implementációk</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <a href="laravel-framework.html" style="color: #666; text-decoration: none;">
+                    <i class="fa fa-arrow-left"></i> Előző: 1. Laravel Framework áttekintés
+                </a>
+            </div>
+            <div>
+                <strong>TTK Ügyintézés</strong> · Projekt felépítés · 2025
+            </div>
+            <div>
+                <a href="laravel-csomagok.html" style="color: #666; text-decoration: none;">
+                    Következő: 3. Laravel csomagok <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigáció kiemelés és smooth scrolling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aktuális szekció kiemelése az oldalsávban
+            const currentSection = window.location.hash || '#sec2';
+            document.querySelector(`a[href="${currentSection}"]`)?.classList.add('active');
+            
+            // Smooth scrolling az anchor linkekhez
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // URL frissítése navigáció kiváltása nélkül
+                        history.pushState(null, null, this.getAttribute('href'));
+                    }
+                });
+            });
+
+            // Aktív szekció frissítése görgetéskor
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelectorAll('#sidebar a').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        document.querySelector(`#sidebar a[href="#${id}"]`)?.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('section[id]').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

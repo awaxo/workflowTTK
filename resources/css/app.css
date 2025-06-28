@@ -191,3 +191,16 @@ td.day {
 .horizontal-scroll.needs-scroll ~ .fixed-bottom-scrollbar {
     display: block;
 }
+
+.btn-light-brown {
+    color: #FFF !important;
+    background-color: #E83E8C !important;
+    border-color: #E83E8C !important;
+    box-shadow: rgba(232, 62, 140, 0.4) 0px 2px 4px 0px;
+}
+
+.btn-light-brown:hover {
+    color: #fff !important;
+    background-color: #D63384 !important;
+    border-color: #D63384 !important;
+}

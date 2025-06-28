@@ -20,11 +20,6 @@
                         "url": "/hr/felveteli-kerelem",
                         "name": "Felvételi kérelem",
                         "slug": "workflows-employee-recruitment-opened"
-                    },
-                    {
-                        "url": "/hr/felveteli-kerelem/piszkozatok",
-                        "name": "Felvételi kérelem Piszkozatok",
-                        "slug": "workflows-employee-recruitment-drafts"
                     }
                 ]
             },

@@ -34,7 +34,14 @@
 @endsection
 
 @section('content')
-    <h4 class="py-3 mb-4">Felvételi kérelmek</h4>
+    <!-- Header with title and drafts button -->
+    <div class="d-flex justify-content-between align-items-center py-3 mb-4">
+        <h4 class="mb-0">Felvételi kérelmek</h4>
+        <a href="{{ url('hr/felveteli-kerelem/piszkozatok') }}" class="btn btn-light-brown">
+            <i class="ti ti-file-text me-1"></i>
+            Piszkozatok
+        </a>
+    </div>
 
     <div class="row">
         <div class="col-12 mb-4">

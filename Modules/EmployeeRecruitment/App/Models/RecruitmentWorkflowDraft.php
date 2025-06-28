@@ -31,12 +31,13 @@ class RecruitmentWorkflowDraft extends AbstractWorkflow
     {
         $user = User::find(Auth::id());
 
-        // Csoportvezető: ha bármely workgroup leader-e
+        // Check if user is a workgroup leader - they can see their own drafts
         $isWorkgroupLeader = Workgroup::where('leader_id', $user->id)->exists();
         if ($isWorkgroupLeader) {
             return self::query()->where('created_by', $user->id);
         }
 
+        // Handle secretary roles (titkár_X) - they can see drafts where workgroup1 or workgroup2 belongs to institute X
         $secretaryRoles = $user->getRoleNames()->filter(fn($role) => str_starts_with($role, 'titkar_'));
 
         if ($secretaryRoles->isNotEmpty()) {
@@ -45,15 +46,24 @@ class RecruitmentWorkflowDraft extends AbstractWorkflow
                 return $matches[1] ?? null;
             })->filter()->unique();
 
-            return self::query()->whereHas('creator.workgroup', function ($query) use ($allowedPrefixes) {
-                $query->where(function ($subQuery) use ($allowedPrefixes) {
-                    foreach ($allowedPrefixes as $prefix) {
-                        $subQuery->orWhere('workgroup_number', 'like', $prefix . '%');
-                    }
+            return self::query()->where(function ($query) use ($allowedPrefixes) {
+                $query->whereHas('workgroup1', function ($subQuery) use ($allowedPrefixes) {
+                    $subQuery->where(function ($whereQuery) use ($allowedPrefixes) {
+                        foreach ($allowedPrefixes as $prefix) {
+                            $whereQuery->orWhere('workgroup_number', 'like', $prefix . '%');
+                        }
+                    });
+                })->orWhereHas('workgroup2', function ($subQuery) use ($allowedPrefixes) {
+                    $subQuery->where(function ($whereQuery) use ($allowedPrefixes) {
+                        foreach ($allowedPrefixes as $prefix) {
+                            $whereQuery->orWhere('workgroup_number', 'like', $prefix . '%');
+                        }
+                    });
                 });
             });
         }
 
+        // If user has no relevant permissions, return empty result
         return self::query()->whereRaw('1 = 0');
     }
 

@@ -910,7 +910,7 @@ class EmployeeRecruitmentController extends Controller
      */
     public function reviewDraft($id)
     {
-        $draft = RecruitmentWorkflowDraft::find($id);
+        $draft = RecruitmentWorkflowDraft::with(['workgroup1', 'workgroup2'])->find($id);
         if (!$draft) {
             Log::error('Nem található a felvételi kérelem piszkozat (id: ' . $id . ')');
             return view('content.pages.misc-error');
@@ -935,18 +935,24 @@ class EmployeeRecruitmentController extends Controller
         }
         // 3. Ha titkár, csak a saját intézetéhez tartozó piszkozatokat nézheti
         else if ($hasSecretaryRole) {
-            // Intézet csoport szintjének lekérdezése a draft-ból
-            $institute = Institute::find($draft->initiator_institute_id);
-            if ($institute) {
-                $instituteGroupLevel = $institute->group_level;
+            // Extract allowed prefixes from secretary roles
+            $allowedPrefixes = $secretaryRoles->map(function ($role) {
+                preg_match('/^titkar_(\d+)/', $role, $matches);
+                return $matches[1] ?? null;
+            })->filter()->unique();
+
+            // Check if user has permission based on workgroup1 or workgroup2
+            foreach ($allowedPrefixes as $prefix) {
+                // Check workgroup1
+                if ($draft->workgroup1 && str_starts_with($draft->workgroup1->workgroup_number, $prefix)) {
+                    $hasPermission = true;
+                    break;
+                }
                 
-                // Ellenőrizzük, hogy a felhasználónak van-e megfelelő titkári jogosultsága
-                foreach ($secretaryRoles as $role) {
-                    $roleGroupLevel = Str::substr($role, 6, 1); // titkar_X_ formátumból az X kinyerése
-                    if ($roleGroupLevel == $instituteGroupLevel) {
-                        $hasPermission = true;
-                        break;
-                    }
+                // Check workgroup2 if exists
+                if ($draft->workgroup2 && str_starts_with($draft->workgroup2->workgroup_number, $prefix)) {
+                    $hasPermission = true;
+                    break;
                 }
             }
         }
